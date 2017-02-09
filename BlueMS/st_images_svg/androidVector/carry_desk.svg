@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg6730" sodipodi:docname="carry_desk.svg"
+    viewBox="0 0 100 100" version="1.0" y="0" x="0" inkscape:version="0.48.4 r9939" width="100%"
+    height="100%">
+  <defs
+     id="defs3794" />
+  <sodipodi:namedview
+     id="namedview51"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     guidetolerance="10"
+     pagecolor="#ffffff"
+     gridtolerance="10"
+     inkscape:window-maximized="1"
+     inkscape:zoom="5.1726027"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:current-layer="svg6730"
+     inkscape:cx="42.528305"
+     inkscape:cy="64.514132"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-width="1280"
+     showgrid="false"
+     inkscape:pageopacity="0"
+     inkscape:window-height="962"
+     units="pt" />
+  <g
+     id="g4304"
+     transform="matrix(0.11419326,0,0,0.11419326,9.2878087,25.142582)"
+     style="fill:#1a1a1a">
+    <path
+       d="m 141.29,168.13 v 252.93 l 19.284,13.535 v -261.39 l -19.284,-5.0756 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path1689"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 160.96,175.22 -0.29583,259.4 25.293,-4.565 v -258.22 l -24.997,3.3837 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path2315"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 487.54,17.13 0.17855,237.71 16.946,12.052 V 21.882 l -17.125,-4.7575 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path4821"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 505.21,23.781 -0.26271,243.14 22.462,-4.1066 v -242.21 l -22.199,3.1716 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path4822"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 661.38,101.42 V 344.8 l 17.557,12.355 v -250.86 l -17.557,-4.8711 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path4825"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 679.49,108.23 -0.26933,248.95 23.028,-4.2703 v -247.93 l -22.759,3.2474 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path4826"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 158.17,185.67 v 11.066 l 553.5,-83.444 v -10.767 l -553.39,83.036"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path2941"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 8.9874,78.494 0.17855,243.59 17.378,12.144 V 83.368 l -17.557,-4.8711 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path5455"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 27.094,85.087 -0.27,248.95 22.85,-4.48 0.178,-247.72 -22.758,3.247 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path5456"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 158.03,196.58 0.71,85.91 0.58776,76.727 l 157.46,108.95 -0.0217,10.899 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
+       id="path4191"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 0.74242,76.877 157.49,108.28 554.22,-82.91 -199.98,-101.51 -511.73,76.137 z"
+       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-linejoin:round;stroke-opacity:1"
+       id="path4829"
+       inkscape:connector-curvature="0" />
+  </g>
+  <metadata
+     id="metadata3792">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2010-08-03T02:23:50</dc:date>
+        <dc:description />
+        <dc:source>https://openclipart.org/detail/76633/table-line-art-by-gammillian</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>gammillian</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>black and white</rdf:li>
+            <rdf:li>coloring book</rdf:li>
+            <rdf:li>line art</rdf:li>
+            <rdf:li>outline</rdf:li>
+            <rdf:li>table</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

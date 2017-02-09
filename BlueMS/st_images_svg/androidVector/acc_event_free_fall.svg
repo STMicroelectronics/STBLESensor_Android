@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg2"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="acc_event_free_fall.svg"
+   x="0px"
+   y="0px"
+   width="140pt"
+   height="140pt"
+   viewBox="0 0 175 175"
+   enable-background="new 0 0 140 140"
+   xml:space="preserve"><metadata
+     id="metadata4154"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs4152" /><sodipodi:namedview
+     units="pt"
+     id="base"
+     inkscape:window-maximized="1"
+     inkscape:pageopacity="0.0"
+     inkscape:window-width="1280"
+     inkscape:pageshadow="2"
+     inkscape:window-x="-8"
+     inkscape:window-height="962"
+     inkscape:document-units="px"
+     inkscape:window-y="-8"
+     inkscape:current-layer="svg2"
+     borderopacity="1.0"
+     inkscape:zoom="1.575838"
+     pagecolor="#ffffff"
+     inkscape:cy="119.1802"
+     bordercolor="#666666"
+     inkscape:cx="-51.912371"
+     showgrid="false" /><g
+     id="g4709"
+     transform="matrix(1.1846511,0,0,1.1846511,4.5741277,-34.403827)"><g
+       transform="translate(0,35)"
+       id="g4138"><path
+         style="fill:#39a9dc"
+         inkscape:connector-curvature="0"
+         id="path4140"
+         d="m 96.758,90.523 -8.771,2.312 6.195,2.802 c 0.379,-0.168 0.819,-0.184 1.227,0 0.757,0.342 1.094,1.232 0.751,1.989 -0.345,0.757 -1.233,1.093 -1.989,0.751 -0.404,-0.184 -0.688,-0.525 -0.813,-0.919 l -11.33,-5.121 5.371,-1.415 -12.094,-5.799 -49.159,12.486 17.662,10.529 9.244,-2.519 -7.05,-4.571 c -0.398,0.105 -0.837,0.059 -1.21,-0.186 -0.697,-0.451 -0.896,-1.383 -0.444,-2.079 0.452,-0.697 1.383,-0.896 2.08,-0.443 0.374,0.242 0.598,0.622 0.662,1.03 l 10.803,7.005 -14.379,3.913 -7.904,-4.711 -22.413,7.242 c 7.049,4.248 17.888,10.779 18.273,11.002 0.574,0.348 1.248,0.439 1.885,0.281 l 87.143,-22.623 -23.74,-10.956 z m -42.721,5.153 17.467,-4.343 7.684,2.97 -1.119,0.284 -17.969,4.544 -6.063,-3.455 z m 7.468,4.359 9.688,-2.409 4.262,1.647 -0.621,0.158 -9.966,2.52 -3.363,-1.916 z m 24.349,0.512 -9.965,2.52 -3.363,-1.916 9.688,-2.407 4.263,1.646 -0.623,0.157 z" /><path
+         style="fill:#39a9dc"
+         inkscape:connector-curvature="0"
+         id="path4142"
+         d="m 33.325,104.217 -9.918,-5.91 -10.521,2.672 c -8.799,3.832 -5.646,8.256 -5.646,8.256 0,0 1.471,0.888 3.688,2.224 l 22.397,-7.242 z" /><path
+         style="fill:#39a9dc"
+         inkscape:connector-curvature="0"
+         id="path4144"
+         d="m 133.23,95.609 c 0,0 -1.336,-2.272 -1.914,-2.612 -0.219,-0.127 -0.442,-0.222 -0.687,-0.274 -0.021,-0.006 -0.047,-0.002 -0.065,-0.008 L 101.142,81.344 C 98.709,80.403 96.31,79.879 94.175,80.328 l -15.85,4.025 12.056,5.779 6.562,-1.729 26.607,12.281 7.887,-2.047 c 0.635,-0.168 1.181,-0.572 1.521,-1.147 0.345,-0.56 0.438,-1.234 0.272,-1.881 z" /></g><line
+       style="fill:none;stroke:#d4007a;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"
+       id="line4146"
+       y2="120.785"
+       x2="39.532001"
+       y1="69.691002"
+       x1="39.532001"
+       stroke-miterlimit="10" /><line
+       style="fill:none;stroke:#d4007a;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"
+       id="line4148"
+       y2="114.322"
+       x2="56.282001"
+       y1="61.704002"
+       x1="56.282001"
+       stroke-miterlimit="10" /><line
+       style="fill:none;stroke:#d4007a;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"
+       id="line4150"
+       y2="109.676"
+       x2="73.031998"
+       y1="48.656998"
+       x1="73.031998"
+       stroke-miterlimit="10" /></g></svg>

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<resources>
+
+    <string name="ConfigNotAvailable">Configuration service not available on this node</string>
+    <string name="config_title">Node Configuration</string>
+    <string name="config_summary">Get and Set the node configuration</string>
+    <string name="message_reboot">Are you sure to reboot with default settings?</string>
+    <string name="message_shutdown">Shutdown the node needs to connect USB to restart it. Continue?</string>
+    <string name="message_standby">Stand-by the node needs to press the user button to restart it, Continue?</string>
+    <string name="register_sw_target_persistent">Target Register (Persistent)</string>
+    <string name="register_sw_target_session">Target Register (Session)</string>
+    <string name="featureControlConfigurationTitile">Feature Configuration Control</string>
+    <string-array name="led_config">
+        <item>Internally managed</item>
+        <item>User set on</item>
+        <item>User set off</item>
+    </string-array>
+
+    <string-array name="led_config_values">
+        <item>00</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="pwr_mode_config">
+        <item>Full run</item>
+        <item>Full run (WFI)</item>
+        <item>Low power run (AR CP AE)</item>
+        <item>Low power run (AE)</item>
+        <item>Low power run</item>
+        <item>Low power run (MCU Sleep)</item>
+        <item>Low power run (MCU LPSleep)</item>
+        <item>Low power</item>
+    </string-array>
+
+    <string-array name="pwr_mode_config_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>15</item>
+        <item>4</item>
+        <item>5</item>
+        <item>16</item>
+    </string-array>
+
+    <string-array name="ble_output_power">
+        <item>+8 dBm (HP)</item>
+        <item>+5 dBm (HP)</item>
+        <item>+1 dBm (HP)</item>
+        <item>-2 dBm (HP)</item>
+        <item>-5 dBm (HP)</item>
+        <item>-8 dBm (HP)</item>
+        <item>-12 dBm (HP)</item>
+        <item>-15 dBm (HP)</item>
+        <item>+5 dBm </item>
+        <item>+2 dBm </item>
+        <item>-2 dBm </item>
+        <item>-5 dBm </item>
+        <item>-8 dBm </item>
+        <item>-11 dBm </item>
+        <item>-15 dBm </item>
+        <item>-18 dBm </item>
+    </string-array>
+
+    <string-array name="ble_output_power_values">
+        <item>090F</item>
+        <item>090E</item>
+        <item>090D</item>
+        <item>090C</item>
+        <item>090B</item>
+        <item>090A</item>
+        <item>0909</item>
+        <item>0908</item>
+        <item>080F</item>
+        <item>080E</item>
+        <item>080D</item>
+        <item>080C</item>
+        <item>080B</item>
+        <item>080A</item>
+        <item>0809</item>
+        <item>0808</item>
+    </string-array>
+    <string-array name="data_read_group_a">
+        <item>Accelerometer</item>
+        <item>Gyroscope</item>
+        <item>Magnetometer</item>
+        <item>Pressure</item>
+        <item>Temperature</item>
+        <item>Battery</item>
+    </string-array>
+
+    <string-array name="data_read_group_a_values">
+        <item>0080</item>
+        <item>0040</item>
+        <item>0020</item>
+        <item>0010</item>
+        <item>0004</item>
+        <item>0002</item>
+    </string-array>
+
+    <string-array name="data_read_group_b">
+        <item>Pedometer</item>
+        <item>MEMS Sensor Fusion</item>
+        <item>MEMS Sensor Fusion (Compact)</item>
+        <item>FreeFall</item>
+        <item>Accelerometer Events</item>
+        <item>Activity Recognition</item>
+        <item>Carry Position</item>
+    </string-array>
+
+    <string-array name="data_read_group_b_values">
+
+        <item>0001</item>
+        <item>0080</item>
+        <item>0100</item>
+        <item>0200</item>
+        <item>0400</item>
+        <item>0010</item>
+        <item>0008</item>
+    </string-array>
+
+    <!--<string-array name="data_read_group_a">-->
+        <!--<item>Accelerometer</item>-->
+        <!--<item>Gyroscope</item>-->
+        <!--<item>Magnetometer</item>-->
+        <!--<item>Pressure</item>-->
+        <!--<item>Battery</item>-->
+        <!--<item>Temperature</item>-->
+        <!--<item>Group A Item 0040</item>-->
+        <!--<item>Group A Item 0080</item>-->
+        <!--<item>Group A Item 0100</item>-->
+        <!--<item>Group A Item 0200</item>-->
+        <!--<item>Group A Item 0400</item>-->
+        <!--<item>Group A Item 0800</item>-->
+        <!--<item>Group A Item 1000</item>-->
+        <!--<item>Group A Item 2000</item>-->
+        <!--<item>Group A Item 4000</item>-->
+        <!--<item>Group A Item 8000</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="data_read_group_a_values">-->
+        <!--<item>0001</item>-->
+        <!--<item>0002</item>-->
+        <!--<item>0004</item>-->
+        <!--<item>0008</item>-->
+        <!--<item>0010</item>-->
+        <!--<item>0020</item>-->
+        <!--<item>0040</item>-->
+        <!--<item>0080</item>-->
+        <!--<item>0100</item>-->
+        <!--<item>0200</item>-->
+        <!--<item>0400</item>-->
+        <!--<item>0800</item>-->
+        <!--<item>1000</item>-->
+        <!--<item>2000</item>-->
+        <!--<item>4000</item>-->
+        <!--<item>8000</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="data_read_group_b">-->
+        <!--<item>Pedometer</item>-->
+        <!--<item>Group B Item 0002</item>-->
+        <!--<item>Group B Item 0004</item>-->
+        <!--<item>Group B Item 0008</item>-->
+        <!--<item>Group B Item 0010</item>-->
+        <!--<item>Group B Item 0020</item>-->
+        <!--<item>Group B Item 0040</item>-->
+        <!--<item>Sensor Fusion AHRS Mems</item>-->
+        <!--<item>Group B Item 0100</item>-->
+        <!--<item>FreeFall</item>-->
+        <!--<item>Group B Item 0400</item>-->
+        <!--<item>Group B Item 0800</item>-->
+        <!--<item>Group B Item 1000</item>-->
+        <!--<item>Group B Item 2000</item>-->
+        <!--<item>Group B Item 4000</item>-->
+        <!--<item>Group B Item 8000</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="data_read_group_b_values">-->
+        <!--<item>0001</item>-->
+        <!--<item>0002</item>-->
+        <!--<item>0004</item>-->
+        <!--<item>0008</item>-->
+        <!--<item>0010</item>-->
+        <!--<item>0020</item>-->
+        <!--<item>0040</item>-->
+        <!--<item>0080</item>-->
+        <!--<item>0100</item>-->
+        <!--<item>0200</item>-->
+        <!--<item>0400</item>-->
+        <!--<item>0800</item>-->
+        <!--<item>1000</item>-->
+        <!--<item>2000</item>-->
+        <!--<item>4000</item>-->
+        <!--<item>8000</item>-->
+    <!--</string-array>-->
+
+    <string-array name="battery_power_mng_status">
+        <item>Low battery</item>
+        <item>Discharging</item>
+        <item>Plugged not charging</item>
+        <item>Charging</item>
+        <item>Generic Error</item>
+    </string-array>
+
+    <string-array name="battery_power_mng_status_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>255</item>
+    </string-array>
+
+    <string-array name="rtc_timer">
+        <item>Invalid</item>
+        <item>Default</item>
+        <item>Default Running</item>
+        <item>Restored</item>
+        <item>Restored Running</item>
+        <item>User</item>
+        <item>User Running</item>
+        <item>Forced</item>
+    </string-array>
+
+    <string-array name="rtc_timer_values">
+        <item>00</item>
+        <item>D0</item>
+        <item>D1</item>
+        <item>A0</item>
+        <item>A1</item>
+        <item>B0</item>
+        <item>B1</item>
+        <item>B3</item>
+    </string-array>
+
+    <string-array name="dfu_reboot">
+        <item>Application mode</item>
+        <item>USB DFU</item>
+        <item>OTA BLE DFU</item>
+    </string-array>
+
+    <string-array name="dfu_reboot_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="poweroff_reboot">
+        <item>Stand-by (w BLE/PM)</item>
+        <item>Stand-by (w BLE)</item>
+        <item>Stand-by</item>
+        <item>Reboot</item>
+        <item>Reboot with defaults</item>
+        <item>Shutdown</item>
+    </string-array>
+
+    <string-array name="poweroff_reboot_values">
+        <item>249</item>
+        <item>253</item>
+        <item>254</item>
+        <item>252</item>
+        <item>251</item>
+        <item>250</item>
+    </string-array>
+
+    <string-array name="empty_array"/>
+</resources>

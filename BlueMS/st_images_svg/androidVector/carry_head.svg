@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg8106" sodipodi:docname="HeadProfile.svg"
+    viewBox="0 0 100 100" version="1.1" inkscape:version="0.48.4 r9939" width="100%" height="100%">
+  <defs
+     id="defs3034" />
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:window-y="-8"
+     fit-margin-left="0"
+     pagecolor="#ffffff"
+     fit-margin-top="0"
+     inkscape:window-maximized="1"
+     inkscape:zoom="1"
+     inkscape:window-x="-8"
+     inkscape:window-height="962"
+     showgrid="false"
+     borderopacity="1.0"
+     inkscape:current-layer="layer1"
+     inkscape:cx="-145.68695"
+     inkscape:cy="124.81141"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1280"
+     inkscape:pageopacity="0.0"
+     inkscape:document-units="px"
+     units="pt" />
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-278.64,-352.02)">
+    <path
+       id="path7144"
+       sodipodi:nodetypes="csscccccccccccccccccccccccccccccccccccccsccccccccccccccczzccc"
+       style="fill:#333333"
+       inkscape:connector-curvature="0"
+       d="m 332.92292,370.77058 c -3.70393,0.0345 -7.36177,1.08882 -10.72077,2.66446 -2.41953,1.13495 -4.75691,2.59109 -6.39878,4.69953 -1.35367,1.73802 -2.16893,3.83595 -2.70643,5.97233 -0.4115,1.63547 -0.67349,3.31039 -1.20983,4.90931 -0.11244,0.33527 -0.23533,0.66945 -0.3147,1.01403 -0.0792,0.34459 -0.11489,0.70996 -0.042,1.05599 0.0852,0.40414 0.3064,0.75992 0.51053,1.11893 0.20414,0.35901 0.39686,0.74122 0.4126,1.15389 0.0141,0.37127 -0.11351,0.73508 -0.30068,1.05599 -0.18727,0.32091 -0.43079,0.60777 -0.65738,0.90215 -1.04229,1.35366 -1.79336,2.91366 -2.88127,4.23105 -0.30903,0.37428 -0.6469,0.73928 -0.84618,1.18186 -0.0996,0.2213 -0.16447,0.46365 -0.16086,0.70632 0.004,0.24267 0.0759,0.48598 0.22379,0.67836 0.13939,0.18119 0.33879,0.31053 0.55249,0.39162 0.21376,0.0811 0.44393,0.11636 0.67136,0.13986 0.45475,0.0471 0.92674,0.0474 1.33573,0.25176 0.29084,0.14533 0.53185,0.39163 0.67133,0.68535 0.13945,0.29375 0.17751,0.6326 0.11192,0.9511 -0.0436,0.21184 -0.12754,0.41263 -0.20282,0.61542 -0.0752,0.20278 -0.14058,0.41326 -0.13287,0.62941 0.008,0.22228 0.0912,0.43687 0.22377,0.61542 0.13274,0.17852 0.31354,0.3232 0.51053,0.42658 0.086,0.0452 0.17579,0.0853 0.24478,0.15385 0.0344,0.0343 0.0629,0.0723 0.0769,0.11889 0.0138,0.0465 0.0135,0.0958 -0.007,0.13987 -0.0229,0.0494 -0.0659,0.0897 -0.11189,0.11888 -0.0459,0.0291 -0.0995,0.0544 -0.13988,0.0909 -0.0462,0.0418 -0.0763,0.0953 -0.0979,0.15385 -0.0213,0.0585 -0.0327,0.12011 -0.042,0.18183 -0.04,0.26818 -0.044,0.54631 0.0141,0.81121 0.0578,0.26493 0.176,0.51806 0.35662,0.72031 0.20875,0.23377 0.49432,0.38824 0.76929,0.5385 0.27504,0.15027 0.55243,0.3058 0.76227,0.5385 0.21373,0.23692 0.34728,0.54813 0.34267,0.86716 -0.005,0.37027 -0.18833,0.71677 -0.3776,1.03501 -0.18934,0.31822 -0.39909,0.63229 -0.48256,0.99306 -0.11471,0.49548 0.0321,1.03448 0.32866,1.44761 0.2966,0.4131 0.73244,0.70896 1.20286,0.90215 0.58761,0.24128 1.23216,0.32728 1.86724,0.33568 0.63511,0.008 1.26932,-0.0579 1.90217,-0.11189 0.63289,-0.054 1.26988,-0.095 1.9022,-0.035 0.63229,0.0601 1.2637,0.22608 1.80427,0.55948 0.46908,0.28924 0.86656,0.71796 1.02802,1.24483 0.14174,0.46246 0.0943,0.96148 0.0279,1.44062 -0.0663,0.47914 -0.14935,0.96471 -0.0629,1.44062 0.0765,0.421 0.28052,0.80939 0.52451,1.16088 0.24396,0.35148 0.52734,0.67644 0.79024,1.01403 1.06627,1.36944 2.17714,8.05979 2.46864,10.58782 7.6004,-2.44707 14.12587,-7.26613 18.71408,-13.58809 -0.50984,-1.03479 -1.06324,-2.2121 -1.25179,-2.76936 -0.83238,-2.4602 -1.10933,-5.10905 -0.78324,-7.68569 0.11564,-0.91491 0.30347,-1.81553 0.56647,-2.69943 1.82415,-2.72392 3.269,-5.70484 4.27275,-8.82553 0.9099,-2.82834 1.45643,-5.78481 1.48957,-8.7556 0.0345,-3.09473 -0.73382,-6.05009 -1.52375,-8.32727 -0.78992,-2.27736 -1.44532,-3.49854 -3.66536,-5.61736 -2.22004,-2.11888 -6.86256,-4.11377 -10.81861,-4.22383 -0.24725,-0.007 -0.49435,-0.009 -0.74128,-0.007 z" />
+  </g>
+  <metadata
+     id="metadata3032">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2011-12-21T08:45:07</dc:date>
+        <dc:description>Head profile</dc:description>
+        <dc:source>https://openclipart.org/detail/166375/head-profile-by-printerkiller</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>PrinterKiller</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Head profile silhouette</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg  xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 140 140" xml:space="preserve" height="140pt" viewBox="0 0 175 175" width="140pt" version="1.1"  y="0px" x="0px"  ><g fill="#39a9dc"><rect height="15.699" width="10.99" y="12.5" x="112.7"/><rect height="15.699" width="10.99" y="12.5" x="92.237"/><rect height="15.699" width="10.99" y="12.5" x="71.772"/><rect height="15.699" width="10.99" y="12.5" x="51.306"/><path d="m130.08 30.568c7.9538 0 14.357 6.2719 14.357 14.063v85.739c0 7.7916-6.4027 14.062-14.357 14.062h-85.15c-7.9556 0-14.358-6.2707-14.358-14.062v-85.738c0-7.7916 6.4021-14.063 14.358-14.063h85.15zm-74.68 14.684c-5.6047 0.000592-10.148 4.5432-10.148 10.148-0.000592 5.6053 4.5426 10.15 10.148 10.15h0.000592c5.6053 0.000593 10.15-4.542 10.15-10.147v-0.003c0-5.6053-4.5444-10.148-10.15-10.148h-0.000592z"/><rect height="15.699" width="10.99" y="146.8" x="112.7"/><rect height="15.699" width="10.99" y="146.8" x="92.237"/><rect height="15.699" width="10.99" y="146.8" x="71.772"/><rect height="15.699" width="10.99" y="146.8" x="51.306"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-62.297" x="-28.2"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-82.762" x="-28.199"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-103.23" x="-28.199"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-123.7" x="-28.199"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-62.297" x="-162.5"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-82.763" x="-162.5"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-103.23" x="-162.5"/><rect transform="rotate(180)" height="10.99" width="15.699" y="-123.7" x="-162.5"/></g></svg>

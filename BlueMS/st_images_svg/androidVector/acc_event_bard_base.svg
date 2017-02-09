@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="200pt" height="300pt"
+    viewBox="0 0 250.00001 375" id="svg2" version="1.1" inkscape:version="0.91 r13725"
+    sodipodi:docname="acc_event_bard_base.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="162.72832"
+     inkscape:cy="438.92207"
+     inkscape:document-units="px"
+     inkscape:current-layer="g4890"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     units="pt" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-677.36225)">
+    <g
+       id="g4890"
+       transform="translate(94.796882,28.873204)">
+      <g
+         id="g3341"
+         transform="translate(-108.44094,69.00486)">
+        <rect
+           style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.13747358;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:7;stroke-dasharray:none;stroke-opacity:1"
+           id="rect4138"
+           width="175.75189"
+           height="214.54858"
+           x="50.768295"
+           y="594.05292"
+           rx="7.4432797"
+           ry="6.7214627" />
+        <g
+           id="g4868"
+           transform="matrix(0.39354444,0,0,0.39354444,26.75112,557.35765)">
+          <g
+             id="g4787"
+             style="opacity:1"
+             transform="matrix(1,0,0,-1,-221.15071,1378.4065)">
+            <g
+               id="g4729">
+              <path
+                 inkscape:connector-curvature="0"
+                 id="rect4710"
+                 transform="matrix(1,0,0,-1,133.4249,1371.9244)"
+                 d="m 158.38281,920.49805 0,50.35937 59.5918,0 0,-50.35937 -59.5918,0 z m 11.85352,20.71679 12.10547,0 0,8.92774 -12.10547,0 0,-8.92774 z m 23.94726,0 12.10547,0 0,8.92774 -12.10547,0 0,-8.92774 z"
+                 style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.625;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:7;stroke-dasharray:none;stroke-opacity:1" />
+            </g>
+            <path
+               inkscape:connector-curvature="0"
+               id="path4757"
+               transform="matrix(1,0,0,-1,133.4249,1371.9244)"
+               d="m 178.2793,771.5625 c -1.75678,-0.0412 -4.37339,0.35017 -6.89844,1 -5.9626,1.14813 -10.29286,6.12348 -12.37891,11.625 -7.81215,17.77483 -13.20921,36.03926 -15.20312,55.375 -0.18911,22.79181 -0.0278,47.33698 -0.30274,70 l 88.32422,0 c -0.1209,-22.77117 0.0407,-47.20819 -0.14843,-70 -1.99391,-19.33574 -7.39098,-37.61189 -15.20313,-55.38672 -2.08605,-5.50152 -6.41435,-10.46515 -12.37695,-11.61328 -2.52505,-0.64983 -5.14221,-1.0467 -7.76368,-1 l -18.04882,0 z m 9.38086,25.88086 c 4.41791,0 8,3.58078 8,8 0,3.87617 -2.75683,7.10755 -6.41602,7.8418 l 0,5.53906 c 0.026,1.0912 0.4795,2.15324 1.12891,2.96289 0,0 10.65144,10.08513 10.68554,10.11523 1.37941,1.43027 2.55664,3.67762 2.55664,5.82227 l -0.002,7.91211 c 1.86339,0.6546 3.20703,2.41362 3.20703,4.5039 0,2.64455 -2.14459,4.78907 -4.79101,4.78907 -2.64527,0 -4.79102,-2.14478 -4.79102,-4.78907 0,-2.09028 1.34602,-3.8493 3.21094,-4.5039 -0.002,-0.96562 -0.002,-3.58814 -0.002,-8.00586 -0.0253,-1.09203 -0.48246,-2.15344 -1.13282,-2.96484 l -10.07226,-9.53516 0,48.96484 3.94726,0 -5.5332,9.58008 -5.53125,-9.57812 3.95312,0 0,-36.99024 -10.07421,9.53711 c -0.65036,0.81098 -1.10586,1.87257 -1.13086,2.96485 0,5.71072 -0.004,7.7207 -0.004,7.7207 l 3.20898,0 0,9.58203 -9.58203,0 0,-9.58203 3.21289,0 -0.002,-7.62696 c 0,-2.14506 1.17548,-4.39191 2.55469,-5.82226 0,0 0,-0.002 0,-0.002 0.0344,-0.0312 10.68555,-10.11329 10.68555,-10.11329 0.65016,-0.8089 1.10305,-1.86783 1.13085,-2.95703 l 0,-12.03711 c -7.6e-4,-0.0142 0,-0.0288 0,-0.043 l 0,-5.44141 c -3.66225,-0.73425 -6.41992,-3.96683 -6.41992,-7.84375 0,-4.41922 3.58271,-8 8.00196,-8 z"
+               style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.00646508px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          </g>
+          <path
+             sodipodi:nodetypes="ccc"
+             inkscape:connector-curvature="0"
+             id="path4849-9"
+             d="m 233.2143,648.66961 c 0,34.32055 -27.82231,62.14285 -67.14286,62.18548 -39.32055,0.0426 -67.142857,27.86494 -67.142855,62.18549"
+             style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:7;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

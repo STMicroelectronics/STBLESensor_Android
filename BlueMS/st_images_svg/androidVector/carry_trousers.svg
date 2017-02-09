@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg2" sodipodi:docname="Basic-Black-Pants.svg"
+    viewBox="0 0 100 100" version="1.1" inkscape:version="0.48.4 r9939" width="100%" height="100%">
+  <defs
+     id="defs3162" />
+  <sodipodi:namedview
+     id="base"
+     fit-margin-left="0"
+     inkscape:showpageshadow="false"
+     inkscape:zoom="11.670828"
+     borderopacity="1.0"
+     inkscape:current-layer="g3170"
+     inkscape:cx="43.07322"
+     inkscape:cy="58.130707"
+     inkscape:window-maximized="1"
+     showgrid="true"
+     fit-margin-right="0"
+     units="pt"
+     inkscape:snap-global="false"
+     showguides="true"
+     bordercolor="#666666"
+     inkscape:window-x="-8"
+     inkscape:guide-bbox="true"
+     inkscape:window-y="-8"
+     fit-margin-bottom="0"
+     inkscape:window-width="1280"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     pagecolor="#ffffff"
+     inkscape:document-units="px"
+     inkscape:window-height="962"
+     fit-margin-top="0">
+    <inkscape:grid
+       id="grid2985"
+       enabled="false"
+       visible="false"
+       snapvisiblegridlinesonly="false"
+       units="in"
+       type="xygrid"
+       empspacing="10" />
+  </sodipodi:namedview>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-44.812,-915.16002)">
+    <g
+       id="g3091"
+       transform="matrix(0.41899,0,0,0.41899,-274.37,465.36)">
+      <g
+         id="g3170"
+         transform="translate(540.55,35.798)">
+        <path
+           id="path3109-4"
+           d="m 340.56557,1082.5786 -23.75675,0.167 v 5.5217 c 0,0 -3.37337,17.0885 -4.12252,25.7484 -0.87336,10.0947 -0.7358,20.2672 -0.4203,30.3952 0.3986,12.7955 2.50115,25.4997 2.92491,38.2938 0.36172,10.9203 -0.63773,21.8516 -0.32818,32.7738 0.13822,4.8768 0.97305,14.6072 0.97305,14.6072 0,0 6.13762,2.0934 9.09146,1.2955 3.19668,-0.8637 7.78442,-6.1666 7.78442,-6.1666 v -37.3209 c 0,0 2.36922,-25.8001 4.22035,-38.6163 0.9275,-6.4215 3.19447,-18.0221 3.64458,-20.3132 0.45045,2.2924 2.71137,13.8922 3.63887,20.3132 1.85112,12.8166 4.22035,38.6163 4.22035,38.6163 v 37.3209 c 0,0 4.59345,5.3028 7.79013,6.1666 2.95384,0.798 9.08557,-1.2955 9.08557,-1.2955 0,0 0.83484,-9.7306 0.97304,-14.6072 0.30953,-10.922 -0.68414,-21.8517 -0.32243,-32.7738 0.4238,-12.7948 2.52049,-25.4997 2.9192,-38.2938 0.31549,-10.1275 0.45306,-20.3003 -0.4203,-30.3952 -0.74924,-8.6599 -4.12252,-25.7484 -4.12252,-25.7484 v -5.5217 l -23.75122,-0.167 -0.0115,2.7983 -0.0115,-2.7983 z"
+           style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.18424655000000001px"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+  </g>
+  <metadata
+     id="metadata3160">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2012-03-08T11:58:48</dc:date>
+        <dc:description>Black Pants</dc:description>
+        <dc:source>https://openclipart.org/detail/168770/black-pants-by-andrew_r_thomas</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Andrew_R_Thomas</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Pants</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

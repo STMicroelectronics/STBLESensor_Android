@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="100" height="150" id="svg4044"
+    version="1.1" inkscape:version="0.48.4 r9939" sodipodi:docname="humidityMy.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4"
+     inkscape:cx="64.993666"
+     inkscape:cy="57.272009"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     units="pt" />
+  <defs
+     id="defs4046" />
+  <metadata
+     id="metadata4049">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Icon"
+     style="display:inline"
+     transform="translate(0,-902.36221)">
+    <g
+       id="g4760"
+       transform="matrix(0.37967343,0,0,0.36203752,-96.298362,781.46199)">
+      <g
+         id="g4752">
+        <g
+           transform="matrix(0.82404203,0,0,0.82404203,11.652755,85.33753)"
+           style="display:inline"
+           id="g4700-7">
+          <path
+             sodipodi:nodetypes="cccsccc"
+             inkscape:connector-curvature="0"
+             id="path4635-4"
+             d="m 400,437.36218 c -15.465,36.33188 -35.37847,65.71908 -57.5,97.85613 -2.78564,3.40843 -24.72366,31.05302 -23.96875,56.78169 0,42.43335 35.26909,76.8125 78.78125,76.8125 43.51216,0 78.78125,-34.37915 78.78125,-76.8125 1.48439,-24.11448 -20.40775,-51.90729 -22.562,-55.65625 C 433.63924,504.4519 417.03066,470.81527 400,437.36218 z"
+             style="fill:#e1e1e1;fill-opacity:1;stroke:#b8b8b8;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <path
+             sodipodi:nodetypes="csscssc"
+             inkscape:connector-curvature="0"
+             id="path4657-0"
+             d="m 447.69118,550.85519 c 5.65731,9.64485 8.9375,20.8855 8.9375,32.875 0,35.92823 -29.13427,65.03125 -65.0625,65.03125 -21.23631,0 -40.09552,-10.16479 -51.96875,-25.90625 11.28334,19.30639 32.24321,32.28125 56.21875,32.28125 35.92823,0 65.03125,-29.13427 65.03125,-65.0625 0,-14.73901 -4.89417,-28.31057 -13.15625,-39.21875 z"
+             style="fill:#fefefe;fill-opacity:1;stroke:none" />
+        </g>
+        <g
+           transform="matrix(0.82404203,0,0,0.82404203,104.15276,85.33753)"
+           style="display:inline"
+           id="g4700-7-9">
+          <path
+             sodipodi:nodetypes="cccsccc"
+             inkscape:connector-curvature="0"
+             id="path4635-4-4"
+             d="m 400,437.36218 c -15.465,36.33188 -35.37847,65.71908 -57.5,97.85613 -2.78564,3.40843 -24.72366,31.05302 -23.96875,56.78169 0,42.43335 35.26909,76.8125 78.78125,76.8125 43.51216,0 78.78125,-34.37915 78.78125,-76.8125 1.48439,-24.11448 -20.40775,-51.90729 -22.562,-55.65625 C 433.63924,504.4519 417.03066,470.81527 400,437.36218 z"
+             style="fill:#e1e1e1;fill-opacity:1;stroke:#b8b8b8;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <path
+             sodipodi:nodetypes="csscssc"
+             inkscape:connector-curvature="0"
+             id="path4657-0-8"
+             d="m 447.69118,550.85519 c 5.65731,9.64485 8.9375,20.8855 8.9375,32.875 0,35.92823 -29.13427,65.03125 -65.0625,65.03125 -21.23631,0 -40.09552,-10.16479 -51.96875,-25.90625 11.28334,19.30639 32.24321,32.28125 56.21875,32.28125 35.92823,0 65.03125,-29.13427 65.03125,-65.0625 0,-14.73901 -4.89417,-28.31057 -13.15625,-39.21875 z"
+             style="fill:#fefefe;fill-opacity:1;stroke:none" />
+        </g>
+      </g>
+      <g
+         transform="translate(-12.012216,-11.982596)"
+         id="g4700">
+        <path
+           style="fill:#e1e1e1;fill-opacity:1;stroke:#b8b8b8;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           d="m 400,437.36218 c -15.465,36.33188 -35.37847,65.71908 -57.5,97.85613 -2.78564,3.40843 -24.72366,31.05302 -23.96875,56.78169 0,42.43335 35.26909,76.8125 78.78125,76.8125 43.51216,0 78.78125,-34.37915 78.78125,-76.8125 1.48439,-24.11448 -20.40775,-51.90729 -22.562,-55.65625 C 433.63924,504.4519 417.03066,470.81527 400,437.36218 z"
+           id="path4635"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cccsccc" />
+        <path
+           style="fill:#fefefe;fill-opacity:1;stroke:none"
+           d="m 447.69118,550.85519 c 5.65731,9.64485 8.9375,20.8855 8.9375,32.875 0,35.92823 -29.13427,65.03125 -65.0625,65.03125 -21.23631,0 -40.09552,-10.16479 -51.96875,-25.90625 11.28334,19.30639 32.24321,32.28125 56.21875,32.28125 35.92823,0 65.03125,-29.13427 65.03125,-65.0625 0,-14.73901 -4.89417,-28.31057 -13.15625,-39.21875 z"
+           id="path4657"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="csscssc" />
+      </g>
+    </g>
+  </g>
+</svg>

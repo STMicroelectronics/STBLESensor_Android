@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg2" sodipodi:docname="carry_hand.svg"
+    viewBox="0 0 100 100" version="1.0" inkscape:version="0.48.4 r9939" width="100%" height="100%">
+  <defs
+     id="defs3365" />
+  <sodipodi:namedview
+     id="namedview21"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     guidetolerance="10"
+     pagecolor="#ffffff"
+     gridtolerance="10"
+     inkscape:window-maximized="1"
+     inkscape:zoom="4.5408762"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:current-layer="svg2"
+     inkscape:cx="73.57155"
+     inkscape:cy="58.824965"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-width="1280"
+     showgrid="false"
+     inkscape:pageopacity="0"
+     inkscape:window-height="962"
+     units="pt" />
+  <path
+     id="pathContourMain"
+     style="fill:#1a1a1a;fill-rule:evenodd;stroke:#000000;stroke-width:0.12089022000000001px"
+     inkscape:connector-curvature="0"
+     d="m 51.983201,79.497092 c -1.014269,0.240571 -2.211082,0.522246 -3.022256,0.725341 -0.982837,0.06286 -1.960839,0.12089 -2.901365,-0.24178 -0.779742,-0.424325 -1.877425,-0.852276 -2.901365,-0.967122 -1.315286,-0.510157 -2.55441,-1.185933 -3.626707,-2.176024 -1.66224,-0.941735 -2.24614,-2.75267 -3.264035,-4.231157 -1.264512,-1.619929 -2.26911,-3.394598 -3.566262,-5.016944 -0.566975,-0.755564 -1.417317,-2.298123 -2.599139,-4.049823 -1.01439,-1.482114 -2.271286,-4.135654 -2.59914,-5.137834 C 27.218598,57.782791 26.474156,55.969438 25.991804,54.835488 25.479592,53.813965 24.639043,52.265362 24.057561,51.329671 23.525281,50.473769 23.574,48.297745 23.574,47.461185 c 0.141079,-1.107355 1.055009,-1.113399 1.269347,-1.148457 0.654016,-0.103966 2.245294,-0.299808 2.84092,0.181335 2.019834,0.640718 2.929049,1.954795 3.868487,3.868487 0.307061,0.615331 0.843814,2.537485 1.329793,3.022255 1.670702,1.588498 2.351314,2.938841 2.96181,3.808042 0.408609,0.710834 1.277809,1.24396 1.873798,1.390237 0.604451,0.282884 1.173844,-0.718087 1.450683,-1.027566 0.68303,-0.761609 0.834142,-1.581244 0.846231,-2.538695 0.0073,-0.559722 0.0411,-1.478487 0.120891,-2.115579 0.155948,-1.236707 0.09429,-2.101072 0.12089,-2.96181 0.03143,-0.9913 -0.604451,-2.229216 -0.604451,-3.445371 -0.251452,-0.917557 -0.148695,-2.973899 -0.120891,-3.747597 0.0411,-1.15571 -0.12089,-3.088745 -0.181335,-3.989377 -0.05561,-0.831725 -0.504112,-2.888067 -0.544006,-3.989377 -0.04594,-1.276601 -0.443667,-3.509443 -0.483561,-4.835609 -0.02539,-0.828098 0.111219,-2.278539 0.181336,-3.022013 0.07374,-0.781556 0.126934,-2.151484 0.12089,-3.082701 -0.0036,-0.575196 0.404982,-1.498192 0.967122,-1.934243 0.805128,-0.865695 2.425057,-1.386732 3.445371,-0.604452 1.367268,0.989729 1.230662,1.957697 1.511127,2.538695 0.437623,0.904138 0.322777,2.035066 0.423116,2.96181 0.07616,0.956484 0.172873,1.878755 0,3.44513 0,0.689074 0.06528,2.183277 0.12089,3.0827 0.06045,0.976793 0.355418,2.914663 0.483561,3.626707 0.192216,1.066251 0.423116,2.949721 0.362671,3.928932 -0.07979,1.295943 0.261123,2.695852 0.362671,3.566261 0.106383,0.916348 0.822053,2.292079 1.450682,2.84092 0.483561,0.421907 1.390238,-0.637091 1.390238,-2.055133 -0.124517,-2.062388 0.307061,-4.396778 0.24178,-5.258725 -0.05803,-0.765235 0.06044,-1.65136 0.06044,-1.813353 -0.09792,-0.390475 0,-0.805129 0,-1.208902 0,-0.875245 -0.31915,-1.998316 -0.24178,-3.143146 0.04715,-0.703581 -0.07133,-2.613646 -0.12089,-3.626706 0,-2.633352 -0.0677,-1.20044 -0.06045,-2.357118 0.0048,-0.765114 0.229692,-2.309245 0.362671,-2.84092 0.03868,-1.237795 0.357835,-2.533859 0.604451,-3.384926 0.392893,-1.089342 1.397491,-2.694885 2.84092,-2.780475 2.003151,0.09659 2.455281,0.909578 2.538695,2.115579 0.03264,0.473285 0.160784,1.974621 0.24178,2.417804 0.03143,0.661874 0.140233,2.194399 0.181336,3.022256 0.04956,0.992387 0.304643,2.450202 0.36267,3.324239 0.03385,0.507739 -0.172873,1.917319 -0.12089,2.901365 -0.229691,1.003389 0.06045,2.450445 0.06045,3.566261 v 3.445372 c 0,1.48574 -0.378386,2.751461 -0.12089,3.989377 0.107592,0.521036 0.233318,2.022493 0.785786,2.115578 0.92481,0.157158 1.853247,-1.477278 2.115579,-4.170712 0.160784,-1.714223 0.483561,-3.442953 0.483561,-4.835609 -0.19826,-0.791831 0.510157,-3.238649 0.725341,-4.049822 0.340911,-1.286272 0.513784,-2.779266 0.846232,-3.747597 -0.15474,-1.510644 0.397729,-3.03918 0.604451,-4.533141 0.302225,-1.104695 0.637091,-2.329796 1.450682,-2.659585 0.785787,-0.690766 1.671912,-0.402927 2.176024,-0.181335 0.846232,0.634794 1.15692,1.540746 1.390238,2.478249 0.192215,0.772852 -0.02055,2.135768 -0.12089,2.84092 0.0012,0.970628 0.07374,2.15644 0,3.263794 -0.07254,1.089221 -0.362671,2.391209 -0.362671,3.264036 0.0133,1.206485 -0.181335,3.056105 -0.181335,4.472938 -0.269586,1.779504 -0.362671,3.497354 -0.725342,5.258725 -0.249034,1.172635 -0.898214,2.809488 -0.906676,4.110267 0,1.120652 -0.556095,2.576171 0.906676,2.780475 0.846232,1.011851 1.976555,-2.09261 2.47825,-3.022255 0.581482,-1.380567 1.380566,-3.504608 1.692463,-4.472938 0.344537,-0.936899 1.11219,-2.252185 1.390237,-3.143146 0.727759,-1.456727 1.048118,-2.706732 1.329793,-3.687152 0.479934,-0.958659 1.392655,-1.768623 2.055133,-1.873798 0.886126,-0.140233 1.613885,0.591153 2.176024,1.450683 0.36388,0.964704 -0.04836,2.45528 -0.24178,3.868487 -0.368715,1.833904 -0.843814,3.456251 -1.260885,4.510414 -0.299808,0.755563 -1.056581,2.416595 -1.3987,3.41273 -0.404982,0.979211 -0.872827,2.286034 -1.258467,3.007749 -0.424325,0.791831 -1.195604,1.919737 -1.461563,2.971482 -0.379595,1.51959 -0.423116,2.81795 -0.423116,3.989377 0,0.750728 -0.24178,1.42046 -0.24178,2.417804 0.09309,1.239125 -0.391684,2.39 -0.241781,3.626706 0.07858,0.313106 0.06045,1.250005 -0.06045,2.055134 0.09913,1.183515 -0.470263,2.727283 -0.664896,3.505816 -0.234527,0.9369 -0.846231,3.037972 -0.846231,3.445372 -1.083177,1.986226 -1.18956,3.406686 -1.873799,4.352047 -0.586317,0.74952 -1.187142,1.842367 -1.873798,2.35736 -0.565766,0.424324 -1.173844,0.950197 -1.692463,1.208902 -0.968331,0.530708 -2.055134,1.058998 -3.747597,1.208902 -1.161755,-0.105175 -2.500009,-0.625003 -3.264036,-0.725341 -1.150874,-0.541589 -2.493965,-0.898215 -3.747596,-0.967122 z" />
+  <metadata
+     id="metadata3363">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

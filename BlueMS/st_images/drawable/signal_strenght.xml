@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="125dp"
+    android:height="125dp"
+    android:viewportWidth="125"
+    android:viewportHeight="125">
+
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M64.5731,23.6817 C71.7281,30.3418,76.711,38.2664,79.5228,47.4509
+C82.333,56.6354,82.7215,65.9587,80.6917,75.4354
+C78.6627,84.9057,74.3542,93.3572,67.763,100.787
+C67.3952,101.198,67.0302,101.612,66.6639,102.024 L77.7572,112.5
+C78.2831,111.909,78.7519,111.377,79.1717,110.905
+C85.4469,103.831,90.0961,95.8921,93.1112,87.0839
+C96.1285,78.2791,97.4505,69.4922,97.0631,60.72
+C96.6773,51.9503,94.6124,43.3232,90.8657,34.8395
+C87.1226,26.355,81.875,18.9043,75.127,12.5 L64.5731,23.6817 Z" />
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M46.8523,43.8352 C52.2517,49.152,55.0688,55.5967,55.2981,63.1785
+C55.5285,70.7558,53.0794,77.4345,47.9545,83.2126
+C47.6396,83.566,47.3248,83.9218,47.0099,84.2754 L57.8676,95.0113
+C58.4004,94.5377,58.9287,94.0016,59.4513,93.4115
+C64.577,87.6331,67.9488,81.0366,69.5743,73.6271
+C71.1898,66.2182,70.9644,58.9034,68.8875,51.6872
+C66.8106,44.4718,63.039,38.178,57.581,32.8103 L46.8523,43.8352 Z" />
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M30.2461,57.3923 C28.5209,59.3382,27.7356,61.6158,27.8901,64.2313
+C28.0463,66.8479,29.0986,69.0142,31.0445,70.7402
+C32.9904,72.4649,35.2672,73.2549,37.8844,73.0957
+C40.4996,72.9398,42.6703,71.8886,44.3964,69.9436
+C46.1218,67.999,46.9041,65.7203,46.7491,63.1015
+C46.5929,60.4863,45.542,58.3166,43.5958,56.5914
+C41.651,54.8643,39.3728,54.0814,36.7556,54.2379
+C34.1404,54.3974,31.9724,55.4461,30.2461,57.3923 Z" />
+</vector>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="100" height="100" id="svg4337"
+    version="1.1" inkscape:version="0.48.4 r9939" sodipodi:docname="activity_driving.svg">
+  <defs
+     id="defs4339" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="-25.472795"
+     inkscape:cy="4.6504635"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="pt"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4342">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-952.36221)">
+    <path
+       style="fill:#231f20;fill-opacity:1;stroke:#000000;stroke-width:0.07437006;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:5;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 47.958168,1033.4712 c -7.684308,-0.4602 -14.328192,-3.4886 -19.97028,-9.1028 -5.73979,-5.7114 -8.694506,-12.3468 -9.106912,-20.4517 -0.205406,-4.03675 0.317235,-7.94535 1.556302,-11.6389 1.711065,-5.1005 4.777685,-9.60543 9.193915,-13.506 4.805628,-4.24451 10.280198,-6.6663 16.824749,-7.44278 1.55967,-0.18505 5.634277,-0.18497 7.15435,1.4e-4 2.118019,0.25792 4.23464,0.69332 5.90118,1.21389 4.205903,1.3138 8.23565,3.70923 11.69362,6.95113 5.166839,4.84398 8.324607,10.49952 9.504706,17.02267 0.375212,2.0741 0.451488,3.0515 0.452697,5.80075 0.0012,2.6161 -0.03742,3.1948 -0.344502,5.1689 -0.975818,6.2729 -3.750527,11.7296 -8.391364,16.5021 -4.176474,4.295 -8.954458,7.1517 -14.260936,8.5261 -3.272585,0.8477 -6.684645,1.1674 -10.207525,0.9565 z m -1.887891,-9.1824 c -0.310655,-6.5747 -2.611725,-12.0849 -6.887774,-16.4936 -1.949062,-2.0094 -3.928224,-3.3843 -6.209901,-4.3137 -1.750794,-0.7132 -3.432189,-1.0644 -5.719212,-1.1948 l -0.66205,-0.038 0.04464,1.2057 c 0.16493,4.4548 1.484433,8.452 3.957848,11.9894 0.937429,1.3408 1.632565,2.1645 2.894107,3.4297 1.360245,1.3642 2.305505,2.1397 3.798131,3.116 1.696931,1.1101 3.153177,1.82 4.956219,2.4164 1.161947,0.3843 3.233218,0.9058 3.812136,0.96 0.03918,0 0.04576,-0.4443 0.01586,-1.0773 z m 8.832862,0.8952 c 5.665855,-1.1474 10.360933,-4.1427 14.011933,-8.9388 2.204573,-2.896 3.713371,-6.4886 4.252544,-10.1257 0.162494,-1.0962 0.29948,-2.6508 0.29948,-3.3987 l 0,-0.4679 -0.687923,0.036 c -4.672593,0.249 -8.288119,1.8788 -11.694125,5.2711 -4.106045,4.0896 -6.542526,9.5066 -7.024582,15.6177 -0.07308,0.9264 -0.132227,2.1939 -0.10239,2.1939 0.0079,0 0.433101,-0.085 0.94506,-0.1884 l 0,0 z m -4.07679,-19.0047 c 1.401952,-0.2542 2.677348,-1.4386 3.047761,-2.8301 0.157757,-0.5928 0.138871,-1.6597 -0.0396,-2.2376 -0.490142,-1.58685 -2.078409,-2.73555 -3.782453,-2.73555 -1.106501,0 -1.977852,0.3554 -2.786049,1.1362 -0.624398,0.60325 -0.978591,1.30435 -1.108234,2.19395 -0.401787,2.7567 1.911378,4.9729 4.668584,4.4731 l 0,0 z m 21.227716,-11.63735 c 0,-0.022 -0.172034,-0.4663 -0.382299,-0.98546 -1.238011,-3.05708 -3.016037,-5.67877 -5.425698,-8.00047 -3.927226,-3.78362 -8.470127,-5.93307 -13.788512,-6.52389 -1.92608,-0.21396 -4.949422,-0.0782 -6.953599,0.31239 -6.362984,1.23989 -12.074504,5.28852 -15.522535,11.00314 -0.689816,1.1433 -1.954428,3.83709 -1.954428,4.16319 0,0.047 7.779663,0.072 22.013536,0.072 12.107444,0 22.013535,-0.019 22.013535,-0.041 z"
+       id="path3056"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

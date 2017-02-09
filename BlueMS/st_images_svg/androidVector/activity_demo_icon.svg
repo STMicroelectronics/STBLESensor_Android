@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   enable-background="new 0 0 96 96"
+   xml:space="preserve"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="activity_demo_icon2.svg"><metadata
+   id="metadata3184"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs3182" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1280"
+   inkscape:window-height="962"
+   id="namedview3180"
+   showgrid="false"
+   units="px"
+   inkscape:zoom="9.8333333"
+   inkscape:cx="20.909164"
+   inkscape:cy="21.941126"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+
+
+<g
+   id="g3192"
+   transform="matrix(0.26591204,0,0,0.26591204,-0.56050461,18.085049)"><path
+     style="fill:#90989e"
+     inkscape:connector-curvature="0"
+     id="path3172"
+     d="m 45.386,-1.453003 c 6.954,2.586 12.967,4.813 13.396,4.939 1.062,0.316 2.193,-0.065 2.558,-1.15 0.529,-1.585 13.73,-47.822 13.73,-47.822 l -1.867,-8.892 c 0,0 -14.369,49.341 -14.75,50.169 -0.379,0.83 -1.374,1.098 -2.193,0.907 -0.819,-0.189 -37.53,-13.122 -37.53,-13.122 l 4.599,6.752 c 0,0 2.386,0.891 5.906,2.203 -1.348,13.078 1.192,21.419 19.6,27.202 4.896,1.539 5.688,-0.023 15.363,-1.646 -16.819,-3.582 -20.295,-7.69 -18.812,-19.54 z m 26.498,-43 c 0.816,-0.202 1.645,0.301 1.85,1.122 0.201,0.821 -0.3,1.649 -1.122,1.852 -0.823,0.201 -1.652,-0.302 -1.851,-1.121 -0.203,-0.822 0.3,-1.652 1.123,-1.853 z m -2.03,6.829 c 0.816,-0.203 1.646,0.301 1.851,1.121 0.201,0.822 -0.301,1.651 -1.122,1.854 -0.824,0.2 -1.652,-0.304 -1.851,-1.122 -0.204,-0.823 0.3,-1.652 1.122,-1.853 z m -2.435,9.346 c 0.819,-0.202 1.647,0.3 1.849,1.121 0.202,0.823 -0.299,1.652 -1.121,1.853 -0.82,0.201 -1.65,-0.3 -1.851,-1.122 -0.204,-0.822 0.3,-1.651 1.123,-1.852 z" /><path
+     style="fill:#90989e"
+     inkscape:connector-curvature="0"
+     id="path3174"
+     d="m 75.922,-63.755003 c 1.299,0.049 0.156,-0.155 -3.425,-0.611 -5.784,-1.037 -11.765,-2.021 -17.54,-1.705 -4.229,0.231 -9.074,1.643 -11.134,5.51 -13.235,-1.93 -10.326,-1.272 -10.644,-1.333 -0.901,-0.181 -1.722,-0.237 -2.109,0.935 l -0.092,0.188 -0.138,0.44 -11.975,37.043 c -0.284,0.882 -0.603,1.706 -0.829,2.599 l -0.343,1.18 c -0.082,0.663 0.16,1.288 0.579,1.785 l 0.131,0.13 2.256,0.968 c 0,0 18.981,6.697 31.739,10.913 l 0.09,0.067 2.493,0.81 0.441,0.144 0.05,0.007 c 0.102,0.022 0.149,0.031 0.252,0.051 1.151,0.229 1.999,-0.645 2.471,-1.697 l 0.082,-0.14 13.791,-46.942 0.042,-0.198 0.188,-0.952 -0.007,-0.732 -0.21,-0.508 -0.574,-0.534 -0.3,-0.059 c -4.218,-0.655 -7.968,-1.233 -11.309,-1.745 1.197,-2.405 3.401,-3.804 6.015,-4.722 1.435,-0.503 2.962,-0.73 4.467,-0.9 0.736,-0.082 1.483,-0.101 2.223,-0.123 0.473,-0.006 0.942,0 1.41,0.018 0.789,0.057 1.379,0.094 1.784,0.112 0.35,0.053 0.687,0.106 0.997,0.161 -0.287,-0.054 -0.583,-0.107 -0.872,-0.16 z m -48.168,45.759 c -1.076,0.263 -2.164,-0.392 -2.428,-1.471 -0.265,-1.076 0.394,-2.163 1.472,-2.427 1.076,-0.266 2.164,0.393 2.427,1.471 0.262,1.077 -0.396,2.163 -1.471,2.427 z m 6.939,2.449 c -1.076,0.266 -2.163,-0.392 -2.428,-1.471 -0.264,-1.076 0.394,-2.162 1.472,-2.426 1.077,-0.267 2.164,0.392 2.427,1.47 0.263,1.078 -0.396,2.163 -1.471,2.427 z m 32.247,-35.458 -10.155,33.983 -33.447,-10.124 9.215,-29.224 34.387,5.365 z" /><path
+     style="fill:#90989e"
+     inkscape:connector-curvature="0"
+     id="path3176"
+     d="m 50.883,-26.755003 c -0.089,0 -0.177,-0.015 -0.265,-0.045 -0.385,-0.131 -0.615,-0.526 -0.539,-0.925 l 2.125,-11.096 -3.76,6.544 c -0.192,0.337 -0.598,0.49 -0.964,0.368 -0.37,-0.123 -0.602,-0.487 -0.554,-0.872 l 0.837,-6.931 -6.152,12.022 c -0.188,0.363 -0.62,0.532 -0.996,0.399 -0.387,-0.135 -0.612,-0.534 -0.531,-0.934 l 3.046,-14.885 -7.201,14.498 c -0.182,0.369 -0.611,0.543 -0.998,0.407 -0.39,-0.133 -0.618,-0.536 -0.533,-0.938 l 3.421,-16.443 -4.201,5.463 c -0.191,0.249 -0.517,0.368 -0.808,0.303 l -3.76,-0.759 c -0.442,-0.09 -0.729,-0.52 -0.64,-0.961 0.089,-0.444 0.534,-0.735 0.962,-0.64 l 3.263,0.659 6.061,-7.885 c 0.234,-0.3 0.646,-0.402 0.988,-0.245 0.346,0.158 0.536,0.536 0.458,0.908 l -2.855,13.723 7.166,-14.424 c 0.183,-0.368 0.609,-0.541 0.998,-0.409 0.388,0.133 0.616,0.534 0.535,0.936 l -3.102,15.155 5.513,-10.773 c 0.182,-0.354 0.586,-0.524 0.967,-0.41 0.377,0.117 0.619,0.487 0.57,0.878 l -0.905,7.495 4.185,-7.285 c 0.202,-0.348 0.629,-0.497 0.992,-0.358 0.373,0.138 0.594,0.527 0.518,0.917 l -1.954,10.213 1.78,-3.501 c 0.173,-0.343 0.563,-0.52 0.938,-0.418 l 4.5,1.209 c 0.438,0.116 0.695,0.564 0.577,1 -0.114,0.435 -0.567,0.699 -0.998,0.576 l -3.86,-1.037 -4.096,8.055 c -0.143,0.28 -0.429,0.446 -0.728,0.446 z" /><path
+     style="fill:#90989e"
+     inkscape:connector-curvature="0"
+     id="path3178"
+     d="m 62.097,-48.013003 c -1.093,-0.246 -1.599,0.354 -1.611,0.369 -0.052,-0.16 -0.306,-0.802 -1.275,-1.019 -1.107,-0.249 -1.983,1.07 -1.532,1.856 0.453,0.783 2.01,2.749 2.01,2.75 v 0.002 -0.002 0.002 -0.002 c 0.007,-0.003 2.252,-1.11 2.998,-1.626 0.745,-0.514 0.516,-2.079 -0.59,-2.33 z" /></g>
+</svg>

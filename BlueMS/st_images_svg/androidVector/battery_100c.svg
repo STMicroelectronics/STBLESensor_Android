@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg xmlns="http://www.w3.org/2000/svg" height="100pt" width="100pt" version="1.1" viewBox="0 0 125 125">
+ <defs>
+  <clipPath id="clipPath4150" clipPathUnits="userSpaceOnUse">
+   <path d="m0 200h200v-200h-200v200z"/>
+  </clipPath>
+ </defs>
+ <g transform="translate(0 -927.36)">
+  <g transform="matrix(.56250 0 0 -.56250 6.2501 1046.1)">
+   <g clip-path="url(#clipPath4150)">
+    <g transform="translate(2.071 .21881)">
+     <g transform="translate(182.69 131.89)">
+      <path d="m0 0-40.447-22.579 1.054 73.452-28.548-114.1 33.234 18.964-1.493-70.827 36.2 115.09z" fill="#bacf1b"/>
+     </g>
+     <path d="m83.219 165.79h-49.089c-4.5991 0-8.3189-3.6706-8.3189-8.2021v-6.0747c0-4.5437 3.7198-8.2144 8.3189-8.2144h49.089c4.6052 0 8.325 3.6706 8.325 8.2144v6.0747c0 4.5314-3.7198 8.2021-8.325 8.2021m0-31.585h-49.089c-4.5991 0-8.3189-3.6706-8.3189-8.1898v-6.087c0-4.5437 3.7198-8.2205 8.3189-8.2205h49.089c4.6052 0 8.325 3.6768 8.325 8.2205v6.087c0 4.5191-3.7198 8.1898-8.325 8.1898m0-31.579h-49.089c-4.5991 0-8.3189-3.6768-8.3189-8.2144v-6.0747c0-4.5376 3.7198-8.2144 8.3189-8.2144h49.089c4.6052 0 8.325 3.6768 8.325 8.2144v6.0747c0 4.5376-3.7198 8.2144-8.325 8.2144m0-31.597h-49.089c-4.5991 0-8.3189-3.6706-8.3189-8.2021v-6.0747c0-4.5376 3.7198-8.2144 8.3189-8.2144h49.089c4.6052 0 8.325 3.6768 8.325 8.2144v6.0747c0 4.5314-3.7198 8.2021-8.325 8.2021m0-31.579h-49.089c-4.5991 0-8.3189-3.6768-8.3189-8.2144v-6.0686c0-4.5376 3.7198-8.2144 8.3189-8.2144h49.089c4.6052 0 8.325 3.6768 8.325 8.2144v6.0686c0 4.5376-3.7198 8.2144-8.325 8.2144m12.967-26.604c-0.009-2.7361-1.74-5.0664-3.812-5.0664h-67.418c-2.0659 0-3.8148 2.3303-3.8059 5.0664l0.50946 156.93c0.009 2.7422 1.74 5.054 3.8059 5.054h67.418c2.072 0 3.821-2.3118 3.8121-5.054zm-50.842 173.09c0 2.3549 1.9122 4.2424 4.2732 4.2424h19.128c2.3549 0 4.267-1.8876 4.267-4.2424v-3.0865h-27.668zm47.54-3.0865h-10.268v3.0865c0 7.6303-6.2284 13.846-13.871 13.846h-19.128c-7.6303 0-13.871-6.2161-13.871-13.846v-3.0865h-10.28c-6.4928 0-11.769-5.8718-11.793-13.072l-0.51-156.92c-0.0233-7.1998 5.3-13.066 11.793-13.066h67.418c6.5174 0 11.782 5.8657 11.805 13.066l0.50949 156.93c0.0234 7.1998-5.2877 13.072-11.805 13.072" fill="#bc0"/>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg2" sodipodi:docname="gesture_demo_icon.svg"
+    viewBox="-2400 0 0 100" version="1.0" inkscape:version="0.91 r13725" width="24" height="24">
+  <defs
+     id="defs3365" />
+  <sodipodi:namedview
+     id="namedview21"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     guidetolerance="10"
+     pagecolor="#ffffff"
+     gridtolerance="10"
+     inkscape:window-maximized="1"
+     inkscape:zoom="4"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:current-layer="svg2"
+     inkscape:cx="65.667686"
+     inkscape:cy="20.023609"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-width="1280"
+     showgrid="false"
+     inkscape:pageopacity="0"
+     inkscape:window-height="962"
+     units="pt" />
+  <path
+     id="pathContourMain"
+     style="fill:#1a1a1a;fill-rule:evenodd;stroke:#000000;stroke-width:0.04306433px"
+     inkscape:connector-curvature="0"
+     d="M 12.783397,22.375191 C 10.322591,23.163672 8.4178084,21.750965 7.1850342,19.920524 5.0758822,17.277429 4.3919129,14.864705 2.835537,12.341203 2.1211766,11.426075 3.09966,9.9118671 4.1274664,10.61863 c 1.4043568,1.063063 1.9356471,2.408557 2.9068427,3.811192 0.3934049,0.497641 0.8568535,0.720867 1.184269,0.129194 0.4221823,-0.889171 0.384046,-1.80292 0.3875787,-2.713053 C 8.1758293,8.8219868 8.0203974,5.4108952 8.0247882,2.5441541 c 0.3371205,-1.3351902 1.8613696,-0.8475711 2.1101528,0 0.841768,2.7144608 -0.05598,6.3942951 1.141204,8.3543939 0.136834,0.203428 0.388973,-0.185624 0.49524,-0.732093 0.359132,-2.822754 -0.325438,-6.0994686 0.301447,-8.4189912 0.457823,-1.08887018 1.681894,-0.88092694 1.916362,0.145726 0.380004,2.2287871 -0.02405,5.2583594 0.215324,7.6918961 0.03833,0.1856063 0.08312,0.7204661 0.279918,0.7536261 0.329443,0.05598 0.660176,-0.5262465 0.753626,-1.4857195 0.229986,-2.3157566 0.646379,-4.0557779 0.947415,-6.1150486 0.221498,-0.740914 0.48908,-1.1958299 1.291929,-1.012012 0.301451,0.2261311 0.412127,0.5488548 0.495241,0.8828188 0.349851,3.0625745 -0.753918,5.5965871 -0.818223,8.2682643 0,0.399207 -0.198096,0.917701 0.322982,0.99048 0.291645,0.09078 0.704102,-0.745444 0.882819,-1.076608 0.461668,-1.3672462 1.207844,-2.7809602 1.571849,-4.0265147 0.277102,-0.8439158 1.348532,-0.7262732 1.444278,-0.064137 0.280226,2.2952997 -1.319738,4.3404637 -1.939519,6.2438687 -0.135221,0.541319 -0.150724,1.003829 -0.150724,1.421123 -0.0712,2.127129 -0.35757,3.449488 -0.732096,5.361509 -0.212682,0.892528 -0.423752,1.213552 -0.667497,1.550314 -0.58168,0.909069 -1.622228,1.72138 -2.605391,1.701042 -0.860833,-0.08376 -1.708424,-0.552806 -2.497728,-0.602901 z"
+     sodipodi:nodetypes="cccccccccccccccccccccccccccccc" />
+  <metadata
+     id="metadata3363">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

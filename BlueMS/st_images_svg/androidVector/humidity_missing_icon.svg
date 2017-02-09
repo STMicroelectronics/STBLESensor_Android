@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" id="svg2" viewBox="0 0 60.000002 59.999999"
+    height="48pt" width="48pt" inkscape:version="0.91 r13725" sodipodi:docname="humidity_missing_icon.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     id="namedview4147"
+     showgrid="false"
+     inkscape:zoom="13"
+     inkscape:cx="30"
+     inkscape:cy="30"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4150">
+      <path
+         d="m 0,85.04 85.04,0 L 85.04,0 0,0 0,85.04 Z"
+         id="path4152" />
+    </clipPath>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-992.36222)"
+     id="layer1"
+     style="stroke:none;stroke-opacity:1;fill:#8b8b8b;fill-opacity:1">
+    <g
+       style="fill:#8b8b8b;fill-opacity:1;stroke:none;stroke-opacity:1"
+       id="g4144"
+       transform="matrix(0.64560284,0,0,-0.64560284,2.5488399,1049.8131)">
+      <g
+         style="fill:#8b8b8b;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="g4146">
+        <g
+           style="fill:#8b8b8b;fill-opacity:1;stroke:none;stroke-opacity:1"
+           id="g4148"
+           clip-path="url(#clipPath4150)">
+          <g
+             style="fill:#8b8b8b;fill-opacity:1;stroke:none;stroke-opacity:1"
+             id="g4154"
+             transform="translate(67.7822,29.6182)">
+            <path
+               d="m 0,0 c 0,-14.258 -11.316,-25.822 -25.272,-25.822 -13.937,0 -25.252,11.564 -25.252,25.822 0,4.051 0.85,7.908 2.544,11.314 1.662,3.318 1.856,3.217 4.18,6.75 2.669,4.063 6.287,9.373 9.25,14.63 5.506,9.69 9.278,18.931 9.278,18.931 0,0 3.731,-9.176 9.255,-18.931 2.964,-5.209 6.579,-10.535 9.282,-14.63 2.329,-3.56 2.53,-3.432 4.2,-6.871 C -0.838,7.838 0,4.01 0,0"
+               style="fill:#8b8b8b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+               id="path4156" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

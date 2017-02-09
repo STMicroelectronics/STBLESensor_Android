@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<resources>
+    <array name="dataSetColor">
+        <item>#FF0000FF</item>  <!-- blue -->
+        <item>#FFFF0000</item>  <!-- red -->
+        <item>#FF00FF00</item>  <!-- green -->
+        <item>#FF000000</item>  <!-- black -->
+        <item>#FF00FFFF</item>  <!-- cyan -->
+        <item>#FFFF00FF</item>  <!-- pink -->
+    </array>
+    <string name="startPlotButton">Start Plot</string>
+
+    <string name="xAxisLabel">Time (ms)</string>
+    <string name="setPlotLength">Plot Length</string>
+
+    <!-- size of the plot name -->
+    <dimen name="plot_title_font_size">18dp</dimen>
+    <dimen name="plot_margin_top">20dp</dimen>
+    <dimen name="plot_margin_left">25dp</dimen>
+    <dimen name="plot_margin_bottom">40dp</dimen>
+
+    <dimen name="domain_label_font_size">15dp</dimen>
+    <dimen name="range_label_font_size">15dp</dimen>
+
+    <dimen name="legend_text_font_size">15dp</dimen>
+    <!-- width for 10 char -> legendTextFontSize*10-->
+    <dimen name="legend_box_width">150dp</dimen>
+
+    <dimen name="legend_box_height">30dp</dimen>
+
+    <dimen name="legend_box_padding">5dp</dimen>
+    <dimen name="legend_icon_size">13dp</dimen>
+    <dimen name="range_tick_label_font_size">10dp</dimen>
+    <dimen name="domain_tick_label_font_size">10dp</dimen>
+
+    <string name="selectMaxSamples">Select the time scale</string>
+    <string-array name="availableMaxSamplesString">
+        <item>1s</item>
+        <item>5s</item>
+        <item>10s</item>
+        <item>30s</item>
+    </string-array>
+    <integer-array name="availableMaxSamplesValues">
+        <item>1000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>30000</item>
+    </integer-array>
+
+</resources>

@@ -1,0 +1,117 @@
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.st.BlueMS.demos.PlotFeatureFragment">
+    <RelativeLayout
+        android:id="@+id/featureData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_arrow"
+            android:contentDescription="@string/startPlotButton"
+            android:id="@+id/startPlotButton"
+            android:padding="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/featureSelector"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@id/startPlotButton"
+            android:padding="8dp" android:layout_marginStart="8dp"
+            android:layout_toStartOf="@id/startPlotButton"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/featureValue"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/featureSelector"
+            android:visibility="gone"
+            android:padding="8dp" android:layout_marginStart="8dp"/>
+    </RelativeLayout>
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        androidPlot.graphWidget.marginTop="@dimen/plot_margin_top"
+        androidPlot.graphWidget.marginBottom="@dimen/plot_margin_bottom"
+        androidPlot.graphWidget.marginLeft="@dimen/plot_margin_left"
+
+
+        androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+        androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+        androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+        androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+
+        androidPlot.titleWidget.labelPaint.textSize="@dimen/plot_title_font_size"
+        androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+        androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+
+        androidPlot.legendWidget.textPaint.textSize="@dimen/legend_text_font_size"
+        androidPlot.legendWidget.iconSizeMetrics.heightMetric.value="@dimen/legend_icon_size"
+        androidPlot.legendWidget.iconSizeMetrics.widthMetric.value="@dimen/legend_icon_size"
+        androidPlot.legendWidget.paddingBottom="@dimen/legend_box_padding"
+        androidPlot.legendWidget.paddingTop="@dimen/legend_box_padding"
+        androidPlot.legendWidget.paddingLeft="@dimen/legend_box_padding"
+        androidPlot.legendWidget.paddingRight="@dimen/legend_box_padding"
+        />
+</LinearLayout>
+
+<!--
+
+    set the value from the class since there is a different behavior on kitkat and lollipop
+    androidPlot.legendWidget.positionMetrics.anchor="right_bottom"
+    androidPlot.legendWidget.positionMetrics.YPositionMetric.value="@dimen/legend_box_position_offset_x"
+    androidPlot.legendWidget.positionMetrics.XPositionMetric.value="@dimen/legend_box_position_offset_y"
+    androidPlot.legendWidget.widthMetric.layoutType="absolute"
+    androidPlot.legendWidget.widthMetric.value="@dimen/legend_box_width"
+    androidPlot.legendWidget.heightMetric.layoutType="absolute"
+    androidPlot.legendWidget.heightMetric.value="@dimen/legend_box_height"
+ -->

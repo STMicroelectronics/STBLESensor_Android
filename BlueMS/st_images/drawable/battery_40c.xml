@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="125dp"
+    android:viewportWidth="125"
+    android:viewportHeight="125">
+
+    <path
+        android:fillColor="#ffd300"
+        android:pathData="M110.181,44.4378 L87.4292,57.1385 L88.0221,15.8217 L71.9638,80.0047
+L90.658,69.3358 L89.8182,109.178 L110.181,44.4378 Z" />
+    <path
+        android:fillColor="#ffd300"
+        android:pathData="M54.2258,78.6725 L26.6129,78.6725
+C24.0259,78.6725,21.9335,80.7373,21.9335,83.2862 L21.9335,86.7032
+C21.9335,89.2557,24.0259,91.3239,26.6129,91.3239 L54.2258,91.3239
+C56.8162,91.3239,58.9086,89.2557,58.9086,86.7032 L58.9086,83.2862
+C58.9086,80.7373,56.8162,78.6725,54.2258,78.6725 M54.2258,96.4355
+L26.6129,96.4355 C24.0259,96.4355,21.9335,98.5037,21.9335,101.056
+L21.9335,104.47 C21.9335,107.022,24.0259,109.09,26.6129,109.09 L54.2258,109.09
+C56.8162,109.09,58.9086,107.022,58.9086,104.47 L58.9086,101.056
+C58.9086,98.5037,56.8162,96.4355,54.2258,96.4355 M61.5198,111.401
+C61.5147,112.94,60.541,114.25,59.3755,114.25 L21.4527,114.25
+C20.2907,114.25,19.3069,112.94,19.3119,111.401 L19.5985,23.1277
+C19.6036,21.5853,20.5773,20.2848,21.7393,20.2848 L59.6621,20.2848
+C60.8276,20.2848,61.8114,21.5853,61.8064,23.1277 Z M32.9208,14.0386
+C32.9208,12.7141,33.9964,11.6521,35.3245,11.6521 L46.0839,11.6521
+C47.4085,11.6521,48.4841,12.7141,48.4841,14.0383 L48.4841,15.7747
+L32.9207,15.7747 Z M59.6621,15.7747 L53.8864,15.7747 L53.8864,14.0383
+C53.8864,9.74638,50.3829,6.24987,46.0839,6.24987 L35.3245,6.24987
+C31.0324,6.24987,27.522,9.74638,27.522,14.0383 L27.522,15.7747 L21.7393,15.7747
+C18.0871,15.7747,15.119,19.0777,15.1059,23.1277 L14.8193,111.401
+C14.8062,115.451,17.8006,118.75,21.4528,118.75 L59.3755,118.75
+C63.0416,118.75,66.0029,115.451,66.0158,111.401 L66.3021,23.1277
+C66.315,19.0777,63.3278,15.7747,59.6617,15.7747" />
+</vector>

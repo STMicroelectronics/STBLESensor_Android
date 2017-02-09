@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="175"
+    android:viewportHeight="175">
+
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M123.62,80.5 L131.12,80.5 L131.12,109.499 L123.62,109.499 L123.62,80.5 Z" />
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M97.024,80.5 L104.524,80.5 L104.524,109.499 L97.024,109.499 L97.024,80.5 Z" />
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M70.435,80.5 L77.935,80.5 L77.935,109.499 L70.435,109.499 L70.435,80.5 Z" />
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M43.845,80.5 L51.345,80.5 L51.345,109.499 L43.845,109.499 L43.845,80.5 Z" />
+    <path
+        android:fillColor="#39a9dc"
+        android:pathData="M80.435,78 L80.435,80.5 L80.435,95.285 L94.5238,95.285 L94.5238,80.5 L94.5238,78
+L97.0238,78 L104.524,78 L107.024,78 L107.024,80.5 L107.024,95.285
+L121.115,95.285 L121.115,80.5 L121.115,78 L123.615,78 L131.116,78 L133.616,78
+L133.616,80.5 L133.616,95.285 L162.504,95.285 L162.504,65.5013 L56.98,65.5013
+L56.98,69.2513 L38.23,69.2513 L38.23,65.5013 L12.5,65.5013 L12.5,95.285
+L41.345,95.285 L41.345,80.5 L41.345,78 L43.845,78 L51.345,78 L53.845,78
+L53.845,80.5 L53.845,95.285 L67.935,95.285 L67.935,80.5 L67.935,78 L70.435,78
+L77.935,78 Z" />
+</vector>

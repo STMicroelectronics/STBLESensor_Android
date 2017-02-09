@@ -1,0 +1,90 @@
+﻿<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="312dp"
+            android:height="375dp"
+            android:viewportWidth="312"
+            android:viewportHeight="375">
+    <path
+        android:fillColor="#ffd400"
+        android:pathData="M232.715,92.0796 C236.334,102.168,231.091,113.262,220.994,116.873
+            L104.584,158.585 C94.4961,162.196,83.3922,156.952,79.7815,146.883
+            C76.1709,136.795,81.4054,125.673,91.5024,122.071 L207.921,80.3588
+            C218,76.7482,229.104,82.0008,232.715,92.0796" />
+    <path
+        android:fillColor="#ffd400"
+        android:pathData="M232.715,144.066 C236.334,154.145,231.091,165.258,220.994,168.868
+            L104.575,210.572 C94.4961,214.182,83.3922,208.939,79.7815,198.851
+            C76.1709,188.772,81.4054,177.668,91.5024,174.048 L207.921,132.336
+            C218,128.734,229.104,133.978,232.715,144.066" />
+    <path
+        android:fillColor="#ffd400"
+        android:pathData="M208.236,43.9825 C211.801,53.9796,206.621,64.9657,196.633,68.549 L128.83,92.8435
+            C118.842,96.4178,107.856,91.2196,104.273,81.2315
+            C100.689,71.2434,105.879,60.2574,115.867,56.6649 L183.679,32.3796
+            C193.658,28.8053,204.653,33.9944,208.236,43.9825" />
+    <path
+        android:fillColor="#ffd400"
+        android:pathData="M140.649,262.983 C134.199,262.983,128.829,257.912,128.502,251.408
+            C128.266,246.482,127.223,240.004,123.612,237.092
+            C120.428,234.534,115.774,235.269,115.72,235.287
+            C109.188,236.376,102.838,232.085,101.622,225.562
+            C100.388,219.048,104.48,212.771,110.966,211.419
+            C112.517,211.083,126.47,208.534,138.39,217.751
+            C147.244,224.6,152.107,235.523,152.814,250.228
+            C153.141,256.941,147.97,262.639,141.248,262.974
+            C141.048,262.974,140.849,262.983,140.649,262.983" />
+    <path
+        android:fillColor="#ffd400"
+        android:pathData="M182.279,258.987 C175.566,258.987,170.105,253.526,170.105,246.813
+            C170.105,181.777,216.226,181.024,216.689,181.024
+            C223.42,181.024,228.863,186.476,228.863,193.189
+            C228.863,199.839,223.529,205.236,216.897,205.363
+            C214.43,205.49,194.444,207.704,194.444,246.813
+            C194.444,253.526,188.992,258.987,182.279,258.987" />
+    <path
+        android:fillColor="#ffd400"
+        android:pathData="M212.79,249.738 L110.95,249.738 C105.244,249.738,100.617,254.365,100.617,260.08
+        L100.617,276.446 C100.617,277.072,100.68,277.671,100.771,278.251
+        C102.214,293.71,113.925,306.791,130.881,314.049 L130.881,330.505
+        C130.881,337.826,136.804,343.75,144.116,343.75 L177.211,343.75
+        C184.531,343.75,190.464,337.826,190.464,330.505 L190.464,314.947
+        C208.644,307.862,221.39,294.245,222.942,278.333
+        C223.051,277.734,223.141,277.099,223.141,276.446 L223.141,260.08
+        C223.141,254.365,218.496,249.738,212.79,249.738" />
+</vector>

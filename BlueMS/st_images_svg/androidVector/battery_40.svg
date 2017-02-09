@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="100pt" height="100pt"
+    viewBox="0 0 125 125" id="svg4709" version="1.1" inkscape:version="0.91 r13725" sodipodi:docname="battery_40.svg">
+  <defs
+     id="defs4711">
+    <clipPath
+       id="clipPath5271"
+       clipPathUnits="userSpaceOnUse">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5273"
+         d="m 0,40.5 59.333,0 0,-40.5 L 0,0 0,40.5 Z" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="6.24"
+     inkscape:cx="62.5"
+     inkscape:cy="62.5"
+     inkscape:document-units="px"
+     inkscape:current-layer="g5275"
+     showgrid="false"
+     units="pt"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4714">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-927.36222)">
+    <g
+       transform="matrix(1.25,0,0,-1.25,320.28474,688.84503)"
+       inkscape:label="RS141_battery"
+       id="g5265">
+      <g
+         id="g5267"
+         transform="matrix(2.4380994,0,0,2.4380994,-278.11881,-289.68155)">
+        <g
+           clip-path="url(#clipPath5271)"
+           id="g5269">
+          <g
+             transform="translate(33.479,28.5864)"
+             id="g5275">
+            <path
+               inkscape:connector-curvature="0"
+               id="path5277"
+               style="fill:#ffd300;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               d="m 0.49128005,-13.849627 -9.06045765,0 c -0.8488505,0 -1.5354204,-0.677492 -1.5354204,-1.513859 l 0,-1.121209 c 0,-0.837503 0.6865699,-1.516129 1.5354204,-1.516129 l 9.06045765,0 c 0.84998525,0 1.53655555,0.678626 1.53655555,1.516129 l 0,1.121209 c 0,0.836367 -0.6865703,1.513859 -1.53655555,1.513859 m 0,-5.828471 -9.06045765,0 c -0.8488505,0 -1.5354204,-0.678627 -1.5354204,-1.516129 l 0,-1.120074 c 0,-0.837502 0.6865699,-1.516129 1.5354204,-1.516129 l 9.06045765,0 c 0.84998525,0 1.53655555,0.678627 1.53655555,1.516129 l 0,1.120074 c 0,0.837502 -0.6865703,1.516129 -1.53655555,1.516129 m 2.39334975,-4.910396 c -0.00163,-0.504996 -0.321156,-0.935097 -0.7035926,-0.935097 l -12.4433762,0 c -0.381302,0 -0.704098,0.430101 -0.702458,0.935097 l 0.09403,28.9645372 c 0.0016,0.5061301 0.321156,0.9328277 0.702458,0.9328277 l 12.4433761,0 c 0.3824367,0 0.7052358,-0.4266976 0.7035927,-0.9328277 z M -6.4994079,7.3583682 c 0,0.4346387 0.3529312,0.7830305 0.7887047,0.7830305 l 3.5304463,0 c 0.4346388,0 0.7875699,-0.3483918 0.7875699,-0.7830305 l 0,-0.5696831 -5.1067209,0 z m 8.7744813,-0.5696831 -1.89516085,0 0,0.5696831 c 0,1.4083201 -1.14957959,2.5556301 -2.56016945,2.5556301 l -3.5304463,0 c -1.4083202,0 -2.5601694,-1.14731 -2.5601694,-2.5556301 l 0,-0.5696831 -1.8974304,0 c -1.198377,0 -2.172283,-1.0837668 -2.176598,-2.4126419 l -0.09404,-28.9645372 c -0.0043,-1.328875 0.978224,-2.411507 2.176602,-2.411507 l 12.4433762,0 c 1.2029165,0 2.1745533,1.082632 2.1788676,2.411507 l 0.094036,28.9645372 c 0.00431,1.3288751 -0.975951,2.4126419 -2.1788675,2.4126419"
+               sodipodi:nodetypes="csssssssccssssssscsssssssssssssccsccsssscsssssssc" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg4773" viewBox="0 0 100 100"
+    version="1.1" inkscape:version="0.48.4 r9939" width="100%" height="100%" sodipodi:docname="carry_shirt.svg">
+  <defs
+     id="defs3018" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     id="namedview3016"
+     showgrid="false"
+     units="pt"
+     inkscape:zoom="1.9614554"
+     inkscape:cx="56.691702"
+     inkscape:cy="189.91"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4773" />
+  <g
+     id="layer1"
+     transform="matrix(0.16455185,0,0,0.16455185,-10.628483,-17.804716)"
+     style="fill:#1a1a1a">
+    <path
+       id="path4834"
+       style="fill:#1a1a1a"
+       d="m 345.79,601.06 c -10.725,-0.4181 -26.925,-1.4782 -36,-2.3556 -36.648,-3.5435 -34.346,-3.0691 -39,-8.0383 -2.317,-2.474 -2.5266,-3.524 -2.8627,-14.342 -0.1995,-6.4198 0.16063,-16.622 0.80029,-22.672 1.2282,-11.617 3.2325,-93.777 3.4396,-141 0.12597,-28.718 -0.84859,-40.024 -4.0946,-47.5 l -1.5197,-3.5 -10.779,11.314 c -8.651,9.0806 -11.342,11.329 -13.631,11.392 -2.7841,0.0763 -12.81,-4.3264 -22.853,-10.036 -2.75,-1.5633 -7.25,-4.1199 -10,-5.6812 -2.75,-1.5613 -7.1802,-3.9712 -9.845,-5.3553 -10.356,-5.3791 -12.211,-12.254 -5.9078,-21.899 2.0609,-3.154 3.9734,-5.9596 4.25,-6.2346 0.27655,-0.275 1.7633,-2.8572 3.3039,-5.7382 3.9894,-7.4605 16.324,-26.328 19.449,-29.75 0.6875,-0.75286 1.25,-1.6299 1.25,-1.9489 0,-0.92598 5.3864,-8.1413 15.812,-21.18 8.1974,-10.253 10.843,-12.824 17.188,-16.71 4.125,-2.5261 10.65,-5.7559 14.5,-7.1774 3.85,-1.4215 9.475,-3.7378 12.5,-5.1473 3.025,-1.4095 8.7521,-3.8555 12.727,-5.4356 7.2337,-2.8756 25.935,-12.331 27.723,-14.016 0.5225,-0.49255 1.9675,-0.89554 3.211,-0.89554 1.2436,0 3.1216,-0.92367 4.1734,-2.0526 3.239,-3.4767 6.9346,-3.8269 14.254,-1.3507 10.086,3.4123 31.272,5.1042 43.657,3.4864 5.3652,-0.70083 12.26,-2.1312 15.321,-3.1787 6.9889,-2.391 11.003,-2.412 14.049,-0.0733 1.3117,1.0071 8.0099,4.561 14.885,7.8976 13.095,6.355 35.078,16.773 38.5,18.245 24.772,10.658 28.188,13.639 41.208,35.96 3.0688,5.2612 6.4117,10.781 7.4286,12.265 1.0169,1.4847 4.0469,7.1097 6.7334,12.5 2.6865,5.3903 8.6,17.001 13.141,25.801 5.0261,9.7397 8.2291,17.127 8.1862,18.879 -0.0663,2.7077 -4.4587,8.6207 -6.4039,8.6207 -0.45803,0 -2.7363,1.2097 -5.0629,2.6882 -4.5225,2.874 -12.71,7.3733 -24.585,13.511 -10.176,5.2593 -14.99,5.2579 -20.013,-0.006 -1.9978,-2.0939 -4.7519,-5.3564 -6.1202,-7.25 -2.9538,-4.0876 -9.9078,-10.943 -11.101,-10.943 -1.5445,0 -2.8754,3.7483 -5.0303,14.167 -3.1668,15.311 -3.7738,26.78 -2.77,52.333 0.49696,12.65 1.3267,41.9 1.8438,65 0.5171,23.1 1.4181,53.283 2.0022,67.073 0.75847,17.906 0.75354,25.958 -0.0173,28.169 -1.6058,4.6063 -6.4522,6.4404 -20.94,7.9248 -48.703,4.9902 -52.257,5.256 -68.5,5.1236 -8.25,-0.067 -23.775,-0.4644 -34.5,-0.8826 z"
+       inkscape:connector-curvature="0" />
+  </g>
+  <metadata
+     id="metadata3014">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title />
+        <dc:date>2011-02-08T23:40:04</dc:date>
+        <dc:description>A black t-shirt.</dc:description>
+        <dc:source>https://openclipart.org/detail/117511/black-t-shirt-by-körnerbrötchen</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Körnerbrötchen</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>black</rdf:li>
+            <rdf:li>shirt</rdf:li>
+            <rdf:li>t-shirt</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

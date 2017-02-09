@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"  sodipodi:docname="pedometer_demo_icon.svg" inkscape:version="0.91 r13725"
+	 xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px"
+	 viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<sodipodi:namedview  units="pt" id="base" fit-margin-left="0" fit-margin-top="0" inkscape:zoom="5.6" inkscape:cx="8.8821964" pagecolor="#ffffff" showgrid="false" bordercolor="#666666" inkscape:cy="14.131836" borderopacity="1.0" fit-margin-right="0" fit-margin-bottom="0" inkscape:window-height="962" inkscape:window-width="1280" inkscape:current-layer="layer1" inkscape:document-units="pt" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:pageshadow="2" inkscape:window-maximized="1" inkscape:pageopacity="0.0">
+	</sodipodi:namedview>
+<g id="layer1" transform="translate(-36.061518,-834.98361)" inkscape:label="Layer 1" inkscape:groupmode="layer">
+	<g id="g3379" transform="matrix(0.03689465,0,0,0.03689465,37.535857,830.57034)">
+		<g id="g3341" transform="matrix(0,0.34459109,-0.34459109,0,698.21332,184.93748)">
+			<title  id="title3343">Layer 1</title>
+			<g id="layer1-0">
+				<path id="path2890-7" inkscape:connector-curvature="0" fill="#39A9DC" d="M1062.943,969.176
+					c35.334-103.158,57.916-194.334,98.166-325.221C1796.652,694.266,1544.248,1295.242,1062.943,969.176z M947.574,939.604
+					c-88.336,1.92-173.367-2.611-257.246,35.947c-89.945,43.938-168.906,51.004-299.641,27.039
+					C152.84,958.961,4.477,866.248-28.285,740.738c-39.211-267.768,221.641-301.334,412.48-308.17
+					c106.809-14.979,563.992,75.352,641.57,185.27C998.574,726.066,971.844,832.221,947.574,939.604L947.574,939.604z"/>
+			</g>
+		</g>
+		<g id="g3341-4" transform="matrix(0,0.34459109,0.34459109,0,34.991066,184.93748)">
+			<title  id="title3343-0">Layer 1</title>
+			<g id="layer1-0-4">
+				<path id="path2890-7-3" inkscape:connector-curvature="0" fill="#39A9DC" d="M1062.943,497.23
+					c35.334-103.197,57.916-194.334,98.166-325.223C1796.652,222.281,1544.248,823.297,1062.943,497.23z M947.574,467.656
+					c-88.336,1.922-173.406-2.611-257.281,35.986c-89.91,43.861-168.871,50.965-299.605,27
+					C152.84,487.053,4.477,394.301-28.285,268.791C-67.496,1.025,193.355-32.58,384.195-39.379
+					c106.809-14.979,563.992,75.314,641.57,185.271C998.574,254.082,971.844,360.313,947.574,467.656L947.574,467.656z"/>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>

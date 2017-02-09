@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="100" height="100" id="svg4332"
+    version="1.1" inkscape:version="0.48.4 r9939" sodipodi:docname="carry_arm.svg">
+  <defs
+     id="defs4346" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="962"
+     id="namedview4344"
+     showgrid="false"
+     units="pt"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="5.1496478"
+     inkscape:cx="-19.487779"
+     inkscape:cy="56.374298"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4949" />
+  <metadata
+     id="metadata4057">image/svg+xml<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+    <dc:title />
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <g
+     id="g4335"
+     style="fill:#1a1a1a;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+     transform="matrix(0.53783127,-0.31051703,0.31051703,0.53783127,5.0816409,10.244644)">
+    <title
+       id="title4337">Layer 1</title>
+    <g
+       id="layer1"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:#ffffff;stroke-opacity:1">
+      <g
+         display="inline"
+         id="layer3"
+         style="fill:#1a1a1a;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;display:inline" />
+      <g
+         display="inline"
+         id="g4341"
+         style="opacity:0.32026098;fill:#1a1a1a;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;display:inline" />
+      <g
+         id="g4939"
+         transform="translate(13.267764,-5.1573958)">
+        <g
+           id="g4944"
+           transform="matrix(0.96305937,0.26928915,-0.26928915,0.96305937,27.716095,9.7549477)">
+          <g
+             id="g4949"
+             transform="matrix(1.2181558,0.17754904,0.13383456,1.0215575,-7.6339221,-2.9538619)"
+             style="stroke-width:1.0202024;stroke-miterlimit:4;stroke-dasharray:none">
+            <g
+               id="g4971">
+              <path
+                 sodipodi:nodetypes="ccccccccccccccccccscccc"
+                 inkscape:connector-curvature="0"
+                 style="fill:#1a1a1a;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;fill-rule:evenodd;stroke-width:1.05561197000000000px;stroke-linejoin:round"
+                 d="m 25.461608,92.493711 4.657583,18.424899 c 10.462555,1.25505 13.468077,8.37464 20.059712,11.86933 -2.374482,6.4704 -7.356689,2.26271 -12.295467,-0.40226 1.854155,4.27473 4.241152,9.47014 7.381935,13.49977 1.77712,2.28031 1.628206,5.46294 -0.0449,6.22078 -5.259582,2.3828 -10.102401,-11.93267 -13.169693,-17.4791 2.456233,4.97529 5.880853,13.56872 9.472211,17.10412 -0.703435,1.72074 0.272288,1.96309 -1.524623,3.13146 -3.150762,2.04891 -8.343116,-8.23077 -13.520343,-16.83391 2.113355,4.25486 6.745959,12.46647 9.774709,15.72086 0.745462,1.73882 -0.834662,2.45604 -1.617319,2.84868 -2.665188,1.33526 -6.686584,-2.80937 -12.962094,-16.77094 1.846206,5.1163 5.592045,10.64182 7.853176,14.32128 -0.01099,1.38795 -0.722292,2.43381 -1.937208,2.34199 C 23.209239,146.15776 15.899197,128.20261 13.4894,121.1691 L 14.28425,116.03658 2.7145059,91.473694 C 1.2237915,87.796574 -5.4500952,73.624973 3.6926731,60.314324 12.835445,47.003669 36.118885,36.792923 40.105508,35.805297 l 10.71568,19.79344 C 46.095259,65.529889 22.066744,67.279728 22.892067,72.462663 z"
+                 id="path3806"
+                 transform="matrix(0.83550353,-0.40881889,0.11977491,0.92191918,-28.727916,14.353836)" />
+              <path
+                 sodipodi:type="arc"
+                 style="fill:none;stroke:#1a1a1a;stroke-width:0.39560266999999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+                 id="path4901"
+                 sodipodi:cx="12.719316"
+                 sodipodi:cy="65.822906"
+                 sodipodi:rx="5.1459832"
+                 sodipodi:ry="3.7866666"
+                 d="m 17.689954,66.802968 c -0.735577,2.020058 -3.557309,3.218851 -6.302517,2.677578 -0.872529,-0.172037 -1.6681454,-0.510049 -2.3068811,-0.980062"
+                 transform="matrix(2.2333549,1.2894281,-1.2894281,2.2333549,32.159763,-67.924037)"
+                 sodipodi:start="0.26179939"
+                 sodipodi:end="2.3561945"
+                 sodipodi:open="true" />
+              <path
+                 sodipodi:type="arc"
+                 style="fill:none;stroke:#1a1a1a;stroke-width:0.48239474999999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+                 id="path4901-4"
+                 sodipodi:cx="12.719316"
+                 sodipodi:cy="65.822906"
+                 sodipodi:rx="5.1459832"
+                 sodipodi:ry="3.7866666"
+                 d="m 17.689954,66.802968 c -0.735577,2.020058 -3.557309,3.218851 -6.302517,2.677578 -0.872529,-0.172037 -1.6681454,-0.510049 -2.3068811,-0.980062"
+                 transform="matrix(1.8315315,1.0574353,-1.0574353,1.8315315,22.453006,-40.012137)"
+                 sodipodi:start="0.26179939"
+                 sodipodi:end="2.3561945"
+                 sodipodi:open="true" />
+              <path
+                 sodipodi:type="arc"
+                 style="fill:none;stroke:#1a1a1a;stroke-width:0.62386768999999997;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+                 id="path4901-4-0"
+                 sodipodi:cx="12.719316"
+                 sodipodi:cy="65.822906"
+                 sodipodi:rx="5.1459832"
+                 sodipodi:ry="3.7866666"
+                 d="m 17.689954,66.802968 c -0.735577,2.020058 -3.557309,3.218851 -6.302517,2.677578 -0.872529,-0.172037 -1.6681454,-0.510049 -2.3068811,-0.980062"
+                 transform="matrix(1.4161996,0.81764326,-0.81764326,1.4161996,12.396298,-11.06974)"
+                 sodipodi:start="0.26179939"
+                 sodipodi:end="2.3561945"
+                 sodipodi:open="true" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

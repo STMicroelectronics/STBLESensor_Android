@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="motionId_valueTextFormat">The Motion intensity value is: %1$d</string>
+    <string name="motionId_headerText">The intensity is proportional to the movement</string>
+    <array name="motionId_angleOffset">
+        <item>-135.0</item>
+        <item>-108.0</item>
+        <item>-81.0</item>
+        <item>-54.0</item>
+        <item>-27.0</item>
+        <item> 00.0</item>
+        <item> 27.0</item>
+        <item> 54.0</item>
+        <item> 81.0</item>
+        <item> 108.0</item>
+        <item> 135.0</item>
+    </array>
+
+
+
+</resources>

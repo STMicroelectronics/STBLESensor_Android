@@ -45,7 +45,7 @@ import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.DetectableEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
 
 /**
- * class that connect an acceleration event to an image resource
+ * Class that connect an acceleration event to an image resource
  */
 class EventIconUtil {
 

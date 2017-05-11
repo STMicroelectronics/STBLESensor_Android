@@ -35,12 +35,13 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.cloud;
+package com.st.BlueMS.demos.Cloud;
 
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Feature.FeatureListener;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -86,5 +87,8 @@ public interface MqttClientConnectionFactory {
      * @return page to visit for see the data or null if it is not available
      */
     @Nullable Uri getDataPage();
+
+
+    boolean supportFeature(Feature f);
 
 }

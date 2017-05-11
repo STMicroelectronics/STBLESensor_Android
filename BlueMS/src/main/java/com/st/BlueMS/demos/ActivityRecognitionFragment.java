@@ -52,10 +52,8 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
-import java.lang.annotation.Inherited;
-
 /**
- * fragment that show the 6 possible activity and change the alpha of the selected one
+ * Fragment that show the 6 possible activity and change the alpha of the selected one
  */
 @DemoDescriptionAnnotation(name="Activity Recognition", requareAll = {FeatureActivity.class},
     iconRes = R.drawable.activity_demo_icon)

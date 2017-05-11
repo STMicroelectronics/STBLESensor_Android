@@ -42,7 +42,7 @@ import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
 
 
 /**
- * interface to implement for a view that will show the acceleration event data
+ * Interface to implement for a view that will show the acceleration event data
  */
 public interface EventView {
 

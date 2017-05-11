@@ -38,12 +38,13 @@
 
 <resources>
 
-    <string name="blueVoice_asr_key">Insert Google\u2122 Speech API Key:</string>
-    <string name="asr_enabled">Enabled</string>
-    <string name="asr_disabled">Disabled</string>
-    <string name="mute_button_descriptor">Mute button</string>
-    <string name="asrKeyInserted">Key inserted, speech recognition enabled!</string>
-    <string name="asrInvalidKey">"Invalid key: "</string>
+    <string name="blueVoice_asrKey">Insert Google\u2122 Speech API Key:</string>
+    <string name="blueVoice_asrEnabled">%1$s technology</string>
+    <string name="blueVoice_asrDisabled">Disabled</string>
+    <string name="blueVoice_muteButtonDescriptor">Mute button</string>
+    <string name="blueVoice_asrKeyInserted">Key inserted, speech recognition enabled!</string>
+    <string name="blueVoice_asrInvalidKey">"Invalid key: %1$s"</string>
+    <string name="blueVoice_noAsrKeeyNeeded">"ASR key not needed"</string>
     <string name="blueVoice_recording">Recording…</string>
     <string name="blueVoice_waitForAsr">Waiting…</string>
     <string name="blueVoice_sendRequest">Sending request…</string>
@@ -51,18 +52,34 @@
     <string name="blueVoice_notRecognized">Token not recognized</string>
     <string name="blueVoice_requestFailed">Error sending the data</string>
     <string name="blueVoice_responseError">Error receiving the data</string>
+    <string name="blueVoice_networkError">Network communication error</string>
+
     <string name="blueVoice_codec">Codec:</string>
     <string name="blueVoice_pcmCodec">ADPCM</string>
     <string name="blueVoice_samplingFreq">Sampling freq:</string>
     <string name="blueVoice_volume">Volume:</string>
     <string name="blueVoice_recordTime">RecordTime:</string>
     <string name="blueVoice_asr">Speech recognition:</string>
-    <string name="loadAsrKey">Please load a valid Speech Recognition API key</string>
-    <string name="dialogConfirm">Confirm</string>
-    <string name="dialogBack">Back</string>
+    <string name="blueVoice_loadAsrKey">Please load a valid Speech Recognition API key</string>
+    <string name="blueVoice_dialogConfirm">Confirm</string>
+    <string name="blueVoice_dialogBack">Back</string>
     <string name="blueVoice_enableConnection">Enable connection to enable the Speech
         Recognition</string>
-    <string name="BlueVoice_speech_api_key">Speech API key</string>
-    <string name="BlueVoice_addKeyButton">Add</string>
+    <string name="blueVoice_speechApiKey">Speech API key</string>
+    <string name="blueVoice_asrLanguage">ASR Language</string>
+    <string name="blueVoice_addKeyButton">Add</string>
+    <string name="blueVoice_chooseAsrLanguage">Choose your language</string>
+    <string name="blueVoice_asrLanguageSelection">Language Selection</string>
+    <string name="blueVoice_asrLanguageSelected">language selected: %1$s</string>
+    <color  name="blueVoice_continusStreamingButtonColor">#aeea00</color>
+
+    <string name="blueVoice_langEnglish">English</string>
+    <string name="blueVoice_langItalian">Italian</string>
+    <string name="blueVoice_langChinese">Chinese</string>
+    <string name="blueVoice_langFrench">French</string>
+    <string name="blueVoice_langSpanish">Spanish</string>
+    <string name="blueVoice_langGerman">German</string>
+    <string name="blueVoice_langPortuguese">Portuguese</string>
+    <string name="blueVoice_errorLowConfidence">Low confidence response</string>
 
 </resources>

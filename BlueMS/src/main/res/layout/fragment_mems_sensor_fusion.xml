@@ -56,15 +56,16 @@
           android:layout_alignParentTop="true" android:layout_alignParentEnd="true" />
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/CalibImgH"
-        android:text="@string/ResetButton"
-        android:id="@+id/resetButton"
-        android:layout_alignTop="@+id/calibrationImage"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/proximityButton"/>
+        <Button
+            android:id="@+id/resetButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/CalibImgH"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignStart="@+id/proximityButton"
+            android:layout_alignTop="@+id/calibrationImage"
+            android:text="@string/ResetButton" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -79,15 +80,19 @@
         android:layout_alignParentBottom="true" android:checked="true"/>
 
 
-    <ImageButton
-        android:layout_width="@dimen/CalibImgW"
-        android:layout_height="@dimen/CalibImgH"
-        android:id="@+id/calibrationImage"
-        android:src="@drawable/uncalibrated"
-        android:focusableInTouchMode="false" android:clickable="false"
-        android:scaleType="fitCenter"
-        android:contentDescription="@string/CalibButtonDesc" android:focusable="false"
-        android:layout_alignParentBottom="true" android:layout_alignParentEnd="true"/>
+        <ImageButton
+            android:id="@+id/calibrationImage"
+            android:layout_width="@dimen/CalibImgW"
+            android:layout_height="@dimen/CalibImgH"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="false"
+            android:contentDescription="@string/CalibButtonDesc"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/uncalibrated" />
 
     <android.opengl.GLSurfaceView
         android:layout_width="match_parent"

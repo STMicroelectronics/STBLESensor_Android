@@ -1,4 +1,4 @@
-#ST BlueMS
+# ST BlueMS
 
 This repository contains the ST BlueMS app source code.
 
@@ -8,7 +8,7 @@ The application is also compatible with the ST Open Development Environment comp
 
 The application is built on top of BlueST SDK, a library that provides an implementation of BlueST protocol and helps to easily export the data via Bluetooth® Low Energy. The SDK source code is freely available on [github](https://github.com/STMicroelectronics-CentralLabs/)
 
-##Download the source
+## Download the source
 
 Since the project uses git submodules, <code>--recursive</code> option must be used to clone the repository:
 
@@ -22,7 +22,7 @@ git clone https://github.com/STMicroelectronics-CentralLabs/STBlueMS_Android
 git submodule update --init --recursive
 ```
 
-##License
+## License
 
 Copyright (c) 2017  STMicroelectronics – All rights reserved
 The STMicroelectronics corporate logo is a trademark of STMicroelectronics

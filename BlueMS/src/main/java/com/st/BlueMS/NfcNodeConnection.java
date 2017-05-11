@@ -60,11 +60,13 @@ import com.st.BlueSTSDK.Utils.SearchSpecificNode;
 import java.util.Arrays;
 
 /**
- * activity called when a nfc tag is detected, it analyse the content and search for the node,
- * after the search it start the demo activity
- * the tag have to contains a NdeMessage with the playload with :
+ * Activity called when a nfc tag is detected, it analyse the content and search for the node,
+ * after the search it start the demo activity the tag have to contains a NdeMessage with the
+ * payload with :
+ *
  * - 6 bytes that contains the mac address of the board, in this case a  scan process will
  * trigger for retrieve the advertise package
+ *
  * - the advertise package that contains the mac address, in this case the node is create and
  * added to the manager without scanning
  */
@@ -91,7 +93,6 @@ public class NfcNodeConnection extends NodeScanActivity {
      * bound
      */
     public static class InsertPairPin extends BroadcastReceiver {
-        private static final int SET_PIN_DELAY_MS=1000;
 
         private void onPairingRequest(Context context,Intent intent){
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);

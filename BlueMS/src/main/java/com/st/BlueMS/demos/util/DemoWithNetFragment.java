@@ -37,8 +37,6 @@
 
 package com.st.BlueMS.demos.util;
 
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -47,8 +45,15 @@ import android.net.ConnectivityManager;
 
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+/**
+ * DemoFragment that will notify if the mobile has an internet connection
+ */
 public abstract class DemoWithNetFragment extends DemoFragment{
 
+    /**
+     * tell if the mobile has an internet connection
+     * @return true if the system has an internet connection
+     */
     protected boolean isOnline(){
         ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context
                 .CONNECTIVITY_SERVICE);
@@ -89,7 +94,14 @@ public abstract class DemoWithNetFragment extends DemoFragment{
             getActivity().unregisterReceiver(mUpdateConnectionStatus);
     }
 
+    /**
+     * method called when the system has internet connection
+     */
     protected void onSystemHasConnectivity(){};
+
+    /**
+     * method called when the system lost its internet connection
+     */
     protected void onSystemLostConnectivity(){};
 
 }

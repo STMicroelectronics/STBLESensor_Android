@@ -55,7 +55,9 @@
         <item>@drawable/battery_80</item>
         <item>@drawable/battery_100</item>
     </array>
-    <string name="nodeStatus_battery_percentage">Percentage: %1$.1f %2$s</string>
+    <string name="nodeStatus_battery_percentage">Charge: %1$.1f %2$s</string>
     <string name="nodeStatus_battery_voltage">Voltage: %1$.3f %2$s</string>
-    <string name="nodeStatus_battery_current">Current: %1$.1f %2$s</string>
+    <string name="nodeStatus_battery_current">Current: %1$.2f %2$s</string>
+    <string name="nodeStatus_battery_remainingTime">Autonomy: %1$.1f m</string>
+    <string name="nodeStatus_battery_notFound">Battery not available</string>
 </resources>

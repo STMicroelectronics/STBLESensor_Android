@@ -51,7 +51,7 @@ import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 
 /**
- * Created by claudio iozzia on 05/07/2016.
+ * Use the Register interface to check if the magnetometer is calibrated
  */
 public class CalibrationManagerWesu {
     private static final String TAG = CalibrationManagerWesu.class.getCanonicalName();
@@ -180,7 +180,7 @@ public class CalibrationManagerWesu {
 
 
     /**
-     * callback interface
+     * Callback interface
      */
     public interface CalibrationEventCallback {
 

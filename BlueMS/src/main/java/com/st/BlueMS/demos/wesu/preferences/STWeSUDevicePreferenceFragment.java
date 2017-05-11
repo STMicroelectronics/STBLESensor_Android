@@ -37,9 +37,11 @@
 
 package com.st.BlueMS.demos.wesu.preferences;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +56,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 
+import com.st.BlueMS.NodeListActivity;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Config.Command;
 import com.st.BlueSTSDK.Config.Register;
@@ -75,7 +78,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * fragment that contains the log preference -> where and how store the data
+ * fragment that contains the STEVAL_WESU1 configuration register value
  */
 public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
 
@@ -329,6 +332,7 @@ public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
 
             mSubSampling.setValue((valueToLoad>>8)&0xFF);
 
+            /*
             builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
                 int toSend = ((mSubSampling.getValue() & 0xFF) << 8) +
                         (mChkRAM.isChecked() ? 0x80:0x00) +
@@ -340,6 +344,21 @@ public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
                 mConfigService.write(cmd);
                 ReadReg((preference.getKey().endsWith("_S") ? mRegisterToReadSession : mRegisterToReadPersistent),mRegName.getRegister());
 
+            });
+            */
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    int toSend = ((mSubSampling.getValue() & 0xFF) << 8) +
+                            (mChkRAM.isChecked() ? 0x80:0x00) +
+                            (mChkUSB.isChecked() ? 0x08:0x00) +
+                            (mChkBLE.isChecked() ? 0x04:0x00) +
+                            (mChkUSART.isChecked() ? 0x02:0x00);
+
+                    Command cmd = new Command(mRegName.getRegister(), (preference.getKey().endsWith("_S") ? Register.Target.SESSION : Register.Target.PERSISTENT), toSend, Field.Type.UInt16);
+                    mConfigService.write(cmd);
+                    ReadReg((preference.getKey().endsWith("_S") ? mRegisterToReadSession : mRegisterToReadPersistent),mRegName.getRegister());
+                }
             });
             builder.setNegativeButton(android.R.string.cancel, null);
 
@@ -495,8 +514,6 @@ public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
         getPreferenceManager().findPreference("DEVICE_DATA_READ_GROUP_B_S").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-
 
                 int val = 0;
                 for (String strVal: (HashSet<String>)newValue)
@@ -699,13 +716,13 @@ public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
                     builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            sendPowerOffCommandAndCloseConnection();
+                            sendPowerOffCommandAndCloseConnection(val);
                         }
                     });
                     builder.show();
 
                 } else {
-                    sendPowerOffCommandAndCloseConnection();
+                    sendPowerOffCommandAndCloseConnection(val);
                 }
 
 
@@ -800,6 +817,17 @@ public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
         //initializeConfigService(node);
 
     }
+
+    private void disconnectDevice() {
+        //disconnect the node when the activiy stops
+        keepConnectionOpen(false,false);
+        //go the the node list activiy
+        final Activity activity = getActivity();
+        Intent i = new Intent(activity, NodeListActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        activity.startActivity(new Intent(activity, NodeListActivity.class));
+    }
+
     private void addDataGroupBValue(String nameToAdd, List<CharSequence> keyListNew, List<CharSequence> valueListNew) {
 //        Log.d(TAG, "Adding data Group B" + nameToAdd);
         String[] arrItem = getResources().getStringArray(R.array.data_read_group_b);
@@ -853,31 +881,13 @@ public class STWeSUDevicePreferenceFragment extends PreferenceFragmentWithNode {
         }
     }
 
-    private void disconnectDevice(){
-   /*     mNodeContainer.keepConnectionOpen(false);
-        if (NodeSelectedManager.getConnectedNodes().size() > 0 ) // multi connection
-            NodeSelectedManager.removeNode(mNodeContainer.getNode());
-        else {// single connection
-            mNodeContainer.getNode().disconnect();
-        }
+    private void sendPowerOffCommandAndCloseConnection(int val){
 
-        NodeSelectedManager.mCloseActivity = true;
-        */
-        getActivity().finish();
-//        NodeSelectedManager.runDelay(new Runnable() {
-//            @Override
-//            public void run() {
-//                mPreferenceActivity.closeActivity();
-//            }
-//        }, 100);
-
-//        Intent i = new Intent(getActivity(), NodeListActivity.class);
-//        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        getActivity().startActivity(new Intent(getActivity(), NodeListActivity.class));
-
-    }
-    private void sendPowerOffCommandAndCloseConnection(){
+        Command cmd = new Command(RegisterDefines.RegistersName.POWER_OFF.getRegister(),
+                Register.Target.SESSION, val & 0xFFFF, Field.Type.Int16);
+        mConfigService.write(cmd);
         disconnectDevice();
+
     }
 
     @Override

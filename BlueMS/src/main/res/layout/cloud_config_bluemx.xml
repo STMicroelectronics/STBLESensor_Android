@@ -45,7 +45,7 @@
         android:id="@+id/blueMx_organizationWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_bluemx_organizationIDHint">
+        android:hint="@string/cloudLog_watson_organizationIDHint">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/blueMx_organization"
@@ -59,7 +59,7 @@
         android:id="@+id/blueMx_authTokenWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_bluemx_authTokenHint">
+        android:hint="@string/cloudLog_watson_authTokenHint">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/blueMx_authToken"
@@ -73,7 +73,7 @@
         android:id="@+id/blueMx_deviceTypeWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_bluemx_deviceTypeHint">
+        android:hint="@string/cloudLog_watson_deviceTypeHint">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/blueMx_deviceType"
@@ -87,7 +87,7 @@
         android:id="@+id/blueMx_deviceIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_bluemx_deviceIdHint">
+        android:hint="@string/cloudLog_watson_deviceIdHint">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/blueMx_deviceId"

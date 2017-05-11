@@ -41,6 +41,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -69,6 +70,9 @@ import com.st.BlueSTSDK.gui.DemosActivity;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 
+/**
+ * Activity that display all the demo available a STEVAL_WeSU1 node + check the firmware version
+ */
 public class DemosActivityWesu extends DemosActivity implements ConfigControl.ConfigControlListener {
     private static final String TAG = DemosActivityWesu.class.getName();
     private static final String DIALOG_TAG = TAG+".FW_VERSION_DIALOG";
@@ -207,7 +211,7 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
 
 
     /**
-     * create a dialog Fragment that warning the user of the old fw
+     * Create a dialog Fragment that warning the user that is using an old FW
      */
     public static class UpdateDialog extends DialogFragment {
         private final static String OTA_APP_ID = "com.st.STBlueDFU";
@@ -257,23 +261,27 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            DemosActivity activity =(DemosActivity)getActivity();
+            final DemosActivity activity =(DemosActivity)getActivity();
             return new AlertDialog.Builder(activity)
                     .setIcon(R.drawable.ic_warning_24dp)
                     .setTitle(R.string.wesu_warning_fw_update_title)
                     .setMessage(R.string.wesu_warning_fw_update_msg)
-                    .setPositiveButton(R.string.wesu_warning_fw_update_update_button,
-                            (dialog, whichButton) -> {
-                                //we will exit from the app so disconnect from the node
-                                activity.keepConnectionOpen(false,false);
-                                startActivity(getUpdateIntent());
-                                dialog.dismiss();
-                                activity.finish();
-                            }
-                    )
-                    .setNegativeButton(R.string.wesu_warning_fw_update_continue_button,
-                            (dialog, whichButton) -> dialog.dismiss()
-                    )
+                    .setPositiveButton(R.string.wesu_warning_fw_update_update_button, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //we will exit from the app so disconnect from the node
+                            activity.keepConnectionOpen(false,false);
+                            startActivity(getUpdateIntent());
+                            dialogInterface.dismiss();
+                            activity.finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.wesu_warning_fw_update_continue_button, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
                     .setCancelable(false)
                     .create();
         }

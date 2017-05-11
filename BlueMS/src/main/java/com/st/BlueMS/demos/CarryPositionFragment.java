@@ -38,7 +38,6 @@
 package com.st.BlueMS.demos;
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -53,6 +52,11 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+/**
+ * Demo showing the output of the osxMotionCP library.
+ *
+ * the library will detect where the user is carrying the node
+ */
 @DemoDescriptionAnnotation(name="Carry Position",requareAll = {FeatureCarryPosition.class},
         iconRes = R.drawable.carry_demo_icon)
 public class CarryPositionFragment extends DemoFragment {

@@ -56,7 +56,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 import java.util.List;
 
 /**
- * demo that show a text view for each feature, when the use click on the name we subscribe to
+ * Demo that show a text view for each feature, when the use click on the name we subscribe to
  * the feature notification and the update data will show in the text view. another click will
  * stop the notification
  */

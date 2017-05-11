@@ -55,6 +55,7 @@
         grid:layout_columnWeight="1"
         grid:layout_row="0"
         grid:layout_rowWeight="1"/>
+
     <ImageView
         android:id="@+id/walkingImage"
         android:layout_width="wrap_content"

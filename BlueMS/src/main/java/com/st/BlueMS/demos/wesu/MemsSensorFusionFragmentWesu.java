@@ -37,12 +37,8 @@
 
 package com.st.BlueMS.demos.wesu;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,17 +48,19 @@ import com.st.BlueMS.demos.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
 import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
-import com.st.BlueSTSDK.Feature;
-import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.DemosActivity;
 
+/**
+ * Sensor Fusion demo for the STEVAL_WESU1 node
+ *
+ * this Activity will check that the license is enabled inside the node and that the magnetometer
+ *  has is calibrated
+ */
 public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
 
     private View mLayout;
     private CalibrationManagerWesu mCalibManager;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,15 +76,18 @@ public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
         super.enableNeededNotification(node);
         CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
                 RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-
-
-
-
+        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
+        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
+            @Override
+            public void onCalibrationStatusChange(boolean success) {
+                setCalibrationStatus(success);
+            }
+        });
     }
 
+
     @Override
-    protected void calibrateSensorFusion() {
+    public void onStartCalibrationClicked() {
         mCalibManager.startCalibration();
     }
 
@@ -94,10 +95,7 @@ public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
     protected void disableNeedNotification(Node node) {
         super.disableNeedNotification(node);
         mCalibManager.stopCalibration();
-
     }
-
-
 
 }
 

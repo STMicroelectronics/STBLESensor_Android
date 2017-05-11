@@ -56,6 +56,9 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+/**
+ * Demo showing the frequency and the number of steps detected by the node
+ */
 @DemoDescriptionAnnotation(name="Pedometer", requareAll = {FeaturePedometer.class},iconRes = R
         .drawable.pedometer_demo_icon)
 public class PedometerFragment extends DemoFragment {

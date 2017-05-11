@@ -35,10 +35,10 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.cloud;
+package com.st.BlueMS.demos.Cloud;
 
-import com.st.BlueMS.demos.cloud.IBMWatsonQuickStartFactory.MqttFeatureListenerQuickStart;
-
+import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonFactory.IBMWatsonMqttFeatureListener;
+import com.st.BlueMS.demos.Cloud.util.JSONSampleSerializer;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 
@@ -57,8 +57,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
-
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class MqttFeatureListenerQuickStartTest {
@@ -87,7 +85,7 @@ public class MqttFeatureListenerQuickStartTest {
 
     @Test
     public void publishTopicContainsFeatureName() throws MqttException {
-        MqttFeatureListenerQuickStart mListener = new MqttFeatureListenerQuickStart(mClient);
+        IBMWatsonMqttFeatureListener mListener = new IBMWatsonMqttFeatureListener(mClient);
         mListener.onUpdate(mFakeFeature,mFeatureSample);
 
         Mockito.verify(mClient).publish(Mockito.matches(".*"+FEATURE_NAME+".*"),any(MqttMessage.class));
@@ -95,7 +93,7 @@ public class MqttFeatureListenerQuickStartTest {
 
     @Test
     public void publishTopicContainsFeatureNameWithoutSpace() throws MqttException {
-        MqttFeatureListenerQuickStart mListener = new MqttFeatureListenerQuickStart(mClient);
+        IBMWatsonMqttFeatureListener mListener = new IBMWatsonMqttFeatureListener(mClient);
         Mockito.when(mFakeFeature.getName()).thenReturn("Name With Space");
         mListener.onUpdate(mFakeFeature,mFeatureSample);
 
@@ -121,7 +119,7 @@ public class MqttFeatureListenerQuickStartTest {
 
     @Test
     public void publishMessageWithSampleData() throws MqttException, JSONException {
-        MqttFeatureListenerQuickStart mListener = new MqttFeatureListenerQuickStart(mClient);
+        IBMWatsonMqttFeatureListener mListener = new IBMWatsonMqttFeatureListener(mClient);
         mListener.onUpdate(mFakeFeature,mFeatureSample);
 
         String sampleJson = JSONSampleSerializer.serialize(mFeatureSample).toString();
@@ -141,7 +139,7 @@ public class MqttFeatureListenerQuickStartTest {
 
     @Test
     public void publishMessageWithQos0() throws MqttException, JSONException {
-        MqttFeatureListenerQuickStart mListener = new MqttFeatureListenerQuickStart(mClient);
+        IBMWatsonMqttFeatureListener mListener = new IBMWatsonMqttFeatureListener(mClient);
         mListener.onUpdate(mFakeFeature,mFeatureSample);
 
         Mockito.verify(mClient).publish(anyString(), argThat(new MqttMessageWithQos0()));

@@ -41,5 +41,7 @@
     <item
         android:id="@+id/showASRDialog"
         app:showAsAction="never"
-        android:title="@string/BlueVoice_speech_api_key"/>
+        android:title="@string/blueVoice_speechApiKey"/>
+    <item android:title="@string/blueVoice_asrLanguage"
+        android:id="@+id/showLanguageDialog" />
 </menu>

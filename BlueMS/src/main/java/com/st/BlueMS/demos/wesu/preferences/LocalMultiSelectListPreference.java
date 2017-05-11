@@ -43,7 +43,8 @@ import android.preference.MultiSelectListPreference;
 import android.util.AttributeSet;
 
 /**
- * Created by claudio iozzia on 11/02/2016.
+ * Work around to save the multiSelectionListPreference
+ * @link https://code.google.com/p/android/issues/detail?id=70088
  */
 public class LocalMultiSelectListPreference extends MultiSelectListPreference {
 

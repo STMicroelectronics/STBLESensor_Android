@@ -153,7 +153,7 @@
 
                 <ImageButton
                     android:id="@+id/muteButton"
-                    android:contentDescription="@string/mute_button_descriptor"
+                    android:contentDescription="@string/blueVoice_muteButtonDescriptor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -191,7 +191,7 @@
                     android:layout_toEndOf="@+id/asrStatusLabel"
                     android:layout_toStartOf="@id/muteButton"
                     android:layout_above="@+id/volumeValue"
-                    android:text="@string/asr_disabled" />
+                    android:text="@string/blueVoice_asrDisabled" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 

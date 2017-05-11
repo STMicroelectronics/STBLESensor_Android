@@ -54,7 +54,7 @@ import com.st.BlueSTSDK.gui.util.RepeatAnimator;
 
 
 /**
- * view used to display multiple event at the same time
+ * View used to display multiple event at the same time
  */
 public class MultipleEventView extends GridLayout implements EventView {
 

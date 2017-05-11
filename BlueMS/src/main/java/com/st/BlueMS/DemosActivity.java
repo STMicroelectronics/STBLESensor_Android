@@ -40,16 +40,19 @@ package com.st.BlueMS;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.st.BlueMS.demos.AccEventFragment;
 import com.st.BlueMS.demos.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.BlueVoiceFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.CloudLogFragment;
+import com.st.BlueMS.demos.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HearRateFragment;
 import com.st.BlueMS.demos.MemsGestureRecognitionFragment;
 import com.st.BlueMS.demos.MemsSensorFusionFragment;
+import com.st.BlueMS.demos.MotionIntensityFragment;
 import com.st.BlueMS.demos.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;
@@ -60,7 +63,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 
 /**
- * display all the demo available for the node
+ * Activity that display all the demo available for the node
  */
 public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
 
@@ -101,6 +104,8 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             AccEventFragment.class,
             SwitchFragment.class,
             HearRateFragment.class,
+            MotionIntensityFragment.class,
+            CompassFragment.class,
             //MultipleLogFragment.class,
             NodeStatusFragment.class,
             CloudLogFragment.class,

@@ -45,8 +45,8 @@
     <string name="CalibButtonDesc">Start calibration</string>
 
     <string name="memsSensorFusionNotFound">Mems Sensor Fusion Feature is not present</string>
-    <string name="memsSensorFusionInfoTitle">Usage</string>
-    <string name="memsSensorFusionDialogCalibrateText">Move the board as shown in the image</string>
+    <string name="memsSensorFusionInfoTitle">Calibration</string>
+    <string name="memsSensorFusionDialogCalibrateText">Usage: move the board as shown in the image</string>
     <string name="memsSensorFusionDialogResetText_nucleo">Keep the board as shown in the
         image</string>
     <string name="memsSensorFusionDialogResetText_STEVAL_WESU1">Keep the board as shown in the

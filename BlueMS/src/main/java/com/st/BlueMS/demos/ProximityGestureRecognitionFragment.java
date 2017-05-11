@@ -56,7 +56,9 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
-
+/**
+ * Demo showing the gesture detected using 2 proximity sensors
+ */
 @DemoDescriptionAnnotation(name="Proximity Gesture", requareAll = {FeatureProximityGesture.class} ,
         iconRes = R.drawable.proximity_gesture_demo_icon)
 public class ProximityGestureRecognitionFragment extends DemoFragment {

@@ -45,6 +45,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+
+/**
+ * Activity to display with the app info
+ */
 public class AboutActivity extends AppCompatActivity {
     private static final String ABOUT_PAGE_URL = "file:///android_asset/about.html";
 

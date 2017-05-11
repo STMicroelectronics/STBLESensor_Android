@@ -78,6 +78,7 @@ import com.st.BlueSTSDK.Features.FeatureAudioADPCM;
 import com.st.BlueSTSDK.Features.FeatureAudioADPCMSync;
 import com.st.BlueSTSDK.Features.FeatureBattery;
 import com.st.BlueSTSDK.Features.FeatureCarryPosition;
+import com.st.BlueSTSDK.Features.FeatureCompass;
 import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
 import com.st.BlueSTSDK.Features.FeatureFreeFall;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
@@ -87,7 +88,6 @@ import com.st.BlueSTSDK.Features.FeatureMagnetometer;
 import com.st.BlueSTSDK.Features.FeatureMemsGesture;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
-import com.st.BlueSTSDK.Features.FeatureMotionIntensity;
 import com.st.BlueSTSDK.Features.FeaturePressure;
 import com.st.BlueSTSDK.Features.FeatureProximity;
 import com.st.BlueSTSDK.Features.FeatureProximityGesture;
@@ -107,7 +107,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * fragment that plot the feature data in an xy plot
+ * Fragment that plot the feature data in an xy plot
  */
 @DemoDescriptionAnnotation(name="Plot Data",iconRes=R.drawable.demo_charts)
 public class PlotFeatureFragment extends DemoFragment implements View.OnClickListener,
@@ -163,12 +163,15 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
         sKnowFeatureBoundary.put(FeatureMemsSensorFusion.class,
                 new PlotBoundary(FeatureMemsSensorFusion.DATA_MAX,
                         FeatureMemsSensorFusion.DATA_MIN, 21));
+        sKnowFeatureBoundary.put(FeatureCompass.class,
+                new PlotBoundary(FeatureCompass.DATA_MAX,
+                        FeatureCompass.DATA_MIN, 19));
         sKnowFeatureBoundary.put(FeatureMemsSensorFusionCompact.class,
                 new PlotBoundary(FeatureMemsSensorFusion.DATA_MAX,
                         FeatureMemsSensorFusion.DATA_MIN, 21));
-        sKnowFeatureBoundary.put(FeatureProximity.class,
+        /*sKnowFeatureBoundary.put(FeatureProximity.class,
                 new PlotBoundary(FeatureProximity.DATA_MAX,
-                        FeatureProximity.DATA_MIN, 11));
+                        FeatureProximity.DATA_MIN, 11));*/
         sKnowFeatureBoundary.put(FeatureDirectionOfArrival.class,
                 new PlotBoundary(FeatureDirectionOfArrival.DATA_MAX,
                         FeatureDirectionOfArrival.DATA_MIN, 37));
@@ -271,7 +274,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
             public boolean handleMessage(Message message) {
                 if(mPlotFeature!=null && message.what==mPlotId.get()) {
                     Feature.Sample sample = mPlotFeature.getSample();
-                    if(sample==null) //we don't have noting to dos
+                    if(sample==null) //we don't have noting to do
                         return true;
                     long timestamp =  sample.timestamp*TIMESTAMP_TO_MS;
                     if (timestamp==(Long)message.obj) {
@@ -309,6 +312,12 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
                 return;
 
             final String dataString = f.toString();
+
+            if(f instanceof FeatureProximity){
+                if(FeatureProximity.isOutOfRangeDistance(sample)) {
+                    sample.data[0]=0;
+                }
+            }
 
             mPlotDataLock.lock();
                 //we plot only if it came after the last update

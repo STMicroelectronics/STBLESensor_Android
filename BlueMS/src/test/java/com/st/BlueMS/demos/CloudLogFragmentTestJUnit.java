@@ -37,6 +37,7 @@
 
 package com.st.BlueMS.demos;
 
+import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
 
 import junit.framework.Assert;
@@ -52,7 +53,7 @@ public class CloudLogFragmentTestJUnit {
     public void deviceIdNotContainsColon(){
         Node n = mock(Node.class);
         when(n.getTag()).thenReturn("Test:Test:");
-        String deviceId = CloudLogFragment.getDefaultCloudDeviceName(n);
+        String deviceId = MqttClientUtil.getDefaultCloudDeviceName(n);
         Assert.assertFalse(deviceId.contains(":"));
     }
 

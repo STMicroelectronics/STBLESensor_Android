@@ -47,6 +47,9 @@ import com.st.BlueSTSDK.gui.SettingsActivityWithNode;
 
 import java.util.List;
 
+/**
+ * Extend the app Settings adding the pannel to configure the STEVAL_WESU1 node
+ */
 public class SettingsWithWesuRegisters extends SettingsActivityWithNode {
 
     public static Intent getStartIntent(Context c, Node node){

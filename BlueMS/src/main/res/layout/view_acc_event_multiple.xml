@@ -36,9 +36,9 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<android.support.v7.widget.GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:grid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/accEventMultipleEventLayout"
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/accEvent_orientation"
-            android:src="@drawable/acc_event_orientation_up"
+            app:srcCompat="@drawable/acc_event_orientation_up"
             android:layout_weight="1" />
 
         <TextView
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/accEvent_pedometer"
-            android:src="@drawable/acc_event_pedometer"
+            app:srcCompat="@drawable/acc_event_pedometer"
             android:layout_weight="1" />
 
         <TextView
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/accEvent_tap"
-            android:src="@drawable/acc_event_tap_single"
+            app:srcCompat="@drawable/acc_event_tap_single"
             android:layout_weight="1" />
 
         <TextView
@@ -132,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/accEvent_freefall"
-            android:src="@drawable/acc_event_free_fall"
+            app:srcCompat="@drawable/acc_event_free_fall"
             android:layout_weight="1"
             android:adjustViewBounds="false" />
 
@@ -159,7 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/accEvent_wakeUp"
-            android:src="@drawable/acc_event_wake_up"
+            app:srcCompat="@drawable/acc_event_wake_up"
             android:layout_weight="1" />
 
         <TextView
@@ -183,7 +183,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/accEvent_tilt"
-            android:src="@drawable/acc_event_tilt"
+            app:srcCompat="@drawable/acc_event_tilt"
             android:layout_weight="1" />
 
         <TextView

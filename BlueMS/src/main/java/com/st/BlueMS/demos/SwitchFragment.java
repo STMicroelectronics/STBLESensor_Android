@@ -52,7 +52,9 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
-
+/**
+ * Demo used to switch on and off a led in the node
+ */
 @DemoDescriptionAnnotation(name = "Switch", iconRes = R.drawable.switch_demo_icon,
         requareAll ={FeatureSwitch.class})
 public class SwitchFragment extends DemoFragment {

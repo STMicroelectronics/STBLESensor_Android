@@ -52,9 +52,7 @@ import com.st.BlueSTSDK.Config.Register;
 import com.st.BlueSTSDK.ConfigControl;
 import com.st.BlueSTSDK.Features.Field;
 
-/**
- * Created by claudio iozzia on 30/06/2016.
- */
+
 class ReadWriteRegDialog  {
     private final static String TAG = ReadWriteRegDialog.class.getCanonicalName() ;
 

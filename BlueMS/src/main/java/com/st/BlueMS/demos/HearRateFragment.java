@@ -58,6 +58,9 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+/**
+ * Display the data coming from an herat rate sensor
+ */
 @DemoDescriptionAnnotation(name="Heart Rate", requareAll = {FeatureHeartRate.class},
         iconRes = R.drawable.heart_rate_icon)
 public class HearRateFragment extends DemoFragment {
@@ -161,11 +164,24 @@ public class HearRateFragment extends DemoFragment {
         mEnergyExtendedLabel = (TextView) root.findViewById(R.id.energyExtendedLabel);
 
         mHeartImage = (ImageView) root.findViewById(R.id.heartImage);
+        /*
         mHeartImage.setOnClickListener(view -> {
             if(mHeartRateFeature!=null){
                 Node node = getNode();
                 if(node!=null)
                     node.readFeature(mHeartRateFeature);
+            }
+        });
+        */
+
+        mHeartImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mHeartRateFeature!=null){
+                    Node node = getNode();
+                    if(node!=null)
+                        node.readFeature(mHeartRateFeature);
+                }
             }
         });
 

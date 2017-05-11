@@ -58,6 +58,9 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+/**
+ * Demo showing a list of possible events and it shake the icon each time an event is detected
+ */
 @DemoDescriptionAnnotation(name = "Acc Event", requareAll = {FeatureAccelerationEvent.class},
         iconRes = R.drawable.demo_sensors_fusion)
 public class AccEventFragment extends DemoFragment implements AdapterView.OnItemSelectedListener {

@@ -66,13 +66,29 @@ public class CheckLicenseStatus {
      * @param register register to read
      * @param noLicMessage message to show if the license is not present
      */
-    public static void checkLicenseRegister(DemosActivity activity, View rootView,@NonNull Node node,
-                                            RegisterDefines.RegistersName register,@StringRes int noLicMessage){
-        new CheckLicenseStatus(node.getConfigRegister(), register, (regAddress, licIsPresent) -> {
+    public static void checkLicenseRegister(final DemosActivity activity, final View rootView, @NonNull final Node node,
+                                            RegisterDefines.RegistersName register, @StringRes final int noLicMessage){
+        /*new CheckLicenseStatus(node.getConfigRegister(), register, (regAddress, licIsPresent) -> {
             if(!licIsPresent){
                 Snackbar.make(rootView,noLicMessage,Snackbar.LENGTH_INDEFINITE)
                         .setAction("License", view -> activity.startLicenseManagerActivity(node))
                         .show();
+            }
+        });
+        */
+        new CheckLicenseStatus(node.getConfigRegister(), register, new LicenseStatusReadEvent(){
+
+            @Override
+            public void onLicenseStatusRead(RegistersName regAddress, boolean licIsPresent) {
+                if(!licIsPresent){
+                    Snackbar.make(rootView,noLicMessage,Snackbar.LENGTH_INDEFINITE)
+                            .setAction("License", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    activity.startLicenseManagerActivity(node);
+                                }
+                            }).show();
+                }
             }
         });
     }

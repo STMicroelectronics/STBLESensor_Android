@@ -51,6 +51,11 @@ import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.DemosActivity;
 
+/**
+ * Carry position demo for the STEVAL_WESU1 node
+ *
+ * this Activity will check that the license is enabled inside the node
+ */
 public class CarryPositionFragmentWesu extends CarryPositionFragment {
 
     private View mLayout;

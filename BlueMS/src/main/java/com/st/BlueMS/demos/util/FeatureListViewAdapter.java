@@ -51,11 +51,26 @@ import com.st.BlueSTSDK.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter view for a list of Feature, each feature has a switch that can be selected or not
+ */
 public class FeatureListViewAdapter extends
         RecyclerView.Adapter<FeatureListViewAdapter.ViewHolder> {
 
+    /**
+     * Interface used to notify when the feature state changed
+     */
     public interface OnFeatureSelectChange {
+        /**
+         * method called when a feature is selected
+         * @param f feature selected
+         */
         void onFeatureSelect(Feature f);
+
+        /**
+         * metho called when a feature is deselected
+         * @param f feature deselected
+         */
         void onFeatureDeSelect(Feature f);
     }
 
@@ -115,11 +130,22 @@ public class FeatureListViewAdapter extends
 
             featureNameLabel = (TextView) view.findViewById(R.id.featureNameLabel);
             enableLogButton = (CompoundButton) view.findViewById(R.id.enableLogButton);
+            /*
             enableLogButton.setOnCheckedChangeListener((compoundButton, status) -> {
                 if (status)
                     mListener.onFeatureSelect(feature);
                 else
                     mListener.onFeatureDeSelect(feature);
+            });
+            */
+            enableLogButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean status) {
+                    if (status)
+                        mListener.onFeatureSelect(feature);
+                    else
+                        mListener.onFeatureDeSelect(feature);
+                }
             });
             feature = null;
         }//ViewHolder

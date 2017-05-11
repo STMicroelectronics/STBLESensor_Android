@@ -44,6 +44,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.util.HidableTextView;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureBattery;
 import com.st.BlueSTSDK.Features.Field;
@@ -59,9 +59,15 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+/**
+ * Display the battery status and the rssi value
+ */
 @DemoDescriptionAnnotation(name="Rssi & Battery",iconRes=R.drawable.demo_battery)
 public class NodeStatusFragment extends DemoFragment implements Node.BleConnectionParamUpdateListener {
-    private static long RSSI_UPDATE_PERIOD_MS=500;
+
+    private static final String BATTERY_CAPACITY = NodeStatusFragment.class.getName()+".BATTERY_CAPACITY";
+
+    private static long RSSI_UPDATE_PERIOD_MS=1000;
 
     private Handler mUpdateRssiRequestQueue;
     private TextView mRssiText;
@@ -76,58 +82,99 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
         }//run
     };
 
-    private Feature mBatteryFeature;
+    private FeatureBattery mBatteryFeature;
     private TextView mBatteryStatusText;
     private TextView mBatteryPercentageText;
     private TextView mBatteryVoltageText;
     private ImageView mBatteryIcon;
     private TypedArray mBatteryChargingImagesArray;
     private TypedArray mBatteryChargeImagesArray;
-    private HidableTextView mBatteryCurrentText;
+    private TextView mBatteryCurrentText;
 
-    private Feature.FeatureListener mBatteryListener = new Feature.FeatureListener() {
-        @Override
-        public void onUpdate(Feature f,Feature.Sample data) {
-            final Field[] fieldsDesc = f.getFieldsDesc();
-            final Resources res = NodeStatusFragment.this.getResources();
-            float percentage = FeatureBattery.getBatteryLevel(data);
-            FeatureBattery.BatteryStatus status = FeatureBattery.getBatteryStatus(data);
-            float voltage = FeatureBattery.getVoltage(data);
-            float current = FeatureBattery.getCurrent(data);
-            int iconIndex;
-            if(current >0)
-                iconIndex = (((int)percentage)*mBatteryChargingImagesArray.length())/100;
-            else
-                iconIndex = (((int)percentage)*mBatteryChargeImagesArray.length())/100;
+    private float mBatteryCapacity;
 
-            final Drawable icon = current>0 ? mBatteryChargingImagesArray.getDrawable(iconIndex) :
-                    mBatteryChargeImagesArray.getDrawable(iconIndex);
-            final String batteryStatus = "Status: "+status;
+    private TextView mRemainingTime;
 
-            final String batteryPercentage = res.getString(R.string.nodeStatus_battery_percentage,
-                    percentage,fieldsDesc[FeatureBattery.PERCENTAGE_INDEX].getUnit());
-            final String batteryVoltage = res.getString(R.string.nodeStatus_battery_voltage,
-                    voltage, fieldsDesc[FeatureBattery.VOLTAGE_INDEX].getUnit());
-            final String batteryCurrent = res.getString(R.string.nodeStatus_battery_current,
-                    current, fieldsDesc[FeatureBattery.CURRENT_INDEX].getUnit());
+    /**
+     * compute the remaing time in seconds
+     * @param batteryCapacity battery capacity in mA/h
+     * @param current current used by the system in mA
+     * @return remaining time in seconds
+     */
+    private static float getRemainingTimeMinutes(float batteryCapacity, float current){
+        if(current<0)
+            return (batteryCapacity/(-current))*(60);
+        return Float.NaN;
+    }
 
-            updateGui(new Runnable() {
+    private FeatureBattery.FeatureBatteryListener mBatteryListener =
+            new FeatureBattery.FeatureBatteryListener() {
                 @Override
-                public void run() {
-                    try {
-                        mBatteryStatusText.setText(batteryStatus);
-                        mBatteryPercentageText.setText(batteryPercentage);
-                        mBatteryIcon.setImageDrawable(icon);
-                        mBatteryVoltageText.setText(batteryVoltage);
-                        mBatteryCurrentText.setText(batteryCurrent);
-                    }catch (NullPointerException e){
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    }
+                public void onCapacityRead(FeatureBattery featureBattery, int batteryCapacity) {
+                    mBatteryCapacity=batteryCapacity;
                 }
-            });
-        }//onUpdate
+
+                @Override
+                public void onMaxAssorbedCurrentRead(FeatureBattery featureBattery, float current) {
+                }
+
+                @Override
+                public void onUpdate(Feature f,Feature.Sample data) {
+                    final Field[] fieldsDesc = f.getFieldsDesc();
+                    final Resources res = NodeStatusFragment.this.getResources();
+                    float percentage = FeatureBattery.getBatteryLevel(data);
+                    final FeatureBattery.BatteryStatus status = FeatureBattery.getBatteryStatus(data);
+                    float voltage = FeatureBattery.getVoltage(data);
+                    float current = FeatureBattery.getCurrent(data);
+                    int iconIndex;
+                    if(current >0)
+                        iconIndex = (((int)percentage)*mBatteryChargingImagesArray.length())/100;
+                    else
+                        iconIndex = (((int)percentage)*mBatteryChargeImagesArray.length())/100;
+
+                    final Drawable icon = current>0 ? mBatteryChargingImagesArray.getDrawable(iconIndex) :
+                            mBatteryChargeImagesArray.getDrawable(iconIndex);
+                    final String batteryStatus = "Status: "+status;
+
+                    final String batteryPercentage = res.getString(R.string.nodeStatus_battery_percentage,
+                            percentage,fieldsDesc[FeatureBattery.PERCENTAGE_INDEX].getUnit());
+                    final String batteryVoltage = res.getString(R.string.nodeStatus_battery_voltage,
+                            voltage, fieldsDesc[FeatureBattery.VOLTAGE_INDEX].getUnit());
+                    final String batteryCurrent = res.getString(R.string.nodeStatus_battery_current,
+                            current, fieldsDesc[FeatureBattery.CURRENT_INDEX].getUnit());
+
+                    float remainingBattery = mBatteryCapacity * (percentage/100.0f);
+                    float remainingTime = getRemainingTimeMinutes(remainingBattery,current);
+                    final String remainingTimeStr = Float.isNaN(remainingTime) ? "" :
+                            res.getString(R.string.nodeStatus_battery_remainingTime,
+                            remainingTime);
+
+                    updateGui(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                mBatteryStatusText.setText(batteryStatus);
+                                mBatteryPercentageText.setText(batteryPercentage);
+                                mBatteryIcon.setImageDrawable(icon);
+                                mBatteryVoltageText.setText(batteryVoltage);
+                                mBatteryCurrentText.setText(batteryCurrent);
+                                if(displayRemainingTime(status)) {
+                                    mRemainingTime.setText(remainingTimeStr);
+                                }else{
+                                    mRemainingTime.setText("");
+                                }
+                            }catch (NullPointerException e){
+                                //this exception can happen when the task is run after the fragment is
+                                // destroyed
+                            }
+                        }
+                    });
+                }//onUpdate
     };
+
+    private boolean displayRemainingTime(FeatureBattery.BatteryStatus status) {
+        return status!= FeatureBattery.BatteryStatus.Charging;
+    }
 
     public NodeStatusFragment() {
         // Required empty public constructor
@@ -140,6 +187,27 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
         HandlerThread looper = new HandlerThread(NodeStatusFragment.class.getName()+".UpdateRssi");
         looper.start();
         mUpdateRssiRequestQueue = new Handler(looper.getLooper());
+
+        loadBatteryCapacity(savedInstanceState);
+    }
+
+    private void loadStdConsumedCurrent() {
+        mBatteryFeature.readMaxAbsorbedCurrent();
+
+    }
+
+    private void loadBatteryCapacity(@Nullable Bundle savedInstanceState) {
+        if(savedInstanceState==null) {
+            mBatteryCapacity = Float.NaN;
+        }else{
+            mBatteryCapacity = savedInstanceState.getFloat(BATTERY_CAPACITY,Float.NaN);
+        }
+    }
+
+    private void loadBatteryCapacity() {
+        if(!Float.isNaN(mBatteryCapacity))
+            return;
+        mBatteryFeature.readBatteryCapacity();
     }
 
     @Override
@@ -152,12 +220,13 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
         mRssiText = (TextView) root.findViewById(R.id.rssiText);
 
         mBatteryPercentageText = (TextView) root.findViewById(R.id.batteryPercentageText);
-        mBatteryStatusText = (TextView) root.findViewById(R.id.batteryStatus);
+        mBatteryStatusText = (TextView) root.findViewById(R.id.batteryStatusText);
         mBatteryVoltageText = (TextView) root.findViewById(R.id.batteryVoltageText);
-        mBatteryCurrentText = (HidableTextView) root.findViewById(R.id.batteryCurrentText);
+        mBatteryCurrentText = (TextView) root.findViewById(R.id.batteryCurrentText);
         mBatteryIcon = (ImageView) root.findViewById(R.id.batteryImage);
         mBatteryChargingImagesArray = res.obtainTypedArray(R.array.batteryChargingIcon);
         mBatteryChargeImagesArray = res.obtainTypedArray(R.array.batteryChargeIcon);
+        mRemainingTime  = (TextView) root.findViewById(R.id.batteryRemainingTimeText);
 
         return root;
     }
@@ -170,9 +239,10 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
         if(mBatteryFeature!=null){
             mBatteryFeature.addFeatureListener(mBatteryListener);
             node.enableNotification(mBatteryFeature);
-        }else {
-        //    showActivityToast(R.string.batteryNotFound);
-        }
+            loadBatteryCapacity();
+            loadStdConsumedCurrent();
+        }else
+            mBatteryVoltageText.setText(R.string.nodeStatus_battery_notFound);
     }
 
     @Override
@@ -197,4 +267,10 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
 
     @Override
     public void onTxPowerChange(Node node, int newPower) {}
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putFloat(BATTERY_CAPACITY,mBatteryCapacity);
+    }
 }

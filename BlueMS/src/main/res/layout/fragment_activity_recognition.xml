@@ -44,7 +44,6 @@
     grid:columnCount="2"
     grid:orientation="vertical" grid:rowCount="3"
     tools:context="com.st.BlueMS.demos.ActivityRecognitionFragment">
-
     <ImageView
         android:id="@+id/stationaryImage"
         android:layout_width="wrap_content"

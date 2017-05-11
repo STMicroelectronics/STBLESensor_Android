@@ -37,7 +37,7 @@
 
 apply plugin: 'com.android.application'
 
-def getDate() {
+static def getDate() {
     def date = new Date()
     def formattedDate = date.format('MMddHHmm')
     return formattedDate
@@ -60,24 +60,27 @@ android {
     defaultConfig {
         //19 since we need the setpin api
         minSdkVersion 19
-        versionCode 9
-        versionName '3.3'
+        versionCode 10
+        versionName '3.4'
         applicationId "com.st.bluems"
-        targetSdkVersion 24
+        targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+/*
         jackOptions {
             enabled true
         }
+        */
     }
     buildTypes {
         release {
             signingConfig signingConfigs.config
             minifyEnabled true
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro','../BlueSTSDK/BlueSTSDK/proguard-rules.pro'
+
         }
         debug {
+            applicationIdSuffix ".debug"
             versionNameSuffix "-dev" + getDate()
 
         }
@@ -92,31 +95,36 @@ android {
     productFlavors {
 
     }
-
+/*
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+*/
 }
-
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile project(':BlueSTSDK')
     compile project(':BlueSTSDK_Gui_Android')
 
-    compile 'com.android.support:cardview-v7:25.1.0'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:gridlayout-v7:25.1.0'
-    compile 'com.android.support:support-v13:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:gridlayout-v7:25.3.1'
+    compile 'com.android.support:support-v13:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
 
     //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
-    compile 'com.google.android.gms:play-services-base:10.0.1'
+    compile 'com.google.android.gms:play-services-base:10.2.1'
 
+    //necessary to cloud demo, for mqtt connection
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-    compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.0'
+    compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    //necessary to azure iot
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
 
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.9.5"
@@ -142,4 +150,5 @@ dependencies {
     }
     androidTestCompile ('com.crittercism.dexmaker:dexmaker-mockito:1.4');
     androidTestCompile ("com.crittercism.dexmaker:dexmaker-dx:1.4");
+
 }

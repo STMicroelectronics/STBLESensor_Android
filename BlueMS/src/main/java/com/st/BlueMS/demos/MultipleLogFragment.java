@@ -58,7 +58,9 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Fragment showing all the feature available and permit to log multiple feature at the same time
+ */
 @DemoDescriptionAnnotation(name="Logging",iconRes=R.drawable.multiple_log_icon)
 public class MultipleLogFragment extends DemoFragment {
 

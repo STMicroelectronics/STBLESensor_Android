@@ -62,7 +62,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 
 /**
- * Demo for show the gesture recognized by the mems sensors
+ * Demo for show the gesture recognized by the MEMS sensors
  */
 @DemoDescriptionAnnotation(name="Mems Gesture", requareAll = {FeatureMemsGesture.class},
         iconRes=R.drawable.demo_sensors_fusion)

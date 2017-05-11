@@ -56,7 +56,11 @@ import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
 import com.st.BlueSTSDK.gui.util.RepeatAnimator;
 
-
+/**
+ * View used to display a single acceleration event.
+ *
+ * The image will shake each time the event is detected
+ */
 public class SingleEventView extends LinearLayout implements EventView {
 
     public SingleEventView(Context context) {

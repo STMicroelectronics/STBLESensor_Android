@@ -52,6 +52,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.app.DialogFragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.st.BlueMS.R;
+import com.st.BlueMS.demos.util.CalibrationDialogFragment;
 import com.st.BlueMS.demos.util.GLCubeRender;
 import com.st.BlueMS.demos.util.HidableTextView;
 import com.st.BlueSTSDK.Feature;
@@ -71,6 +73,7 @@ import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
 import com.st.BlueSTSDK.Features.FeatureProximity;
+import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
@@ -78,7 +81,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * fragment that show the feature and proximity feature
+ * Fragment that show the feature and proximity feature
  * <p>
  * will show a cube that moves according to the quaternion computed by the mems sensor fusion
  * engine inside the board
@@ -87,8 +90,11 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @DemoDescriptionAnnotation(name="Mems Sensor Fusion",iconRes=R.drawable.demo_sensors_fusion,
     requareOneOf = {FeatureMemsSensorFusion.class,FeatureMemsSensorFusionCompact.class})
-public class MemsSensorFusionFragment extends DemoFragment {
+public class MemsSensorFusionFragment extends DemoFragment implements CalibrationDialogFragment.CalibrationDialogCallback{
     private final static String TAG = MemsSensorFusionFragment.class.getCanonicalName();
+
+    private static final String CALIBRATION_DIALOG_TAG = TAG+".calibrationDialogTag";
+
 
     /**
      * initial size of the cube
@@ -128,11 +134,8 @@ public class MemsSensorFusionFragment extends DemoFragment {
     private Runnable mChangeCalibrationButtonState = new Runnable() {
         @Override
         public void run() {
-            final Resources r = getResources();
-            if (mCalibState)
-                mCalibrationImage.setImageDrawable(r.getDrawable(R.drawable.calibrated));
-            else
-                mCalibrationImage.setImageDrawable(r.getDrawable(R.drawable.uncalibrated));
+            @DrawableRes int imgId = mCalibState ? R.drawable.calibrated : R.drawable.uncalibrated;
+            mCalibrationImage.setImageResource(imgId);
         }//run
     };
 
@@ -157,6 +160,7 @@ public class MemsSensorFusionFragment extends DemoFragment {
     private class SensorFusionCountRateListener implements
             FeatureAutoConfigurable.FeatureAutoConfigurationListener {
 
+        private boolean mInitialCalibrationState = true;
         /**
          * time of when we receive the first sample
          */
@@ -173,6 +177,16 @@ public class MemsSensorFusionFragment extends DemoFragment {
 
         @Override
         public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) {
+            if(mInitialCalibrationState && !f.isConfigured()){
+                //start the calibration
+                updateGui(new Runnable() {
+                    @Override
+                    public void run() {
+                        onCalibrateButtonClicked();
+                    }
+                });
+                mInitialCalibrationState=false;
+            }
             setCalibrationStatus(f.isConfigured());
         }
 
@@ -233,6 +247,12 @@ public class MemsSensorFusionFragment extends DemoFragment {
             mSensorFusion.addFeatureListener(mSensorFusionListener);
             node.enableNotification(mSensorFusion);
             setCalibrationStatus(mSensorFusion.isConfigured());
+            //not needed since the board send us the status when we connect
+            //and this command doesn't work it return an uncalibrate state also if it is calibrated
+            //mSensorFusion.requestAutoConfigurationStatus();
+            if(!mSensorFusion.isConfigured() && node.getType()!= Node.Type.STEVAL_WESU1)
+                onCalibrateButtonClicked();
+
             //we force to run the mChangeCalibrationButtonState, since if we return in this
             // fragment we can have the same status (true) but the button is reset to the default
             // image (false state -> not calibrated)
@@ -265,24 +285,27 @@ public class MemsSensorFusionFragment extends DemoFragment {
      * when out of range the cube will be reset to the original size
      */
     private Feature.FeatureListener mSensorProximity = new Feature.FeatureListener() {
-        private static final float PROXIMITY_SCALE_FACTOR = 1.0f /
-                (FeatureProximity.DATA_MAX - FeatureProximity.DATA_MIN);
+
+        private final int MAX_DISTANCE = 200;
+        private final float SCALE_FACTOR = 1.0f/MAX_DISTANCE;
 
         @Override
         public void onUpdate(Feature f,Feature.Sample sample) {
             int proximity = FeatureProximity.getProximityDistance(sample);
+            Field field = sample.dataDesc[0];
             if (proximity == FeatureProximity.OUT_OF_RANGE_VALUE)
                 mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
-            else
-                mGlRenderer.setScaleCube(((proximity - FeatureProximity.DATA_MIN) *
-                        PROXIMITY_SCALE_FACTOR));
+            else {
+                proximity = Math.min(proximity,MAX_DISTANCE);
+                mGlRenderer.setScaleCube(proximity*SCALE_FACTOR);
+            }
         }//onUpdate
     };
 
 
-    private void enableProximity(Node node){
+    private void enableProximity(final Node node){
         if (mProximity != null) {
-            /**
+            /*
              * proximity sensor is present, show the button and attach the listener for
              * enable/disable the sensor reading
              */
@@ -306,8 +329,6 @@ public class MemsSensorFusionFragment extends DemoFragment {
             if(mProximityButton.isChecked()) {
                 node.enableNotification(mProximity);
             }
-        } else {
-            //    showActivityToast(R.string.proximityNotFound);
         }
     }
 
@@ -579,34 +600,23 @@ public class MemsSensorFusionFragment extends DemoFragment {
             resetPosition();
     }
 
-    protected void calibrateSensorFusion() {
+    @Override
+    public void onStartCalibrationClicked() {
         if (mSensorFusion != null) {
             mSensorFusion.startAutoConfiguration();
             setCalibrationStatus(mSensorFusion.isConfigured());
         }//if
     }
 
-    private Dialog buildCalibrationInfoDialog(){
-        Activity activity = getActivity();
-        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
-        dialog.setTitle(R.string.memsSensorFusionInfoTitle);
-        dialog.setView(activity.getLayoutInflater().inflate(R.layout
-                .dialog_calibration_sensor_fusion,null));
-        dialog.setPositiveButton(android.R.string.ok,new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                calibrateSensorFusion();
-            }
-        });
-        return dialog.create();
-    }
 
     private void onCalibrateButtonClicked(){
         if(!mShowCalibrateDialog){
-            buildCalibrationInfoDialog().show();
+            DialogFragment dialog = new CalibrationDialogFragment();
+            dialog.setTargetFragment(this,0);
+            dialog.show(getFragmentManager(),CALIBRATION_DIALOG_TAG);
             mShowCalibrateDialog=true;
         }else
-            calibrateSensorFusion();
+            onStartCalibrationClicked();
     }
 
     /**

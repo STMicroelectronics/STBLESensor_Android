@@ -57,11 +57,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.cloud.MqttClientConnectionFactory;
-import com.st.BlueMS.demos.cloud.gui.IBMWatsonConfigFactory;
-import com.st.BlueMS.demos.cloud.gui.IBMWatsonQuickStartConfigFactory;
-import com.st.BlueMS.demos.cloud.gui.MqttClientConfigAdapter;
-import com.st.BlueMS.demos.cloud.gui.MqttClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.GenericMqtt.GenericMqttConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonConfigFactory;
+import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonQuickStartConfigFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientConfigAdapter;
+import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
 import com.st.BlueMS.demos.util.DemoWithNetFragment;
 import com.st.BlueMS.demos.util.FeatureListViewAdapter;
 import com.st.BlueMS.demos.util.FeatureListViewAdapter.OnFeatureSelectChange;
@@ -74,11 +75,22 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+/**
+ * Sent the feature data to a cloud provider
+ */
 @DemoDescriptionAnnotation(name = "Cloud Logging", requareAll = {},
         iconRes = R.drawable.ic_cloud_upload_24dp)
 public class CloudLogFragment extends DemoWithNetFragment {
+
+
+    private static List<MqttClientConfigurationFactory> CLOUD_PROVIDER =  Arrays.asList(
+            new IBMWatsonQuickStartConfigFactory(),
+            new IBMWatsonConfigFactory(),
+            new GenericMqttConfigurationFactory());
 
     /**
      * Node use for the demo
@@ -192,13 +204,23 @@ public class CloudLogFragment extends DemoWithNetFragment {
     }
 
 
+    private List<Feature> getSupportedFeatures(List<Feature> availableFeature){
+        ArrayList<Feature> supprtedFeatures = new ArrayList<>(availableFeature.size());
+        //fiter availabe feature with  mCloudConnectionFactory.supportFeature
+        for(Feature f: availableFeature){
+            if(mCloudConnectionFactory.supportFeature(f)){
+                supprtedFeatures.add(f);
+            }
+        }
+
+        return supprtedFeatures;
+
+
+    }
+
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         mNode = node;
-
-        mFeatureListView.setAdapter(new FeatureListViewAdapter(mNode.getFeatures(),
-                mSendDataToCloudWhenSelected));
-
         if (isCloudConnected()) {
             showConnectedView();
         } else
@@ -223,7 +245,7 @@ public class CloudLogFragment extends DemoWithNetFragment {
         if (!isCloudConnected()) {
             stopAllNotification();
         } else {
-            Toast.makeText(getActivity(), R.string.warningConnectionOn, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.cloudLog_warningConnectionOn, Toast.LENGTH_SHORT).show();
             node.addNodeStateListener(mCloseConnectionOnDisconnection);
         }
 
@@ -280,10 +302,20 @@ public class CloudLogFragment extends DemoWithNetFragment {
     }
 
     private void setUpDataPageLink(Button dataPageLink) {
+        /*
         dataPageLink.setOnClickListener(view -> {
             Uri page = mCloudConnectionFactory.getDataPage();
             if(page!=null)
                 getActivity().startActivity(new Intent(Intent.ACTION_VIEW, page));
+        });
+        */
+        dataPageLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri page = mCloudConnectionFactory.getDataPage();
+                if(page!=null)
+                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, page));
+            }
         });
         dataPageLink.setVisibility(View.GONE);
     }
@@ -293,11 +325,8 @@ public class CloudLogFragment extends DemoWithNetFragment {
      * atach the adapter to the spinner and set the selectedListener
      * @param spinner spinner to set up
      */
-    private void setUpCloudClientSpinner(Spinner spinner, @Nullable Node node,@Nullable Bundle savedState){
-        spinner.setAdapter(new MqttClientConfigAdapter(getActivity(), Arrays.asList(
-                new IBMWatsonQuickStartConfigFactory(),
-                new IBMWatsonConfigFactory()
-        )));
+    private void setUpCloudClientSpinner(Spinner spinner, @Nullable final Node node, @Nullable Bundle savedState){
+        spinner.setAdapter(new MqttClientConfigAdapter(getActivity(),CLOUD_PROVIDER));
 
         /**
          * remove the previous view and add the new views for configure the selected service
@@ -325,7 +354,13 @@ public class CloudLogFragment extends DemoWithNetFragment {
 
 
     private void setUpStartLogButton(ImageButton button) {
-        button.setOnClickListener(this::onStartStopCloudLogClick);
+        //button.setOnClickListener(this::onStartStopCloudLogClick);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStartStopCloudLogClick(view);
+            }
+        });
         if (isOnline()) {
             enableCloudButton();
         }
@@ -349,8 +384,11 @@ public class CloudLogFragment extends DemoWithNetFragment {
         mShowDetailsButton.setVisibility(View.VISIBLE);
         mCloudConfig.setVisibility(View.GONE);
         mFeatureListView.setVisibility(View.VISIBLE);
+        mFeatureListView.setAdapter(new FeatureListViewAdapter(getSupportedFeatures(mNode.getFeatures()),
+                mSendDataToCloudWhenSelected));
         if(mCloudConnectionFactory.getDataPage()!=null)
             mDataPageLink.setVisibility(View.VISIBLE);
+
     }
 
     /**
@@ -376,6 +414,7 @@ public class CloudLogFragment extends DemoWithNetFragment {
         try {
             mCloudConnectionFactory = getSelectCloud().getConnectionFactory();
         }catch (IllegalArgumentException e){
+            buildMqttErrorDialog(CloudLogFragment.this.getActivity(), e.getMessage()).show();
             Log.e(getClass().getName(),"Error: "+e.getMessage());
             return;
         }

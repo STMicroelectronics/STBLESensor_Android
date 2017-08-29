@@ -42,7 +42,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -160,7 +159,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     private class SensorFusionCountRateListener implements
             FeatureAutoConfigurable.FeatureAutoConfigurationListener {
 
-        private boolean mInitialCalibrationState = true;
         /**
          * time of when we receive the first sample
          */
@@ -177,16 +175,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
 
         @Override
         public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) {
-            if(mInitialCalibrationState && !f.isConfigured()){
-                //start the calibration
-                updateGui(new Runnable() {
-                    @Override
-                    public void run() {
-                        onCalibrateButtonClicked();
-                    }
-                });
-                mInitialCalibrationState=false;
-            }
             setCalibrationStatus(f.isConfigured());
         }
 
@@ -576,11 +564,13 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
                         R.drawable.steval_wesu1_reset_position);
             case SENSOR_TILE:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
-                    R.drawable.tile_reset_position);
+                    R.drawable.ic_board_sensortile_bg);
             case NUCLEO:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
-                        R.drawable.nucleo_reset_position);
+                        R.drawable.ic_board_nucleo_bg);
             case BLUE_COIN:
+                return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
+                        R.drawable.ic_board_bluecoin_bg);
             case GENERIC:
             default:
                 return null;

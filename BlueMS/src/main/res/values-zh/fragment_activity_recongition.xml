@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
   ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
@@ -35,45 +36,15 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:background="#ffffff"
-              tools:context=".AboutActivity" >
+<resources>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="20dp"
-        android:src="@drawable/press_contact" />
+    <string name="stationaryImageDesc">静止</string>
+    <string name="walkingImageDesc">步行</string>
+    <string name="fastWalkingImageDesc">快走</string>
+    <string name="joggingImageDesc">跑步</string>
+    <string name="bikingImageDesc">骑行</string>
+    <string name="drivingImageDesc">驾驶</string>
 
-    <TextView
-        android:id="@+id/textViewName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="30sp"
-        android:text="@string/app_name" />
+    <string name="activityRecognitionStarted">活动识别开始</string>
 
-    <TextView
-        android:id="@+id/textViewVersion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="22sp"
-        android:text="" />
-
-    <WebView
-        android:id="@+id/aboutText"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        />
-
-</LinearLayout>
-
+</resources>

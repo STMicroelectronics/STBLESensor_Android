@@ -52,7 +52,7 @@ import android.view.MenuItem;
 import com.st.BlueMS.demos.AccEventFragment;
 import com.st.BlueMS.demos.CloudLogFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
-import com.st.BlueMS.demos.NodeStatusFragment;
+import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.SwitchFragment;

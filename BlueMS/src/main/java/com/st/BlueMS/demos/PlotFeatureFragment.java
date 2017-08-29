@@ -72,12 +72,7 @@ import com.androidplot.xy.XYStepMode;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
-import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureActivity;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCM;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCMSync;
-import com.st.BlueSTSDK.Features.FeatureBattery;
-import com.st.BlueSTSDK.Features.FeatureCarryPosition;
 import com.st.BlueSTSDK.Features.FeatureCompass;
 import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
 import com.st.BlueSTSDK.Features.FeatureFreeFall;
@@ -85,13 +80,13 @@ import com.st.BlueSTSDK.Features.FeatureGyroscope;
 import com.st.BlueSTSDK.Features.FeatureHumidity;
 import com.st.BlueSTSDK.Features.FeatureLuminosity;
 import com.st.BlueSTSDK.Features.FeatureMagnetometer;
-import com.st.BlueSTSDK.Features.FeatureMemsGesture;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
+import com.st.BlueSTSDK.Features.FeatureMicLevel;
+import com.st.BlueSTSDK.Features.FeatureMotionIntensity;
+import com.st.BlueSTSDK.Features.FeaturePedometer;
 import com.st.BlueSTSDK.Features.FeaturePressure;
 import com.st.BlueSTSDK.Features.FeatureProximity;
-import com.st.BlueSTSDK.Features.FeatureProximityGesture;
-import com.st.BlueSTSDK.Features.FeatureSwitch;
 import com.st.BlueSTSDK.Features.FeatureTemperature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
@@ -100,6 +95,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,24 +105,26 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Fragment that plot the feature data in an xy plot
  */
-@DemoDescriptionAnnotation(name="Plot Data",iconRes=R.drawable.demo_charts)
+@DemoDescriptionAnnotation(name="Plot Data",iconRes=R.drawable.demo_charts,
+    requareOneOf = {FeatureAcceleration.class,
+                    FeatureCompass.class,
+                    FeatureDirectionOfArrival.class,
+                    FeatureGyroscope.class,
+                    FeatureHumidity.class,
+                    FeatureLuminosity.class,
+                    FeatureMagnetometer.class,
+                    FeatureMemsSensorFusionCompact.class,
+                    FeatureMemsSensorFusion.class,
+                    FeatureMicLevel.class,
+                    FeatureMotionIntensity.class,
+                    FeaturePedometer.class,
+                    FeatureProximity.class,
+                    FeaturePressure.class,
+                    FeatureTemperature.class
+    })
 public class PlotFeatureFragment extends DemoFragment implements View.OnClickListener,
         AdapterView.OnItemSelectedListener {
-
-    @SuppressWarnings("unchecked")
-    private static final Class<? extends Feature> NO_PLOT_FEATURE[] = new Class[]{
-            FeatureFreeFall.class,
-            FeatureBattery.class,
-            FeatureActivity.class,
-            FeatureCarryPosition.class,
-            FeatureMemsGesture.class,
-            FeatureProximityGesture.class,
-            FeatureAccelerationEvent.class,
-            FeatureSwitch.class,
-            FeatureAudioADPCM.class,
-            FeatureAudioADPCMSync.class
-    };
-
+    
     //on the fw side the timestamp is incremented each 10ms
     private static final int TIMESTAMP_TO_MS = 10;
     /**
@@ -671,21 +669,22 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
             mFeatureText.setVisibility(View.VISIBLE);
     }
 
+    private static List<Class<? extends Feature>> getSupportedFeatures(){
+        Class<? extends Feature>[] temp =
+                PlotFeatureFragment.class.getAnnotation(DemoDescriptionAnnotation.class).requareOneOf();
+
+         return Arrays.asList(temp);
+    }
 
     private List<Feature> filterPlottableFeature(List<Feature> all){
         List<Feature> plottableFeature = new ArrayList<>(all.size());
 
+        List<Class<? extends Feature>> supportedFeatures = getSupportedFeatures();
+
         for(Feature f : all){
             if(f.isEnabled()) {
                 Class<? extends Feature> searchMe = f.getClass();
-                boolean plotMe=true;
-                for(Class<? extends Feature> noPlotMe : NO_PLOT_FEATURE){
-                    if(searchMe.equals(noPlotMe)) {
-                        plotMe = false;
-                        break;
-                    }
-                }
-                if(plotMe)
+                if(supportedFeatures.contains(searchMe))
                     plottableFeature.add(f);
             }//if isEnabled
         }//for
@@ -736,13 +735,13 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
      */
     private class FeatureArrayAdapter extends ArrayAdapter<Feature> {
 
-        public FeatureArrayAdapter(Context c, List<Feature> data) {
+        FeatureArrayAdapter(Context c, List<Feature> data) {
             super(c,android.R.layout.simple_list_item_1, data);
         }
 
         //the spinner will use this value for show the possible value that can be selected
         @Override
-        public View getDropDownView(int position, View v, ViewGroup parent) {
+        public View getDropDownView(int position, View v,@NonNull ViewGroup parent) {
             return getView(position, v, parent);
         }
 
@@ -753,7 +752,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
          * @return view that represent the feature
          */
         @Override
-        public View getView(int position, View v, ViewGroup parent) {
+        public View getView(int position,  View v, ViewGroup parent) {
 
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

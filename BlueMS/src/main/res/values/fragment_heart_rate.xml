@@ -37,7 +37,7 @@
   -->
 
 <resources>
-    <string name="heartRateDataFormat">%1$d %2$s</string>
-    <string name="energyExpendedDataFormat">%1$f %2$s</string>
-    <string name="rrIntervalDataFormat">%1$d %2$s</string>
+    <string name="heartRateDataFormat" translatable="false">%1$d %2$s</string>
+    <string name="energyExpendedDataFormat" translatable="false">%1$f %2$s</string>
+    <string name="rrIntervalDataFormat" translatable="false">%1$d %2$s</string>
 </resources>

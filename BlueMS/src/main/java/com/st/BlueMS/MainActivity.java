@@ -40,12 +40,36 @@ package com.st.BlueMS;
 import android.content.Intent;
 import android.view.View;
 
+import com.st.BlueSTSDK.gui.AboutActivity;
+import com.st.BlueSTSDK.gui.thirdPartyLibLicense.LibLicense;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+
 /**
  * Entry point activity, it show a full screen image for 2s and than the button for start the
- * scan or go in the about/help activity
+ * scan or go in the privacy_policy/help activity
  */
 public class MainActivity extends com.st.BlueSTSDK.gui.MainActivity {
 
+    private static final ArrayList<LibLicense> LIB_LICENSES = new ArrayList<>();
+    static {
+        LIB_LICENSES.add(new LibLicense("Android Design Support Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Support Library v13",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Annotations Support Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Support Card View Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Support Constraint Layout Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Support AppCompat Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Support GridLayout Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("Android Support RecyclerView Library",R.raw.lic_android_support));
+        LIB_LICENSES.add(new LibLicense("BlueSTSDK",R.raw.lic_bluestsdk));
+        LIB_LICENSES.add(new LibLicense("BlueSTSDK Gui",R.raw.lic_bluestsdk_gui));
+        LIB_LICENSES.add(new LibLicense("Paho",R.raw.lic_paho));
+        LIB_LICENSES.add(new LibLicense("Play Services Base",R.raw.lic_android_support));
+    }
+
+    private static final String ABOUT_PAGE_URL = "file:///android_asset/about.html";
 
     @Override
     public void startScanBleActivity(View view) {
@@ -54,6 +78,13 @@ public class MainActivity extends com.st.BlueSTSDK.gui.MainActivity {
 
     @Override
     public void startAboutActivity(View view) {
-        startActivity(new Intent(this,AboutActivity.class));
+        URL privacyPage = getPrivacyPolicyUrl();
+        AboutActivity.startActivityWithAboutPage(this,ABOUT_PAGE_URL,privacyPage,LIB_LICENSES);
     }
+
+    @Override
+    public URL getPrivacyPolicyUrl(){
+        return null;
+    }
+
 }

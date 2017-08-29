@@ -37,6 +37,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <RelativeLayout android:layout_width="wrap_content"
@@ -46,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tapImage" android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" android:src="@drawable/tap_icon"/>
+        android:layout_centerHorizontal="true" app:srcCompat="@drawable/tap_icon"/>
     <Space
         android:id="@+id/spacer"
         android:layout_width="0dp"
@@ -56,14 +57,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/leftImage"
-        android:src="@drawable/left_arrow" android:layout_below="@+id/tapImage"
+        app:srcCompat="@drawable/left_arrow" android:layout_below="@+id/tapImage"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@id/spacer"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rightImage" android:layout_below="@+id/tapImage"
-        android:layout_toEndOf="@id/spacer" android:src="@drawable/right_arrow"
+        android:layout_toEndOf="@id/spacer" app:srcCompat="@drawable/right_arrow"
         android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>

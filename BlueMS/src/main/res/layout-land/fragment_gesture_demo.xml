@@ -37,24 +37,25 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tapImage"
-        android:src="@drawable/tap_icon" android:layout_centerVertical="true"
+        app:srcCompat="@drawable/tap_icon" android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/leftImage"
-        android:src="@drawable/left_arrow"
+        app:srcCompat="@drawable/left_arrow"
         android:layout_centerVertical="true" android:layout_toStartOf="@+id/tapImage"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rightImage"
-        android:src="@drawable/right_arrow"
+        app:srcCompat="@drawable/right_arrow"
         android:layout_centerVertical="true" android:layout_toEndOf="@+id/tapImage"/>
 </RelativeLayout>

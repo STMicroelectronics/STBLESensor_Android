@@ -35,41 +35,69 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS;
+package com.st.BlueMS.demos.Audio.BlueVoice.util;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.webkit.WebView;
-import android.widget.TextView;
+import android.media.AudioTrack;
 
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * Activity to display with the app info
+ * Class containing an audio buffer
  */
-public class AboutActivity extends AppCompatActivity {
-    private static final String ABOUT_PAGE_URL = "file:///android_asset/about.html";
+public class AudioBuffer {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+    private int mSamplingRate;
 
-        WebView browser = (WebView) findViewById(R.id.aboutText);
-        browser.setVerticalScrollBarEnabled(false);
-        browser.loadUrl(ABOUT_PAGE_URL);
+    private short mData[];
+    private int mLastWriteData;
 
-        TextView tvVersion = (TextView) findViewById(R.id.textViewVersion);
+    public AudioBuffer(int samplingRate, int maxLengthSec){
+        mSamplingRate=samplingRate;
+        mData = new short[samplingRate*maxLengthSec];
+        mLastWriteData=0;
+    }
 
-        try {
-            Context appContext = getApplicationContext();
-            PackageInfo pInfo = appContext.getPackageManager().getPackageInfo(getPackageName(), 0);
-            tvVersion.setText(getString(R.string.about_version,pInfo.versionName));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+    public AudioBuffer(short[] sampleData){
+        mData=sampleData;
+    }
+
+    public short[] getData() {
+        return mData;
+    }
+
+    public int getSamplingRate() {
+        return mSamplingRate;
+    }
+
+    public int append(short data[]){
+        synchronized (this) {
+            int size = Math.min(mData.length - mLastWriteData, data.length);
+            System.arraycopy(data, 0, mData, mLastWriteData, size);
+            mLastWriteData += size;
+            return mLastWriteData;
         }
+    }
 
+    public boolean isFull() {
+        return mData.length==mLastWriteData;
+    }
+
+    public int getBufferLength() {
+        return mData.length;
+    }
+
+    public void writeLittleEndianTo(OutputStream out) throws IOException {
+        synchronized (this) {
+            for (int i = 0; i < mLastWriteData; i++) {
+                short temp = mData[i];
+                out.write(temp & 0x00FF);
+                out.write(temp >> 8);
+            }
+        }
+    }
+
+    synchronized public void writeTo(AudioTrack out){
+        out.write(mData,0,mLastWriteData);
     }
 }

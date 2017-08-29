@@ -37,5 +37,6 @@
   -->
 
 <resources>
-    <string name="about_version">Version %s</string>
+    <string name="invalidNfc">无效的Nfc载荷</string>
+    <string name="nodeNotFound">未发现节点</string>
 </resources>

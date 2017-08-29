@@ -51,6 +51,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 
 /**
  * Interface used for open a connection to a mqtt broker

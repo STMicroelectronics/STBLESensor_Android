@@ -38,5 +38,5 @@
 
 <resources>
     <string name="SwitchImgDesc">Switch Image</string>
-    <string name="SwitchDemoDesc">Click on the image to change the status</string>
+    <string name="SwitchDemoDesc">Click on the image to change the led status</string>
 </resources>

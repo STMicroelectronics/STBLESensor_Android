@@ -23,10 +23,6 @@
 #    public <init>(com.st.BlueSTSDK.Node);
 #}
 
-#workaround for android support 23.1.0
-#-keep class android.support.v7.widget.LinearLayoutManager { *; }
-#workaround after switch to jack
-#-keep public class android.support.v7.widget.** { *; }
 
 #needed for the chinese voice to text
 #see: MSC Develop Manual for Android.pdf
@@ -45,3 +41,18 @@
 
 #https://github.com/square/okio/issues/60
 -dontwarn okio.**
+
+#need for amazon mobile analytics
+#https://github.com/aws/aws-sdk-android/blob/master/Proguard.md
+# Class names are needed in reflection
+-keepnames class com.amazonaws.**
+# Request handlers defined in request.handlers
+-keep class com.amazonaws.services.**.*Handler
+# The following are referenced but aren't required to run
+-dontwarn com.fasterxml.jackson.**
+-dontwarn org.apache.commons.logging.**
+# Android 6.0 release removes support for the Apache HTTP client
+-dontwarn org.apache.http.**
+# The SDK has several references of Apache HTTP client
+-dontwarn com.amazonaws.http.**
+-dontwarn com.amazonaws.metrics.**

@@ -18,9 +18,9 @@ import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 import com.st.BlueSTSDK.Features.FeatureCompass;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 @DemoDescriptionAnnotation(name="Compass", requareAll = {FeatureCompass.class},
         iconRes = R.drawable.compass_demo_icon)
@@ -54,11 +54,9 @@ public class CompassFragment extends DemoFragment implements CalibrationDialogFr
     private FeatureAutoConfigurable.FeatureAutoConfigurationListener mCommpassUpdate =
             new FeatureAutoConfigurable.FeatureAutoConfigurationListener() {
 
-                private boolean mInitialCalibState = true;
 
         @Override
         public void onAutoConfigurationStarting(FeatureAutoConfigurable f) {
-            
         }
 
         @Override
@@ -66,20 +64,13 @@ public class CompassFragment extends DemoFragment implements CalibrationDialogFr
             updateGui(new Runnable() {
                 @Override
                 public void run() {
-                    if(mInitialCalibState && !f.isConfigured()){
-                        //if the initial state if not configured start the calibration, showing the
-                        // dialog if necessary
-                        mCalibButton.callOnClick();
-                    }
-                    setCalibButtonState(f.isConfigured());
-                    mInitialCalibState=false;
+                    CompassFragment.this.setCalibButtonState(f.isConfigured());
                 }
             });
         }
 
         @Override
         public void onConfigurationFinished(FeatureAutoConfigurable f, int status) {
-
         }
 
         @Override

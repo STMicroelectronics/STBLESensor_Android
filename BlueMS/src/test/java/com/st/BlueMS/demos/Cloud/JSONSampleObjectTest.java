@@ -53,7 +53,6 @@ public class JSONSampleObjectTest {
     private Feature.Sample mSample;
     private JSONObject mObj;
 
-
     private static final double EQUAL_PRECISION=1e-5;
     private static final String FLOAT_FILED_NAME="Float";
     private static final float FLOAT_FILED_VALUE=(float)Math.PI;

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+<resources>
+    <string name="cloudLog_watson_deviceIdHint">设备Id</string>
+    <string name="cloudLog_watson_deviceTypeHint">设备类型</string>
+    <string name="cloudLog_watson_authTokenHint">认证令牌</string>
+    <string name="cloudLog_watson_organizationIDHint">组织编号</string>
+
+    <string name="cloudLog_watson_deviceIdError">设备Id不可为空</string>
+    <string name="cloudLog_watson_deviceTypeError">设备类型不可为空</string>
+    <string name="cloudLog_watson_authTokenError">认证令牌不可为空</string>
+    <string name="cloudLog_watson_organizationIDError">组织编号不可为空</string>
+
+    <string name="cloudLog_mqttErrorTitle">Mqtt错误</string>
+    <string name="cloudLog_displayDataPage">浏览云端数据</string>
+    <string name="cloudLog_warningConnectionOn">云端连接正常</string>
+
+    <string name="cloudLog_genericMqtt_brokerUrlHint">经纪人网址</string>
+    <string name="cloudLog_genericMqtt_userHint">用户名</string>
+    <string name="cloudLog_genericMqtt_passwordHint">密码</string>
+    <string name="cloudLog_genericMqtt_portHint">端口</string>
+    <string name="cloudLog_genericMqtt_secureConnectionHint">Ssh</string>
+
+    <string name="cloudLog_genericMqtt_clientIdHint">客户ID</string>
+    <string name="cloudLog_genericMqtt_brokerUrlError">无效网址</string>
+    <string name="cloudLog_genericMqtt_userError">用户名不可为空</string>
+    <string name="cloudLog_genericMqtt_portError">端口数无效</string>
+
+    <string name="cloudLog_StAzure_licConsoleMissing">节点数据无法检索</string>
+    <string name="cloudLog_StAzure_licConsoleFound">调取节点数据</string>
+    <string name="cloudLog_StAzure_nodeRegistration">节点注册…</string>
+    <string name="cloudLog_StAzure_registrationComplete">注册完成</string>
+    <string name="cloudLog_StAzure_registrationFail">设备注册无法完成</string>
+    <string name="cloudLog_StAzure_invalidDeviceData">设备数据无效</string>
+
+</resources>

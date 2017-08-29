@@ -96,13 +96,13 @@
                 android:value="com.st.BlueMS.NodeListActivity" />
         </activity>
         <activity
-                    android:name=".DemosActivityWesu"
-                    android:label="@string/title_activity_demos"
-                    android:launchMode="singleTop"
-                    android:parentActivityName=".NodeListActivity">
-                    <meta-data
-                        android:name="android.support.PARENT_ACTIVITY"
-                        android:value="com.st.BlueMS.NodeListActivity" />
+            android:name=".DemosActivityWesu"
+            android:label="@string/title_activity_demos"
+            android:launchMode="singleTop"
+            android:parentActivityName=".NodeListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.st.BlueMS.NodeListActivity" />
         </activity>
         <activity
             android:name="com.st.BlueSTSDK.gui.DebugConsoleActivity"
@@ -112,8 +112,7 @@
                 android:value="com.st.BlueMS.DemosActivity" />
         </activity>
         <activity
-            android:name=".AboutActivity"
-            android:label="@string/title_activity_about"
+            android:name="com.st.BlueSTSDK.gui.AboutActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -147,11 +146,6 @@
 
         <!-- Start: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
         <activity android:name="com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.st.BlueMS.DemosActivity" />
-        </activity>
-        <activity android:name="com.st.BlueSTSDK.gui.licenseManager.LicenseManagerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.st.BlueMS.DemosActivity" />

@@ -221,6 +221,7 @@ public class CloudLogFragment extends DemoWithNetFragment {
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         mNode = node;
+
         if (isCloudConnected()) {
             showConnectedView();
         } else

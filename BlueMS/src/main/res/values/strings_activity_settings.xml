@@ -45,7 +45,7 @@
     <string name="pref_logSettings_summary">Set how and where store the log</string>
     <string name="pref_exportPath">Export Path</string>
     <string name="pref_exportPath_summary">Select the path where save/dump the log</string>
-    <string name="pref_exportPath_defaultValue">/sdcard/</string>
+    <string name="pref_exportPath_defaultValue" translatable="false">/sdcard/STMicroelectronics/logs</string>
 
     <string name="pref_logStore">Log storage</string>
     <string name="pref_logStore_summary">Select where store the log</string>

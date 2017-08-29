@@ -40,11 +40,11 @@ package com.st.BlueMS;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDelegate;
 
 import com.st.BlueMS.demos.AccEventFragment;
 import com.st.BlueMS.demos.ActivityRecognitionFragment;
-import com.st.BlueMS.demos.BlueVoiceFragment;
+import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
+import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.CloudLogFragment;
 import com.st.BlueMS.demos.CompassFragment;
@@ -53,13 +53,17 @@ import com.st.BlueMS.demos.HearRateFragment;
 import com.st.BlueMS.demos.MemsGestureRecognitionFragment;
 import com.st.BlueMS.demos.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.MotionIntensityFragment;
-import com.st.BlueMS.demos.NodeStatusFragment;
+import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.ProximityGestureRecognitionFragment;
+import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.SwitchFragment;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -94,7 +98,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
 
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
-            BlueVoiceFragment.class,
             PlotFeatureFragment.class,
             ActivityRecognitionFragment.class,
             CarryPositionFragment.class,
@@ -103,18 +106,29 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             PedometerFragment.class,
             AccEventFragment.class,
             SwitchFragment.class,
+            BlueVoiceFragment.class,
+            BeamformingFragment.class,
+            SourceLocFragment.class,
             HearRateFragment.class,
+            CloudLogFragment.class,
             MotionIntensityFragment.class,
             CompassFragment.class,
             //MultipleLogFragment.class,
             NodeStatusFragment.class,
-            CloudLogFragment.class,
             //FeatureDebugFragment.class
     };
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Class<? extends DemoFragment>[] getAllDemos() {
-        return ALL_DEMOS;
+
+        if(getNode().getType()== Node.Type.NUCLEO || getNode().getType()== Node.Type.BLUE_COIN)
+            return ALL_DEMOS;
+        else{
+            ArrayList<Class<? extends DemoFragment>> demoList = new ArrayList<>(Arrays.asList(ALL_DEMOS));
+            demoList.remove(BeamformingFragment.class);
+            return demoList.toArray(new Class[demoList.size()]);
+        }
     }
 
     @Override

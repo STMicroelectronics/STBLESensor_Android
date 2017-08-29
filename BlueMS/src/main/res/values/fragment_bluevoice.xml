@@ -58,6 +58,7 @@
     <string name="blueVoice_pcmCodec">ADPCM</string>
     <string name="blueVoice_samplingFreq">Sampling freq:</string>
     <string name="blueVoice_volume">Volume:</string>
+    <string name="blueVoice_beamforming">Beamforming:</string>
     <string name="blueVoice_recordTime">RecordTime:</string>
     <string name="blueVoice_asr">Speech recognition:</string>
     <string name="blueVoice_loadAsrKey">Please load a valid Speech Recognition API key</string>
@@ -65,6 +66,8 @@
     <string name="blueVoice_dialogBack">Back</string>
     <string name="blueVoice_enableConnection">Enable connection to enable the Speech
         Recognition</string>
+    <string name="blueVoice_startAudioRec">REC</string>
+    <string name="blueVoice_stopAudioRec">Stop REC</string>
     <string name="blueVoice_speechApiKey">Speech API key</string>
     <string name="blueVoice_asrLanguage">ASR Language</string>
     <string name="blueVoice_addKeyButton">Add</string>

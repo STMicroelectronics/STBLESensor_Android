@@ -54,7 +54,7 @@
         <item>User set off</item>
     </string-array>
 
-    <string-array name="led_config_values">
+    <string-array name="led_config_values"  translatable="false">
         <item>00</item>
         <item>11</item>
         <item>12</item>
@@ -71,7 +71,7 @@
         <item>Low power</item>
     </string-array>
 
-    <string-array name="pwr_mode_config_values">
+    <string-array name="pwr_mode_config_values"  translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -82,7 +82,7 @@
         <item>16</item>
     </string-array>
 
-    <string-array name="ble_output_power">
+    <string-array name="ble_output_power"  translatable="false">
         <item>+8 dBm (HP)</item>
         <item>+5 dBm (HP)</item>
         <item>+1 dBm (HP)</item>
@@ -101,7 +101,7 @@
         <item>-18 dBm </item>
     </string-array>
 
-    <string-array name="ble_output_power_values">
+    <string-array name="ble_output_power_values"  translatable="false">
         <item>090F</item>
         <item>090E</item>
         <item>090D</item>
@@ -128,7 +128,7 @@
         <item>Battery</item>
     </string-array>
 
-    <string-array name="data_read_group_a_values">
+    <string-array name="data_read_group_a_values" translatable="false">
         <item>0080</item>
         <item>0040</item>
         <item>0020</item>
@@ -147,7 +147,7 @@
         <item>Carry Position</item>
     </string-array>
 
-    <string-array name="data_read_group_b_values">
+    <string-array name="data_read_group_b_values"  translatable="false">
 
         <item>0001</item>
         <item>0080</item>
@@ -242,7 +242,7 @@
         <item>Generic Error</item>
     </string-array>
 
-    <string-array name="battery_power_mng_status_values">
+    <string-array name="battery_power_mng_status_values"  translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -261,7 +261,7 @@
         <item>Forced</item>
     </string-array>
 
-    <string-array name="rtc_timer_values">
+    <string-array name="rtc_timer_values"  translatable="false">
         <item>00</item>
         <item>D0</item>
         <item>D1</item>
@@ -278,7 +278,7 @@
         <item>OTA BLE DFU</item>
     </string-array>
 
-    <string-array name="dfu_reboot_values">
+    <string-array name="dfu_reboot_values"  translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -293,7 +293,7 @@
         <item>Shutdown</item>
     </string-array>
 
-    <string-array name="poweroff_reboot_values">
+    <string-array name="poweroff_reboot_values"  translatable="false">
         <item>249</item>
         <item>253</item>
         <item>254</item>

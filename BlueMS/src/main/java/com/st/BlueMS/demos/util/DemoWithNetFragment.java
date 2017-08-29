@@ -48,7 +48,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
 /**
  * DemoFragment that will notify if the mobile has an internet connection
  */
-public abstract class DemoWithNetFragment extends DemoFragment{
+public abstract class DemoWithNetFragment extends DemoFragment {
 
     /**
      * tell if the mobile has an internet connection
@@ -90,7 +90,8 @@ public abstract class DemoWithNetFragment extends DemoFragment{
     @Override
     public void stopDemo() {
         super.stopDemo();
-        if(mUpdateConnectionStatus!=null)
+        Context c = getActivity();
+        if(mUpdateConnectionStatus!=null && c!=null)
             getActivity().unregisterReceiver(mUpdateConnectionStatus);
     }
 

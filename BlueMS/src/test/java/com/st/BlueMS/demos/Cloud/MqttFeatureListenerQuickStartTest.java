@@ -80,6 +80,7 @@ public class MqttFeatureListenerQuickStartTest {
 
         Mockito.when(mFakeFeature.getName()).thenReturn(FEATURE_NAME);
 
+        Mockito.when(mClient.isConnected()).thenReturn(true);
     }
 
 

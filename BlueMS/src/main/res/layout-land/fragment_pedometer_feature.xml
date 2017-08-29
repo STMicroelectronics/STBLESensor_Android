@@ -36,7 +36,8 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context=".demos.PedometerFragment" android:orientation="horizontal"
@@ -46,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/stepImage"
-        android:src="@drawable/pedometer_icon"
+        app:srcCompat="@drawable/pedometer_icon"
         android:scaleType="fitCenter"
         android:layout_weight="1"/>
 
@@ -68,6 +69,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/stepFrequency"
             android:textSize="@dimen/pedometerSmallTextSize"
-            android:singleLine="true"/>
+            android:maxLines="1" />
     </LinearLayout>
 </LinearLayout>

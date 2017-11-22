@@ -59,6 +59,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.st.BlueMS.R;
+import com.st.BlueMS.demos.Cloud.AwsIot.AwSIotConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.AzureIot.AzureIotConfigFactory;
 import com.st.BlueMS.demos.Cloud.GenericMqtt.GenericMqttConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonConfigFactory;
@@ -72,10 +73,8 @@ import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,16 +85,17 @@ import java.util.List;
  */
 @DemoDescriptionAnnotation(name = "Cloud Logging", requareAll = {},
         iconRes = R.drawable.ic_cloud_upload_24dp)
-public class CloudLogFragment extends DemoWithNetFragment implements MqttClientConnectionFactory.FwUpgradeAvailableCallback,
+public class CloudLogFragment extends DemoWithNetFragment implements CloutIotClientConnectionFactory.FwUpgradeAvailableCallback,
         CloudFwUpgradeRequestDialog.CloudFwUpgradeRequestCallback {
 
 
     public static final String SELECTED_CLOUD_KEY = CloudLogFragment.class.getCanonicalName()+".SELECTED_CLOUD_KEY";
 
-    private List<MqttClientConfigurationFactory> mCloudProviders =  Arrays.asList(
+    private List<CloutIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
             new IBMWatsonQuickStartConfigFactory(),
             new IBMWatsonConfigFactory(),
             new AzureIotConfigFactory(),
+            new AwSIotConfigurationFactory(),
             new GenericMqttConfigurationFactory()
     );
 
@@ -121,7 +121,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
      * view that contains the feature view list
      */
     private View mFeatureListViewContainer;
-
+    private View mCloudConnectionProgress;
     /**
      * list of avialable feature in the node
      */
@@ -134,12 +134,13 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
     /**
      * object used for build the cloud connection
      */
-    private MqttClientConnectionFactory mCloudConnectionFactory;
+    private CloutIotClientConnectionFactory mCloudConnectionFactory;
 
     /**
      * mqtt connection
      */
-    private @Nullable MqttAndroidClient mMqttClient;
+    private @Nullable
+    CloutIotClientConnectionFactory.CloutIotClient  mMqttClient;
 
     /**
      * object to use for send the data to the cloud
@@ -241,11 +242,11 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
     }
 
     /**
-     * utility function that return the selected MqttClientConfigurationFactory from the spiner
+     * utility function that return the selected CloutIotClientConfigurationFactory from the spiner
      * @return current selection form the spinner
      */
-    private MqttClientConfigurationFactory getSelectCloud() {
-        return (MqttClientConfigurationFactory) mCloudClientSpinner.getSelectedItem();
+    private CloutIotClientConfigurationFactory getSelectCloud() {
+        return (CloutIotClientConfigurationFactory) mCloudClientSpinner.getSelectedItem();
     }
 
     /**
@@ -284,6 +285,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
 
         mShowDetailsButton = root.findViewById(R.id.showDetailsButton);
         setUpDetailsButton(mShowDetailsButton);
+
+        mCloudConnectionProgress = root.findViewById(R.id.cloudConnectionProgress);
+        mCloudConnectionProgress.setVisibility(View.GONE);
 
         return root;
     }
@@ -348,8 +352,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mCloudConfig.removeAllViews();
-                MqttClientConfigurationFactory selectedFactory =
-                        (MqttClientConfigurationFactory) adapterView.getItemAtPosition(i);
+                CloutIotClientConfigurationFactory selectedFactory =
+                        (CloutIotClientConfigurationFactory) adapterView.getItemAtPosition(i);
                 selectedFactory.attachParameterConfiguration(getActivity(), mCloudConfig);
                 selectedFactory.loadDefaultParameters(node);
             }
@@ -384,7 +388,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
      * @return true if the connection with the cloud service is open, false otherwise
      */
     private boolean isCloudConnected() {
-        return (mMqttClient != null && mMqttClient.isConnected());
+        if(mCloudConnectionFactory!=null)
+            return mCloudConnectionFactory.isConnected(mMqttClient);
+        return false;
     }
 
 
@@ -394,6 +400,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
     private void showConnectedView() {
         mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_stop_24dp);
         disableCloudConfiguration();
+        hideConnectingView();
+        mCloudConnectionProgress.setVisibility(View.GONE);
         mShowDetailsButton.setVisibility(View.VISIBLE);
         mCloudConfig.setVisibility(View.GONE);
         mFeatureListView.setVisibility(View.VISIBLE);
@@ -414,6 +422,16 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
         mDataPageLink.setVisibility(View.GONE);
         mShowDetailsButton.setVisibility(View.GONE);
         mCloudConfig.setVisibility(View.VISIBLE);
+    }
+
+    private void showConnectingView(){
+        mStartLogButton.setEnabled(false);
+        mCloudConnectionProgress.setVisibility(View.VISIBLE);
+    }
+
+    private void hideConnectingView(){
+        mStartLogButton.setEnabled(true);
+        mCloudConnectionProgress.setVisibility(View.GONE);
     }
 
     /**
@@ -437,26 +455,26 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
             mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient);
             Context ctx = getActivity();
             final Context appContext = ctx.getApplicationContext();
-            mCloudConnectionFactory.connect(ctx, mMqttClient, new IMqttActionListener() {
+            showConnectingView();
+            mCloudConnectionFactory.connect(ctx, mMqttClient, new CloutIotClientConnectionFactory.ConnectionListener() {
                 @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    showConnectedView();
-                    mCloudConnectionFactory.enableCloudFwUpgrade(mNode, mMqttClient, new MqttClientConnectionFactory.FwUpgradeAvailableCallback() {
-                        @Override
-                        public void onFwUpgradeAvailable(String fwUrl) {
-                            Uri firmwareRemoteLocation = Uri.parse(fwUrl);
-                            DownloadFwFileService.displayAvailableFwNotification(appContext,firmwareRemoteLocation);
-                        }
+                public void onSuccess() {
+                    mCloudConnectionFactory.enableCloudFwUpgrade(mNode, mMqttClient, fwUrl -> {
+                        Uri firmwareRemoteLocation = Uri.parse(fwUrl);
+                        DownloadFwFileService.displayAvailableFwNotification(appContext,firmwareRemoteLocation);
                     });
+                    updateGui(() -> showConnectedView());
                 }
 
                 @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                public void onFailure(final Throwable exception) {
+                    updateGui(() -> {
+                        buildMqttErrorDialog(CloudLogFragment.this.getActivity(), exception.getMessage()).show();
+                        hideConnectingView();
+                    });
                     exception.printStackTrace();
-                    buildMqttErrorDialog(CloudLogFragment.this.getActivity(), exception.getMessage()).show();
                 }
             });
-
             mFwDownloadReceiver.registerReceiver(getActivity());
         } catch (Exception e) {
             e.printStackTrace();
@@ -465,15 +483,13 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
     }
 
     /**
-     * remove the resource used by the mqtt client
+     * remove the resource used by the mqtt mqtt
      */
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mMqttClient != null) {
-            mMqttClient.close();
-            mMqttClient.unregisterResources();
-        }
+        if(mCloudConnectionFactory!=null)
+            mCloudConnectionFactory.destroy(mMqttClient);
     }
 
     private void stopAllNotification() {
@@ -497,13 +513,12 @@ public class CloudLogFragment extends DemoWithNetFragment implements MqttClientC
         if (isCloudConnected()) {
             mCloudLogListener = null;
             mFwDownloadReceiver.unregisterReceiver(getActivity());
-            if(mMqttClient!=null) {
-                try {
-                    mMqttClient.disconnect();
-                } catch (MqttException e) {
-                    buildMqttErrorDialog(getActivity(), e.getMessage()).show();
-                }//try-catch
-            }
+            try {
+                mCloudConnectionFactory.disconnect(mMqttClient);
+            } catch (Exception e) {
+                buildMqttErrorDialog(getActivity(), e.getMessage()).show();
+            }//try-catch
+
         }//if
     }//closeCloudConnection
 

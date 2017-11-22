@@ -38,6 +38,7 @@
 package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices;
 
 import android.app.DialogFragment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
@@ -84,14 +85,17 @@ public interface ASREngine {
     boolean hasContinuousRecognizer();
 
     /**
-     * Start the recognizer listener
+     * Start the recognizer listener, call the {@link ASRConnectionCallback#onEngineStart()} when the engine
+     * stop
      */
-    void startListener();
+    void startListener(@NonNull ASRConnectionCallback callback);
 
     /**
-     * Stop the recognizer listener
+     * Stop the recognizer listener, call the {@link ASRConnectionCallback#onEngineStop()} when the engine
+     * stop
+     * @param callback
      */
-    void stopListener();
+    void stopListener(@NonNull ASRConnectionCallback callback);
 
     /**
      * Destroy the recognizer listener
@@ -103,4 +107,26 @@ public interface ASREngine {
      * @return engine name
      */
     String getName();
+
+
+    /**
+     * interface used to notify the ASR engine status
+     */
+    interface ASRConnectionCallback {
+        /**
+         * callback called when the engine is correctly initialized and started
+         */
+        void onEngineStart();
+
+        /**
+         * callback called when some error happen during the engine initialization or stopping
+         * @param e error happen
+         */
+        void onEngineFail(Throwable e);
+
+        /**
+         * callback called when the engine correctly stop
+         */
+        void onEngineStop();
+    }
 }

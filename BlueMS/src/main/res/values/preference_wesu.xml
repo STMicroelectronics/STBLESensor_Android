@@ -40,8 +40,6 @@
 <resources>
 
     <string name="ConfigNotAvailable">Configuration service not available on this node</string>
-    <string name="config_title">Node Configuration</string>
-    <string name="config_summary">Get and Set the node configuration</string>
     <string name="message_reboot">Are you sure to reboot with default settings?</string>
     <string name="message_shutdown">Shutdown the node needs to connect USB to restart it. Continue?</string>
     <string name="message_standby">Stand-by the node needs to press the user button to restart it, Continue?</string>

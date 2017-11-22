@@ -35,28 +35,33 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.BlueVoice.ASRServices;
+package com.st.BlueMS.demos.SDLog;
 
-import android.content.Context;
+import com.st.BlueSTSDK.Feature;
 
-import com.st.BlueMS.demos.BlueVoice.ASRServices.GoogleASR.GoogleASREngine;
+import java.util.List;
+import java.util.Set;
 
-import java.util.Locale;
+public interface SDLogContract {
 
-/**
- * ASR Engine Factory class that returns a specific ASR Engine depending on the criteria that has
- * been supplied, in this case the selected language.
- */
-public class ASREngineFactory {
-
-    /**
-     * Factory constructor to create a criteria-selected Engine.
-     * @param context current context.
-     * @param language {@link Locale} selected language.
-     * @return the selected ASR Engine or null if parameters doesn't match any possible
-     * criteria-defined situations.
-     */
-    public static ASREngine getASREngine(Context context, Locale language){
-        return new GoogleASREngine(context,language);
+    interface View{
+        void setSelectedFeature(Set<Feature> features);
+        Set<Feature> getSelectedFeature();
+        void displayStopLoggingView();
+        void displayStartLoggingView(List<Feature> availableFeature);
+        void displayDisableLoggingView();
+        long getLogInterval();
+        void setLogInterval(long seconds);
+        void displayIOErrorLoggingView();
+        void displayNoSDCardErrorLoggingView();
     }
+
+
+    interface Presenter{
+        void startDemo();
+        void stopDemo();
+
+        void onStartStopLogPressed();
+    }
+
 }

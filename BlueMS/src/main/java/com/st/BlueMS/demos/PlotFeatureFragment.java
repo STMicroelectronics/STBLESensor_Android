@@ -39,7 +39,6 @@ package com.st.BlueMS.demos;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -61,10 +60,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.androidplot.ui.SizeLayoutType;
+import com.androidplot.ui.SizeMetric;
 import com.androidplot.ui.SizeMetrics;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYLegendWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
@@ -75,7 +76,6 @@ import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureActivity;
 import com.st.BlueSTSDK.Features.FeatureCompass;
 import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
-import com.st.BlueSTSDK.Features.FeatureFreeFall;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
 import com.st.BlueSTSDK.Features.FeatureHumidity;
 import com.st.BlueSTSDK.Features.FeatureLuminosity;
@@ -175,7 +175,6 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
                         FeatureDirectionOfArrival.DATA_MIN, 37));
         sKnowFeatureBoundary.put(FeaturePressure.class, new PlotBoundary(1060.0f, 960, 11));
         sKnowFeatureBoundary.put(FeatureTemperature.class, new PlotBoundary(50.0f, 0.0f, 11));
-        sKnowFeatureBoundary.put(FeatureFreeFall.class, new PlotBoundary(2,0,3));
         sKnowFeatureBoundary.put(FeatureActivity.class, new PlotBoundary(FeatureActivity.DATA_MAX,
                 FeatureActivity.DATA_MIN,
                 (int)(FeatureActivity.DATA_MAX-FeatureActivity.DATA_MIN+1)));
@@ -305,7 +304,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
          * @param dataTimeMs x coordinate used for plot the data
          * @param f data that we  have to insert in the plot
          */
-        public void addValueToPlot(long dataTimeMs,Feature f,Feature.Sample sample){
+        void addValueToPlot(long dataTimeMs,Feature f,Feature.Sample sample){
             if(!isRunning()) //avoid to update if the fragment isn't show
                 return;
 
@@ -358,20 +357,17 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
 
             mPlotDataLock.unlock();
 
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if(mFeatureText!=null) mFeatureText.setText(dataString);
-                        //replot the plot with the new data
-                        mPlotDataLock.lock();
-                        mChart.redraw();
-                    } catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    } finally {
-                        mPlotDataLock.unlock();
-                    }
+            updateGui(() -> {
+                try {
+                    if(mFeatureText!=null) mFeatureText.setText(dataString);
+                    //replot the plot with the new data
+                    mPlotDataLock.lock();
+                    mChart.redraw();
+                } catch (NullPointerException e) {
+                    //this exception can happen when the task is run after the fragment is
+                    // destroyed
+                } finally {
+                    mPlotDataLock.unlock();
                 }
             });
         }
@@ -380,7 +376,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
          * change the of items inside the feature
          * @param nItem number of data plotted
          */
-        public void setFeatureNItems(int nItem){
+        void setFeatureNItems(int nItem){
             mNItem = nItem;
         }
 
@@ -389,12 +385,8 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
             long timestamp = sample.timestamp;
             if(mNItem <0 || f.getFieldsDesc().length!=mNItem){
                 setFeatureNItems(f.getFieldsDesc().length);
-                updateGui(new Runnable() {
-                    @Override
-                    public void run() {
-                        prepareChartForFeature(f);
-                    }//run
-                });
+                //run
+                updateGui(() -> prepareChartForFeature(f));
             }//if
             addValueToPlot(timestamp*TIMESTAMP_TO_MS, f,sample);
             Message m = mAddNewData.obtainMessage(mPlotId.get(),timestamp*TIMESTAMP_TO_MS);
@@ -421,15 +413,45 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
 
     }
 
+    private static void setPlotSizes(XYPlot plot, Resources res){
+
+        XYGraphWidget graph = plot.getGraphWidget();
+        graph.setMarginTop(res.getDimension(R.dimen.plot_margin_top));
+        graph.setMarginBottom(res.getDimension(R.dimen.plot_margin_bottom));
+        graph.setMarginLeft(res.getDimension(R.dimen.plot_margin_left));
+        graph.getRangeLabelPaint()
+                .setTextSize(res.getDimension(R.dimen.range_tick_label_font_size));
+        graph.getRangeOriginLabelPaint()
+                .setTextSize(res.getDimension(R.dimen.range_tick_label_font_size));
+        graph.getDomainLabelPaint()
+                .setTextSize(res.getDimension(R.dimen.domain_tick_label_font_size));
+        graph.getDomainOriginLabelPaint()
+                .setTextSize(res.getDimension(R.dimen.domain_tick_label_font_size));
+
+        plot.getDomainLabelWidget().getLabelPaint().setTextSize(res.getDimension(R.dimen.domain_label_font_size));
+        plot.getRangeLabelWidget().getLabelPaint().setTextSize(res.getDimension(R.dimen.range_label_font_size));
+
+        XYLegendWidget legend = plot.getLegendWidget();
+        legend.getTextPaint().setTextSize(res.getDimension(R.dimen.legend_text_font_size));
+        legend.getIconSizeMetrics().setHeightMetric(
+                new SizeMetric(res.getDimension(R.dimen.legend_icon_size),SizeLayoutType.ABSOLUTE));
+        legend.getIconSizeMetrics().setWidthMetric(
+                new SizeMetric(res.getDimension(R.dimen.legend_icon_size),SizeLayoutType.ABSOLUTE));
+        float padding = res.getDimension(R.dimen.legend_box_padding);
+        legend.setPadding(padding,padding,padding,padding);
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_plot_feature, container, false);
 
-        mChart = (XYPlot) root.findViewById(R.id.chart);
-        mFeatureSelector = (Spinner) root.findViewById(R.id.featureSelector);
-        mFeatureText = (TextView) root.findViewById(R.id.featureValue);
-        mStartPlotButton = (ImageButton) root.findViewById(R.id.startPlotButton);
+        mChart = root.findViewById(R.id.chart);
+        setPlotSizes(mChart,getResources());
+        mFeatureSelector = root.findViewById(R.id.featureSelector);
+        mFeatureText = root.findViewById(R.id.featureValue);
+        mStartPlotButton = root.findViewById(R.id.startPlotButton);
         mStartPlotButton.setOnClickListener(this);
         mStartPlotButton.setEnabled(false);
 
@@ -701,21 +723,19 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
 
         final List<Feature> plottableFeature = filterPlottableFeature(node.getFeatures());
 
-        updateGui(new Runnable() {
-            @Override
-            public void run() {
-                mFeatureSelector.setAdapter(new FeatureArrayAdapter(getActivity(), plottableFeature));
-                mFeatureSelector.setSelection(mFeatureSelectorSelectedIndex);
-                mFeatureSelector.setOnItemSelectedListener(PlotFeatureFragment.this);
-                mStartPlotButton.setEnabled(true);
-                //if this method is called after that the activity is recreated, we check if we were
-                // plotting something, we restore the previous state
-                if (mIsPlotting) {
-                    restoreGui();
-                    mPlotFeature.addFeatureListener(mPlotFeatureValue);
-                    node.enableNotification(mPlotFeature);
-                }
-            }//run
+        //run
+        updateGui(() -> {
+            mFeatureSelector.setAdapter(new FeatureArrayAdapter(getActivity(), plottableFeature));
+            mFeatureSelector.setSelection(mFeatureSelectorSelectedIndex);
+            mFeatureSelector.setOnItemSelectedListener(PlotFeatureFragment.this);
+            mStartPlotButton.setEnabled(true);
+            //if this method is called after that the activity is recreated, we check if we were
+            // plotting something, we restore the previous state
+            if (mIsPlotting) {
+                restoreGui();
+                mPlotFeature.addFeatureListener(mPlotFeatureValue);
+                node.enableNotification(mPlotFeature);
+            }
         });
     }
 
@@ -751,15 +771,21 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
          * @param parent view where the class will insert the view that we create
          * @return view that represent the feature
          */
+        @NonNull
         @Override
-        public View getView(int position,  View v, ViewGroup parent) {
+        public View getView(int position, View v, @NonNull ViewGroup parent) {
 
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if(inflater==null){
+                    throw new IllegalStateException("Impossible to allocate a new view");
+                }
                 v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             }//else
 
-            ((TextView) v).setText(getItem(position).getName());
+            Feature f = getItem(position);
+            if(f!=null)
+                ((TextView) v).setText(f.getName());
 
             return v;
         }
@@ -777,23 +803,22 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
     private AlertDialog buildMaxSampleDialog(){
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setTitle(R.string.selectMaxSamples);
+        //onClick
         dialog.setItems(R.array.availableMaxSamplesString,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        int[] maxSample = getResources().getIntArray(R.array
-                                .availableMaxSamplesValues);
+                (dialog1, which) -> {
+                    int[] maxSample = getResources().getIntArray(R.array
+                            .availableMaxSamplesValues);
 
-                        //if we increase the number of sample, or the boundary is not initialize
-                        //use the fixed size for the x axis
-                        if (maxSample[which] > mMaxPlotLengthMs || mBoundaryMode==null) {
-                            mBoundaryMode = BoundaryMode.FIXED;
-                        }
-                        mMaxPlotLengthMs = maxSample[which];
-                        Number origin =mChart.getDomainOrigin();
-                        mChart.setDomainBoundaries(origin, BoundaryMode.AUTO,
-                                origin.longValue() + mMaxPlotLengthMs,
-                                mBoundaryMode);
-                    }//onClick
+                    //if we increase the number of sample, or the boundary is not initialize
+                    //use the fixed size for the x axis
+                    if (maxSample[which] > mMaxPlotLengthMs || mBoundaryMode==null) {
+                        mBoundaryMode = BoundaryMode.FIXED;
+                    }
+                    mMaxPlotLengthMs = maxSample[which];
+                    Number origin =mChart.getDomainOrigin();
+                    mChart.setDomainBoundaries(origin, BoundaryMode.AUTO,
+                            origin.longValue() + mMaxPlotLengthMs,
+                            mBoundaryMode);
                 }//DialogInterface
         );
         return dialog.create();

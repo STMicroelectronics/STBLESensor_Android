@@ -44,7 +44,7 @@ import android.util.Log;
 
 import com.st.BlueMS.demos.Cloud.AzureIot.util.ConnectionParameters;
 import com.st.BlueMS.demos.Cloud.AzureIot.util.Signature;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
@@ -59,15 +59,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 
-public class AzureIotFactory implements MqttClientConnectionFactory {
+public class AzureIotFactory extends MqttClientConnectionFactory {
     //https://github.com/Microsoft/azure-docs/blob/master/articles/iot-hub/iot-hub-mqtt-support.md
     private static long getCurrentUnixTime(){
         return System.currentTimeMillis()/1000L;
@@ -90,8 +88,10 @@ public class AzureIotFactory implements MqttClientConnectionFactory {
 
 
     @Override
-    public MqttAndroidClient createClient(Context ctx) {
-        return  new MqttAndroidClient(ctx,getMqttHost(),mParam.deviceId);
+    public CloutIotClient createClient(Context ctx) {
+        return new MqttClient(
+            new MqttAndroidClient(ctx,getMqttHost(),mParam.deviceId)
+        );
     }
 
     private String getMqttHost(){
@@ -99,26 +99,18 @@ public class AzureIotFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public IMqttToken connect(final Context ctx, final IMqttAsyncClient client,
-                              final IMqttActionListener connectionListener)
-            throws MqttException, IOException, GeneralSecurityException {
+    public boolean connect(Context ctx, CloutIotClient connection,
+                           final ConnectionListener connectionListener)
+            throws Exception {
+
+        IMqttAsyncClient client = extractMqttClient(connection);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(true);
         options.setUserName(getMqttUser());
         options.setPassword(getMqttPassword().toCharArray());
 
-        return client.connect(options, ctx, new IMqttActionListener() {
-            @Override
-            public void onSuccess(IMqttToken asyncActionToken) {
-                connectionListener.onSuccess(asyncActionToken);
-            }
-
-            @Override
-            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                connectionListener.onFailure(asyncActionToken,exception);
-            }
-        });
+        return client.connect(options, ctx, buildMqttListener(connectionListener))!=null;
     }
 
     private String getMqttUser(){
@@ -134,8 +126,8 @@ public class AzureIotFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(IMqttAsyncClient broker) {
-        return new AzureIotMqttLogger(broker,mParam.deviceId);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker) {
+        return new AzureIotMqttLogger(extractMqttClient(broker),mParam.deviceId);
     }
 
     @Nullable
@@ -150,7 +142,7 @@ public class AzureIotFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient cloudConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(Node node, CloutIotClient cloudConnection, FwUpgradeAvailableCallback callback) {
         return false;
     }
 

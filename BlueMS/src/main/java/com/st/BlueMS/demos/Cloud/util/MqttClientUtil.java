@@ -43,11 +43,32 @@ import android.util.Log;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Features.FeatureAcceleration;
+import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
+import com.st.BlueSTSDK.Features.FeatureActivity;
+import com.st.BlueSTSDK.Features.FeatureCompass;
+import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
+import com.st.BlueSTSDK.Features.FeatureGyroscope;
+import com.st.BlueSTSDK.Features.FeatureHumidity;
+import com.st.BlueSTSDK.Features.FeatureLuminosity;
+import com.st.BlueSTSDK.Features.FeatureMagnetometer;
+import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
+import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
+import com.st.BlueSTSDK.Features.FeatureMicLevel;
+import com.st.BlueSTSDK.Features.FeatureMotionIntensity;
+import com.st.BlueSTSDK.Features.FeaturePedometer;
+import com.st.BlueSTSDK.Features.FeaturePressure;
+import com.st.BlueSTSDK.Features.FeatureProximity;
+import com.st.BlueSTSDK.Features.FeatureTemperature;
+import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
@@ -84,5 +105,35 @@ public class MqttClientUtil {
         return sslContext.getSocketFactory();
     }
 
+    public static String getPublishTopic(String clientId,String featureName, String fieldName) {
+        return (clientId+"/"+featureName+"/"+fieldName).toLowerCase()
+                .replace(' ', '_')
+                .replace("(","")
+                .replace(")","");
+    }
+
+    public static boolean isSupportedFeature(Feature f){
+        return SUPPORTED_FEATURES.contains(f.getClass());
+    }
+
+    private static final List<Class<? extends Feature>> SUPPORTED_FEATURES = Arrays.asList(
+            FeatureAcceleration.class,
+            FeatureAccelerationEvent.class,
+            FeatureActivity.class,
+            FeatureCompass.class,
+            FeatureDirectionOfArrival.class,
+            FeatureGyroscope.class,
+            FeatureHumidity.class,
+            FeatureLuminosity.class,
+            FeatureMagnetometer.class,
+            FeatureMemsSensorFusionCompact.class,
+            FeatureMemsSensorFusion.class,
+            FeatureMicLevel.class,
+            FeatureMotionIntensity.class,
+            FeaturePedometer.class,
+            FeatureProximity.class,
+            FeaturePressure.class,
+            FeatureTemperature.class
+    );
 
 }

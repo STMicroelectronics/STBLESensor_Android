@@ -35,66 +35,74 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.BlueVoice.util;
+package com.st.BlueMS.demos.Cloud.util;
 
-import java.nio.ByteOrder;
+import android.net.Uri;
+import android.support.annotation.Nullable;
+
+import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
+import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Node;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 /**
- * Utility class used to conversion from Shorts to Bytes
+ * Created by giovannivisentini on 19/10/2017.
  */
 
-public abstract class BytesConverterUtil {
+public abstract class MqttClientConnectionFactory implements CloutIotClientConnectionFactory {
 
-    /**
-     * Endianness check.
-     * @return currently adopted endianness.
-     */
-    private static boolean testCPU() {
-        return ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN;
-    }
+    protected class MqttClient implements CloutIotClient{
+        public final MqttAndroidClient mqtt;
 
-    /**
-     * Get a two bytes array from a short with the selected endianness.
-     * @param s the short to be converted.
-     * @param bBigEnding true: big endian, false: little endian.
-     * @return the converted short (byte[2]).
-     */
-    private static byte[] getBytes(short s, boolean bBigEnding) {
-        byte[] buf = new byte[2];
-        if (bBigEnding)
-            for (int i = buf.length - 1; i >= 0; i--) {
-                buf[i] = (byte) (s & 0x00ff);
-                s >>= 8;
-            }
-        else
-            for (int i = 0; i < buf.length; i++) {
-                buf[i] = (byte) (s & 0x00ff);
-                s >>= 8;
-            }
-        return buf;
-    }
-
-    /**
-     * Get two bytes from a short.
-     * @param s the short to be converted.
-     * @return the two bytes array obtained from the short conversion.
-     */
-    private static byte[] getBytes(short s) {
-        return getBytes(s, testCPU());
-    }
-
-    /**
-     * It Converts a short[] into a byte[].
-     * @param s the input short array.
-     * @return the desidered byte array (which have length 2*short length).
-     */
-    public static byte[] Shorts2Bytes(short[] s) {
-        byte bLength = 2;
-        byte[] buf = new byte[s.length * bLength];
-        for (int i = 0; i < s.length; i++) {
-            byte[] temp = getBytes(s[i]);
-            System.arraycopy(temp, 0, buf, i * bLength, bLength);
+        public MqttClient(MqttAndroidClient client) {
+            this.mqtt = client;
         }
-        return buf;
+    }
+
+    protected static MqttAndroidClient extractMqttClient(CloutIotClient client){
+        if(client==null || !(client instanceof MqttClient))
+            return null;
+        return ((MqttClient) client).mqtt;
+    }
+
+    protected static IMqttActionListener buildMqttListener(final ConnectionListener listener){
+        return  new IMqttActionListener() {
+            @Override
+            public void onSuccess(IMqttToken asyncActionToken) {
+                listener.onSuccess();
+            }
+
+            @Override
+            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                listener.onFailure(exception);
+            }
+        };
+    }
+
+    @Override
+    public void disconnect(CloutIotClient client) throws Exception {
+        MqttAndroidClient mqttClient = extractMqttClient(client);
+        if (mqttClient != null) {
+            mqttClient.disconnect();
+        }
+    }
+
+    @Override
+    public void destroy(CloutIotClient client) {
+        MqttAndroidClient mqttClient = extractMqttClient(client);
+        if (mqttClient != null) {
+            mqttClient.close();
+            mqttClient.unregisterResources();
+        }
+    }
+
+    @Override
+    public boolean isConnected(CloutIotClient client) {
+        MqttAndroidClient mqttClient = extractMqttClient(client);
+        return (mqttClient!= null && mqttClient.isConnected());
     }
 }

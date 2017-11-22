@@ -39,7 +39,7 @@
 
     <header
         android:key = "device_preference_header"
-        android:fragment="com.st.BlueMS.demos.wesu.preferences.STWeSUDevicePreferenceFragment"
+        android:fragment="com.st.BlueMS.preference.wesu.STWeSUDevicePreferenceFragment"
         android:title="@string/config_title"
         android:summary="@string/config_summary"/>
 

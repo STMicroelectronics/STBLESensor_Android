@@ -42,26 +42,22 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 /**
  * create a connection to a generic mqtt broker
  */
-public class GenericMqttFactory implements MqttClientConnectionFactory {
+class GenericMqttFactory extends MqttClientConnectionFactory {
 
     /**
      * brocker url: protocol://url:port
@@ -75,11 +71,11 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
      * cretate a mqtt connection
      * @param url broker url: protocol://address
      * @param port broker port
-     * @param clientId client id (can be empty/null)
+     * @param clientId mqtt id (can be empty/null)
      * @param user connection user (can be empty/null)
      * @param password connection password (can be empty/null)
      */
-    public GenericMqttFactory(String url, String port, @Nullable String clientId,
+    GenericMqttFactory(String url, String port, @Nullable String clientId,
                               @Nullable String user, @Nullable String password){
         mBroker = url+":"+port;
         mClientId = clientId==null ? "" : clientId;
@@ -89,13 +85,18 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
 
 
     @Override
-    public MqttAndroidClient createClient(Context ctx) {
-        return new MqttAndroidClient(ctx, mBroker,mClientId);
+    public CloutIotClient createClient(Context ctx) {
+        return new MqttClient(
+             new MqttAndroidClient(ctx, mBroker,mClientId)
+        );
     }
 
     @Override
-    public IMqttToken connect(Context ctx, IMqttAsyncClient client, IMqttActionListener connectionListener)
-            throws MqttException, IOException, GeneralSecurityException {
+    public boolean connect(Context ctx, CloutIotClient connection,
+                           ConnectionListener connectionListener)
+            throws Exception {
+
+        IMqttAsyncClient client = extractMqttClient(connection);
 
 
         MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -107,12 +108,12 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
             connOpts.setPassword(mPassword.toCharArray());
         }
 
-        return client.connect(connOpts,connectionListener);
+        return client.connect(connOpts,buildMqttListener(connectionListener))!=null;
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(IMqttAsyncClient broker) {
-        return new GenericMqttFeatureListener(mClientId,broker);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker) {
+        return new GenericMqttFeatureListener(mClientId,extractMqttClient(broker));
     }
 
     @Nullable
@@ -123,11 +124,11 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
 
     @Override
     public boolean supportFeature(Feature f) {
-        return true;
+        return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient mqttConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(Node node, CloutIotClient mqttConnection, FwUpgradeAvailableCallback callback) {
         return false;
     }
 
@@ -136,7 +137,7 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
      * each update is published as a string in the topic:
      * ClientId/FeatureName/FieldName
      */
-    public static class GenericMqttFeatureListener implements Feature.FeatureListener {
+    private static class GenericMqttFeatureListener implements Feature.FeatureListener {
 
         private IMqttAsyncClient mBroker;
         private String mClientId;
@@ -146,17 +147,12 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
          * @param clientId name of the device that generate the data
          * @param client object where publish the data
          */
-        public GenericMqttFeatureListener(String clientId,IMqttAsyncClient client) {
+        GenericMqttFeatureListener(String clientId,IMqttAsyncClient client) {
             mBroker = client;
             mClientId=clientId;
         }
 
-        private String getPublishTopic(Feature f,Field field) {
-            return (mClientId+"/"+f.getName()+"/"+field.getName()).toLowerCase()
-                    .replace(' ', '_')
-                    .replace("(","")
-                    .replace(")","");
-        }
+
 
         @Override
         public void onUpdate(Feature f, Feature.Sample sample) {
@@ -166,8 +162,11 @@ public class GenericMqttFactory implements MqttClientConnectionFactory {
                 for(int i =0; i<data.length ; i++){
                     MqttMessage msg = new MqttMessage(data[i].toString().getBytes());
                     msg.setQos(0);
-                    if (mBroker.isConnected())
-                        mBroker.publish(getPublishTopic(f,fields[i]), msg);
+                    if (mBroker.isConnected()) {
+                        String topic = MqttClientUtil.getPublishTopic(mClientId,f.getName(),
+                                fields[i].getName());
+                        mBroker.publish(topic, msg);
+                    }
                 }
 
             } catch (MqttException | IllegalArgumentException e) {

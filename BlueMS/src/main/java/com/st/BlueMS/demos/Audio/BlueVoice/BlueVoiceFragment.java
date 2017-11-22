@@ -42,7 +42,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.media.AudioFormat;
@@ -51,6 +50,7 @@ import android.media.AudioTrack;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,9 +59,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -151,12 +149,7 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
                     if(mRecordedAudio.isFull()){
                         sendAsrRequest();
                     }
-                    updateGui(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRecordBar.setProgress(nRecordedSample);
-                        }
-                    });
+                    updateGui(() -> mRecordBar.setProgress(nRecordedSample));
                 }
             }
             else{
@@ -201,12 +194,9 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
     /**
      * listener for the audioSync feature, it will update the synchronism values
      */
-    private final Feature.FeatureListener mAudioSyncListener = new Feature.FeatureListener() {
-        @Override
-        public void onUpdate(Feature f, final Feature.Sample sample) {
-            if(mBVAudioSyncManager!=null){
-                mBVAudioSyncManager.setSyncParams(sample);
-            }
+    private final Feature.FeatureListener mAudioSyncListener = (f, sample) -> {
+        if(mBVAudioSyncManager!=null){
+            mBVAudioSyncManager.setSyncParams(sample);
         }
     };
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,45 +286,40 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
         mRootView = inflater.inflate(R.layout.fragment_bluevoice2, container, false);
 
         //NOTE audio plot //////////////////////////////////////////////////////////////////////////
-        mWaveformView = (WaveformView) mRootView.findViewById(R.id.waveform_view);
+        mWaveformView = mRootView.findViewById(R.id.waveform_view);
         //NOTE /////////////////////////////////////////////////////////////////////////////////////
 
         //NOTE beamforming /////////////////////////////////////////////////////////////////////////
-        mBeamformingSwitch = (Switch) mRootView.findViewById(R.id.beamformingValue);
+        mBeamformingSwitch = mRootView.findViewById(R.id.beamformingValue);
         setupBeamformingSwitch();
         //NOTE /////////////////////////////////////////////////////////////////////////////////////
 
         mAudioManager = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        mVolumeBar =(SeekBar) mRootView.findViewById(R.id.volumeValue);
+        mVolumeBar = mRootView.findViewById(R.id.volumeValue);
         setUpVolumeBar(mAudioManager.getStreamMaxVolume(AUDIO_STREAM));
 
-        mMuteButton = new ManageMuteButton((ImageButton) mRootView.findViewById(R.id.muteButton));
+        mMuteButton = new ManageMuteButton(mRootView.findViewById(R.id.muteButton));
 
-        TextView mSamplingRateValue = (TextView) mRootView.findViewById(R.id.samplingRateValue);
+        TextView mSamplingRateValue = mRootView.findViewById(R.id.samplingRateValue);
         mSamplingRateValue.setText(String.format(Locale.getDefault(),"%d kHz", AUDIO_SAMPLING_FREQ/1000));
 
-        mAsrStatus = (TextView) mRootView.findViewById(R.id.asrStatusValue);
+        mAsrStatus = mRootView.findViewById(R.id.asrStatusValue);
 
         mAsrView = mRootView.findViewById(R.id.card_view_asrResults);
-        mAsrResultListView = (AbsListView) mRootView.findViewById(R.id.asrResults);
+        mAsrResultListView = mRootView.findViewById(R.id.asrResults);
         setupResultListView();
 
-        mRecButton = (ImageButton) mRootView.findViewById(R.id.recordButton);
+        mRecButton = mRootView.findViewById(R.id.recordButton);
         setupRecordButton();
 
-        mRecordBar = (ProgressBar) mRootView.findViewById(R.id.recordTimeValue);
+        mRecordBar = mRootView.findViewById(R.id.recordTimeValue);
         mRecordBar.setIndeterminate(false);
-        mRecordBarText = (TextView) mRootView.findViewById(R.id.recordedTime);
-        mRequestStatus = (TextView) mRootView.findViewById(R.id.requestStatus);
+        mRecordBarText = mRootView.findViewById(R.id.recordedTime);
+        mRequestStatus = mRootView.findViewById(R.id.requestStatus);
 
         mAsrSnackbar = Snackbar.make(mRootView, R.string.blueVoice_loadAsrKey,Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.blueVoice_addKeyButton, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        displayAuthKeyDialog();
-                    }
-                });
+                .setAction(R.string.blueVoice_addKeyButton, view -> displayAuthKeyDialog());
 
         if(savedInstanceState!=null){
             restoreGuiStatus(savedInstanceState);
@@ -345,13 +330,10 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
     //NOTE beamforming /////////////////////////////////////////////////////////////////////////////
     private void setupBeamformingSwitch() {
-        mBeamformingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(mAudioBeamforming!=null) {
-                    mAudioBeamforming.enableBeamForming(isChecked);
-                    mAudioBeamforming.setBeamFormingDirection(DEFAULT_BEAM_FORMING_DIRECTION);
-                }
+        mBeamformingSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(mAudioBeamforming!=null) {
+                mAudioBeamforming.enableBeamForming(isChecked);
+                mAudioBeamforming.setBeamFormingDirection(DEFAULT_BEAM_FORMING_DIRECTION);
             }
         });
     }
@@ -368,70 +350,92 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
         mAsrResultsAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_1,mAsrResults);
         mAsrResultListView.setAdapter(mAsrResultsAdapter);
-        mAsrResultListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String res = mAsrResults.remove(i);
-                mAsrResultsAdapter.notifyDataSetChanged();
-                return !res.isEmpty();
-            }
+        mAsrResultListView.setOnItemLongClickListener((adapterView, view, i, l) -> {
+            String res = mAsrResults.remove(i);
+            mAsrResultsAdapter.notifyDataSetChanged();
+            return !res.isEmpty();
         });
     }
 
-    private void setupRecordButton() {
-        mRecButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                int action = motionEvent.getActionMasked();
-                if(mAsrEngine.hasContinuousRecognizer()) {
-                    if (action == MotionEvent.ACTION_DOWN) {
-                        int color;
-                        if(!mIsRecording){
-                            mRequestStatus.setText("");
-                            mIsRecording = true;
-                            mAsrEngine.startListener();
-                            color = getResources().getColor(R.color.blueVoice_continusStreamingButtonColor);
-                        }else{
-                            mIsRecording = false;
-                            color = getResources().getColor(R.color.colorAccent);
-                        }
-                        mRecButton.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-
-                        return true;
-                    }
-                } else {
-                    if (action == MotionEvent.ACTION_DOWN && !mIsRecording) {
-                        mRecordedAudio = new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S);
-                        mRecordBar.setMax(mRecordedAudio.getBufferLength());
-                        mRequestStatus.setText(R.string.blueVoice_recording);
-                        mRecordBar.setVisibility(View.VISIBLE);
-                        mRecordBarText.setVisibility(View.VISIBLE);
-                        mIsRecording = true;
-                        return true;
-                    }
-                    if ((action == MotionEvent.ACTION_UP ||
-                            action == MotionEvent.ACTION_CANCEL ) && mIsRecording) {
-                        mIsRecording = false;
-                        sendAsrRequest();
-                        return true;
-                    }
+    private ASREngine.ASRConnectionCallback mEngineConnectionCallback = new ASREngine.ASRConnectionCallback() {
+        @Override
+        public void onEngineStart() {
+            mIsRecording=true;
+            updateGui(() ->{
+                if(isAdded()) {
+                    mRequestStatus.setText(R.string.blueVoice_connected);
+                    int color = getResources().getColor(R.color.blueVoice_continusStreamingButtonColor);
+                    mRecButton.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                 }
-                return false;
+            });
+        }
+
+        @Override
+        public void onEngineFail(Throwable e) {
+            onEngineStop();
+            updateGui(()->{
+                if(isAdded())
+                    mRequestStatus.setText(e.getLocalizedMessage());
+            });
+        }
+
+        @Override
+        public void onEngineStop() {
+            mIsRecording=false;
+            updateGui(()->{
+                if(isAdded()) {
+                    mRequestStatus.setText("");
+                    int color = getResources().getColor(R.color.colorAccent);
+                    mRecButton.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                }
+            });
+        }
+    };
+
+    private void setupRecordButton() {
+        mRecButton.setOnTouchListener((view, motionEvent) -> {
+            int action = motionEvent.getActionMasked();
+            boolean returnValue = false;
+            if(mAsrEngine.hasContinuousRecognizer()) {
+                if (action == MotionEvent.ACTION_DOWN) {
+                    if(!mIsRecording){
+                        mRequestStatus.setText(R.string.blueVoice_connecting);
+                        mAsrEngine.startListener(mEngineConnectionCallback);
+                    }else{
+                        mAsrEngine.stopListener(mEngineConnectionCallback);
+                    }
+                    returnValue=true;
+                }
+            } else {
+                if (action == MotionEvent.ACTION_DOWN && !mIsRecording) {
+                    mRecordedAudio = new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S);
+                    mRecordBar.setMax(mRecordedAudio.getBufferLength());
+                    mRequestStatus.setText(R.string.blueVoice_recording);
+                    mRecordBar.setVisibility(View.VISIBLE);
+                    mRecordBarText.setVisibility(View.VISIBLE);
+                    mIsRecording = true;
+                    returnValue = true;
+                }
+                if ((action == MotionEvent.ACTION_UP ||
+                        action == MotionEvent.ACTION_CANCEL ) && mIsRecording) {
+                    mIsRecording = false;
+                    sendAsrRequest();
+                    returnValue = true;
+                }
             }
+            view.performClick();
+            return returnValue;
         });
     }
 
     void sendAsrRequest(){
         mAsrEngine.sendASRRequest(mRecordedAudio,this);
         mRecordedAudio = mIsRecording ? new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S) : null;
-        updateGui(new Runnable() {
-            @Override
-            public void run() {
-                mRecordBar.setVisibility(View.GONE);
-                mRecordBarText.setVisibility(View.GONE);
-                mRequestStatus.setText(R.string.blueVoice_sendRequest);
-                mRecordBar.setProgress(0);
-            }
+        updateGui(() -> {
+            mRecordBar.setVisibility(View.GONE);
+            mRecordBarText.setVisibility(View.GONE);
+            mRequestStatus.setText(R.string.blueVoice_sendRequest);
+            mRecordBar.setProgress(0);
         });
     }
 
@@ -593,7 +597,7 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
             node.disableNotification(mAudio);
             mWaveformView.stopPlotting();
             if(mAsrEngine.hasContinuousRecognizer())
-                mAsrEngine.stopListener();
+                mAsrEngine.stopListener(mEngineConnectionCallback);
 
         }
         if(mAudioSync!=null) {
@@ -610,13 +614,7 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
             mAsrSnackbar.dismiss();
 
 
-        //updateGui(this::disableASR);
-        updateGui(new Runnable() {
-            @Override
-            public void run() {
-                disableASR();
-            }
-        });
+        updateGui(this::disableASR);
     }//disableNeedNotification
 
     private void stopAudioTrack(){
@@ -641,15 +639,12 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
         if(mAsrEngine.hasLoadedAuthKey()) {
             mAsrSnackbar.dismiss();
             final String enableValue = getResources().getString(R.string.blueVoice_asrEnabled,mAsrEngine.getName());
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    //we are online and we have the asr key
-                    mAsrView.setVisibility(View.VISIBLE);
-                    mRequestStatus.setVisibility(View.VISIBLE);
-                    mRecButton.setVisibility(View.VISIBLE);
-                    mAsrStatus.setText(enableValue);
-                }
+            updateGui(() -> {
+                //we are online and we have the asr key
+                mAsrView.setVisibility(View.VISIBLE);
+                mRequestStatus.setVisibility(View.VISIBLE);
+                mRecButton.setVisibility(View.VISIBLE);
+                mAsrStatus.setText(enableValue);
             });
         } else {
             mAsrSnackbar.show();
@@ -689,21 +684,27 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
     @Override
     public void onAsrResponse(String text) {
-        //Log.d(TAG, "onAsrResponse: Resp:" + text);
-        if(text!=null) {
-            mAsrResultsAdapter.insert(text, 0);
-            mRequestStatus.setText("");
-        }
+        updateGui(() -> {
+            //Log.d(TAG, "onAsrResponse: Resp:" + text);
+            if(text!=null) {
+                mAsrResultsAdapter.insert(text, 0);
+                mRequestStatus.setText("");
+            }
+        });
+
     }
 
     @Override
     public void onAsrResponseError(@ASRMessage.Status int errorType){
-        if(getActivity()!=null)
-            mRequestStatus.setText(ASRMessage.getMessage(getActivity(),errorType));
-        if(mAsrEngine.hasContinuousRecognizer()){
-            mIsRecording = false;
-            mRecButton.getBackground().clearColorFilter();
-        }
+        updateGui(() -> {
+            if(getActivity()!=null)
+                mRequestStatus.setText(ASRMessage.getMessage(getActivity(),errorType));
+            if(mAsrEngine.hasContinuousRecognizer()){
+                mIsRecording = false;
+                mRecButton.getBackground().clearColorFilter();
+            }
+        });
+
     }
 
     /**
@@ -735,13 +736,12 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
         boolean isMute(){return mIsMute;}
 
-        boolean changeState(){
+        void changeState(){
             mIsMute=!mIsMute;
             if(mIsMute)
                 muteAudio();
             else
                 unMuteAudio();
-            return mIsMute;
         }
 
         private void muteAudio(){
@@ -772,19 +772,10 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
             String[] supportedLangs = ASRLanguage.getSupportedLanguages(activity);
 
             int selectedLang = loadSelectedLanguage(activity);
-            /*
-            builder.setSingleChoiceItems(supportedLangs,selectedLang,
-                    (DialogInterface dialogInterface, int i)-> {
+
+            builder.setSingleChoiceItems(supportedLangs, selectedLang, (dialogInterface, i) -> {
                 storeSelectedLanguage(getActivity(),i);
                 dialogInterface.dismiss();
-            });
-            */
-            builder.setSingleChoiceItems(supportedLangs, selectedLang, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    storeSelectedLanguage(getActivity(),i);
-                    dialogInterface.dismiss();
-                }
             });
 
             builder.setNegativeButton(android.R.string.cancel,null);

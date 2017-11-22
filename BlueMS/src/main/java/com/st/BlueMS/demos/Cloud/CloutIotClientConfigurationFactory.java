@@ -35,55 +35,42 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.BlueVoice.ASRServices.GoogleASR;
+package com.st.BlueMS.demos.Cloud;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.view.ViewGroup;
+
+import com.st.BlueSTSDK.Node;
 
 /**
- * Class containing the api key to use the Google Speech API
+ * Interface used for build the configuration gui for a mqtt broker
  */
-public class GoogleASRKey {
-    private static final int KEY_LENGTH=39;
-    private static final String PREF_NAME = GoogleASRKey.class.getCanonicalName();
-    private static final String PREF_KEY = PREF_NAME+".ASR_KEY";
+public interface CloutIotClientConfigurationFactory {
 
-    private String key;
+    /**
+     * add the configuration element to the gui
+     * @param c context to use for load the view
+     * @param root container where add the view
+     */
+    void attachParameterConfiguration(Context c, ViewGroup root);
 
-    public static @Nullable
-    GoogleASRKey loadKey(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
-        String key = pref.getString(PREF_KEY, null);
-        if (key != null)
-            try {
-                return new GoogleASRKey(key);
-            } catch (IllegalArgumentException e){
-                return null;
-            }
-        else
-            return null;
-    }
+    /**
+     * set the default data for the configuration
+     * @param n node that will send the data to the boker
+     */
+    void loadDefaultParameters(@Nullable Node n);
 
-    private static void checkValidKey(String key) throws IllegalArgumentException{
-        if(key.length()!=KEY_LENGTH)
-            throw new IllegalArgumentException("Illegal key length");
-    }
+    /**
+     * mqtt service name
+     * @return name of the service that will be configurate
+     */
+    String getName();
 
-    public GoogleASRKey(CharSequence k) throws IllegalArgumentException{
-        String temp = k.toString().trim();
-        checkValidKey(temp);
-        key=temp;
-    }
-
-    public String getKey(){
-        return key;
-    }
-
-    public void store(Context context){
-        SharedPreferences pref = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
-        pref.edit()
-                .putString(PREF_KEY,key)
-                .apply();
-    }
+    /**
+     * get a factory that use the configuration parameter for open a connection
+     * @return object that can be used for open a connection
+     * @throws IllegalArgumentException if some parameters needed for build the factory is wrong/missing
+     */
+    CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException;
 }

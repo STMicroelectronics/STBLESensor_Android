@@ -60,8 +60,8 @@ android {
     defaultConfig {
         //19 since we need the setpin api
         minSdkVersion 19
-        versionCode 13
-        versionName '3.6'
+        versionCode 17
+        versionName '3.7'
         applicationId "com.st.bluems"
         targetSdkVersion rootProject.ext.targetSdkVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -72,7 +72,7 @@ android {
             //signingConfig signingConfigs.config
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro','../BlueSTSDK/BlueSTSDK/proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', '../BlueSTSDK/BlueSTSDK/proguard-rules.pro'
         }
         debug {
             applicationIdSuffix ".debug"
@@ -90,7 +90,6 @@ android {
 
     }
 
-
     //to use until all the string doesn't have a chinese translation
     lintOptions {
         checkReleaseBuilds false
@@ -99,37 +98,53 @@ android {
         abortOnError false
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
-    compile project(':BlueSTSDK')
-    compile project(':BlueSTSDK_Gui_Android')
+    implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation project(':BlueSTSDK')
+    implementation project(':BlueSTSDK_Gui_Android')
 
-    compile "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
-    compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:gridlayout-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:support-v13:$rootProject.supportLibraryVersion"
-    compile "com.android.support:design:$rootProject.supportLibraryVersion"
-
+    implementation group: 'com.android.support', name: 'design', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'support-v13', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'gridlayout-v7', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'appcompat-v7', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'cardview-v7', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
 
     //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
-    compile 'com.google.android.gms:play-services-base:11.0.2'
+    implementation group: 'com.google.android.gms', name: 'play-services-base', version: '11.6.0'
 
     //necessary to cloud demo, for mqtt connection
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-    compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+    implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.1.1'
+
+    //amazon aws iot
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: '2.6.5'
 
     testCompile 'org.json:json:20140107' //since the json lib is inside the android sdk
     testCompile "junit:junit:$rootProject.junitVersion"
     testCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
 
+    // ibm speach to text
+    implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '4.0.0'
+
+
+    testImplementation group: 'org.json', name: 'json', version: '20140107'
+    //since the json lib is inside the android sdk
+    testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"
+
     //memory leak detector
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: '1.5.4'
+    releaseImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: '1.5.4'
+    testImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: '1.5.4'
 
     //androidTestCompile "junit:junit:$rootProject.junitVersion"
     //androidTestCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
@@ -139,5 +154,4 @@ dependencies {
 
     //androidTestCompile ('com.crittercism.dexmaker:dexmaker-mockito:1.4');
     //androidTestCompile ("com.crittercism.dexmaker:dexmaker-dx:1.4");
-
 }

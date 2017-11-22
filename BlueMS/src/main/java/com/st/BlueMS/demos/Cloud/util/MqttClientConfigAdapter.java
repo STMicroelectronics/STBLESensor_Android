@@ -44,21 +44,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
 
 import java.util.List;
 
 /**
- * Adapter that show a list MqttClientConfigurationFactory, for each factory the name will be displayed
+ * Adapter that show a list CloutIotClientConfigurationFactory, for each factory the name will be displayed
  */
-public class MqttClientConfigAdapter extends ArrayAdapter<MqttClientConfigurationFactory> {
+public class MqttClientConfigAdapter extends ArrayAdapter<CloutIotClientConfigurationFactory> {
 
     /**
      * create an adapter
      * @param c context to use for load the data
      * @param data list of factory that the adapter will manage
      */
-    public MqttClientConfigAdapter(Context c, List<MqttClientConfigurationFactory> data) {
+    public MqttClientConfigAdapter(Context c, List<CloutIotClientConfigurationFactory> data) {
         super(c, android.R.layout.simple_list_item_1, data);
     }
 
@@ -69,12 +69,12 @@ public class MqttClientConfigAdapter extends ArrayAdapter<MqttClientConfiguratio
     }
 
     /**
-     * create a view for a specific MqttClient
+     * create a view for a specific CloutIotClient
      *
-     * @param position client position
+     * @param position mqtt position
      * @param v        if not null we can use this view instead of create create a new one
      * @param parent   view where the class will insert the view that we create
-     * @return view that represent the client
+     * @return view that represent the mqtt
      */
     @Override
     public View getView(int position, View v, ViewGroup parent) {
@@ -84,7 +84,7 @@ public class MqttClientConfigAdapter extends ArrayAdapter<MqttClientConfiguratio
             v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
         }//else
 
-        MqttClientConfigurationFactory item = getItem(position);
+        CloutIotClientConfigurationFactory item = getItem(position);
         if (item != null) ((TextView) v).setText(item.getName());
 
         return v;

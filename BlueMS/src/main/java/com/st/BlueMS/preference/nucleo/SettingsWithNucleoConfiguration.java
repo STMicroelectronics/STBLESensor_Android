@@ -34,96 +34,37 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
+package com.st.BlueMS.preference.nucleo;
 
-package com.st.BlueMS.demos.BlueVoice.ASRServices.GoogleASR;
-
-import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.CallSuper;
 
-import com.st.BlueMS.demos.BlueVoice.ASRServices.ASREngine;
-import com.st.BlueMS.demos.BlueVoice.ASRServices.ASRRequestCallback;
-import com.st.BlueMS.demos.BlueVoice.util.AudioBuffer;
+import com.st.BlueMS.R;
+import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.gui.SettingsActivityWithNode;
 
-import java.net.MalformedURLException;
-import java.util.Locale;
+import java.util.List;
 
-/**
- * Class which defines an ASR Engine that uses Google Speech API
- */
-public class GoogleASREngine implements ASREngine {
 
-    private static final String ENGINE_NAME="Google";
+public class SettingsWithNucleoConfiguration extends SettingsActivityWithNode {
 
-    private Context mContext;
-    private boolean mIsAsrEnabled = false;
-    private GoogleASRAsyncRequest mAsrService;
-    private Locale mLanguage;
-
-    public GoogleASREngine(Context context, Locale language) throws IllegalArgumentException {
-        mLanguage = language;
-        mContext = context;
-        enableASR();
+    public static Intent getStartIntent(Context c, Node node){
+        return getStartIntent(c,SettingsWithNucleoConfiguration.class,node,true);
     }
 
+    @CallSuper
     @Override
-    public boolean needAuthKey() {
-        return true;
+    public void onBuildHeaders(List<Header> target) {
+        super.onBuildHeaders(target);
+        loadHeadersFromResource(R.xml.pref_headers_nucleo_configuration, target);
     }
 
+    @CallSuper
     @Override
-    public boolean hasLoadedAuthKey() {
-        enableASR();
-        return mIsAsrEnabled;
+    protected  boolean isValidFragment (String fragmentName){
+        return fragmentName.equals(NucleoConfigurationPreferenceFragment.class.getName()) ||
+                super.isValidFragment(fragmentName) ;
     }
-
-    @Override
-    public DialogFragment getAuthKeyDialog() {
-        return new GoogleASRAuthKeyDialog();
-    }
-
-    @Override
-    public boolean sendASRRequest(AudioBuffer audio, ASRRequestCallback callback) {
-
-        mAsrService.sendRequest(audio,callback);
-        return true;
-    }
-
-    @Override
-    public boolean hasContinuousRecognizer() {
-        return false;
-    }
-
-    @Override
-    public void startListener() {
-        //empty
-    }
-
-    @Override
-    public void stopListener() {
-        //empty
-    }
-
-    @Override
-    public void destroyListener() {
-        //empty
-    }
-
-    @Override
-    public String getName() {
-        return ENGINE_NAME;
-    }
-
-    private void enableASR() {
-        GoogleASRKey mAsrKey = GoogleASRKey.loadKey(mContext);
-        mIsAsrEnabled = mAsrKey != null;
-        if(mIsAsrEnabled) {
-            try {
-                mAsrService = new GoogleASRAsyncRequest(mAsrKey, mLanguage);
-            } catch (MalformedURLException e) {
-                mIsAsrEnabled = false;
-            }
-        }
-    }
-
 
 }

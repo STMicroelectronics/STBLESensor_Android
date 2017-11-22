@@ -38,7 +38,7 @@
 
 <resources>
 
-    <string name="blueVoice_asrKey">输入Google\u2122 语音API密匙:</string>
+    <string name="blueVoice_google_asrKey">输入Google\u2122 语音API密匙:</string>
     <string name="blueVoice_asrEnabled">%1$s 技术</string>
     <string name="blueVoice_asrDisabled">关闭</string>
     <string name="blueVoice_muteButtonDescriptor">静音按钮</string>

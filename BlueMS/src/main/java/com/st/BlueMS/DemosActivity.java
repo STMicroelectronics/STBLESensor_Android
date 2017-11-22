@@ -40,6 +40,7 @@ package com.st.BlueMS;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.ActivityRecognitionFragment;
@@ -47,6 +48,7 @@ import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
 import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
+import com.st.BlueMS.demos.SDLog.SDLogFragment;
 import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HearRateFragment;
@@ -59,6 +61,7 @@ import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.ProximityGestureRecognitionFragment;
 import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.SwitchFragment;
+import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
@@ -100,6 +103,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             MemsSensorFusionFragment.class,
             PlotFeatureFragment.class,
             CloudLogFragment.class,
+            SDLogFragment.class,
             ActivityRecognitionFragment.class,
             CarryPositionFragment.class,
             ProximityGestureRecognitionFragment.class,
@@ -113,7 +117,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             HearRateFragment.class,
             MotionIntensityFragment.class,
             CompassFragment.class,
-            //MultipleLogFragment.class,
             NodeStatusFragment.class,
             //FeatureDebugFragment.class
     };
@@ -139,6 +142,18 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     @Override
     protected boolean enableFwUploading() {
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.settings) {
+            keepConnectionOpen(true,false);
+            startActivity(SettingsWithNucleoConfiguration.getStartIntent(this, getNode()));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

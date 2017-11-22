@@ -35,58 +35,39 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.BlueVoice.ASRServices;
+package com.st.BlueMS.preference.wesu;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
+import android.content.Intent;
+import android.support.annotation.CallSuper;
 
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.gui.SettingsActivityWithNode;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 /**
- * ASR Response Messages
+ * Extend the app Settings adding the pannel to configure the STEVAL_WESU1 node
  */
-public abstract class ASRMessage {
+public class SettingsWithWesuRegisters extends SettingsActivityWithNode {
 
-    @IntDef({NO_ERROR,IO_CONNECTION_ERROR,
-            RESPONSE_ERROR,REQUEST_FAILED,NOT_RECOGNIZED,NETWORK_PROBLEM,LOW_CONFIDENCE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Status {}
-
-    public static final int NO_ERROR = 0;
-    public static final int IO_CONNECTION_ERROR = 1;
-    public static final int RESPONSE_ERROR = 2;
-    public static final int REQUEST_FAILED = 3;
-    public static final int NOT_RECOGNIZED = 4;
-    public static final int NETWORK_PROBLEM = 5;
-    public static final int LOW_CONFIDENCE =6;
-
-    /**
-     * Provides the {@code status} corresponding resource string.
-     * @param context current active context.
-     * @param status an ASRMessage status.
-     * @return the corresponding String to the state provided as a parameter.
-     */
-    public static String getMessage(Context context, @ASRMessage.Status int status){
-        switch(status){
-            case NO_ERROR:
-                return "";
-            case IO_CONNECTION_ERROR:
-                return context.getResources().getString(R.string.blueVoice_ioError);
-            case RESPONSE_ERROR:
-                return context.getResources().getString(R.string.blueVoice_responseError);
-            case REQUEST_FAILED:
-                return context.getResources().getString(R.string.blueVoice_requestFailed);
-            case NOT_RECOGNIZED:
-                return context.getResources().getString(R.string.blueVoice_notRecognized);
-            case NETWORK_PROBLEM:
-                return context.getResources().getString(R.string.blueVoice_networkError);
-            case LOW_CONFIDENCE:
-                return context.getString(R.string.blueVoice_errorLowConfidence);
-            default:
-                return null;
-        }
+    public static Intent getStartIntent(Context c, Node node){
+        return getStartIntent(c,SettingsWithWesuRegisters.class,node,true);
     }
+
+    @CallSuper
+    @Override
+    public void onBuildHeaders(List<Header> target) {
+        super.onBuildHeaders(target);
+        loadHeadersFromResource(R.xml.pref_headers_wesu_configuration, target);
+    }
+
+    @CallSuper
+    @Override
+    protected  boolean isValidFragment (String fragmentName){
+        return fragmentName.equals(STWeSUDevicePreferenceFragment.class.getName()) ||
+                super.isValidFragment(fragmentName) ;
+    }
+
 }

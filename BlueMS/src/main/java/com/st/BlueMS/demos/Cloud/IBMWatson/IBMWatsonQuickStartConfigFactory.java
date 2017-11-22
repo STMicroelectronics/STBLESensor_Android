@@ -41,16 +41,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
@@ -58,25 +56,13 @@ import com.st.BlueSTSDK.Node;
 /**
  *  Object that help to configure the Ibm Watson Iot/BlueMX service, using the quickstart configuration
  */
-public class IBMWatsonQuickStartConfigFactory implements MqttClientConfigurationFactory {
-
-    private static final String CONF_PREFERENCE = IBMWatsonConfigFactory.class.getCanonicalName();
-    private static final String DEVICE_KEY = CONF_PREFERENCE+".DEVICE_KEY";
+public class IBMWatsonQuickStartConfigFactory implements CloutIotClientConfigurationFactory {
 
     private static final String FACTORY_NAME="IBM Watson IoT - Quickstart";
 
     private EditText mDeviceIdText;
     private Node.Type mNodeType;
 
-    private void loadFromPreferences(SharedPreferences pref){
-        mDeviceIdText.setText(pref.getString(DEVICE_KEY,""));
-    }
-
-    private void storeToPreference(SharedPreferences pref){
-        pref.edit()
-                .putString(DEVICE_KEY,mDeviceIdText.getText().toString())
-                .apply();
-    }
 
     @Override
     public void attachParameterConfiguration(Context c, ViewGroup root) {
@@ -86,7 +72,6 @@ public class IBMWatsonQuickStartConfigFactory implements MqttClientConfiguration
         TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMXQuick_deviceIdWrapper);
         mDeviceIdText.addTextChangedListener(
                 new CheckNotEmpty(deviceIdLayout,R.string.cloudLog_watson_deviceIdError));
-        loadFromPreferences(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
     }
 
     @Override
@@ -106,9 +91,8 @@ public class IBMWatsonQuickStartConfigFactory implements MqttClientConfiguration
     }
 
     @Override
-    public MqttClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
         Context c = mDeviceIdText.getContext();
-        storeToPreference(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
         return new IBMWatsonQuickStartFactory(mNodeType.name(),mDeviceIdText.getText().toString());
     }
 }

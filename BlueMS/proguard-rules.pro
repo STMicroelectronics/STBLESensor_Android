@@ -18,10 +18,6 @@
 
 -keep class com.androidplot.xy.** { *; }
 -keep class com.androidplot.ui.** { *; }
-#-keep public class * extends com.st.BlueSTSDK.Feature
-#-keepclassmembers class * extends com.st.BlueSTSDK.Feature{
-#    public <init>(com.st.BlueSTSDK.Node);
-#}
 
 
 #needed for the chinese voice to text
@@ -38,9 +34,16 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+#retrofit 2.3 & co
+-dontwarn javax.annotation.**
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
-#https://github.com/square/okio/issues/60
--dontwarn okio.**
+#ibm watson
+#keep the class member name to avoid problems with json to java objects
+-keepclassmembers class com.ibm.watson.developer_cloud.speech_to_text.v1.** { <fields>; }
+#ingore warnings about class that do not exist in android
+-dontwarn javax.naming.InitialContext
+-dontwarn javax.naming.Context
 
 #need for amazon mobile analytics
 #https://github.com/aws/aws-sdk-android/blob/master/Proguard.md
@@ -51,8 +54,8 @@
 # The following are referenced but aren't required to run
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.apache.commons.logging.**
-# Android 6.0 release removes support for the Apache HTTP client
+# Android 6.0 release removes support for the Apache HTTP mqtt
 -dontwarn org.apache.http.**
-# The SDK has several references of Apache HTTP client
+# The SDK has several references of Apache HTTP mqtt
 -dontwarn com.amazonaws.http.**
 -dontwarn com.amazonaws.metrics.**

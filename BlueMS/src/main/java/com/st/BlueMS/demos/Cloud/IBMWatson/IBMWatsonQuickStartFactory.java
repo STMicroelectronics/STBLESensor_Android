@@ -42,20 +42,15 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Node;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +58,7 @@ import java.util.Map;
  * Object for create and open a connection to the IBM Watson Iot/BlueMX service using the
  * quickstart page
  */
-public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
+public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
 
     private static final long CLOUD_DATA_NOTIFICATION_PERIOD_MS = 1000;
 
@@ -99,9 +94,11 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public IMqttToken connect(Context ctx,IMqttAsyncClient client,
-                             IMqttActionListener connectionListener)
-            throws MqttException, IOException, GeneralSecurityException {
+    public boolean connect(Context ctx, CloutIotClient connection,
+                           ConnectionListener connectionListener)
+            throws Exception {
+
+        IMqttAsyncClient client = extractMqttClient(connection);
 
         //no authentication is needed
         MqttConnectOptions options = new MqttConnectOptions();
@@ -110,18 +107,22 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
         options.setPassword(new char[0]);
         options.setSocketFactory(MqttClientUtil.createSSLSocketFactory(ctx,R.raw.bluemx_cloud));
 
-        return client.connect(options,ctx, connectionListener);
+        return client.connect(options,ctx, buildMqttListener(connectionListener))!=null;
     }
 
     @Override
-    public MqttAndroidClient createClient(Context ctx) {
-        return new MqttAndroidClient(ctx, QUICKSTART_URL,
-                getDeviceId(mDeviceType, mDeviceName));
+    public CloutIotClient createClient(Context ctx) {
+        return new MqttClient(
+            new MqttAndroidClient(ctx, QUICKSTART_URL,
+                    getDeviceId(mDeviceType, mDeviceName))
+        );
     }
 
+
     @Override
-    public Feature.FeatureListener getFeatureListener(IMqttAsyncClient broker){
-        return new IBMWatsonQuickStartMqttFeatureListener(broker,CLOUD_DATA_NOTIFICATION_PERIOD_MS);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker){
+        return new IBMWatsonQuickStartMqttFeatureListener(extractMqttClient(broker),
+                CLOUD_DATA_NOTIFICATION_PERIOD_MS);
     }
 
     @Override
@@ -135,7 +136,7 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient mqttConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(Node node, CloutIotClient mqttConnection, FwUpgradeAvailableCallback callback) {
         return false;
     }
 

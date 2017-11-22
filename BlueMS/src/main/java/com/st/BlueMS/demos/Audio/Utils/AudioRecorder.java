@@ -194,8 +194,7 @@ public class AudioRecorder {
             if(!mActivity.checkWriteSDPermission(PERMISSION_REQUEST_ID))
                 return false;
 
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
-            mDirectoryPath = sharedPrefs.getString(LogPreferenceFragment.KEY_PREF_LOG_DUMP_PATH,"");
+            mDirectoryPath = LogFeatureActivity.getLogDirectory();
             SimpleDateFormat DATE_FORMAT_PREFIX = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             Date mStartLog = new Date();
             String logPrefixName = DATE_FORMAT_PREFIX.format(mStartLog);

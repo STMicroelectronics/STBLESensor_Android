@@ -56,10 +56,10 @@
     <dimen name="plot_margin_left">25dp</dimen>
     <dimen name="plot_margin_bottom">40dp</dimen>
 
-    <dimen name="domain_label_font_size">15dp</dimen>
-    <dimen name="range_label_font_size">15dp</dimen>
+    <dimen name="domain_label_font_size">15sp</dimen>
+    <dimen name="range_label_font_size">15sp</dimen>
 
-    <dimen name="legend_text_font_size">15dp</dimen>
+    <dimen name="legend_text_font_size">15sp</dimen>
     <!-- width for 10 char -> legendTextFontSize*10-->
     <dimen name="legend_box_width">150dp</dimen>
 
@@ -67,8 +67,8 @@
 
     <dimen name="legend_box_padding">5dp</dimen>
     <dimen name="legend_icon_size">13dp</dimen>
-    <dimen name="range_tick_label_font_size">10dp</dimen>
-    <dimen name="domain_tick_label_font_size">10dp</dimen>
+    <dimen name="range_tick_label_font_size">10sp</dimen>
+    <dimen name="domain_tick_label_font_size">10sp</dimen>
 
     <string name="selectMaxSamples">Select the time scale</string>
     <string-array name="availableMaxSamplesString" translatable="false">

@@ -49,6 +49,9 @@
     <!-- Memes Sensor Fusion vibrate when a free fall is detected -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- for the amazon aws ??? and store an google drive docs url -->
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -117,12 +120,20 @@
                 android:value="com.st.BlueMS.MainActivity" />
         </activity>
         <activity
-            android:name=".demos.wesu.preferences.SettingsWithWesuRegisters"
+            android:name=".preference.wesu.SettingsWithWesuRegisters"
             android:label="@string/settings"
             android:parentActivityName=".DemosActivityWesu">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.st.BlueMS.DemosActivityWesu" />
+        </activity>
+        <activity
+            android:name=".preference.nucleo.SettingsWithNucleoConfiguration"
+            android:label="@string/settings"
+            android:parentActivityName=".DemosActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.st.BlueMS.DemosActivity" />
         </activity>
         <activity
             android:name=".NfcNodeConnection"
@@ -163,7 +174,7 @@
             android:enabled="true" />
         <service
             android:name=".demos.Cloud.DownloadFwFileService"
-            android:exported="false"></service>
+            android:exported="false"/>
     </application>
 
 </manifest>

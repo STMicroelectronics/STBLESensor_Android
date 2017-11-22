@@ -49,12 +49,12 @@ import android.widget.TextView;
 
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.AzureIot.util.ConnectionParameters;
-import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.InputChecker;
 import com.st.BlueSTSDK.Node;
 
-public class AzureIotConfigFactory implements MqttClientConfigurationFactory {
+public class AzureIotConfigFactory implements CloutIotClientConfigurationFactory {
 
     private static final String CONF_PREFERENCE = AzureIotConfigFactory.class.getCanonicalName();
     private static final String CONNECTION_STRING = CONF_PREFERENCE+".CONNECTION_STRING";
@@ -85,7 +85,7 @@ public class AzureIotConfigFactory implements MqttClientConfigurationFactory {
     }
 
     @Override
-    public MqttClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
         ConnectionParameters param = ConnectionParameters.parse(mConnectionStringText.getText());
         Context c = mConnectionStringText.getContext();
         storeToPreference(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));

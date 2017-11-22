@@ -70,31 +70,7 @@
     <com.androidplot.xy.XYPlot
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        androidPlot.graphWidget.marginTop="@dimen/plot_margin_top"
-        androidPlot.graphWidget.marginBottom="@dimen/plot_margin_bottom"
-        androidPlot.graphWidget.marginLeft="@dimen/plot_margin_left"
-
-
-        androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
-        androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
-        androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-        androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-
-        androidPlot.titleWidget.labelPaint.textSize="@dimen/plot_title_font_size"
-        androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
-        androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
-
-        androidPlot.legendWidget.textPaint.textSize="@dimen/legend_text_font_size"
-        androidPlot.legendWidget.iconSizeMetrics.heightMetric.value="@dimen/legend_icon_size"
-        androidPlot.legendWidget.iconSizeMetrics.widthMetric.value="@dimen/legend_icon_size"
-        androidPlot.legendWidget.paddingBottom="@dimen/legend_box_padding"
-        androidPlot.legendWidget.paddingTop="@dimen/legend_box_padding"
-        androidPlot.legendWidget.paddingLeft="@dimen/legend_box_padding"
-        androidPlot.legendWidget.paddingRight="@dimen/legend_box_padding"
-
-        />
+        android:layout_height="match_parent" />
 </LinearLayout>
 
     <!--

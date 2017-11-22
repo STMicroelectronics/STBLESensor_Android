@@ -44,34 +44,29 @@ import android.util.Log;
 
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.util.JSONSampleSerializer;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Node;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 /**
  * Object for create and open a connection to the IBM Watson Iot/BlueMX service
  */
-public class IBMWatsonFactory implements MqttClientConnectionFactory {
+public class IBMWatsonFactory extends MqttClientConnectionFactory {
 
     private static final String BLUEMX_URL=
             "ssl://%s.messaging.internetofthings.ibmcloud.com:8883";
     private static final Uri BLUEMX_PAGE_DATA = Uri.parse("https://play.internetofthings.ibmcloud.com/dashboard/");
 
-    public static String getDeviceId(String mOrganization,String nodeType ,String deviceName){
+    private static String getDeviceId(String mOrganization,String nodeType ,String deviceName){
         Log.d("BlueMX", "getDeviceId: "+"d:"+mOrganization+":"+nodeType+':'+deviceName);
         return "d:"+mOrganization+":"+nodeType+':'+deviceName;
     }
@@ -81,7 +76,7 @@ public class IBMWatsonFactory implements MqttClientConnectionFactory {
     private String mOrganization;
     private String mDeviceType;
 
-    public IBMWatsonFactory(String organization,String authKey, String boardType,String boardId) throws IllegalArgumentException{
+    IBMWatsonFactory(String organization,String authKey, String boardType,String boardId) throws IllegalArgumentException{
 
         if(organization==null || organization.isEmpty())
             throw new IllegalArgumentException("Organization can not be empty");
@@ -107,29 +102,32 @@ public class IBMWatsonFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public IMqttToken connect(Context ctx,IMqttAsyncClient client,
-                              IMqttActionListener connectionListener)
-            throws MqttException, IOException, GeneralSecurityException {
+    public boolean connect(Context ctx, CloutIotClient connection,
+                           ConnectionListener connectionListener)
+            throws Exception {
+
+        IMqttAsyncClient client = extractMqttClient(connection);
+
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(true);
         options.setUserName("use-token-auth");
         options.setPassword(mAuthKey.toCharArray());
         options.setSocketFactory(MqttClientUtil.createSSLSocketFactory(ctx, R.raw.bluemx_cloud));
 
-        return client.connect(options,ctx, connectionListener);
+        return client.connect(options,ctx, buildMqttListener(connectionListener))!=null;
     }
 
     @Override
-    public MqttAndroidClient createClient(Context ctx) {
-        Log.d("BlueMX", "URL: "+String.format(BLUEMX_URL,mOrganization));
-
-        return new MqttAndroidClient(ctx, String.format(BLUEMX_URL,mOrganization),
-                getDeviceId(mOrganization,mDeviceType,mDeviceId));
+    public CloutIotClient createClient(Context ctx) {
+        return new MqttClient(
+                new MqttAndroidClient(ctx, String.format(BLUEMX_URL,mOrganization),
+                getDeviceId(mOrganization,mDeviceType,mDeviceId))
+        );
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(IMqttAsyncClient broker){
-        return new IBMWatsonMqttFeatureListener(broker);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker){
+        return new IBMWatsonMqttFeatureListener(extractMqttClient(broker));
     }
 
     @Override
@@ -139,12 +137,11 @@ public class IBMWatsonFactory implements MqttClientConnectionFactory {
 
     @Override
     public boolean supportFeature(Feature f) {
-        //all the feature are supported
-        return true;
+        return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient mqttConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(Node node, CloutIotClient iotConnection, FwUpgradeAvailableCallback callback) {
         return false;
     }
 

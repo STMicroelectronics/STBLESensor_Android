@@ -47,8 +47,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
 import com.st.BlueSTSDK.Node;
@@ -56,7 +56,7 @@ import com.st.BlueSTSDK.Node;
 /**
  *  Object that help to configure the Ibm Watson Iot/BlueMX service
  */
-public class IBMWatsonConfigFactory implements MqttClientConfigurationFactory {
+public class IBMWatsonConfigFactory implements CloutIotClientConfigurationFactory {
 
     private static final String CONF_PREFERENCE = IBMWatsonConfigFactory.class.getCanonicalName();
     private static final String ORGANIZATION_KEY = CONF_PREFERENCE+".ORGANIZATION_KEY";
@@ -105,22 +105,22 @@ public class IBMWatsonConfigFactory implements MqttClientConfigurationFactory {
     public void attachParameterConfiguration(Context c, ViewGroup root) {
         LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.cloud_config_bluemx,root);
-        TextInputLayout deviceIdLayout = (TextInputLayout) v.findViewById(R.id.blueMx_deviceIdWrapper);
+        TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMx_deviceIdWrapper);
         mDeviceIdText = deviceIdLayout.getEditText();
         mDeviceIdText.addTextChangedListener(
                 new CheckNotEmpty(deviceIdLayout,R.string.cloudLog_watson_deviceIdError));
 
-        TextInputLayout authTokenLayout = (TextInputLayout) v.findViewById(R.id.blueMx_authTokenWrapper);
+        TextInputLayout authTokenLayout = v.findViewById(R.id.blueMx_authTokenWrapper);
         mAuthTokenText = authTokenLayout.getEditText();
         mAuthTokenText.addTextChangedListener(
                 new CheckNotEmpty(authTokenLayout,R.string.cloudLog_watson_authTokenError));
 
-        TextInputLayout organizationLayout = (TextInputLayout) v.findViewById(R.id.blueMx_organizationWrapper);
+        TextInputLayout organizationLayout = v.findViewById(R.id.blueMx_organizationWrapper);
         mOrganizationText = organizationLayout.getEditText();
         mOrganizationText.addTextChangedListener(
                 new CheckNotEmpty(organizationLayout,R.string.cloudLog_watson_organizationIDError));
 
-        TextInputLayout deviceTypeLayout = (TextInputLayout) v.findViewById(R.id.blueMx_deviceTypeWrapper);
+        TextInputLayout deviceTypeLayout =  v.findViewById(R.id.blueMx_deviceTypeWrapper);
         mDeviceTypeText = deviceTypeLayout.getEditText();
         mDeviceTypeText.addTextChangedListener(new CheckNotEmpty(deviceTypeLayout,R.string.cloudLog_watson_deviceTypeError));
 
@@ -151,7 +151,7 @@ public class IBMWatsonConfigFactory implements MqttClientConfigurationFactory {
      * @return object for open a connection to the Ibm Watson service
      */
     @Override
-    public MqttClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
         storeToPreference(mDeviceIdText.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
         return new IBMWatsonFactory(
                 mOrganizationText.getText().toString(),

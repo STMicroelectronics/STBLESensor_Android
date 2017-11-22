@@ -133,4 +133,25 @@ public class AudioBufferTest {
         verify(audio).write(argThat(arrayStartWith),eq(0), eq(data.length));
     }
 
+
+    @Test
+    public void ifABufferIsPassedDuringTheCreationTheAudioBufferIsFull(){
+        AudioBuffer buf = new AudioBuffer(new short[]{0x01,0x02,0x03});
+        assertTrue(buf.isFull());
+    }
+
+    @Test
+    public void ifABufferIsPassedDuringTheCreationTheCprrectByteAreWrite(){
+
+        final short data[] = new short[]{0x0102,0x0304};
+        AudioBuffer buf = new AudioBuffer(data);
+
+        AudioTrack audio = mock(AudioTrack.class);
+        buf.writeTo(audio);
+
+        ArgumentMatcher<short[]> arrayStartWith = MatchShortArray.startingWith(data);
+
+        verify(audio).write(argThat(arrayStartWith),eq(0), eq(data.length));
+    }
+
 }

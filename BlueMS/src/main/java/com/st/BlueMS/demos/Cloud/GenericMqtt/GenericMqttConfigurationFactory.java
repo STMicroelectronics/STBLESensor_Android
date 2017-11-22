@@ -48,11 +48,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNumberRange;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckRegularExpression;
-import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
 import com.st.BlueSTSDK.Node;
 
 import java.util.regex.Pattern;
@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
 /**
  * Ask the parameters for a generic mqtt broker
  */
-public class GenericMqttConfigurationFactory implements MqttClientConfigurationFactory {
+public class GenericMqttConfigurationFactory implements CloutIotClientConfigurationFactory {
     private static final String FACTORY_NAME = "Generic Mqtt";
 
     /*
@@ -147,7 +147,7 @@ public class GenericMqttConfigurationFactory implements MqttClientConfigurationF
     }
 
     @Override
-    public MqttClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
 
         storeToPreference(mBrokerUrlText.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
         return new GenericMqttFactory(mBrokerUrlText.getText().toString(),

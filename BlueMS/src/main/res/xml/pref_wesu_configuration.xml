@@ -86,7 +86,7 @@
             android:persistent="false"
             android:inputType="number"/>
 
-        <com.st.BlueMS.demos.wesu.preferences.LocalMultiSelectListPreference
+        <com.st.BlueMS.preference.wesu.LocalMultiSelectListPreference
             android:key="DEVICE_DATA_READ_GROUP_A_S"
             android:title="Data Read GROUP A"
             android:summary="Enable disable data to read"
@@ -94,7 +94,7 @@
             android:entryValues="@array/data_read_group_a_values"
             android:defaultValue="@array/empty_array"
             android:persistent="false"/>
-        <com.st.BlueMS.demos.wesu.preferences.LocalMultiSelectListPreference
+        <com.st.BlueMS.preference.wesu.LocalMultiSelectListPreference
             android:key="DEVICE_DATA_READ_GROUP_B_S"
             android:title="Data Read GROUP B"
             android:summary="Enable disable data to read"
@@ -202,7 +202,7 @@
             android:persistent="false"
             android:inputType="number"/>
 
-        <com.st.BlueMS.demos.wesu.preferences.LocalMultiSelectListPreference
+        <com.st.BlueMS.preference.wesu.LocalMultiSelectListPreference
             android:key="DEVICE_DATA_READ_GROUP_A_P"
             android:title="Data Read GROUP A"
             android:summary="Enable disable data to read"
@@ -210,7 +210,7 @@
             android:entryValues="@array/data_read_group_a_values"
             android:defaultValue="@array/empty_array"
             android:persistent="false"/>
-        <com.st.BlueMS.demos.wesu.preferences.LocalMultiSelectListPreference
+        <com.st.BlueMS.preference.wesu.LocalMultiSelectListPreference
             android:key="DEVICE_DATA_READ_GROUP_B_P"
             android:title="Data Read GROUP B"
             android:summary="Enable disable data to read"

@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.Cloud.AzureIot.util;
 
 /**
- * A signature that is used in the SAS token to authenticate the client.
+ * A signature that is used in the SAS token to authenticate the mqtt.
  */
 public final class Signature
 {

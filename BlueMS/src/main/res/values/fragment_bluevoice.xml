@@ -38,7 +38,7 @@
 
 <resources>
 
-    <string name="blueVoice_asrKey">Insert Google\u2122 Speech API Key:</string>
+    <string name="blueVoice_google_asrKey">Insert Google\u2122 Speech API Key:</string>
     <string name="blueVoice_asrEnabled">%1$s technology</string>
     <string name="blueVoice_asrDisabled">Disabled</string>
     <string name="blueVoice_muteButtonDescriptor">Mute button</string>
@@ -64,8 +64,11 @@
     <string name="blueVoice_loadAsrKey">Please load a valid Speech Recognition API key</string>
     <string name="blueVoice_dialogConfirm">Confirm</string>
     <string name="blueVoice_dialogBack">Back</string>
+
     <string name="blueVoice_enableConnection">Enable connection to enable the Speech
         Recognition</string>
+    <string name="blueVoice_connecting">Connecting…</string>
+    <string name="blueVoice_connected">Connected</string>
     <string name="blueVoice_startAudioRec">REC</string>
     <string name="blueVoice_stopAudioRec">Stop REC</string>
     <string name="blueVoice_speechApiKey">Speech API key</string>
@@ -77,6 +80,7 @@
     <color  name="blueVoice_continusStreamingButtonColor">#aeea00</color>
 
     <string name="blueVoice_langEnglish">English</string>
+    <string name="blueVoice_langEnglish_ibm">English (IBM Watson)</string>
     <string name="blueVoice_langItalian">Italian</string>
     <string name="blueVoice_langChinese">Chinese</string>
     <string name="blueVoice_langFrench">French</string>
@@ -84,5 +88,8 @@
     <string name="blueVoice_langGerman">German</string>
     <string name="blueVoice_langPortuguese">Portuguese</string>
     <string name="blueVoice_errorLowConfidence">Low confidence response</string>
+    <string name="blueVoice_watson_asrDialogTitle">Insert IBM Watson speech-to-text credentials</string>
+    <string name="dialog_watson_userHint">User</string>
+    <string name="dialog_watson_passwordHint">Password</string>
 
 </resources>

@@ -52,25 +52,27 @@ import java.util.Locale;
  */
 public abstract class ASRLanguage {
 
-    @IntDef({Language.ENGLISH,Language.ITALIAN,
-            Language.FRENCH,
+    @IntDef({Language.ENGLISH,Language.ENGLISH_IBM,
+            Language.ITALIAN,Language.FRENCH,
             Language.SPANISH,Language.GERMAN,
             Language.PORTUGUESE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Language {
         int ENGLISH = 0;
-        int ITALIAN = 1;
-        int FRENCH = 3;
-        int SPANISH = 4;
-        int GERMAN = 5;
-        int PORTUGUESE = 6;
+        int ENGLISH_IBM = 1;
+        int ITALIAN = 2;
+        int FRENCH = 4;
+        int SPANISH = 5;
+        int GERMAN = 6;
+        int PORTUGUESE = 7;
+        ;
     }
 
     private static final int[] languages = {
-            Language.ENGLISH,Language.ITALIAN,
-            Language.FRENCH,
-            Language.SPANISH,Language.GERMAN,
-            Language.PORTUGUESE};
+            Language.ENGLISH,Language.ENGLISH_IBM,
+            Language.ITALIAN,
+            Language.FRENCH,Language.SPANISH,
+            Language.GERMAN,Language.PORTUGUESE};
 
     /**
      * Provides the {@code lang} corresponding Locale Object.
@@ -80,6 +82,8 @@ public abstract class ASRLanguage {
     public static Locale getLocale(@ASRLanguage.Language int lang){
         switch(lang){
             case Language.ENGLISH:
+                return new Locale(Locale.ENGLISH.getLanguage(),Locale.UK.getCountry());
+            case Language.ENGLISH_IBM:
                 return new Locale(Locale.ENGLISH.getLanguage(),Locale.US.getCountry());
             case Language.ITALIAN:
                 return new Locale(Locale.ITALIAN.getLanguage(),Locale.ITALY.getCountry());
@@ -105,6 +109,8 @@ public abstract class ASRLanguage {
         switch(lang){
             case Language.ENGLISH:
                 return context.getResources().getString(R.string.blueVoice_langEnglish);
+            case Language.ENGLISH_IBM:
+                return context.getResources().getString(R.string.blueVoice_langEnglish_ibm);
             case Language.ITALIAN:
                 return context.getResources().getString(R.string.blueVoice_langItalian);
             case Language.FRENCH:

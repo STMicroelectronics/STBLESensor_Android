@@ -40,6 +40,7 @@ package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices;
 import android.content.Context;
 
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.GoogleASR.GoogleASREngine;
+import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.IBMWatson.WatsonARSEngine;
 
 import java.util.Locale;
 
@@ -57,6 +58,10 @@ public class ASREngineFactory {
      * criteria-defined situations.
      */
     public static ASREngine getASREngine(Context context, Locale language){
-        return new GoogleASREngine(context,language);
+        if(language.getLanguage().equals(Locale.ENGLISH.getLanguage()) &&
+                language.getCountry().equals(Locale.US.getCountry())) {
+            return new WatsonARSEngine(context);
+        }else
+            return new GoogleASREngine(context,language);
     }
 }

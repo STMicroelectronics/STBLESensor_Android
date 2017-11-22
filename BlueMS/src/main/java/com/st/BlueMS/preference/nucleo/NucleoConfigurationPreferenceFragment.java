@@ -34,63 +34,71 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
+package com.st.BlueMS.preference.nucleo;
 
-package com.st.BlueMS.demos.BlueVoice.ASRServices.GoogleASR;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.text.InputType;
-import android.view.View;
-import android.widget.EditText;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
+
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.gui.preferences.PreferenceFragmentWithNode;
 
-import com.st.BlueMS.demos.BlueVoice.util.DialogFragmentDismissCallback;
+import java.util.Date;
 
-/**
- * Class which defines a Dialog used for the ASR activation key loading
- */
-public class GoogleASRAuthKeyDialog extends DialogFragmentDismissCallback {
+public class NucleoConfigurationPreferenceFragment extends PreferenceFragmentWithNode {
 
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    private static final String CHANGE_NAME_PREF = "DEVICE_LOCAL_NAME";
+    private static final String SYNC_TIME_PREF = "DEVICE_SYNC_TIME";
 
-        final Context context = getActivity();
-
-        GoogleASRKey asrKey = GoogleASRKey.loadKey(context);
-        final EditText input = new EditText(context);
-        if(asrKey!=null)
-            input.setText(asrKey.getKey());
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-
-        final View rootView = getActivity().findViewById(android.R.id.content);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.blueVoice_asrKey);
-        builder.setView(input);
-        builder.setCancelable(false);
-
-        builder.setPositiveButton(R.string.blueVoice_dialogConfirm, new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    GoogleASRKey asrKey = new GoogleASRKey(input.getText());
-                    asrKey.store(context);
-                }catch (IllegalArgumentException e){
-                    Snackbar mInvalidKeySnackbar = Snackbar.make(rootView,
-                            context.getString(R.string.blueVoice_asrInvalidKey,e.getMessage()), Snackbar.LENGTH_LONG);
-                    mInvalidKeySnackbar.show();
-                    dialog.dismiss();
-                    return;
-                }
-                Snackbar.make(rootView, R.string.blueVoice_asrKeyInserted, Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        builder.setNegativeButton(R.string.blueVoice_dialogBack, null);
-        return builder.create();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.pref_nucleo_configuration);
     }
 
+
+    private void disableAllPreferences(){
+        PreferenceManager prefs = getPreferenceManager();
+        prefs.findPreference(CHANGE_NAME_PREF).setEnabled(false);
+        prefs.findPreference(SYNC_TIME_PREF).setEnabled(false);
+    }
+
+    private void setUpSetNamePreference(String currentName, final NucleoConsole console){
+        EditTextPreference changeName = (EditTextPreference) getPreferenceManager().findPreference(CHANGE_NAME_PREF);
+        changeName.setText(currentName);
+        changeName.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (newValue != null) {
+                try {
+                    console.setName((String) newValue);
+                }catch (IllegalArgumentException e) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
+    private void setUpSyncTimePreference(final NucleoConsole console){
+        getPreferenceManager().findPreference(SYNC_TIME_PREF)
+                .setOnPreferenceClickListener(preference -> {
+                    console.setDateAndTime(new Date());
+                    Toast.makeText(getActivity(), R.string.pref_sync_time_sent,Toast.LENGTH_SHORT).show();
+                    return false;
+                });
+    }
+
+    @Override
+    protected void onNodeIsAvailable(Node node) {
+        if(node.getDebug()==null) {
+            disableAllPreferences();
+            return;
+        }
+        //else
+        final NucleoConsole console = new NucleoConsole(node.getDebug());
+        setUpSetNamePreference(node.getName(),console);
+        setUpSyncTimePreference(console);
+    }
 }

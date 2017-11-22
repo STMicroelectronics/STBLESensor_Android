@@ -39,6 +39,7 @@ package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.GoogleASR;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASREngine;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRRequestCallback;
@@ -94,13 +95,15 @@ public class GoogleASREngine implements ASREngine {
     }
 
     @Override
-    public void startListener() {
+    public void startListener(@NonNull ASRConnectionCallback callback) {
         //empty
+        callback.onEngineStart();
     }
 
     @Override
-    public void stopListener() {
+    public void stopListener(@NonNull ASRConnectionCallback callback) {
         //empty
+        callback.onEngineStop();
     }
 
     @Override

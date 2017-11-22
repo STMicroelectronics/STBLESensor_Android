@@ -60,6 +60,7 @@ public class AudioBuffer {
 
     public AudioBuffer(short[] sampleData){
         mData=sampleData;
+        mLastWriteData = sampleData.length;
     }
 
     public short[] getData() {

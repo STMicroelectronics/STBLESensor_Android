@@ -38,6 +38,7 @@
 package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
@@ -116,7 +117,13 @@ public class CalibrationPresenter implements CalibrationContract.Presenter,
     }
 
     @Override
-    public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) { }
+    public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) {
+        if(status == 0 ){ // uncalibrated
+            setUnCalibratedState();
+        }else if (status == 100){ //fully calibrated
+            setCalibratedState();
+        }
+    }
 
     @Override
     public void onUpdate(Feature f, Feature.Sample sample) { }

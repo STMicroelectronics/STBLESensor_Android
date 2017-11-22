@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:id="@+id/enableLogButton"
+        android:id="@+id/log_enableButton"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"/>
     <TextView
@@ -53,8 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/featureNameLabel"
-        android:layout_toEndOf="@+id/enableLogButton"
+        android:id="@+id/log_featureNameLabel"
+        android:layout_toEndOf="@+id/log_enableButton"
         android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

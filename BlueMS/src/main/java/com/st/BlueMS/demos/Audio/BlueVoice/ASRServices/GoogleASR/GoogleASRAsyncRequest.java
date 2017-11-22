@@ -63,7 +63,7 @@ class GoogleASRAsyncRequest {
     private static final float MIN_CONFIDENCE = 0.75f;
 
     private static final String ASR_URL_FORMAT ="https://www.google.com/speech-api/v2/recognize" +
-            "?xjerr=1&client=chromium&lang=%s&key=%s";
+            "?xjerr=1&mqtt=chromium&lang=%s&key=%s";
 
     private URL mServiceUrl;
 

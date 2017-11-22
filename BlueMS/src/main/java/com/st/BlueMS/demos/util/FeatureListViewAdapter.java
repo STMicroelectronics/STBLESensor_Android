@@ -128,8 +128,8 @@ public class FeatureListViewAdapter extends
         public ViewHolder(View view) {
             super(view);
 
-            featureNameLabel = (TextView) view.findViewById(R.id.featureNameLabel);
-            enableLogButton = (CompoundButton) view.findViewById(R.id.enableLogButton);
+            featureNameLabel = (TextView) view.findViewById(R.id.log_featureNameLabel);
+            enableLogButton = (CompoundButton) view.findViewById(R.id.log_enableButton);
             /*
             enableLogButton.setOnCheckedChangeListener((compoundButton, status) -> {
                 if (status)

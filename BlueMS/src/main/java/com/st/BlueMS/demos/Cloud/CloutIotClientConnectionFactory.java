@@ -45,45 +45,96 @@ import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Feature.FeatureListener;
 import com.st.BlueSTSDK.Node;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 /**
  * Interface used for open a connection to a mqtt broker
  */
-public interface MqttClientConnectionFactory {
+public interface CloutIotClientConnectionFactory {
 
     /**
-     * create a mqtt client
-     * @param ctx context to use for crete the client
+     * empty interface to hide the real client object that can be different for different
+     * provider
+     */
+    interface CloutIotClient {
+        //TODO move the connect,disconnect,isConnect methods here?
+    }
+
+    /**
+     * callback trigger when the cloud send a firmware update message
+     */
+    interface FwUpgradeAvailableCallback{
+
+        /**
+         * a new firmware is available online
+         * @param fwUrl url where find the new firmare
+         */
+        void onFwUpgradeAvailable(String fwUrl);
+    }
+
+
+    /**
+     * callback done when the connection is done
+     */
+    interface ConnectionListener{
+
+        /**
+         * method call when the connection is done correctly
+         */
+        void onSuccess();
+
+        /**
+         * method call when the connection fails
+         * @param exception error happen during the connection
+         */
+        void onFailure(Throwable exception);
+    }
+
+    /**
+     * create a mqtt mqtt
+     * @param ctx context to use for crete the mqtt
      * @return object to use for open the connection
      */
-    MqttAndroidClient createClient(Context ctx);
+    CloutIotClient createClient(Context ctx);
 
     /**
-     * Open the client connection
+     * Open the mqtt connection
      * @param ctx context to use for open the connection
-     * @param client client to open
+     * @param client mqtt to open
      * @param connectionListener callback to do when the connection is ready
      * @return operation id
      * @throws MqttException if some error happen during the connection handshake
      */
-    IMqttToken connect(Context ctx,IMqttAsyncClient client,
-                       IMqttActionListener connectionListener) throws MqttException, IOException, GeneralSecurityException;
+    boolean connect(Context ctx, CloutIotClient client,
+                    ConnectionListener connectionListener) throws Exception;
 
     /**
      * listener that will send the data to the cloud service
-     * @param broker client to use for sned the mqtt message
+     * @param broker mqtt to use for sned the mqtt message
      * @return listener to use in a feature for load the data to the cloud
      */
-    FeatureListener getFeatureListener(IMqttAsyncClient broker);
+    FeatureListener getFeatureListener(CloutIotClient broker);
+
+    /**
+     * close the connection with the cloud
+     * @param client connection to close
+     * @throws Exception error happen during the connection
+     */
+    void disconnect(CloutIotClient client) throws Exception;
+
+    /**
+     * free the connection resources
+     * @param client client to free
+     */
+    void destroy(CloutIotClient client);
+
+    /**
+     * tell if the client is connected
+     * @param client connection to check
+     * @return true if the client is connected with the cloud
+     */
+    boolean isConnected(CloutIotClient client);
 
     /**
      * return the url page where see the uploaded data
@@ -106,14 +157,8 @@ public interface MqttClientConnectionFactory {
      * @param callback function to call when a new fw is available
      * @return true if the function is supported, false otherwise
      */
-    boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient cloudConnection, FwUpgradeAvailableCallback callback);
+    boolean enableCloudFwUpgrade(Node node, CloutIotClient cloudConnection, FwUpgradeAvailableCallback callback);
 
 
-    interface FwUpgradeAvailableCallback{
-        /**
-         * a new firmware is available online
-         * @param fwUrl url where find the new firmare
-         */
-        void onFwUpgradeAvailable(String fwUrl);
-    }
+
 }

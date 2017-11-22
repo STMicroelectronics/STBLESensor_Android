@@ -68,7 +68,7 @@ public class GoogleASRAuthKeyDialog extends DialogFragmentDismissCallback {
         final View rootView = getActivity().findViewById(android.R.id.content);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.blueVoice_asrKey);
+        builder.setTitle(R.string.blueVoice_google_asrKey);
         builder.setView(input);
         builder.setCancelable(false);
 

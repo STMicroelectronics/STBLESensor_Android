@@ -35,42 +35,70 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.Cloud;
+package com.st.BlueMS.demos.Cloud.AwsIot;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.st.BlueMS.R;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
+import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckRegularExpression;
+import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
 
-/**
- * Interface used for build the configuration gui for a mqtt broker
- */
-public interface MqttClientConfigurationFactory {
+import java.util.regex.Pattern;
 
-    /**
-     * add the configuration element to the gui
-     * @param c context to use for load the view
-     * @param root container where add the view
-     */
-    void attachParameterConfiguration(Context c, ViewGroup root);
 
-    /**
-     * set the default data for the configuration
-     * @param n node that will send the data to the boker
-     */
-    void loadDefaultParameters(@Nullable Node n);
+public class AwSIotConfigurationFactory implements CloutIotClientConfigurationFactory {
 
-    /**
-     * mqtt service name
-     * @return name of the service that will be configurate
-     */
-    String getName();
+    private static final String NAME = "AWS IoT";
 
-    /**
-     * get a factory that use the configuration parameter for open a connection
-     * @return object that can be used for open a connection
-     * @throws IllegalArgumentException if some parameters needed for build the factory is wrong/missing
-     */
-    MqttClientConnectionFactory getConnectionFactory() throws IllegalArgumentException;
+    private AwsConfigFragment mConfigFragment;
+
+    @Override
+    public void attachParameterConfiguration(Context c, ViewGroup root) {
+        Activity a = (Activity)c;
+        //check if a fragment is already attach, and remove it to attach the new one
+        mConfigFragment = (AwsConfigFragment)
+                a.getFragmentManager().findFragmentById(R.id.cloudLog_aws_configFragment);
+        if(mConfigFragment!=null){
+            a.getFragmentManager()
+                    .beginTransaction()
+                    .remove(mConfigFragment)
+                    .commit();
+        }
+        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.cloud_config_aws,root);
+        mConfigFragment = (AwsConfigFragment)
+                a.getFragmentManager().findFragmentById(R.id.cloudLog_aws_configFragment);
+
+    }
+
+    @Override
+    public void loadDefaultParameters(@Nullable Node n) {
+        mConfigFragment.setClientId(MqttClientUtil.getDefaultCloudDeviceName(n));
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+        return new AwsIotMqttFactory(mConfigFragment.getClientId(),mConfigFragment.getEndpoint(),
+               mConfigFragment.getCertificateFile(),mConfigFragment.getPrivateKeyFile());
+    }
+
+
+
 }

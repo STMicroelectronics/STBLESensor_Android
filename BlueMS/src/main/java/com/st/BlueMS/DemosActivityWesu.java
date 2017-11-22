@@ -59,7 +59,7 @@ import com.st.BlueMS.demos.SwitchFragment;
 import com.st.BlueMS.demos.wesu.ActivityRecognitionFragmentWesu;
 import com.st.BlueMS.demos.wesu.CarryPositionFragmentWesu;
 import com.st.BlueMS.demos.wesu.MemsSensorFusionFragmentWesu;
-import com.st.BlueMS.demos.wesu.preferences.SettingsWithWesuRegisters;
+import com.st.BlueMS.preference.wesu.SettingsWithWesuRegisters;
 import com.st.BlueSTSDK.Config.Command;
 import com.st.BlueSTSDK.Config.Register;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
@@ -107,7 +107,7 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
             PedometerFragment.class,
             AccEventFragment.class,
             SwitchFragment.class,
-            //MultipleLogFragment.class,
+            //SDLogFragment.class,
             NodeStatusFragment.class,
             //FeatureDebugFragment.class
     };

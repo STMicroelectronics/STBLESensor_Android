@@ -49,6 +49,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             app:srcCompat="@drawable/ic_play_arrow"
             android:contentDescription="@string/startPlotButton"
             android:id="@+id/startPlotButton"

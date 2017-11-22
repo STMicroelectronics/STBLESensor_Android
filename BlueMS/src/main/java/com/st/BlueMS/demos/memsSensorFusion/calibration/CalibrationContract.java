@@ -35,67 +35,58 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.wesu;
+package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.st.BlueMS.R;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
-import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
-import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
-import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
-import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
+import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 
 /**
- * Sensor Fusion demo for the STEVAL_WESU1 node
- *
- * this Activity will check that the license is enabled inside the node and that the magnetometer
- *  has is calibrated
+ * protocol used to manage the calibration of the mens sensor fusion
  */
-public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
+public interface CalibrationContract {
 
-    private View mLayout;
-    private CalibrationManagerWesu mCalibManager;
+    /***
+     * interface that manage the calibration view
+     */
+    interface View{
+        /**
+         * show a dilog that inform the user about how to calibrate the board
+         */
+        void showCalibrationDialog();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View demo = super.onCreateView(inflater, container, savedInstanceState);
-        if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
-        return demo;
+        /**
+         * dismiss the dialog with the calibration infos
+         */
+        void hideCalibrationDialog();
+
+        /**
+         * change the button state
+         * @param isCalibrated true if the system is calibrated
+         */
+        void setCalibrationButtonState(boolean isCalibrated);
     }
 
+    /**
+     * interface that manage the calibration logic
+     */
+    interface Presenter{
+        /**
+         * start manage the calibration
+         * @param v view to change when the calibration status change
+         * @param feature object to calibrate
+         */
+        void manage(@NonNull CalibrationContract.View v,@NonNull FeatureAutoConfigurable feature);
 
-    @Override
-    protected void enableNeededNotification(@NonNull Node node) {
-        super.enableNeededNotification(node);
-        CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
-                RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
-            @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
-            }
-        });
-    }
+        /**
+         * start the calibration process
+         */
+        void startCalibration();
 
-
-    @Override
-    public void onStartCalibrationClicked() {
-        mCalibManager.startCalibration();
-    }
-
-    @Override
-    protected void disableNeedNotification(Node node) {
-        super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
+        /**
+         * stop manange the calibraion for the feature
+         */
+        void unManageFeature();
     }
 
 }
-

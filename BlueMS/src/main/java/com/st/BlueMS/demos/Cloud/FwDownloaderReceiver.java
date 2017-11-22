@@ -35,67 +35,60 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.wesu;
+package com.st.BlueMS.demos.Cloud;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 
-import com.st.BlueMS.R;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
-import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
-import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
-import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
+import com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity;
 
 /**
- * Sensor Fusion demo for the STEVAL_WESU1 node
- *
- * this Activity will check that the license is enabled inside the node and that the magnetometer
- *  has is calibrated
+ * Wait the fw file download ends and start the fw upgrade activity when the file is downloaded
  */
-public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
+public class FwDownloaderReceiver extends BroadcastReceiver {
 
-    private View mLayout;
-    private CalibrationManagerWesu mCalibManager;
+    private static final IntentFilter sReceiverFilter = new IntentFilter(DownloadFwFileService.ACTION_DOWNLOAD_COMPLETE);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View demo = super.onCreateView(inflater, container, savedInstanceState);
-        if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
-        return demo;
-    }
+    private Node mNode;
 
-
-    @Override
-    protected void enableNeededNotification(@NonNull Node node) {
-        super.enableNeededNotification(node);
-        CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
-                RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
-            @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
-            }
-        });
-    }
-
-
-    @Override
-    public void onStartCalibrationClicked() {
-        mCalibManager.startCalibration();
+    /**
+     * @param node where upload the fw
+     */
+    public FwDownloaderReceiver(Node node){
+        mNode=node;
     }
 
     @Override
-    protected void disableNeedNotification(Node node) {
-        super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
+    public void onReceive(Context context, Intent intent) {
+        if(intent.getAction().equals(DownloadFwFileService.ACTION_DOWNLOAD_COMPLETE)){
+            Uri file = intent.getParcelableExtra(DownloadFwFileService.EXTRA_DOWNLOAD_LOCATION);
+            Intent startFwActivity =FwUpgradeActivity.getStartIntent(context,mNode,true,file);
+            startFwActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(startFwActivity);
+        }
+    }
+
+    /**
+     * register the receiver to the local broadcast
+     * @param c
+     */
+    public void registerReceiver(Context c){
+        LocalBroadcastManager.getInstance(c.getApplicationContext())
+                .registerReceiver(this,sReceiverFilter);
+    }
+
+    /**
+     * unregister the receiver to the local broadcast
+     * @param c
+     */
+    public void unregisterReceiver(Context c){
+        LocalBroadcastManager.getInstance(c.getApplicationContext())
+                .unregisterReceiver(this);
     }
 
 }
-

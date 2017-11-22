@@ -47,9 +47,11 @@ import com.st.BlueMS.demos.Cloud.util.JSONSampleSerializer;
 import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Node;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -105,7 +107,7 @@ public class IBMWatsonFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public IMqttToken connect(Context ctx,MqttAndroidClient client,
+    public IMqttToken connect(Context ctx,IMqttAsyncClient client,
                               IMqttActionListener connectionListener)
             throws MqttException, IOException, GeneralSecurityException {
         MqttConnectOptions options = new MqttConnectOptions();
@@ -126,7 +128,7 @@ public class IBMWatsonFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(MqttAndroidClient broker){
+    public Feature.FeatureListener getFeatureListener(IMqttAsyncClient broker){
         return new IBMWatsonMqttFeatureListener(broker);
     }
 
@@ -141,19 +143,24 @@ public class IBMWatsonFactory implements MqttClientConnectionFactory {
         return true;
     }
 
+    @Override
+    public boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient mqttConnection, FwUpgradeAvailableCallback callback) {
+        return false;
+    }
+
 
     /**
      * class that publish on all the sample to the cloud using the mqtt protocol
      */
     public static class IBMWatsonMqttFeatureListener implements Feature.FeatureListener {
 
-        private MqttAndroidClient mBroker;
+        private IMqttAsyncClient mBroker;
 
         /**
          * build an object that will publish all the update to the cloud
          * @param client object where publish the data
          */
-        public IBMWatsonMqttFeatureListener(MqttAndroidClient client) {
+        public IBMWatsonMqttFeatureListener(IMqttAsyncClient client) {
             mBroker = client;
         }
 

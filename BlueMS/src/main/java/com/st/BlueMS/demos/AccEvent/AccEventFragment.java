@@ -35,7 +35,7 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos;
+package com.st.BlueMS.demos.AccEvent;
 
 
 import android.os.Bundle;
@@ -48,8 +48,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.AccEvent.MultipleEventView;
-import com.st.BlueMS.demos.AccEvent.SingleEventView;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
@@ -77,7 +75,8 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
      * list of possible events supported by the nucleo board
      */
     private static final DetectableEvent NUCLEO_SUPPORTED_EVENT[] = {
-            DetectableEvent.NONE,DetectableEvent.ORIENTATION,
+            DetectableEvent.NONE,DetectableEvent.MULTIPLE,
+            DetectableEvent.ORIENTATION,
             DetectableEvent.DOUBLE_TAP,DetectableEvent.FREE_FALL,
             DetectableEvent.PEDOMETER,DetectableEvent.SINGLE_TAP,
             DetectableEvent.TILT, DetectableEvent.WAKE_UP};
@@ -129,10 +128,12 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
      */
     private MultipleEventView mMultipleEventView;
 
+    private DetectableEvent mPreviousStateEvent = DetectableEvent.NONE;
+
     /**
      * current selected event
      */
-    private DetectableEvent mCurrentEvent=DetectableEvent.NONE;
+    private DetectableEvent mCurrentEvent=FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT;
 
     /**
      * feature that will fire event for this demo
@@ -155,18 +156,25 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
      *
      * @param eventType event that will be enabled in the node
      */
-    public void enableEvent(FeatureAccelerationEvent.DetectableEvent eventType) {
+    public void enableEvent(Node.Type type, FeatureAccelerationEvent.DetectableEvent eventType) {
 
-        DetectableEvent oldEvent =mFeature.getEnabledEvent();
-        if(eventType==oldEvent)
+        if(eventType == mCurrentEvent)
             return;
 
-        mFeature.detectEvent(eventType, true);
+        setGuiToDisplayEvent(type,eventType);
 
+        //disable the current one
+        mFeature.detectEvent(mCurrentEvent, false);
+        //enable the new one
+        mFeature.detectEvent(eventType, true);
+        mCurrentEvent = eventType;
+    }
+
+    private void setGuiToDisplayEvent(Node.Type type, FeatureAccelerationEvent.DetectableEvent eventType){
         if(mSingleEventView.getVisibility()==View.VISIBLE)
-            mSingleEventView.enableEvent(eventType);
+            mSingleEventView.enableEvent(type,eventType);
         if(mMultipleEventView.getVisibility()==View.VISIBLE)
-            mMultipleEventView.enableEvent(eventType);
+            mMultipleEventView.enableEvent(type,eventType);
     }
 
     /**
@@ -181,11 +189,14 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
             mMultipleEventView.displayEvent(event, data);
     }
 
+
     /**
      * Event listener, will extract the data and update the view
      */
     private FeatureAccelerationEvent.FeatureAccelerationEventListener mFeatureListener =
             new FeatureAccelerationEvent.FeatureAccelerationEventListener() {
+
+
 
                 @Override
                 public void onDetectableEventChange(FeatureAccelerationEvent f,
@@ -228,9 +239,6 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
                 getDetectableEvent(type));
         mEventSelector.setAdapter(mDetectableEventArrayAdapter);
 
-        if(mCurrentEvent==DetectableEvent.NONE)
-            mCurrentEvent = getDefaultEvent(type);
-
         mEventSelector.setSelection(mDetectableEventArrayAdapter.getPosition(mCurrentEvent));
 
         mEventSelector.setOnItemSelectedListener(this);
@@ -242,12 +250,20 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
         mFeature = node.getFeature(FeatureAccelerationEvent.class);
 
         if (mFeature != null) {
+
+            if(mCurrentEvent==DetectableEvent.NONE) // first we enable the notification time
+                mCurrentEvent = getDefaultEvent(node.getType());
             initializeEventSelector(node.getType());
-
+            setGuiToDisplayEvent(node.getType(),mCurrentEvent);
             node.enableNotification(mFeature);
-            mFeature.addFeatureListener(mFeatureListener);
+            if(mCurrentEvent != FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT) {
+                //force to enable the currentEvent
+                DetectableEvent temp = mCurrentEvent;
+                mCurrentEvent = FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT;
+                enableEvent(node.getType(), temp);
+            }
 
-            enableEvent(mCurrentEvent);
+            mFeature.addFeatureListener(mFeatureListener);
 
         }//if
     }//enableNeededNotification
@@ -256,10 +272,10 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
     protected void disableNeedNotification(@NonNull Node node) {
         if (mFeature != null) {
             mFeature.removeFeatureListener(mFeatureListener);
-            mFeature.detectEvent(mCurrentEvent,false);
             node.disableNotification(mFeature);
         }//if
     }//disableNeedNotification
+
 
 
     @Override
@@ -268,14 +284,18 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_acc_event, container, false);
 
-        mEventSelector = (Spinner) root.findViewById(R.id.selectEventType);
-        mSingleEventView = (SingleEventView) root.findViewById(R.id.accEvent_singleEventView);
-        mMultipleEventView = (MultipleEventView) root.findViewById(R.id.accEvent_multipleEventView);
+        mEventSelector = root.findViewById(R.id.selectEventType);
+        mSingleEventView = root.findViewById(R.id.accEvent_singleEventView);
+        mMultipleEventView = root.findViewById(R.id.accEvent_multipleEventView);
 
         if (savedInstanceState != null &&
                 savedInstanceState.containsKey(CURRENT_SELECTED_EVENT)) {
             mCurrentEvent =(DetectableEvent) savedInstanceState.getSerializable(CURRENT_SELECTED_EVENT);
-        }//if
+        }else{
+            //force to use the demo default and not the board default
+            if(mCurrentEvent == FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT)
+                mCurrentEvent = DetectableEvent.NONE;
+        }
 
         return root;
     }//onCreateView
@@ -294,13 +314,17 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (mFeature != null) {
-            mCurrentEvent = mDetectableEventArrayAdapter.getItem(i);
-            if(mCurrentEvent==DetectableEvent.MULTIPLE){
+            DetectableEvent selectedEvent = mDetectableEventArrayAdapter.getItem(i);
+            if(selectedEvent==DetectableEvent.MULTIPLE){
                 enableMultipleEventView();
             }else{
                 disableMultipleEventView();
             }
-            enableEvent(mCurrentEvent);
+            Node node = getNode();
+            if(node!=null)
+                enableEvent(node.getType(), selectedEvent);
+            else
+                enableEvent(Node.Type.GENERIC,selectedEvent);
         }//if null
     }
 

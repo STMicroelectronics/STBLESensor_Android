@@ -45,9 +45,11 @@ import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Node;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -97,7 +99,7 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public IMqttToken connect(Context ctx,MqttAndroidClient client,
+    public IMqttToken connect(Context ctx,IMqttAsyncClient client,
                              IMqttActionListener connectionListener)
             throws MqttException, IOException, GeneralSecurityException {
 
@@ -118,7 +120,7 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(MqttAndroidClient broker){
+    public Feature.FeatureListener getFeatureListener(IMqttAsyncClient broker){
         return new IBMWatsonQuickStartMqttFeatureListener(broker,CLOUD_DATA_NOTIFICATION_PERIOD_MS);
     }
 
@@ -130,6 +132,11 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
     @Override
     public boolean supportFeature(Feature f) {
         return true;
+    }
+
+    @Override
+    public boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient mqttConnection, FwUpgradeAvailableCallback callback) {
+        return false;
     }
 
 
@@ -146,7 +153,7 @@ public class IBMWatsonQuickStartFactory implements MqttClientConnectionFactory {
          * @param client object to use for publish the data
          * @param updateRateMs minimum time between 2 published samples
          */
-        public IBMWatsonQuickStartMqttFeatureListener(MqttAndroidClient client, long updateRateMs){
+        public IBMWatsonQuickStartMqttFeatureListener(IMqttAsyncClient client, long updateRateMs){
             super(client);
             mUpdateRateMs=updateRateMs;
         }

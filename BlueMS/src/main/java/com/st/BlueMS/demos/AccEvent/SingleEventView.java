@@ -54,6 +54,7 @@ import android.widget.TextView;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
+import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.util.RepeatAnimator;
 
 /**
@@ -88,7 +89,7 @@ public class SingleEventView extends LinearLayout implements EventView {
     private ImageView mEventIcon;
     private TextView mEventText;
     private RepeatAnimator mShakeImage;
-
+    private FeatureAccelerationEvent.DetectableEvent mCurrentDetectEvent = FeatureAccelerationEvent.DetectableEvent.NONE;
     /**
      * string were write the number of steps
      */
@@ -104,8 +105,8 @@ public class SingleEventView extends LinearLayout implements EventView {
 
     private void init(Context context){
         inflate(context, R.layout.view_acc_event_single,this);
-        mEventIcon = (ImageView) findViewById(R.id.accEvent_singleEventIcon);
-        mEventText = (TextView) findViewById(R.id.accEvent_singleEventLabel);
+        mEventIcon = findViewById(R.id.accEvent_singleEventIcon);
+        mEventText = findViewById(R.id.accEvent_singleEventLabel);
         AnimatorSet shakeImage = (AnimatorSet) AnimatorInflater.loadAnimator(context,
                 R.animator.shake);
 
@@ -116,20 +117,31 @@ public class SingleEventView extends LinearLayout implements EventView {
     }
 
     @Override
-    public void enableEvent(FeatureAccelerationEvent.DetectableEvent eventType) {
+    public void enableEvent(Node.Type type, FeatureAccelerationEvent.DetectableEvent eventType){
+        mCurrentDetectEvent = eventType;
         changeIcon( EventIconUtil.getDefaultIcon(eventType));
         mEventText.setText(null);
     }
 
+    private void changeOrientationIcon(@AccelerationEvent int event){
+        @DrawableRes int newIcon = EventIconUtil.getEventIcon(event);
+        if (newIcon != mCurrentIconId) {
+            changeIcon(newIcon);
+        } else
+            mShakeImage.start();
+    }
+
     @Override
     public void displayEvent(@AccelerationEvent int event, int data) {
-        @DrawableRes int newIcon = EventIconUtil.getEventIcon(event);
-        if(newIcon!=mCurrentIconId) {
-            changeIcon(newIcon);
-        }else if(!FeatureAccelerationEvent.hasOrientationEvent(event))
+        if(mCurrentDetectEvent == FeatureAccelerationEvent.DetectableEvent.ORIENTATION &&
+                FeatureAccelerationEvent.hasOrientationEvent(event)) {
+            changeOrientationIcon(event);
+        }else {
             mShakeImage.start();
+        }
 
-        if(event==FeatureAccelerationEvent.PEDOMETER && data>=0){
+        if(mCurrentDetectEvent == FeatureAccelerationEvent.DetectableEvent.PEDOMETER &&
+           event==FeatureAccelerationEvent.PEDOMETER && data>=0){
             mEventText.setText(String.format(mStepCountTextFormat,data));
         }
     }
@@ -148,7 +160,7 @@ public class SingleEventView extends LinearLayout implements EventView {
     }//onSaveInstanceState
 
     /**
-     * restore the previus state of the view -> if it is transparent or not
+     * restore the previous state of the view -> if it is transparent or not
      * @param state object where we have stored the data
      */
     @Override

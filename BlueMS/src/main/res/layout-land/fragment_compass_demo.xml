@@ -40,7 +40,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.st.BlueMS.demos.CompassFragment"
+    tools:context="com.st.BlueMS.demos.memsSensorFusion.CompassFragment"
     tools:layout_editor_absoluteY="25dp"
     tools:layout_editor_absoluteX="0dp">
     <android.support.constraint.Guideline
@@ -88,7 +88,7 @@
         android:id="@+id/compass_calibButton"
         android:layout_width="100dp"
         android:layout_height="42dp"
-        android:backgroundTint="@android:color/transparent"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:clickable="false"
         android:contentDescription="@string/CalibButtonDesc"
         android:focusable="false"

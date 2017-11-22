@@ -49,8 +49,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
-import com.st.BlueMS.demos.AccEventFragment;
-import com.st.BlueMS.demos.CloudLogFragment;
+import com.st.BlueMS.demos.AccEvent.AccEventFragment;
+import com.st.BlueMS.demos.Cloud.CloudLogFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
@@ -101,6 +101,7 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragmentWesu.class,
             PlotFeatureFragment.class,
+            CloudLogFragment.class,
             ActivityRecognitionFragmentWesu.class,
             CarryPositionFragmentWesu.class,
             PedometerFragment.class,
@@ -108,7 +109,6 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
             SwitchFragment.class,
             //MultipleLogFragment.class,
             NodeStatusFragment.class,
-            CloudLogFragment.class,
             //FeatureDebugFragment.class
     };
 

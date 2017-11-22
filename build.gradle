@@ -19,6 +19,10 @@ allprojects {
         maven {
             url "https://repo.eclipse.org/content/repositories/paho-releases/"
         }
+
+        maven { // to use google support library
+            url "https://maven.google.com"
+        }
         jcenter(){
             url "http://jcenter.bintray.com/"
         }
@@ -29,16 +33,15 @@ allprojects {
 ext {
     // Sdk and tools
     targetSdkVersion = 25
-    compileSdkVersion = 25
-    buildToolsVersion = '26.0.0'
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.1'
 
     // App dependencies
-    supportLibraryVersion = '25.3.1'
-    constraintLayoutVersion = '1.0.2'
+    supportLibraryVersion = '25.4.0'
     constraintLayoutVersion = '1.0.2'
     junitVersion = '4.12'
     mockitoVersion = '1.9.5'
-    runnerVersion = '0.5'
-    rulesVersion = '0.5'
-    espressoVersion = '2.2.2'
+    runnerVersion = '1.0.0'
+    rulesVersion = '1.0.0'
+    espressoVersion = '3.0.0'
 }

@@ -93,6 +93,7 @@ public abstract class DemoWithNetFragment extends DemoFragment {
         Context c = getActivity();
         if(mUpdateConnectionStatus!=null && c!=null)
             getActivity().unregisterReceiver(mUpdateConnectionStatus);
+        mUpdateConnectionStatus=null;
     }
 
     /**

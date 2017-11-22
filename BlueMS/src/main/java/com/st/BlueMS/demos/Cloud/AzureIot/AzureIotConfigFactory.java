@@ -35,80 +35,88 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.Cloud.IBMWatson;
+package com.st.BlueMS.demos.Cloud.AzureIot;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.st.BlueMS.R;
+import com.st.BlueMS.demos.Cloud.AzureIot.util.ConnectionParameters;
 import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
-import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
+import com.st.BlueMS.demos.Cloud.util.InputChecker.InputChecker;
 import com.st.BlueSTSDK.Node;
 
-/**
- *  Object that help to configure the Ibm Watson Iot/BlueMX service, using the quickstart configuration
- */
-public class IBMWatsonQuickStartConfigFactory implements MqttClientConfigurationFactory {
+public class AzureIotConfigFactory implements MqttClientConfigurationFactory {
 
-    private static final String CONF_PREFERENCE = IBMWatsonConfigFactory.class.getCanonicalName();
-    private static final String DEVICE_KEY = CONF_PREFERENCE+".DEVICE_KEY";
+    private static final String CONF_PREFERENCE = AzureIotConfigFactory.class.getCanonicalName();
+    private static final String CONNECTION_STRING = CONF_PREFERENCE+".CONNECTION_STRING";
 
-    private static final String FACTORY_NAME="IBM Watson IoT - Quickstart";
+    private static final String CLOUD_NAME= "Azure IoT";
 
-    private EditText mDeviceIdText;
-    private Node.Type mNodeType;
-
-    private void loadFromPreferences(SharedPreferences pref){
-        mDeviceIdText.setText(pref.getString(DEVICE_KEY,""));
-    }
-
-    private void storeToPreference(SharedPreferences pref){
-        pref.edit()
-                .putString(DEVICE_KEY,mDeviceIdText.getText().toString())
-                .apply();
-    }
+    private TextView mConnectionStringText;
 
     @Override
     public void attachParameterConfiguration(Context c, ViewGroup root) {
         LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.cloud_config_bluemx_quickstart,root);
-        mDeviceIdText = v.findViewById(R.id.blueMXQuick_deviceId);
-        TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMXQuick_deviceIdWrapper);
-        mDeviceIdText.addTextChangedListener(
-                new CheckNotEmpty(deviceIdLayout,R.string.cloudLog_watson_deviceIdError));
+        View v = inflater.inflate(R.layout.cloud_config_azure,root);
+        mConnectionStringText = v.findViewById(R.id.azure_connectionString);
+        TextInputLayout connectionStringLayout = v.findViewById(R.id.azure_connectionStringWrapper);
+        mConnectionStringText.addTextChangedListener(
+                new ConnectionStringChecker(connectionStringLayout,
+                        R.string.cloudLog_azure_connectionStringError));
+        //load the last valid connection string
         loadFromPreferences(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
     }
 
     @Override
-    public void loadDefaultParameters(@Nullable Node n) {
-        if(n==null){
-            mNodeType = Node.Type.GENERIC;
-            return;
-        }//else
-        if(mDeviceIdText.getText().length()==0)
-            mDeviceIdText.setText(MqttClientUtil.getDefaultCloudDeviceName(n));
-        mNodeType=n.getType();
-    }
+    public void loadDefaultParameters(@Nullable Node n) { }
 
     @Override
     public String getName() {
-        return FACTORY_NAME;
+        return CLOUD_NAME;
     }
 
     @Override
     public MqttClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
-        Context c = mDeviceIdText.getContext();
+        ConnectionParameters param = ConnectionParameters.parse(mConnectionStringText.getText());
+        Context c = mConnectionStringText.getContext();
         storeToPreference(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
-        return new IBMWatsonQuickStartFactory(mNodeType.name(),mDeviceIdText.getText().toString());
+        return new AzureIotFactory(param);
     }
+
+    private void loadFromPreferences(SharedPreferences pref){
+        mConnectionStringText.setText(pref.getString(CONNECTION_STRING,""));
+    }
+
+    private void storeToPreference(SharedPreferences pref){
+        pref.edit()
+                .putString(CONNECTION_STRING,mConnectionStringText.getText().toString())
+                .apply();
+    }
+
+    /**
+     * class used to check that if the user input is a valid connection string or not
+     */
+    private static class ConnectionStringChecker extends InputChecker {
+
+        ConnectionStringChecker(TextInputLayout textInputLayout,
+                                @StringRes int errorMessageId) {
+            super(textInputLayout, errorMessageId);
+        }
+
+        @Override
+        protected boolean validate(String input) {
+            return ConnectionParameters.hasValidFormat(input);
+        }
+
+    }//ConnectionStringChecker
+
 }

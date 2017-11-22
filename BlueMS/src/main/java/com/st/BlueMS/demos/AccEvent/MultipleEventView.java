@@ -50,6 +50,7 @@ import android.widget.TextView;
 
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
+import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.util.RepeatAnimator;
 
 
@@ -77,10 +78,11 @@ public class MultipleEventView extends GridLayout implements EventView {
      * image view that will show the current chip orientation
      */
     private ImageView mOrientationIcon;
-
+    private ImageView mWakeUpOrDoubleTapIcon;
+    private TextView mWakeUpOrDoubleTapText;
     private RepeatAnimator mTapAnim;
     private RepeatAnimator mFreeFallAnim;
-    private RepeatAnimator mWakeUpAnim;
+    private RepeatAnimator mWakeUpOrDobuleTapAnim;
     private RepeatAnimator mTiltAnim;
 
     /////pedometer data///
@@ -114,22 +116,23 @@ public class MultipleEventView extends GridLayout implements EventView {
 
         mStepCountTextFormat = getResources().getString(R.string.stepCounterStringFormat);
 
-        mOrientationIcon = (ImageView) findViewById(R.id.accEvent_multiple_orientationIcon);
+        mOrientationIcon = findViewById(R.id.accEvent_multiple_orientationIcon);
 
-        ImageView pedometerIcon = (ImageView) findViewById(R.id.accEvent_multiple_pedometerIcon);
+        ImageView pedometerIcon = findViewById(R.id.accEvent_multiple_pedometerIcon);
         mPedometerAnim = createNewEventAnimation(context, pedometerIcon);
-        mPedometerText = (TextView) findViewById(R.id.accEvent_multiple_pedometerText);
+        mPedometerText = findViewById(R.id.accEvent_multiple_pedometerText);
 
-        ImageView tapIcon = (ImageView) findViewById(R.id.accEvent_multiple_tapIcon);
+        ImageView tapIcon = findViewById(R.id.accEvent_multiple_tapIcon);
         mTapAnim = createNewEventAnimation(context, tapIcon);
 
-        ImageView freeFallIcon = (ImageView) findViewById(R.id.accEvent_multiple_freeFallIcon);
+        ImageView freeFallIcon = findViewById(R.id.accEvent_multiple_freeFallIcon);
         mFreeFallAnim = createNewEventAnimation(context, freeFallIcon);
 
-        ImageView wakeUpIcon = (ImageView) findViewById(R.id.accEvent_multiple_wakeUpIcon);
-        mWakeUpAnim = createNewEventAnimation(context, wakeUpIcon);
+        mWakeUpOrDoubleTapIcon = findViewById(R.id.accEvent_multiple_wakeUpIcon);
+        mWakeUpOrDobuleTapAnim = createNewEventAnimation(context, mWakeUpOrDoubleTapIcon);
+        mWakeUpOrDoubleTapText = findViewById(R.id.accEvent_multiple_wakeUpText);
 
-        ImageView tiltIcon = (ImageView) findViewById(R.id.accEvent_multiple_tiltIcon);
+        ImageView tiltIcon = findViewById(R.id.accEvent_multiple_tiltIcon);
         mTiltAnim = createNewEventAnimation(context, tiltIcon);
 
     }
@@ -153,15 +156,15 @@ public class MultipleEventView extends GridLayout implements EventView {
         if(hasEvent(event,FeatureAccelerationEvent.FREE_FALL)){
             mFreeFallAnim.start();
         }
-        if(hasEvent(event,FeatureAccelerationEvent.SINGLE_TAP) ||
-                hasEvent(event,FeatureAccelerationEvent.SINGLE_TAP) ) {
+        if(hasEvent(event,FeatureAccelerationEvent.SINGLE_TAP)) {
             mTapAnim.start();
         }
         if(hasEvent(event,FeatureAccelerationEvent.FREE_FALL)){
             mFreeFallAnim.start();
         }
-        if(hasEvent(event,FeatureAccelerationEvent.WAKE_UP)){
-            mWakeUpAnim.start();
+        if(hasEvent(event,FeatureAccelerationEvent.WAKE_UP) ||
+                hasEvent(event,FeatureAccelerationEvent.DOUBLE_TAP)){
+            mWakeUpOrDobuleTapAnim.start();
         }
         if(hasEvent(event,FeatureAccelerationEvent.TILT)){
             mTiltAnim.start();
@@ -262,8 +265,14 @@ public class MultipleEventView extends GridLayout implements EventView {
     ////////////////////////// END STORE VIEW STATE ///////////////////////////////////
 
     @Override
-    public void enableEvent(FeatureAccelerationEvent.DetectableEvent eventType) {
-
+    public void enableEvent(Node.Type type, FeatureAccelerationEvent.DetectableEvent eventType) {
+        if(type== Node.Type.STEVAL_WESU1){
+            mWakeUpOrDoubleTapIcon.setImageResource(R.drawable.acc_event_wake_up);
+            mWakeUpOrDoubleTapText.setText(R.string.accEvent_wakeUp);
+        }else{
+            mWakeUpOrDoubleTapIcon.setImageResource(R.drawable.acc_event_tap_double);
+            mWakeUpOrDoubleTapText.setText(R.string.accEvent_double_tap);
+        }
     }
 
 }

@@ -67,17 +67,16 @@
             android:layout_alignTop="@+id/calibrationImage"
             android:text="@string/ResetButton" />
 
-    <ToggleButton
+    <android.support.v7.widget.SwitchCompat
         android:layout_width="wrap_content"
         android:layout_height="@dimen/CalibImgH"
         android:text="@string/enableProximityButton"
         android:id="@+id/proximityButton"
-        android:textOff="@string/enableProximityButton"
-        android:textOn="@string/enableProximityButton"
         android:visibility="invisible"
         android:layout_alignTop="@+id/calibrationImage"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" android:checked="true"/>
+        android:layout_alignParentBottom="true"
+        android:checked="true"/>
 
 
         <ImageButton
@@ -86,7 +85,7 @@
             android:layout_height="@dimen/CalibImgH"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:backgroundTint="@android:color/transparent"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:clickable="false"
             android:contentDescription="@string/CalibButtonDesc"
             android:focusable="false"

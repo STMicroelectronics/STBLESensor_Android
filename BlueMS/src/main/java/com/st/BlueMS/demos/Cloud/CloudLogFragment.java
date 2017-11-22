@@ -35,8 +35,10 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos;
+package com.st.BlueMS.demos.Cloud;
 
+import android.app.DialogFragment;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -57,12 +59,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.AzureIot.AzureIotConfigFactory;
 import com.st.BlueMS.demos.Cloud.GenericMqtt.GenericMqttConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonConfigFactory;
 import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonQuickStartConfigFactory;
+import com.st.BlueMS.demos.Cloud.util.CloudFwUpgradeRequestDialog;
 import com.st.BlueMS.demos.Cloud.util.MqttClientConfigAdapter;
-import com.st.BlueMS.demos.Cloud.MqttClientConfigurationFactory;
 import com.st.BlueMS.demos.util.DemoWithNetFragment;
 import com.st.BlueMS.demos.util.FeatureListViewAdapter;
 import com.st.BlueMS.demos.util.FeatureListViewAdapter.OnFeatureSelectChange;
@@ -84,13 +86,18 @@ import java.util.List;
  */
 @DemoDescriptionAnnotation(name = "Cloud Logging", requareAll = {},
         iconRes = R.drawable.ic_cloud_upload_24dp)
-public class CloudLogFragment extends DemoWithNetFragment {
+public class CloudLogFragment extends DemoWithNetFragment implements MqttClientConnectionFactory.FwUpgradeAvailableCallback,
+        CloudFwUpgradeRequestDialog.CloudFwUpgradeRequestCallback {
 
 
-    private static List<MqttClientConfigurationFactory> CLOUD_PROVIDER =  Arrays.asList(
+    public static final String SELECTED_CLOUD_KEY = CloudLogFragment.class.getCanonicalName()+".SELECTED_CLOUD_KEY";
+
+    private List<MqttClientConfigurationFactory> mCloudProviders =  Arrays.asList(
             new IBMWatsonQuickStartConfigFactory(),
             new IBMWatsonConfigFactory(),
-            new GenericMqttConfigurationFactory());
+            new AzureIotConfigFactory(),
+            new GenericMqttConfigurationFactory()
+    );
 
     /**
      * Node use for the demo
@@ -178,6 +185,11 @@ public class CloudLogFragment extends DemoWithNetFragment {
         }
     };
 
+    /**
+     * Receiver called when the system download a new fw, it will start the fw upgrade procedure
+     */
+    private FwDownloaderReceiver mFwDownloadReceiver;
+
     public CloudLogFragment() {
         // Required empty public constructor
     }
@@ -221,7 +233,7 @@ public class CloudLogFragment extends DemoWithNetFragment {
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         mNode = node;
-
+        mFwDownloadReceiver = new FwDownloaderReceiver(node);
         if (isCloudConnected()) {
             showConnectedView();
         } else
@@ -257,20 +269,20 @@ public class CloudLogFragment extends DemoWithNetFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_cloud_log, container, false);
-        mFeatureListView = (RecyclerView) root.findViewById(R.id.cloudLogFeatureList);
+        mFeatureListView = root.findViewById(R.id.cloudLogFeatureList);
         mFeatureListViewContainer = root.findViewById(R.id.cloudLogFeatureListContainer);
 
-        mStartLogButton = (ImageButton) root.findViewById(R.id.startCloudLog);
+        mStartLogButton = root.findViewById(R.id.startCloudLog);
         setUpStartLogButton(mStartLogButton);
 
-        mCloudClientSpinner = (Spinner) root.findViewById(R.id.cloudProviderSpinner);
+        mCloudClientSpinner = root.findViewById(R.id.cloudProviderSpinner);
         setUpCloudClientSpinner(mCloudClientSpinner,getNode(), savedInstanceState);
-        mCloudConfig = (FrameLayout) root.findViewById(R.id.cloudProviderConfigView);
+        mCloudConfig = root.findViewById(R.id.cloudProviderConfigView);
 
-        mDataPageLink = (Button) root.findViewById(R.id.openCloudPageButton);
+        mDataPageLink = root.findViewById(R.id.openCloudPageButton);
         setUpDataPageLink(mDataPageLink);
 
-        mShowDetailsButton = (Button) root.findViewById(R.id.showDetailsButton);
+        mShowDetailsButton = root.findViewById(R.id.showDetailsButton);
         setUpDetailsButton(mShowDetailsButton);
 
         return root;
@@ -279,12 +291,12 @@ public class CloudLogFragment extends DemoWithNetFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("selected",mCloudClientSpinner.getSelectedItemPosition());
+        outState.putInt(SELECTED_CLOUD_KEY,mCloudClientSpinner.getSelectedItemPosition());
 
     }
 
     private void restoreCloudClientParamState(Bundle savedInstanceState) {
-        int selected = savedInstanceState.getInt("selected");
+        int selected = savedInstanceState.getInt(SELECTED_CLOUD_KEY);
         mCloudClientSpinner.setSelection(selected);
     }
 
@@ -327,9 +339,9 @@ public class CloudLogFragment extends DemoWithNetFragment {
      * @param spinner spinner to set up
      */
     private void setUpCloudClientSpinner(Spinner spinner, @Nullable final Node node, @Nullable Bundle savedState){
-        spinner.setAdapter(new MqttClientConfigAdapter(getActivity(),CLOUD_PROVIDER));
+        spinner.setAdapter(new MqttClientConfigAdapter(getActivity(), mCloudProviders));
 
-        /**
+        /*
          * remove the previous view and add the new views for configure the selected service
          */
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -423,10 +435,19 @@ public class CloudLogFragment extends DemoWithNetFragment {
         try {
             mMqttClient = mCloudConnectionFactory.createClient(getActivity());
             mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient);
-            mCloudConnectionFactory.connect(getActivity(), mMqttClient, new IMqttActionListener() {
+            Context ctx = getActivity();
+            final Context appContext = ctx.getApplicationContext();
+            mCloudConnectionFactory.connect(ctx, mMqttClient, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     showConnectedView();
+                    mCloudConnectionFactory.enableCloudFwUpgrade(mNode, mMqttClient, new MqttClientConnectionFactory.FwUpgradeAvailableCallback() {
+                        @Override
+                        public void onFwUpgradeAvailable(String fwUrl) {
+                            Uri firmwareRemoteLocation = Uri.parse(fwUrl);
+                            DownloadFwFileService.displayAvailableFwNotification(appContext,firmwareRemoteLocation);
+                        }
+                    });
                 }
 
                 @Override
@@ -435,6 +456,8 @@ public class CloudLogFragment extends DemoWithNetFragment {
                     buildMqttErrorDialog(CloudLogFragment.this.getActivity(), exception.getMessage()).show();
                 }
             });
+
+            mFwDownloadReceiver.registerReceiver(getActivity());
         } catch (Exception e) {
             e.printStackTrace();
             buildMqttErrorDialog(getActivity(), e.getMessage()).show();
@@ -473,6 +496,7 @@ public class CloudLogFragment extends DemoWithNetFragment {
     private void closeCloudConnection() {
         if (isCloudConnected()) {
             mCloudLogListener = null;
+            mFwDownloadReceiver.unregisterReceiver(getActivity());
             if(mMqttClient!=null) {
                 try {
                     mMqttClient.disconnect();
@@ -553,4 +577,33 @@ public class CloudLogFragment extends DemoWithNetFragment {
         mStartLogButton.setImageResource(R.drawable.ic_cloud_offline_24dp);
     }
 
+    @Override
+    public void onFwUpgradeAvailable(String fwUrl) {
+
+        DialogFragment requestDialog = CloudFwUpgradeRequestDialog.create(fwUrl);
+        requestDialog.show(getChildFragmentManager(),"requestFwUpgrade");
+
+    }
+
+    private long downloadFile(String fwUri){
+        DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request dwRequest = new DownloadManager.Request(Uri.parse(fwUri));
+        dwRequest.setTitle("download fw File");
+        dwRequest.setDescription("downloading new firemaware for: "+mNode.getName());
+        dwRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        return  manager.enqueue(dwRequest);
+
+    }
+
+    @Override
+    public void onCloudFwUpgradeRequestAccept(String fwUri) {
+        downloadFile(fwUri);
+
+
+    }
+
+    @Override
+    public void onCloudFwUpgradeRequestDelcine() {
+
+    }
 }

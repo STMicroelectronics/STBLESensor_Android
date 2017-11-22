@@ -168,10 +168,12 @@ public class CalibrationManagerWesu {
 
         mWaitUntilCalibrationComplete = true;
         if (mConfig != null) {
-            Command cmd = new Command(RegisterDefines.RegistersName.MAGNETOMETER_CALIBRATION_START.getRegister(), Register.Target.PERSISTENT, 3, Field.Type.Int16);
+            Command cmd = new Command(RegisterDefines.RegistersName.MAGNETOMETER_CALIBRATION_START.getRegister(),
+                    Register.Target.PERSISTENT, 3, Field.Type.Int16);
             mConfig.write(cmd);
         }
         mReadConfigRegister.post(mReadReg);
+        mConfig.addConfigListener(mConfigControl);
 
 
     }

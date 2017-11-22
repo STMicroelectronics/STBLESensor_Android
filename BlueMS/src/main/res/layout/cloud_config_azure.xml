@@ -36,29 +36,17 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<resources>
+<android.support.design.widget.TextInputLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/azure_connectionStringWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="@string/cloudLog_Azure_connectionStringHit">
 
-    <array name="batteryChargingIcon">
-        <item>@drawable/battery_00c</item>
-        <item>@drawable/battery_20c</item>
-        <item>@drawable/battery_40c</item>
-        <item>@drawable/battery_60c</item>
-        <item>@drawable/battery_80c</item>
-        <item>@drawable/battery_100c</item>
-    </array>
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/azure_connectionString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="3" />
 
-    <array name="batteryChargeIcon">
-        <item>@drawable/battery_00</item>
-        <item>@drawable/battery_20</item>
-        <item>@drawable/battery_40</item>
-        <item>@drawable/battery_60</item>
-        <item>@drawable/battery_80</item>
-        <item>@drawable/battery_100</item>
-    </array>
-    <string name="nodeStatus_battery_percentage">Charge: %1$.1f %2$s</string>
-    <string name="nodeStatus_battery_voltage">Voltage: %1$.3f %2$s</string>
-    <string name="nodeStatus_battery_current">Current: %1$.2f %2$s</string>
-    <string name="nodeStatus_battery_current_unknown">Current: not available</string>
-    <string name="nodeStatus_battery_remainingTime">Autonomy: %1$.1f m</string>
-    <string name="nodeStatus_battery_notFound">Battery not available</string>
-</resources>
+</android.support.design.widget.TextInputLayout>

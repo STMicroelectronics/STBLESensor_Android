@@ -57,6 +57,7 @@
                 android:id="@+id/genericMqtt_brockerUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/cloudLog_genericMqtt_addressHint"
                 android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>

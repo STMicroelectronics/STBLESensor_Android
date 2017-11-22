@@ -41,17 +41,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.st.BlueMS.demos.AccEventFragment;
+import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
 import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
-import com.st.BlueMS.demos.CloudLogFragment;
-import com.st.BlueMS.demos.CompassFragment;
+import com.st.BlueMS.demos.Cloud.CloudLogFragment;
+import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HearRateFragment;
 import com.st.BlueMS.demos.MemsGestureRecognitionFragment;
-import com.st.BlueMS.demos.MemsSensorFusionFragment;
+import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.MotionIntensityFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
@@ -99,6 +99,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
             PlotFeatureFragment.class,
+            CloudLogFragment.class,
             ActivityRecognitionFragment.class,
             CarryPositionFragment.class,
             ProximityGestureRecognitionFragment.class,
@@ -110,7 +111,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             BeamformingFragment.class,
             SourceLocFragment.class,
             HearRateFragment.class,
-            CloudLogFragment.class,
             MotionIntensityFragment.class,
             CompassFragment.class,
             //MultipleLogFragment.class,

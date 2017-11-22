@@ -40,7 +40,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
               android:orientation="vertical"
-             tools:context="com.st.BlueMS.demos.AccEventFragment">
+             tools:context="com.st.BlueMS.demos.AccEvent.AccEventFragment">
 
     <LinearLayout
         android:orientation="horizontal"

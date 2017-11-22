@@ -43,9 +43,11 @@ import android.support.annotation.Nullable;
 
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Feature.FeatureListener;
+import com.st.BlueSTSDK.Node;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
@@ -73,7 +75,7 @@ public interface MqttClientConnectionFactory {
      * @return operation id
      * @throws MqttException if some error happen during the connection handshake
      */
-    IMqttToken connect(Context ctx,MqttAndroidClient client,
+    IMqttToken connect(Context ctx,IMqttAsyncClient client,
                        IMqttActionListener connectionListener) throws MqttException, IOException, GeneralSecurityException;
 
     /**
@@ -81,7 +83,7 @@ public interface MqttClientConnectionFactory {
      * @param broker client to use for sned the mqtt message
      * @return listener to use in a feature for load the data to the cloud
      */
-    FeatureListener getFeatureListener(MqttAndroidClient broker);
+    FeatureListener getFeatureListener(IMqttAsyncClient broker);
 
     /**
      * return the url page where see the uploaded data
@@ -90,6 +92,28 @@ public interface MqttClientConnectionFactory {
     @Nullable Uri getDataPage();
 
 
+    /**
+     * tell if a particular feature is supported by the cloud service
+     * @param f feature to test
+     * @return true if the service support the data upload from the feature, false otherwise
+     */
     boolean supportFeature(Feature f);
 
+    /**
+     * set up the connection to accept a fw upgrade message
+     * @param node node to upgrade
+     * @param cloudConnection connection used to send the message
+     * @param callback function to call when a new fw is available
+     * @return true if the function is supported, false otherwise
+     */
+    boolean enableCloudFwUpgrade(Node node, IMqttAsyncClient cloudConnection, FwUpgradeAvailableCallback callback);
+
+
+    interface FwUpgradeAvailableCallback{
+        /**
+         * a new firmware is available online
+         * @param fwUrl url where find the new firmare
+         */
+        void onFwUpgradeAvailable(String fwUrl);
+    }
 }

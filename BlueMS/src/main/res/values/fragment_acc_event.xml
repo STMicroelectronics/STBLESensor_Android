@@ -44,6 +44,7 @@
     <string name="accEvent_orientation">Orientation</string>
     <string name="accEvent_pedometer">Pedometer</string>
     <string name="accEvent_tap">Tap</string>
+    <string name="accEvent_double_tap">Double Tap</string>
 
     <integer name="accEvent_grid_columns" >2</integer>
     <integer name="accEvent_grid_rows" >3</integer>

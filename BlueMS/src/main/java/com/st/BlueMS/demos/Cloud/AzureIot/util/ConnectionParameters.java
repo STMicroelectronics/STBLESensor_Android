@@ -35,67 +35,73 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.wesu;
+package com.st.BlueMS.demos.Cloud.AzureIot.util;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.st.BlueMS.R;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
-import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
-import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
-import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
-import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Sensor Fusion demo for the STEVAL_WESU1 node
- *
- * this Activity will check that the license is enabled inside the node and that the magnetometer
- *  has is calibrated
+ * class containing the parameters need to connect to an Azure iot hub
  */
-public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
+public class ConnectionParameters {
 
-    private View mLayout;
-    private CalibrationManagerWesu mCalibManager;
+    // regexp needed to extract the parameters from a standard connection string
+    private static Pattern CONNECTION_STRING_PATTERN = Pattern.compile("HostName=(.*);DeviceId=(.*);SharedAccessKey=(.*)");
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View demo = super.onCreateView(inflater, container, savedInstanceState);
-        if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
-        return demo;
+    /**
+     * validate the string
+     * @param connectionString string to analyze
+     * @return true if the string is a valid conneciton string
+     */
+    public static boolean hasValidFormat(CharSequence connectionString){
+        return hasValidFormat(CONNECTION_STRING_PATTERN.matcher(connectionString));
+    }
+
+    /**
+     * tell if the match has found a valid connection string
+     * @param match regexp match to test
+     * @return true if the string has matched the regexp and all the 3 parameters are present
+     */
+    private static boolean hasValidFormat(Matcher match){
+        return (match.matches() && match.groupCount()==3);
+    }
+
+    /**
+     * create a connectionParameters object from a string
+     * @param connectionString string containing the connection parameters
+     * @return the connection parameters contained in the string
+     * @throws IllegalArgumentException throw if the string isn't a valid connection string
+     */
+    public static ConnectionParameters parse(CharSequence connectionString) throws IllegalArgumentException{
+
+        Matcher match = CONNECTION_STRING_PATTERN.matcher(connectionString);
+        if(!hasValidFormat(match)){
+            throw new IllegalArgumentException("Connection string must match:"+ CONNECTION_STRING_PATTERN.pattern());
+        }
+        return new ConnectionParameters(match.group(1),match.group(2),match.group(3));
     }
 
 
-    @Override
-    protected void enableNeededNotification(@NonNull Node node) {
-        super.enableNeededNotification(node);
-        CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
-                RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
-            @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
-            }
-        });
-    }
+    /**
+     * azure iot hub
+     */
+    public final String hostName;
+
+    /**
+     * azure iot device id
+     */
+    public final String deviceId;
+
+    /**
+     * device shared key
+     */
+    public final String sharedAccessKey;
 
 
-    @Override
-    public void onStartCalibrationClicked() {
-        mCalibManager.startCalibration();
-    }
-
-    @Override
-    protected void disableNeedNotification(Node node) {
-        super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
+    public ConnectionParameters(String hostName, String deviceId, String sharedAccessKey) {
+        this.hostName = hostName;
+        this.deviceId = deviceId;
+        this.sharedAccessKey = sharedAccessKey;
     }
 
 }
-

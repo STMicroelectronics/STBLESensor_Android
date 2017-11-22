@@ -39,6 +39,7 @@ package com.st.BlueMS.demos.AccEvent;
 
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
+import com.st.BlueSTSDK.Node;
 
 
 /**
@@ -50,7 +51,7 @@ public interface EventView {
      * called when an event is enabled
      * @param eventType event that will be enable in the board
      */
-    void enableEvent(FeatureAccelerationEvent.DetectableEvent eventType);
+    void enableEvent(Node.Type nodeType, FeatureAccelerationEvent.DetectableEvent eventType);
 
     /**
      * called when a new event is detected

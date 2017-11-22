@@ -60,6 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_play_arrow"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:contentDescription="@string/startPlotButton"
             android:id="@+id/startPlotButton"
             android:padding="8dp" android:layout_centerVertical="true"

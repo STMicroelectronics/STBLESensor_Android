@@ -35,7 +35,7 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos;
+package com.st.BlueMS.demos.memsSensorFusion;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,13 +57,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.util.CalibrationDialogFragment;
+import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationContract;
+import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationPresenter;
+import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationView;
 import com.st.BlueMS.demos.util.GLCubeRender;
 import com.st.BlueMS.demos.util.HidableTextView;
 import com.st.BlueSTSDK.Feature;
@@ -88,12 +90,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * </p>
  */
 @DemoDescriptionAnnotation(name="Mems Sensor Fusion",iconRes=R.drawable.demo_sensors_fusion,
-    requareOneOf = {FeatureMemsSensorFusion.class,FeatureMemsSensorFusionCompact.class})
-public class MemsSensorFusionFragment extends DemoFragment implements CalibrationDialogFragment.CalibrationDialogCallback{
+        requareOneOf = {FeatureMemsSensorFusion.class,FeatureMemsSensorFusionCompact.class})
+public class MemsSensorFusionFragment extends DemoFragment implements CalibrationContract.View{
     private final static String TAG = MemsSensorFusionFragment.class.getCanonicalName();
-
-    private static final String CALIBRATION_DIALOG_TAG = TAG+".calibrationDialogTag";
-
 
     /**
      * initial size of the cube
@@ -119,25 +118,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
      */
     private GLCubeRender mGlRenderer;
 
-    private boolean mShowResetDialog;
-    private boolean mShowCalibrateDialog;
-
-    /**
-     * true if the node is calibrated, false otherwise
-     */
-    private boolean mCalibState = false;
-
-    /**
-     * task that will change the button image in function of the calibration status
-     */
-    private Runnable mChangeCalibrationButtonState = new Runnable() {
-        @Override
-        public void run() {
-            @DrawableRes int imgId = mCalibState ? R.drawable.calibrated : R.drawable.uncalibrated;
-            mCalibrationImage.setImageResource(imgId);
-        }//run
-    };
-
     /**
      * button used for reset the cube position
      */
@@ -145,19 +125,19 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     /**
      * image used for tell if the system is calibrated or not
      */
-    private ImageButton mCalibrationImage;
+    private ImageButton mCalibButton;
     /**
      * feature where we read the cube position
      */
     private FeatureAutoConfigurable mSensorFusion;
     private View mRootLayout;
 
+
     /**
      * this listener will count how mach sample we receive and will show the average number of
      * sample that we receive in a second
      */
-    private class SensorFusionCountRateListener implements
-            FeatureAutoConfigurable.FeatureAutoConfigurationListener {
+    private class SensorFusionCountRateListener implements Feature.FeatureListener {
 
         /**
          * time of when we receive the first sample
@@ -171,11 +151,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         void resetQuaternionRate() {
             mFistQuaternionTime = -1;
             mNQuaternion.set(0);
-        }
-
-        @Override
-        public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) {
-            setCalibrationStatus(f.isConfigured());
         }
 
         @Override
@@ -211,17 +186,10 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
             });
         }//onUpdate
 
-        @Override
-        public void onAutoConfigurationStarting(FeatureAutoConfigurable f) {
-
-        }
-
-        @Override
-        public void onConfigurationFinished(FeatureAutoConfigurable f, int status) {
-
-        }
-
     }
+
+    private CalibrationContract.Presenter mCalibPresenter = new CalibrationPresenter();
+    private CalibrationContract.View mCalibView;
 
     /**
      * class that update the cube position using the data from the sensor,
@@ -229,30 +197,46 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
      */
     private SensorFusionCountRateListener mSensorFusionListener = new SensorFusionCountRateListener();
 
-    private void enableSensorFusion(Node node){
+    private void enableSensorFusion(@NonNull Node node){
+        if(mSensorFusion!=null)
+            return;
+
+        mSensorFusion = getSensorFusion(node);
+
         if (mSensorFusion != null) {
             mSensorFusionListener.resetQuaternionRate();
             mSensorFusion.addFeatureListener(mSensorFusionListener);
             node.enableNotification(mSensorFusion);
-            setCalibrationStatus(mSensorFusion.isConfigured());
-            //not needed since the board send us the status when we connect
-            //and this command doesn't work it return an uncalibrate state also if it is calibrated
-            //mSensorFusion.requestAutoConfigurationStatus();
-            if(!mSensorFusion.isConfigured() && node.getType()!= Node.Type.STEVAL_WESU1)
-                onCalibrateButtonClicked();
-
-            //we force to run the mChangeCalibrationButtonState, since if we return in this
-            // fragment we can have the same status (true) but the button is reset to the default
-            // image (false state -> not calibrated)
-            updateGui(mChangeCalibrationButtonState);
         } else
             showActivityToast(R.string.memsSensorFusionNotFound);
+    }
+
+    private static @Nullable FeatureMemsSensorFusion getSensorFusion(@NonNull Node node){
+        FeatureMemsSensorFusion sensorFusionFeature = node.getFeature(FeatureMemsSensorFusionCompact.class);
+        if (sensorFusionFeature == null) {
+            return node.getFeature(FeatureMemsSensorFusion.class);
+        }
+        return sensorFusionFeature;
     }
 
     private void disableSensorFusion(@NonNull  Node node){
         if (mSensorFusion != null) {
             mSensorFusion.removeFeatureListener(mSensorFusionListener);
             node.disableNotification(mSensorFusion);
+            mSensorFusion=null;
+        }
+    }
+
+    private void enableSensorFusionCalibration(){
+        if(mSensorFusion!=null) {
+            mCalibView = new CalibrationView(getFragmentManager(), mCalibButton);
+            mCalibPresenter.manage(this, mSensorFusion);
+        }
+    }
+
+    private void disableSensorFusionCalibration(){
+        if(mSensorFusion!=null) {
+            mCalibPresenter.unManageFeature();
         }
     }
 
@@ -262,7 +246,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
      * button for enable/disable the proximity feature, it is show only when the feature is
      * present
      */
-    private ToggleButton mProximityButton;
+    private CompoundButton mProximityButton;
     /**
      * feature where read the proximity value
      */
@@ -291,7 +275,12 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     };
 
 
-    private void enableProximity(final Node node){
+    private void enableProximity(@NonNull final Node node){
+
+        if(mProximity!=null) //already enabled
+            return;
+
+        mProximity = node.getFeature(FeatureProximity.class);
         if (mProximity != null) {
             /*
              * proximity sensor is present, show the button and attach the listener for
@@ -324,6 +313,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         if (mProximity != null) {
             mProximity.removeFeatureListener(mSensorProximity);
             node.disableNotification(mProximity);
+            mProximity=null;
         }
     }
     /////////////////////// END PROXIMITY ////////////////////////////////////
@@ -369,12 +359,16 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         }//onUpdate
     }//FreeFallListener
 
-    private void enableFreeFall(Node node){
+    private void enableFreeFall(@NonNull Node node){
+        if(mFreeFallEvent!=null) //already enabled
+            return;
+
         mFreeFallEvent = node.getFeature(FeatureAccelerationEvent.class);
         if(mFreeFallEvent!=null){
             mFreeFallListener = new FreeFallListener(getActivity());
-            mFreeFallEvent.addFeatureListener(mFreeFallListener);
+            mFreeFallEvent.detectEvent(FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT,false);
             mFreeFallEvent.detectEvent(FeatureAccelerationEvent.DetectableEvent.FREE_FALL,true);
+            mFreeFallEvent.addFeatureListener(mFreeFallListener);
             node.enableNotification(mFreeFallEvent);
         }
     }
@@ -382,8 +376,8 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     private void disableFreeFall(@NonNull Node node) {
         if(mFreeFallEvent!=null){
             mFreeFallEvent.removeFeatureListener(mFreeFallListener);
-            mFreeFallEvent.detectEvent(FeatureAccelerationEvent.DetectableEvent.FREE_FALL,false);
             node.disableNotification(mFreeFallEvent);
+            mFreeFallEvent=null;
         }//if
     }
 
@@ -397,11 +391,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         super.onActivityCreated(savedInstanceState);
         Node node = getNode();
         if (node != null) {
-            mSensorFusion = node.getFeature(FeatureMemsSensorFusionCompact.class);
-            if (mSensorFusion == null) {
-                mSensorFusion = node.getFeature(FeatureMemsSensorFusion.class);
-            }
-            mProximity = node.getFeature(FeatureProximity.class);
+
         }
     }
 
@@ -431,10 +421,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        mShowCalibrateDialog=false;
-        mShowResetDialog=false;
-
         //avoid to recreate the cube each time the user rotate the cube
         setRetainInstance(true);
     }
@@ -445,24 +431,24 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_mems_sensor_fusion, container, false);
         mRootLayout = root.findViewById(R.id.memsSensorFusionRootLayout);
-        mFrameRateText = (HidableTextView) root.findViewById(R.id.quaternionRateText);
-        mQuaternionRateText = (HidableTextView) root.findViewById(R.id.renderingRateText);
+        mFrameRateText = root.findViewById(R.id.quaternionRateText);
+        mQuaternionRateText = root.findViewById(R.id.renderingRateText);
 
-        mCalibrationImage = (ImageButton) root.findViewById(R.id.calibrationImage);
+        mCalibButton = root.findViewById(R.id.calibrationImage);
 
         /**
          * when the user will click on the button we will request to start the calibration
          * procedure
          */
-        mCalibrationImage.setOnClickListener(new View.OnClickListener() {
+        mCalibButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               onCalibrateButtonClicked();
+                onStartCalibrationClicked();
             }//onClick
         });
 
 
-        mResetButton = (Button) root.findViewById(R.id.resetButton);
+        mResetButton = root.findViewById(R.id.resetButton);
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -471,32 +457,32 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         });
 
 
-        mGlSurface = (GLSurfaceView) root.findViewById(R.id.glSurface);
+        mGlSurface = root.findViewById(R.id.glSurface);
         // Request an OpenGL ES 2.0 compatible context.
         mGlSurface.setEGLContextClientVersion(2);
         mGlRenderer = new GLCubeRender(getActivity(), getBgColor());
         mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
         mGlSurface.setRenderer(mGlRenderer);
 
-        mProximityButton = (ToggleButton) root.findViewById(R.id.proximityButton);
+        mProximityButton = root.findViewById(R.id.proximityButton);
 
         return root;
     }
 
     @Override
     protected void enableNeededNotification(@NonNull final Node node) {
-
         enableSensorFusion(node);
         enableProximity(node);
         enableFreeFall(node);
-
+        enableSensorFusionCalibration();
     }
 
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
-        disableSensorFusion(node);
-        disableProximity(node);
+        disableSensorFusionCalibration();
         disableFreeFall(node);
+        disableProximity(node);
+        disableSensorFusion(node);
     }
 
     @Override
@@ -518,7 +504,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         mFrameRateText=null;
         mQuaternionRateText=null;
         mGlSurface=null;
-        mCalibrationImage=null;
+        mCalibButton =null;
         mResetButton=null;
         mProximityButton=null;
         super.onDestroyView();
@@ -540,8 +526,8 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         View view = activity.getLayoutInflater().inflate(R.layout
                 .dialog_reset_sensor_fusion, null);
 
-        TextView message = (TextView) view.findViewById(R.id.dialog_reset_message);
-        ImageView image = (ImageView) view.findViewById(R.id.dialog_reset_image);
+        TextView message = view.findViewById(R.id.dialog_reset_message);
+        ImageView image = view.findViewById(R.id.dialog_reset_image);
 
         message.setText(messageId);
         image.setImageResource(imageId);
@@ -564,7 +550,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
                         R.drawable.steval_wesu1_reset_position);
             case SENSOR_TILE:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
-                    R.drawable.ic_board_sensortile_bg);
+                        R.drawable.ic_board_sensortile_bg);
             case NUCLEO:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
                         R.drawable.ic_board_nucleo_bg);
@@ -578,47 +564,57 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     }
 
     private void onResetPositionButtonClicked(){
-        if(!mShowResetDialog) {
-            Node node = getNode();
-            if(node == null)
-                return;
-            Dialog dialog = buildResetInfoDialog(node.getType());
-            if(dialog!=null)
-                dialog.show();
-            mShowResetDialog=true;
-        }else
-            resetPosition();
+        Node node = getNode();
+        if(node == null)
+            return;
+        Dialog dialog = buildResetInfoDialog(node.getType());
+        if(dialog!=null)
+            dialog.show();
+
+    }
+
+
+    /**
+     * function called when the user request a new calibration
+     */
+    protected void onStartCalibrationClicked() {
+        mCalibPresenter.startCalibration();
+    }
+
+
+    @Override
+    public void showCalibrationDialog() {
+        if(mCalibView!=null){
+            mCalibView.showCalibrationDialog();
+        }
     }
 
     @Override
-    public void onStartCalibrationClicked() {
-        if (mSensorFusion != null) {
-            mSensorFusion.startAutoConfiguration();
-            setCalibrationStatus(mSensorFusion.isConfigured());
-        }//if
-    }
-
-
-    private void onCalibrateButtonClicked(){
-        if(!mShowCalibrateDialog){
-            DialogFragment dialog = new CalibrationDialogFragment();
-            dialog.setTargetFragment(this,0);
-            dialog.show(getFragmentManager(),CALIBRATION_DIALOG_TAG);
-            mShowCalibrateDialog=true;
-        }else
-            onStartCalibrationClicked();
+    public void hideCalibrationDialog() {
+        if(mCalibView!=null){
+            mCalibView.hideCalibrationDialog();
+        }
     }
 
     /**
-     * change the calibration status, and update the button image
-     *
-     * @param calibState new calibration status
+     * when the calibration start, stop the free fall and proximity notification
+     * @param isCalibrated true if the system is calibrated
      */
-    protected void setCalibrationStatus(boolean calibState) {
-        if (mCalibState != calibState) {
-            mCalibState = calibState;
-            updateGui(mChangeCalibrationButtonState);
-        }//if
-    }//setState
+    @Override
+    public void setCalibrationButtonState(boolean isCalibrated) {
+        Node node = getNode();
+        if(node!=null) {
+            if (isCalibrated) {
+                enableFreeFall(node);
+                enableProximity(node);
+            } else {
+                disableFreeFall(node);
+                disableProximity(node);
+            }
+        }
+        if(mCalibView!=null){
+            mCalibView.setCalibrationButtonState(isCalibrated);
+        }
+    }
 
 }

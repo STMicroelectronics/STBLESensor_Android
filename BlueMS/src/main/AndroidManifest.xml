@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
   ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
   ~
@@ -34,8 +33,7 @@
   ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
   ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
   ~ OF SUCH DAMAGE.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.st.BlueMS">
 
@@ -49,7 +47,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- Memes Sensor Fusion vibrate when a free fall is detected -->
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -163,7 +161,9 @@
         <service
             android:name="org.eclipse.paho.android.service.MqttService"
             android:enabled="true" />
-
+        <service
+            android:name=".demos.Cloud.DownloadFwFileService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

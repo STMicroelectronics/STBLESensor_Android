@@ -35,67 +35,65 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.wesu;
+package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.annotation.Nullable;
+import android.app.DialogFragment;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
-import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
-import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
-import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
-import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
 
 /**
- * Sensor Fusion demo for the STEVAL_WESU1 node
- *
- * this Activity will check that the license is enabled inside the node and that the magnetometer
- *  has is calibrated
+ * simple dialog that show how to calibrate the board
  */
-public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
+public class CalibrationDialogFragment extends DialogFragment {
 
-    private View mLayout;
-    private CalibrationManagerWesu mCalibManager;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View demo = super.onCreateView(inflater, container, savedInstanceState);
-        if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
-        return demo;
+    /**
+     * interface used to notify that the user press the dialog button
+     */
+    public interface CalibrationDialogCallback{
+        void onStartCalibrationClicked();
     }
 
+    /**
+     * if present return the object where notify that the user press the dialog button
+     * @return object where notify the button press
+     */
+    private @Nullable CalibrationDialogCallback getCallback(){
 
+        if(getActivity() instanceof CalibrationDialogCallback)
+            return (CalibrationDialogCallback)getActivity();
+
+        if(getParentFragment() instanceof  CalibrationDialogCallback)
+            return (CalibrationDialogCallback)getParentFragment();
+
+        if(getTargetFragment() instanceof  CalibrationDialogCallback)
+            return (CalibrationDialogCallback)getTargetFragment();
+
+        return null;
+    }
+
+    @NonNull
     @Override
-    protected void enableNeededNotification(@NonNull Node node) {
-        super.enableNeededNotification(node);
-        CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
-                RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Activity activity = getActivity();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle(R.string.memsSensorFusionInfoTitle);
+        dialog.setView(activity.getLayoutInflater().inflate(R.layout
+                .dialog_calibration_sensor_fusion,null));
+        dialog.setPositiveButton(android.R.string.ok,new DialogInterface.OnClickListener(){
             @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
+            public void onClick(DialogInterface dialogInterface, int i) {
+                CalibrationDialogCallback callback = getCallback();
+                if(callback!=null)
+                    callback.onStartCalibrationClicked();
             }
         });
+        return dialog.create();
     }
-
-
-    @Override
-    public void onStartCalibrationClicked() {
-        mCalibManager.startCalibration();
-    }
-
-    @Override
-    protected void disableNeedNotification(Node node) {
-        super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
-    }
-
 }
-

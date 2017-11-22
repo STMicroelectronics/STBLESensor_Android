@@ -109,22 +109,22 @@ public class GenericMqttConfigurationFactory implements MqttClientConfigurationF
         LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.cloud_config_generic_mqtt,root);
 
-        TextInputLayout brokerUrlLayout = (TextInputLayout) v.findViewById(R.id.genericMqtt_brokerUrlWrapper);
+        TextInputLayout brokerUrlLayout = v.findViewById(R.id.genericMqtt_brokerUrlWrapper);
         mBrokerUrlText = brokerUrlLayout.getEditText();
         mBrokerUrlText.addTextChangedListener(
                 new CheckRegularExpression(brokerUrlLayout,R.string.cloudLog_genericMqtt_brokerUrlError,MQTT_URL));
 
-        TextInputLayout userLayout = (TextInputLayout) v.findViewById(R.id.genericMqtt_UserWrapper);
+        TextInputLayout userLayout = v.findViewById(R.id.genericMqtt_UserWrapper);
         mUserNameText = userLayout.getEditText();
 
-        TextInputLayout passwordLayout = (TextInputLayout) v.findViewById(R.id.genericMqtt_passwordWrapper);
+        TextInputLayout passwordLayout = v.findViewById(R.id.genericMqtt_passwordWrapper);
         mPasswordText = passwordLayout.getEditText();
 
 
-        TextInputLayout clientIdLayout = (TextInputLayout) v.findViewById(R.id.genericMqtt_clientIdWrapper);
+        TextInputLayout clientIdLayout = v.findViewById(R.id.genericMqtt_clientIdWrapper);
         mClientIdText = clientIdLayout.getEditText();
 
-        TextInputLayout portLayout = (TextInputLayout) v.findViewById(R.id.genericMqtt_portWrapper);
+        TextInputLayout portLayout = v.findViewById(R.id.genericMqtt_portWrapper);
         mPortText = portLayout.getEditText();
         mPortText.addTextChangedListener(new CheckNumberRange(portLayout,R.string.cloudLog_genericMqtt_portError,
                 0,1<<16));

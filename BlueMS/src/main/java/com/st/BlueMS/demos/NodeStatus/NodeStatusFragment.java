@@ -131,7 +131,7 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
                     float voltage = FeatureBattery.getVoltage(data);
                     float current = FeatureBattery.getCurrent(data);
                     int batteryIconId;
-                    if(status== FeatureBattery.BatteryStatus.Charging) {
+                    if(status == FeatureBattery.BatteryStatus.Charging) {
                         int iconIndex = (((int) percentage) * mBatteryChargingImagesArray.length()) / 100;
                         batteryIconId = mBatteryChargingImagesArray.getResourceId(iconIndex,-1);
                     }else {
@@ -146,7 +146,11 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
                             percentage,fieldsDesc[FeatureBattery.PERCENTAGE_INDEX].getUnit());
                     final String batteryVoltage = res.getString(R.string.nodeStatus_battery_voltage,
                             voltage, fieldsDesc[FeatureBattery.VOLTAGE_INDEX].getUnit());
-                    final String batteryCurrent = res.getString(R.string.nodeStatus_battery_current,
+                    final String batteryCurrent;
+                    if(Float.isNaN(current))
+                        batteryCurrent = res.getString(R.string.nodeStatus_battery_current_unknown);
+                    else
+                        batteryCurrent = res.getString(R.string.nodeStatus_battery_current,
                             current, fieldsDesc[FeatureBattery.CURRENT_INDEX].getUnit());
 
                     float remainingBattery = mBatteryCapacity * (percentage/100.0f);

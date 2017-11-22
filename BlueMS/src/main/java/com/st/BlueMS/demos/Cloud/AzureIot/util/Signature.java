@@ -35,67 +35,50 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.wesu;
-
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.st.BlueMS.R;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
-import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
-import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
-import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
-import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
+package com.st.BlueMS.demos.Cloud.AzureIot.util;
 
 /**
- * Sensor Fusion demo for the STEVAL_WESU1 node
- *
- * this Activity will check that the license is enabled inside the node and that the magnetometer
- *  has is calibrated
+ * A signature that is used in the SAS token to authenticate the client.
  */
-public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
+public final class Signature
+{
+    private String sig;
 
-    private View mLayout;
-    private CalibrationManagerWesu mCalibManager;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View demo = super.onCreateView(inflater, container, savedInstanceState);
-        if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
-        return demo;
+    /**
+     * Constructs a {@code Signature} instance from the given resource URI,
+     * expiry time and device key.
+     * @param resourceUri the resource URI.
+     * @param expiryTime the time, as a UNIX timestamp, after which the token
+     * will become invalid.
+     * @param deviceKey the device key.
+     */
+    public Signature(String resourceUri, long expiryTime, String deviceKey)
+    {
+        // Codes_SRS_SIGNATURE_11_001: [The signature shall be computed from a composition of functions as such: encodeSignatureWebSafe(encodeSignatureUtf8(encodeSignatureBase64(encryptSignatureHmacSha256(buildRawSignature(scope, expiryTime))))).]
+        byte[] rawSig = SignatureHelper.buildRawSignature(resourceUri,
+                expiryTime);
+        // Codes_SRS_SIGNATURE_11_002: [The device key shall be decoded using Base64 before the signature computation begins, excluding buildRawSignature().]
+        byte[] decodedDeviceKey = SignatureHelper.decodeDeviceKeyBase64(
+                deviceKey);
+        byte[] encryptedSig =
+                SignatureHelper.encryptSignatureHmacSha256(rawSig,
+                        decodedDeviceKey);
+        byte[] encryptedSigBase64 = SignatureHelper.encodeSignatureBase64(
+                encryptedSig);
+        // Codes_SRS_SIGNATURE_11_003: [The signature string shall be encoded using charset UTF-8.]
+        String utf8Sig = SignatureHelper.encodeSignatureUtf8(encryptedSigBase64);
+        this.sig = SignatureHelper.encodeSignatureWebSafe(utf8Sig);
     }
 
-
+    /**
+     * Returns the string representation of the signature.
+     *
+     * @return the string representation of the signature.
+     */
     @Override
-    protected void enableNeededNotification(@NonNull Node node) {
-        super.enableNeededNotification(node);
-        CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
-                RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
-            @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
-            }
-        });
+    public String toString()
+    {
+        // Codes_SRS_SIGNATURE_11_005: [The function shall return the string representation of the signature.]
+        return this.sig;
     }
-
-
-    @Override
-    public void onStartCalibrationClicked() {
-        mCalibManager.startCalibration();
-    }
-
-    @Override
-    protected void disableNeedNotification(Node node) {
-        super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
-    }
-
 }
-

@@ -35,67 +35,89 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos.wesu;
+package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.st.BlueMS.R;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
-import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
-import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
-import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
-import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
+import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 
 /**
- * Sensor Fusion demo for the STEVAL_WESU1 node
- *
- * this Activity will check that the license is enabled inside the node and that the magnetometer
- *  has is calibrated
+ * presenter implementation
  */
-public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
+public class CalibrationPresenter implements CalibrationContract.Presenter,
+        FeatureAutoConfigurable.FeatureAutoConfigurationListener {
 
-    private View mLayout;
-    private CalibrationManagerWesu mCalibManager;
+    /**
+     * feature to calibrate
+     */
+    private FeatureAutoConfigurable mFeature;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View demo = super.onCreateView(inflater, container, savedInstanceState);
-        if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
-        return demo;
-    }
-
-
-    @Override
-    protected void enableNeededNotification(@NonNull Node node) {
-        super.enableNeededNotification(node);
-        CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
-                RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
-            @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
-            }
-        });
-    }
-
+    /**
+     * view to change
+     */
+    private CalibrationContract.View mView;
 
     @Override
-    public void onStartCalibrationClicked() {
-        mCalibManager.startCalibration();
+    public void manage(@NonNull CalibrationContract.View v,@NonNull FeatureAutoConfigurable feature) {
+        mView = v;
+        mFeature = feature;
+        feature.addFeatureListener(this);
+        if(!mFeature.isConfigured()) {
+            mFeature.startAutoConfiguration();
+        }else
+            mView.setCalibrationButtonState(true);
     }
 
     @Override
-    protected void disableNeedNotification(Node node) {
-        super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
+    public void startCalibration() {
+        if(mFeature!=null)
+            mFeature.startAutoConfiguration();
     }
 
+    @Override
+    public void unManageFeature() {
+        if(mFeature!=null){
+            mFeature.removeFeatureListener(this);
+        }
+        mView=null;
+    }
+
+    /**
+     * move the view in a calibrate state
+     */
+    private void setCalibratedState(){
+        if(mView!=null) {
+            mView.hideCalibrationDialog();
+            mView.setCalibrationButtonState(true);
+        }
+    }
+
+    /**
+     * move the view in a uncalibrate state
+     */
+    private void setUnCalibratedState(){
+        if(mView!=null) {
+            mView.showCalibrationDialog();
+            mView.setCalibrationButtonState(false);
+        }
+    }
+
+    ///// FeatureAutoConfigurationListener//////
+
+    @Override
+    public void onAutoConfigurationStarting(FeatureAutoConfigurable f) {
+        setUnCalibratedState();
+    }
+
+    @Override
+    public void onConfigurationFinished(FeatureAutoConfigurable f, int status) {
+        setCalibratedState();
+    }
+
+    @Override
+    public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) { }
+
+    @Override
+    public void onUpdate(Feature f, Feature.Sample sample) { }
 }
-

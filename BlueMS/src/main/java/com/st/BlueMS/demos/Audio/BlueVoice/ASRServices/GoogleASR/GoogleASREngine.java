@@ -37,13 +37,15 @@
 
 package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.GoogleASR;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASREngine;
+import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRLanguage;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRRequestCallback;
 import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
+import com.st.BlueMS.demos.Audio.BlueVoice.util.DialogFragmentDismissCallback;
 
 import java.net.MalformedURLException;
 import java.util.Locale;
@@ -54,6 +56,32 @@ import java.util.Locale;
 public class GoogleASREngine implements ASREngine {
 
     private static final String ENGINE_NAME="Google";
+    private static final @ASRLanguage.Language int[] SUPPORTED_LANGUAGES = {
+            ASRLanguage.Language.ENGLISH_UK,
+            ASRLanguage.Language.ITALIAN ,
+            ASRLanguage.Language.FRENCH, ASRLanguage.Language.SPANISH,
+            ASRLanguage.Language.GERMAN, ASRLanguage.Language.PORTUGUESE};
+
+
+    public static ASREngineDescription DESCRIPTION = new ASREngineDescription() {
+        @Override
+        public String getName() {
+            return ENGINE_NAME;
+        }
+
+        @Override
+        public int[] getSupportedLanguage() {
+            return SUPPORTED_LANGUAGES;
+        }
+
+        @Nullable
+        @Override
+        public ASREngine build(@NonNull Context context, int language) {
+            if(ASRLanguage.isSupportedLanguage(SUPPORTED_LANGUAGES,language))
+                return new GoogleASREngine(context,ASRLanguage.getLocale(language));
+            return null;
+        }
+    };
 
     private Context mContext;
     private boolean mIsAsrEnabled = false;
@@ -78,7 +106,7 @@ public class GoogleASREngine implements ASREngine {
     }
 
     @Override
-    public DialogFragment getAuthKeyDialog() {
+    public DialogFragmentDismissCallback getAuthKeyDialog() {
         return new GoogleASRAuthKeyDialog();
     }
 
@@ -112,8 +140,8 @@ public class GoogleASREngine implements ASREngine {
     }
 
     @Override
-    public String getName() {
-        return ENGINE_NAME;
+    public ASREngineDescription getDescription() {
+        return DESCRIPTION;
     }
 
     private void enableASR() {

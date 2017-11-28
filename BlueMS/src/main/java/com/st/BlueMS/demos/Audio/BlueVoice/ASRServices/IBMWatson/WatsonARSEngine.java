@@ -1,10 +1,10 @@
 package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.IBMWatson;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
@@ -15,8 +15,10 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.Transcript;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.RecognizeCallback;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASREngine;
+import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRLanguage;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRRequestCallback;
 import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
+import com.st.BlueMS.demos.Audio.BlueVoice.util.DialogFragmentDismissCallback;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,13 +30,53 @@ public class WatsonARSEngine implements ASREngine {
 
     private static final String ENGINE_URL = "https://stream.watsonplatform.net/speech-to-text/api";
     private static final String ENGINE_NAME="IBM Watson";
-    private static final SpeechModel LANGUAGE_MODEL = SpeechModel.EN_GB_NARROWBANDMODEL;
+    private static final SpeechModel DEFAULT_LANGUAGE_MODEL = SpeechModel.EN_GB_NARROWBANDMODEL;
+
+    private static final @ASRLanguage.Language int[] SUPPORTED_LANGUAGES = {
+            ASRLanguage.Language.ENGLISH_US,
+            ASRLanguage.Language.ENGLISH_UK,
+            ASRLanguage.Language.DEBUG_ENGLISH_UK_BROADBAND,
+            ASRLanguage.Language.DEBUG_ENGLISH_US_BROADBAND};
+
+
+    public static ASREngineDescription DESCRIPTION = new ASREngineDescription() {
+        @Override
+        public String getName() {
+            return ENGINE_NAME;
+        }
+
+        @Override
+        public int[] getSupportedLanguage() {
+            return SUPPORTED_LANGUAGES;
+        }
+
+        @Nullable
+        @Override
+        public ASREngine build(@NonNull Context context, int language) {
+            if(ASRLanguage.isSupportedLanguage(SUPPORTED_LANGUAGES,language))
+                return new WatsonARSEngine(context,language);
+            return null;
+        }
+    };
+
+    private static SpeechModel getLanguageModel(@ASRLanguage.Language int lang){
+        if(lang== ASRLanguage.Language.ENGLISH_UK)
+            return SpeechModel.EN_GB_NARROWBANDMODEL;
+        if(lang == ASRLanguage.Language.ENGLISH_US)
+            return SpeechModel.EN_US_NARROWBANDMODEL;
+        if(lang== ASRLanguage.Language.DEBUG_ENGLISH_UK_BROADBAND)
+            return SpeechModel.EN_GB_BROADBANDMODEL;
+        if(lang == ASRLanguage.Language.DEBUG_ENGLISH_US_BROADBAND)
+            return SpeechModel.EN_US_BROADBANDMODEL;
+        return DEFAULT_LANGUAGE_MODEL;
+    }
 
     private Context mContext;
     private boolean mIsAsrEnabled;
     private SpeechToText mService;
     private PipedInputStream mWebSocketPipe;
     private PipedOutputStream mAppPipe;
+    private SpeechModel mModel;
     private WatsonServiceCallback mServiceCallback;
 
     private void initAudioStream() throws IOException {
@@ -49,10 +91,11 @@ public class WatsonARSEngine implements ASREngine {
             mWebSocketPipe.close();
     }
 
-    public WatsonARSEngine(Context context){
+    public WatsonARSEngine(Context context,@ASRLanguage.Language int language){
         mContext = context;
         mIsAsrEnabled = false;
         mService = new SpeechToText();
+        mModel = getLanguageModel(language);
     }
 
     @Override
@@ -62,7 +105,7 @@ public class WatsonARSEngine implements ASREngine {
 
     @Nullable
     @Override
-    public DialogFragment getAuthKeyDialog() {
+    public DialogFragmentDismissCallback getAuthKeyDialog() {
         return new WatsonASRAuthDialog();
     }
 
@@ -106,33 +149,38 @@ public class WatsonARSEngine implements ASREngine {
 
         mServiceCallback = new WatsonServiceCallback(callback);
 
-        new WatsonConnectionTask(mService,mServiceCallback).execute(mWebSocketPipe);
+        new WatsonConnectionTask(mService,mModel,mServiceCallback).execute(mWebSocketPipe);
     }
 
     private static class WatsonConnectionTask extends AsyncTask<InputStream,Void,Void>{
 
-        private static RecognizeOptions getRecognizeOptions(){
+        private static RecognizeOptions getRecognizeOptions(SpeechModel model){
+            Log.d("WatsonConnectionTask", "Model: "+model.getName());
             return new RecognizeOptions.Builder()
                     .interimResults(true)
                     //.inactivityTimeout(2000)
                     .inactivityTimeout(-1)//inactivity timeout to +inf
                     .contentType(HttpMediaType.createAudioRaw(16000)+"; endianness=little-endian")
-                    .model(LANGUAGE_MODEL.getName())
+                    .model(model.getName())
                     .build();
         }
 
+        private SpeechModel mModel;
         private SpeechToText mService;
         private RecognizeCallback mServiceCallback;
 
-        WatsonConnectionTask(SpeechToText service,RecognizeCallback serviceCallback){
+        WatsonConnectionTask(SpeechToText service,SpeechModel model,RecognizeCallback serviceCallback){
             mService = service;
+            mModel = model;
             mServiceCallback = serviceCallback;
         }
 
         @Override
         protected Void doInBackground(InputStream... inputStreams) {
             InputStream inputStream = inputStreams[0];
-            mService.recognizeUsingWebSocket(inputStream,getRecognizeOptions(),mServiceCallback);
+            mService.recognizeUsingWebSocket(inputStream,
+                    getRecognizeOptions(mModel),
+                    mServiceCallback);
             return null;
         }
 
@@ -221,8 +269,8 @@ public class WatsonARSEngine implements ASREngine {
     }
 
     @Override
-    public String getName() {
-        return ENGINE_NAME;
+    public ASREngineDescription getDescription() {
+        return DESCRIPTION;
     }
 
     @Override
@@ -230,6 +278,8 @@ public class WatsonARSEngine implements ASREngine {
         enableASR();
         return mIsAsrEnabled;
     }
+
+
 
     private void enableASR() {
         WatsonARSKey mAsrKey = WatsonARSKey.loadKey(mContext);

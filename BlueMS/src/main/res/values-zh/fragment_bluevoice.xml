@@ -65,13 +65,13 @@
     <string name="blueVoice_dialogBack">返回</string>
     <string name="blueVoice_enableConnection">打开网络连接开始语音识别</string>
     <string name="blueVoice_speechApiKey">语音API密钥</string>
-    <string name="blueVoice_asrLanguage">ASR语言</string>
+    <string name="blueVoice_selectAsrEngine">ASR语言</string>
     <string name="blueVoice_addKeyButton">增加</string>
     <string name="blueVoice_chooseAsrLanguage">选择您的语言</string>
     <string name="blueVoice_asrLanguageSelection">语言选择</string>
     <string name="blueVoice_asrLanguageSelected">选择的语言: %1$s</string>
 
-    <string name="blueVoice_langEnglish">English</string>
+    <string name="blueVoice_langEnglish_us">English</string>
     <string name="blueVoice_langItalian">Italian</string>
     <string name="blueVoice_langChinese">中文</string>
     <string name="blueVoice_langFrench">French</string>

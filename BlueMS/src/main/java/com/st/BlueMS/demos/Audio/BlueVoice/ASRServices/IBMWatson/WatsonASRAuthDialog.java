@@ -90,22 +90,19 @@ public class WatsonASRAuthDialog extends DialogFragmentDismissCallback {
 
         builder.setCancelable(false);
 
-        builder.setPositiveButton(R.string.blueVoice_dialogConfirm, new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    WatsonARSKey asrKey = new WatsonARSKey(mNameField.getText().toString(),
-                        mPasswordField.getText().toString());
-                    asrKey.store(context);
-                }catch (IllegalArgumentException e){
-                    Snackbar mInvalidKeySnackbar = Snackbar.make(rootView,
-                            context.getString(R.string.blueVoice_asrInvalidKey,e.getMessage()), Snackbar.LENGTH_LONG);
-                    mInvalidKeySnackbar.show();
-                    dialog.dismiss();
-                    return;
-                }
-                Snackbar.make(rootView, R.string.blueVoice_asrKeyInserted, Snackbar.LENGTH_LONG).show();
+        builder.setPositiveButton(R.string.blueVoice_dialogConfirm, (dialog, which) -> {
+            try {
+                WatsonARSKey asrKey = new WatsonARSKey(mNameField.getText().toString(),
+                    mPasswordField.getText().toString());
+                asrKey.store(context);
+            }catch (IllegalArgumentException e){
+                Snackbar mInvalidKeySnackbar = Snackbar.make(rootView,
+                        context.getString(R.string.blueVoice_asrInvalidKey,e.getMessage()), Snackbar.LENGTH_LONG);
+                mInvalidKeySnackbar.show();
+                dialog.dismiss();
+                return;
             }
+            Snackbar.make(rootView, R.string.blueVoice_asrKeyInserted, Snackbar.LENGTH_LONG).show();
         });
 
         builder.setNegativeButton(R.string.blueVoice_dialogBack, null);

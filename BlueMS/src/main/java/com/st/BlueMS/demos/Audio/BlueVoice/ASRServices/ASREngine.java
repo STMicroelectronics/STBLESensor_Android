@@ -38,10 +38,15 @@
 package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices;
 
 import android.app.DialogFragment;
+import android.content.Context;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
+import com.st.BlueMS.demos.Audio.BlueVoice.util.DialogFragmentDismissCallback;
+
+import java.util.List;
 
 /**
  * Interface which defines a generic ASR Engine
@@ -65,7 +70,8 @@ public interface ASREngine {
      * @return a {@link DialogFragment} which allows the insertion of the
      * ASR service activation key. It return null if the service doesn't need any key.
      */
-    @Nullable DialogFragment getAuthKeyDialog();
+    @Nullable
+    DialogFragmentDismissCallback getAuthKeyDialog();
 
     /**
      * It allows to make an audio recognition request of the {@code audio}
@@ -102,12 +108,7 @@ public interface ASREngine {
      */
     void destroyListener();
 
-    /**
-     * Engine name shown to the user
-     * @return engine name
-     */
-    String getName();
-
+    ASREngineDescription getDescription();
 
     /**
      * interface used to notify the ASR engine status
@@ -129,4 +130,22 @@ public interface ASREngine {
          */
         void onEngineStop();
     }
+
+    interface ASREngineDescription{
+
+        /**
+         * Engine name shown to the user
+         * @return engine name
+         */
+        String getName();
+
+        /**
+         * Get the list of supported language by the service
+         * @return list of supported language
+         */
+        @ASRLanguage.Language int[] getSupportedLanguage();
+
+        @Nullable ASREngine build(@NonNull Context context, @ASRLanguage.Language int language);
+    }
+
 }

@@ -52,25 +52,28 @@ import java.util.Locale;
  */
 public abstract class ASRLanguage {
 
-    @IntDef({Language.ENGLISH,Language.ENGLISH_IBM,
-            Language.ITALIAN,Language.FRENCH,
+    @IntDef({Language.ENGLISH_UK,Language.ENGLISH_US,Language.ITALIAN,
+            Language.CHINESE,Language.FRENCH,
             Language.SPANISH,Language.GERMAN,
-            Language.PORTUGUESE})
+            Language.PORTUGUESE,Language.DEBUG_ENGLISH_UK_BROADBAND,
+            Language.DEBUG_ENGLISH_US_BROADBAND})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Language {
-        int ENGLISH = 0;
-        int ENGLISH_IBM = 1;
+        int ENGLISH_US = 0;
+        int ENGLISH_UK = 1;
         int ITALIAN = 2;
+        int CHINESE = 3;
         int FRENCH = 4;
         int SPANISH = 5;
         int GERMAN = 6;
         int PORTUGUESE = 7;
-        ;
+        int DEBUG_ENGLISH_UK_BROADBAND =8;
+        int DEBUG_ENGLISH_US_BROADBAND =9;
     }
 
     private static final int[] languages = {
-            Language.ENGLISH,Language.ENGLISH_IBM,
-            Language.ITALIAN,
+            Language.ENGLISH_US,Language.ENGLISH_UK,
+            Language.ITALIAN,Language.CHINESE,
             Language.FRENCH,Language.SPANISH,
             Language.GERMAN,Language.PORTUGUESE};
 
@@ -81,12 +84,14 @@ public abstract class ASRLanguage {
      */
     public static Locale getLocale(@ASRLanguage.Language int lang){
         switch(lang){
-            case Language.ENGLISH:
+            case Language.ENGLISH_UK:
                 return new Locale(Locale.ENGLISH.getLanguage(),Locale.UK.getCountry());
-            case Language.ENGLISH_IBM:
+            case Language.ENGLISH_US:
                 return new Locale(Locale.ENGLISH.getLanguage(),Locale.US.getCountry());
             case Language.ITALIAN:
                 return new Locale(Locale.ITALIAN.getLanguage(),Locale.ITALY.getCountry());
+            case Language.CHINESE:
+                return new Locale(Locale.CHINESE.getLanguage(),Locale.CHINA.getCountry());
             case Language.FRENCH:
                 return new Locale(Locale.FRENCH.getLanguage(),Locale.FRANCE.getCountry());
             case Language.SPANISH:
@@ -106,13 +111,15 @@ public abstract class ASRLanguage {
      * @return the corresponding String to the {@link ASRLanguage} provided as a parameter.
      */
     public static String getLanguage(Context context, @ASRLanguage.Language int lang){
-        switch(lang){
-            case Language.ENGLISH:
-                return context.getResources().getString(R.string.blueVoice_langEnglish);
-            case Language.ENGLISH_IBM:
-                return context.getResources().getString(R.string.blueVoice_langEnglish_ibm);
+        switch (lang) {
+            case Language.ENGLISH_US:
+                return context.getResources().getString(R.string.blueVoice_langEnglish_us);
+            case Language.ENGLISH_UK:
+                return context.getResources().getString(R.string.blueVoice_langEnglish_uk);
             case Language.ITALIAN:
                 return context.getResources().getString(R.string.blueVoice_langItalian);
+            case Language.CHINESE:
+                return context.getResources().getString(R.string.blueVoice_langChinese);
             case Language.FRENCH:
                 return context.getResources().getString(R.string.blueVoice_langFrench);
             case Language.SPANISH:
@@ -121,8 +128,20 @@ public abstract class ASRLanguage {
                 return context.getResources().getString(R.string.blueVoice_langGerman);
             case Language.PORTUGUESE:
                 return context.getResources().getString(R.string.blueVoice_langPortuguese);
+            case Language.DEBUG_ENGLISH_UK_BROADBAND:
+                return "English uk Broadband";
+            case Language.DEBUG_ENGLISH_US_BROADBAND:
+                return "englush us Broadband";
         }
         return null;
+    }
+
+    public static boolean isSupportedLanguage(@Language int[] supported, @Language int searchMe){
+        for (@Language int lang : supported){
+            if(lang == searchMe)
+                return true;
+        }
+        return false;
     }
 
     /**

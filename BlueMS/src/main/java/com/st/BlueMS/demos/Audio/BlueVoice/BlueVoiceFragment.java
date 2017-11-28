@@ -37,9 +37,6 @@
 
 package com.st.BlueMS.demos.Audio.BlueVoice;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -49,8 +46,8 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,9 +69,10 @@ import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASREngineFactory;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRLanguage;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRMessage;
 import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRRequestCallback;
+import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRSelector.AsrSelectorDialogFragment;
+import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.GoogleASR.GoogleASREngine;
 import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
 import com.st.BlueMS.demos.Audio.BlueVoice.util.DialogFragmentDismissCallback;
-import com.st.BlueMS.demos.Audio.BlueVoice.util.DialogFragmentDismissCallback.DialogDismissCallback;
 import com.st.BlueMS.demos.Audio.Utils.AudioRecorder;
 import com.st.BlueMS.demos.Audio.Utils.WaveformView;
 import com.st.BlueMS.demos.util.DemoWithNetFragment;
@@ -98,7 +96,8 @@ import java.util.Locale;
  */
 @DemoDescriptionAnnotation(name="BlueVoice",iconRes= R.drawable.ic_bluetooth_audio,
         requareAll = {FeatureAudioADPCM.class,FeatureAudioADPCMSync.class})
-public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequestCallback,DialogDismissCallback {
+public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequestCallback,
+        AsrSelectorDialogFragment.AsrSelectorCallback,DialogFragmentDismissCallback.DialogDismissCallback{
 
     private static final String TAG = BlueVoiceFragment.class.getCanonicalName();
 
@@ -108,6 +107,10 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
     private static final String IS_MUTE = TAG+".IS_MUTE";
     private static final String ASR_RESULTS = TAG +".ASR_RESULTS";
     private static final String SELECTED_ASR_LANGUAGE = TAG+".SELECTED_ASR_LANGUAGE";
+    private static final String SELECTED_ASR_ENGINE = TAG+".SELECTED_ASR_ENGINE";
+
+    private static final String DEFAULT_ASR_ENGINE = GoogleASREngine.DESCRIPTION.getName();
+    private static final @ASRLanguage.Language int DEFAULT_ASR_LANGUAGE = ASRLanguage.Language.ENGLISH_UK;
 
     private static final int AUDIO_SAMPLING_FREQ = 8000;
     private static final int MAX_RECORDING_TIME_S = 5;
@@ -232,8 +235,12 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
      */
     private static @ASRLanguage.Language int loadSelectedLanguage(Context c){
         SharedPreferences pref = c.getSharedPreferences(TAG,Context.MODE_PRIVATE);
-        //noinspection ResourceType
-        return pref.getInt(SELECTED_ASR_LANGUAGE, ASRLanguage.Language.ENGLISH);
+        return pref.getInt(SELECTED_ASR_LANGUAGE, DEFAULT_ASR_LANGUAGE);
+    }
+
+    private static String loadSelectedEngine(Context c){
+        SharedPreferences pref = c.getSharedPreferences(TAG,Context.MODE_PRIVATE);
+        return pref.getString(SELECTED_ASR_ENGINE,DEFAULT_ASR_ENGINE);
     }
 
     /**
@@ -241,10 +248,11 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
      * @param c context to use to store the value
      * @param language value to store
      */
-    private static void storeSelectedLanguage(Context c,@ASRLanguage.Language int language) {
+    private static void storeSelectedLanguage(Context c,String engineName,@ASRLanguage.Language int language) {
         SharedPreferences pref = c.getSharedPreferences(TAG,Context.MODE_PRIVATE);
         pref.edit()
                 .putInt(SELECTED_ASR_LANGUAGE, language)
+                .putString(SELECTED_ASR_ENGINE,engineName)
                 .apply();
     }
 
@@ -253,9 +261,11 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
      * @param context context to use to create the engine
      * @return engine to use to translate audio to text
      */
-    private static ASREngine loadAsrEngine(Context context){
+    private static @Nullable ASREngine loadAsrEngine(Context context){
         @ASRLanguage.Language int language = loadSelectedLanguage(context);
-        return ASREngineFactory.getASREngine(context, ASRLanguage.getLocale(language));
+        String name = loadSelectedEngine(context);
+        return ASREngineFactory.getASREngine(context,name,language);
+
     }
 
     @Override
@@ -536,8 +546,8 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
                 Snackbar.make(mRootView, R.string.blueVoice_noAsrKeeyNeeded,Snackbar.LENGTH_LONG).show();
             return true;
         }
-        if(id == R.id.showLanguageDialog){
-            DialogFragment dialog = new SelectLanguageDialog();
+        if(id == R.id.showSelectAsrEngineDialog){
+            DialogFragment dialog = new AsrSelectorDialogFragment();
             dialog.show(getChildFragmentManager(),"selectLang");
             return true;
         }
@@ -591,7 +601,7 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
     protected void disableNeedNotification(@NonNull Node node) {
         if(mAudio!=null) {
             mAudio.removeFeatureListener(mAudioListener);
-           mAudio.removeFeatureListener(mUpdatePlot);
+            mAudio.removeFeatureListener(mUpdatePlot);
             mAudio.removeFeatureListener(mAudioListenerRec);
 
             node.disableNotification(mAudio);
@@ -638,7 +648,7 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
         }
         if(mAsrEngine.hasLoadedAuthKey()) {
             mAsrSnackbar.dismiss();
-            final String enableValue = getResources().getString(R.string.blueVoice_asrEnabled,mAsrEngine.getName());
+            final String enableValue = getResources().getString(R.string.blueVoice_asrEnabled,mAsrEngine.getDescription().getName());
             updateGui(() -> {
                 //we are online and we have the asr key
                 mAsrView.setVisibility(View.VISIBLE);
@@ -707,14 +717,20 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
     }
 
+    @Override
+    public void onAsrEngineSelected(String name, int language) {
+        storeSelectedLanguage(getActivity(),name,language);
+        mAsrEngine = loadAsrEngine(getActivity());
+        enableASR();
+    }
+
     /**
-     * called when the user dismiss the asr key or asr language dialog -> we recreate the engine and
+     * called when the user dismiss the asr key dialog -> we recreate the engine and
      * check if we can enable the asr.
      * @param dialog dialog that was dismissed
      */
     @Override
     public void onDialogDismiss(DialogFragment dialog) {
-        mAsrEngine = loadAsrEngine(getActivity());
         enableASR();
     }
 
@@ -756,33 +772,5 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
             mVolumeBar.setEnabled(true);
         }
     }
-
-
-    /**
-     * dialog that display the available languages and permit to the user to select what is the
-     * language to use
-     */
-    public static class SelectLanguageDialog extends DialogFragmentDismissCallback {
-
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            AlertDialog.Builder  builder = new AlertDialog.Builder(activity);
-            builder.setTitle(R.string.blueVoice_chooseAsrLanguage);
-
-            String[] supportedLangs = ASRLanguage.getSupportedLanguages(activity);
-
-            int selectedLang = loadSelectedLanguage(activity);
-
-            builder.setSingleChoiceItems(supportedLangs, selectedLang, (dialogInterface, i) -> {
-                storeSelectedLanguage(getActivity(),i);
-                dialogInterface.dismiss();
-            });
-
-            builder.setNegativeButton(android.R.string.cancel,null);
-
-            return builder.create();
-        }//onCreateDialog
-
-    }//SelectLanguageDialog
 
 }

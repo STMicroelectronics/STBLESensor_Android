@@ -34,40 +34,26 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
-
-package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices;
-
-import android.content.Context;
-import android.support.annotation.Nullable;
-
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.GoogleASR.GoogleASREngine;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.IBMWatson.WatsonARSEngine;
-
-import java.util.Locale;
-
-/**
- * ASR Engine Factory class that returns a specific ASR Engine depending on the criteria that has
- * been supplied, in this case the selected language.
- */
-public class ASREngineFactory {
-
-    public static final ASREngine.ASREngineDescription SUPPORTED_ENGINE[] = new ASREngine.ASREngineDescription[]{
-            GoogleASREngine.DESCRIPTION,
-            WatsonARSEngine.DESCRIPTION};
+package com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRSelector;
 
 
-    public static @Nullable ASREngine.ASREngineDescription getDescriptionFromName(String name){
-        for (ASREngine.ASREngineDescription desc: SUPPORTED_ENGINE){
-            if(name.equals(desc.getName()))
-                return desc;
-        }
-        return null;
+import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRLanguage;
+
+import java.util.List;
+
+public interface AsrSelectorContract {
+
+    interface View{
+       void displayAsrServicesListSelector(List<String> asrServices);
+       void displayLanguageSelector(@ASRLanguage.Language int[] languages);
+       void notifySelection(String engineName,int language);
+       void dismiss();
     }
 
-    public static @Nullable ASREngine getASREngine(Context context, String engineName, @ASRLanguage.Language int lang){
-        ASREngine.ASREngineDescription desc = getDescriptionFromName(engineName);
-        if(desc == null)
-            return  null;
-        return  desc.build(context,lang);
+    interface Presenter{
+        void onDisplay();
+        void onServiceSelect(String serviceName);
+        void onLanguageSelect(@ASRLanguage.Language int language);
     }
+
 }

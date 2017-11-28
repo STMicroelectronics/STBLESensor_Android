@@ -72,15 +72,15 @@
     <string name="blueVoice_startAudioRec">REC</string>
     <string name="blueVoice_stopAudioRec">Stop REC</string>
     <string name="blueVoice_speechApiKey">Speech API key</string>
-    <string name="blueVoice_asrLanguage">ASR Language</string>
+    <string name="blueVoice_selectAsrEngine">Select ASR Engine</string>
     <string name="blueVoice_addKeyButton">Add</string>
     <string name="blueVoice_chooseAsrLanguage">Choose your language</string>
     <string name="blueVoice_asrLanguageSelection">Language Selection</string>
     <string name="blueVoice_asrLanguageSelected">language selected: %1$s</string>
     <color  name="blueVoice_continusStreamingButtonColor">#aeea00</color>
 
-    <string name="blueVoice_langEnglish">English</string>
-    <string name="blueVoice_langEnglish_ibm">English (IBM Watson)</string>
+    <string name="blueVoice_langEnglish_us">English (US)</string>
+    <string name="blueVoice_langEnglish_uk">English (UK)</string>
     <string name="blueVoice_langItalian">Italian</string>
     <string name="blueVoice_langChinese">Chinese</string>
     <string name="blueVoice_langFrench">French</string>

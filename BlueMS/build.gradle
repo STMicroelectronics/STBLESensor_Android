@@ -119,20 +119,16 @@ dependencies {
     implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
 
     //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
-    implementation group: 'com.google.android.gms', name: 'play-services-base', version: '11.6.0'
+    implementation group: 'com.google.android.gms', name: 'play-services-base', version: '11.6.2'
 
     //necessary to cloud demo, for mqtt connection
     implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
     implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.1.1'
 
     //amazon aws iot
-    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: '2.6.5'
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: '2.6.9'
 
-    testCompile 'org.json:json:20140107' //since the json lib is inside the android sdk
-    testCompile "junit:junit:$rootProject.junitVersion"
-    testCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
-
-    // ibm speach to text
+    // ibm speech to text
     implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '4.0.0'
 
 

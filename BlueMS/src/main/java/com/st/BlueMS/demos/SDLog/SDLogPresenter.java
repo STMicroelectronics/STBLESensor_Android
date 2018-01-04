@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Set;
 
 class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener {
-    private static final int DEFAULT_LOG_INTERVAL=1;
+    private static final int DEFAULT_LOG_INTERVAL=0;
     private SDLogContract.View mView;
     private FeatureSDLogging mLogFeature;
     private boolean isLogging=false;
@@ -173,5 +173,6 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
         mView.setLogInterval(FeatureSDLogging.getLogInterval(sample));
         mView.setSelectedFeature(FeatureSDLogging.getLoggedFeature(mLogFeature.getParentNode(),sample));
     }
+
 
 }

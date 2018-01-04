@@ -30,13 +30,11 @@ public class WatsonARSEngine implements ASREngine {
 
     private static final String ENGINE_URL = "https://stream.watsonplatform.net/speech-to-text/api";
     private static final String ENGINE_NAME="IBM Watson";
-    private static final SpeechModel DEFAULT_LANGUAGE_MODEL = SpeechModel.EN_GB_NARROWBANDMODEL;
+    private static final SpeechModel DEFAULT_LANGUAGE_MODEL = SpeechModel.EN_GB_BROADBANDMODEL;
 
     private static final @ASRLanguage.Language int[] SUPPORTED_LANGUAGES = {
             ASRLanguage.Language.ENGLISH_US,
-            ASRLanguage.Language.ENGLISH_UK,
-            ASRLanguage.Language.DEBUG_ENGLISH_UK_BROADBAND,
-            ASRLanguage.Language.DEBUG_ENGLISH_US_BROADBAND};
+            ASRLanguage.Language.ENGLISH_UK};
 
 
     public static ASREngineDescription DESCRIPTION = new ASREngineDescription() {
@@ -61,12 +59,8 @@ public class WatsonARSEngine implements ASREngine {
 
     private static SpeechModel getLanguageModel(@ASRLanguage.Language int lang){
         if(lang== ASRLanguage.Language.ENGLISH_UK)
-            return SpeechModel.EN_GB_NARROWBANDMODEL;
-        if(lang == ASRLanguage.Language.ENGLISH_US)
-            return SpeechModel.EN_US_NARROWBANDMODEL;
-        if(lang== ASRLanguage.Language.DEBUG_ENGLISH_UK_BROADBAND)
             return SpeechModel.EN_GB_BROADBANDMODEL;
-        if(lang == ASRLanguage.Language.DEBUG_ENGLISH_US_BROADBAND)
+        if(lang == ASRLanguage.Language.ENGLISH_US)
             return SpeechModel.EN_US_BROADBANDMODEL;
         return DEFAULT_LANGUAGE_MODEL;
     }
@@ -91,7 +85,7 @@ public class WatsonARSEngine implements ASREngine {
             mWebSocketPipe.close();
     }
 
-    public WatsonARSEngine(Context context,@ASRLanguage.Language int language){
+    private WatsonARSEngine(Context context, @ASRLanguage.Language int language){
         mContext = context;
         mIsAsrEnabled = false;
         mService = new SpeechToText();

@@ -52,11 +52,10 @@ import java.util.Locale;
  */
 public abstract class ASRLanguage {
 
-    @IntDef({Language.ENGLISH_UK,Language.ENGLISH_US,Language.ITALIAN,
+    @IntDef({Language.ENGLISH_US,Language.ENGLISH_UK,Language.ITALIAN,
             Language.CHINESE,Language.FRENCH,
             Language.SPANISH,Language.GERMAN,
-            Language.PORTUGUESE,Language.DEBUG_ENGLISH_UK_BROADBAND,
-            Language.DEBUG_ENGLISH_US_BROADBAND})
+            Language.PORTUGUESE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Language {
         int ENGLISH_US = 0;
@@ -67,8 +66,6 @@ public abstract class ASRLanguage {
         int SPANISH = 5;
         int GERMAN = 6;
         int PORTUGUESE = 7;
-        int DEBUG_ENGLISH_UK_BROADBAND =8;
-        int DEBUG_ENGLISH_US_BROADBAND =9;
     }
 
     private static final int[] languages = {
@@ -128,10 +125,6 @@ public abstract class ASRLanguage {
                 return context.getResources().getString(R.string.blueVoice_langGerman);
             case Language.PORTUGUESE:
                 return context.getResources().getString(R.string.blueVoice_langPortuguese);
-            case Language.DEBUG_ENGLISH_UK_BROADBAND:
-                return "English uk Broadband";
-            case Language.DEBUG_ENGLISH_US_BROADBAND:
-                return "englush us Broadband";
         }
         return null;
     }

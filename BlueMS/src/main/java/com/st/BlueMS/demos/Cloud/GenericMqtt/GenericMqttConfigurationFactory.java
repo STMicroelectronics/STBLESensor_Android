@@ -61,7 +61,7 @@ import java.util.regex.Pattern;
  * Ask the parameters for a generic mqtt broker
  */
 public class GenericMqttConfigurationFactory implements CloutIotClientConfigurationFactory {
-    private static final String FACTORY_NAME = "Generic Mqtt";
+    private static final String FACTORY_NAME = "Generic MQTT";
 
     /*
      * pattern to match a an broker url

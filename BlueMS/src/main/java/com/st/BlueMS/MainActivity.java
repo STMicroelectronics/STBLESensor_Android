@@ -65,6 +65,7 @@ public class MainActivity extends com.st.BlueSTSDK.gui.MainActivity {
         LIB_LICENSES.add(new LibLicense("Android Support RecyclerView Library",R.raw.lic_android_support));
         LIB_LICENSES.add(new LibLicense("BlueSTSDK",R.raw.lic_bluestsdk));
         LIB_LICENSES.add(new LibLicense("BlueSTSDK Gui",R.raw.lic_bluestsdk_gui));
+        LIB_LICENSES.add(new LibLicense("IBM Watson Cloud",R.raw.lic_ibm_watson_cloud));
         LIB_LICENSES.add(new LibLicense("Paho",R.raw.lic_paho));
         LIB_LICENSES.add(new LibLicense("Play Services Base",R.raw.lic_android_support));
     }

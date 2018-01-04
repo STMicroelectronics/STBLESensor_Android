@@ -55,8 +55,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.RegionUtils;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
 import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckRegularExpression;
@@ -82,6 +80,8 @@ public class AwsConfigFragment extends Fragment {
     private EditText mClientIdText;
     private Button mSelectCertificate;
     private Button mSelectPrivateKey;
+
+    private String mClientId=null;
 
     //location where the certificate file is
     private Uri mCertificateFile;
@@ -210,10 +210,20 @@ public class AwsConfigFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(mClientId !=null){
+            mClientIdText.setText(mClientId);
+            mClientId=null;
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         storeToPreference(getActivity().getSharedPreferences(CONF_PREFERENCE, Context.MODE_PRIVATE));
     }
+
 
     public @Nullable String getEndpoint(){
         String endpoint = mEndpointText.getText().toString();
@@ -235,6 +245,10 @@ public class AwsConfigFragment extends Fragment {
     public @Nullable String getClientId(){return mClientIdText.getText().toString();}
 
     public void setClientId(String clientId){
-        mClientIdText.setText(clientId);
+        if(mClientIdText==null) {
+            mClientId = clientId;
+        }else{
+            mClientIdText.setText(mClientId);
+        }
     }
 }

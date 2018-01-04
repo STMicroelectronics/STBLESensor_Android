@@ -286,22 +286,17 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
              * proximity sensor is present, show the button and attach the listener for
              * enable/disable the sensor reading
              */
-            mProximityButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
-                    if (node.isEnableNotification(mProximity))
-                        node.disableNotification(mProximity);
-                    else
-                        node.enableNotification(mProximity);
-                }//onClick
+            //onClick
+            mProximityButton.setOnClickListener(v -> {
+                mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
+                if(mProximity==null) //it is calibrating and the proximity is disabled
+                    return;
+                if (node.isEnableNotification(mProximity))
+                    node.disableNotification(mProximity);
+                else
+                    node.enableNotification(mProximity);
             });
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mProximityButton.setVisibility(View.VISIBLE);
-                }
-            });
+            updateGui(() -> mProximityButton.setVisibility(View.VISIBLE));
             mProximity.addFeatureListener(mSensorProximity);
             if(mProximityButton.isChecked()) {
                 node.enableNotification(mProximity);
@@ -314,6 +309,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
             mProximity.removeFeatureListener(mSensorProximity);
             node.disableNotification(mProximity);
             mProximity=null;
+            updateGui(() -> mProximityButton.setChecked(false));
         }
     }
     /////////////////////// END PROXIMITY ////////////////////////////////////

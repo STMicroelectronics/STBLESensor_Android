@@ -38,6 +38,8 @@
 package com.st.BlueMS.demos.Cloud.AwsIot;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -61,25 +63,27 @@ import java.util.regex.Pattern;
 public class AwSIotConfigurationFactory implements CloutIotClientConfigurationFactory {
 
     private static final String NAME = "AWS IoT";
+    private static final String CONFIG_FRAGMENT_TAG = AwsConfigFragment.class.getCanonicalName();
 
     private AwsConfigFragment mConfigFragment;
 
     @Override
     public void attachParameterConfiguration(Context c, ViewGroup root) {
         Activity a = (Activity)c;
+
         //check if a fragment is already attach, and remove it to attach the new one
         mConfigFragment = (AwsConfigFragment)
-                a.getFragmentManager().findFragmentById(R.id.cloudLog_aws_configFragment);
-        if(mConfigFragment!=null){
-            a.getFragmentManager()
-                    .beginTransaction()
-                    .remove(mConfigFragment)
-                    .commit();
-        }
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.cloud_config_aws,root);
-        mConfigFragment = (AwsConfigFragment)
-                a.getFragmentManager().findFragmentById(R.id.cloudLog_aws_configFragment);
+                a.getFragmentManager().findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        AwsConfigFragment newFragment = new AwsConfigFragment();
+
+        FragmentTransaction transaction = a.getFragmentManager().beginTransaction();
+        if(mConfigFragment==null)
+            transaction.add(root.getId(),newFragment,CONFIG_FRAGMENT_TAG);
+        else
+            transaction.replace(root.getId(),newFragment,CONFIG_FRAGMENT_TAG);
+
+        transaction.commit();
+        mConfigFragment = newFragment;
 
     }
 

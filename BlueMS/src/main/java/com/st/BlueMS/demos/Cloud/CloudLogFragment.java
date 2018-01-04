@@ -466,7 +466,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
                 @Override
                 public void onFailure(final Throwable exception) {
                     updateGui(() -> {
-                        buildMqttErrorDialog(CloudLogFragment.this.getActivity(), exception.getMessage()).show();
+                        buildMqttErrorDialog(CloudLogFragment.this.getActivity(), exception.getCause().getLocalizedMessage()).show();
                         hideConnectingView();
                     });
                     exception.printStackTrace();

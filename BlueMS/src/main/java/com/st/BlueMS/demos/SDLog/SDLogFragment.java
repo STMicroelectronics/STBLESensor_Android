@@ -45,10 +45,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -59,7 +60,6 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -71,7 +71,7 @@ import java.util.Set;
  */
 @DemoDescriptionAnnotation(name="SD Logging",iconRes=R.drawable.multiple_log_icon,
         requareAll = FeatureSDLogging.class)
-public class SDLogFragment extends DemoFragment implements SDLogContract.View{
+public class SDLogFragment extends DemoFragment implements SDLogContract.View, FeatureListViewAdapter.FeatureListCallback{
 
     private TextView mHoursValue;
     private TextView mMinuteValue;
@@ -82,6 +82,7 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View{
     private ImageButton mStartLogButton;
 
     private SDLogContract.Presenter mPresenter;
+    private Set<Feature> mSelectedFeature = new HashSet<>();
 
     public SDLogFragment() {
         // Required empty public constructor
@@ -124,6 +125,20 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View{
         mStartLogButton = root.findViewById(R.id.sdLog_startButton);
         mStartLogButton.setOnClickListener(view -> mPresenter.onStartStopLogPressed());
         return root;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true); //need to remove the startLog item
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //hide the start log button since the sd log feature doesn't transmit any informato to log
+        //and we avoid confusion
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.findItem(R.id.startLog).setVisible(false);
     }
 
     private static int parseInt(String str,int defaultValue){
@@ -174,8 +189,14 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View{
 
     @Override
     public void setSelectedFeature(final Set<Feature> features) {
+        mSelectedFeature.addAll(features);
         if(mFeatureListAdapter!=null)
-            updateGui(() -> mFeatureListAdapter.setSelectedFeature(features));
+            updateGui(() -> {
+                mFeatureListAdapter.setSelectedFeature(features);
+                if(!features.isEmpty()){
+                    mStartLogButton.setVisibility(View.VISIBLE);
+                }
+            });
 
     }
 
@@ -183,11 +204,11 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View{
     public Set<Feature> getSelectedFeature() {
         if(mFeatureListAdapter==null)
             return  Collections.emptySet();
-        return mFeatureListAdapter.getSelectedFeature();
+        return mSelectedFeature;
     }
 
     private void setSelectableFeature(List<Feature> features) {
-        mFeatureListAdapter = new FeatureListViewAdapter(features);
+        mFeatureListAdapter = new FeatureListViewAdapter(features, this);
         mFeatureListView.setAdapter(mFeatureListAdapter);
     }
 
@@ -204,6 +225,7 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View{
             setInputEnabled(false);
             mErrorMessage.setVisibility(View.GONE);
             mFeatureListView.setVisibility(View.INVISIBLE);
+            mStartLogButton.setVisibility(View.VISIBLE);
             mStartLogButton.setEnabled(true);
             mStartLogButton.setImageResource(R.drawable.sd_log_stop);
         });
@@ -229,75 +251,19 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View{
         setInputEnabled(false);
     }
 
-
-    private static class FeatureListViewAdapter extends
-            RecyclerView.Adapter<FeatureListViewAdapter.ViewHolder>{
-
-        private List<Feature> mAvailableFeature;
-        private Set<Feature> mSelectedFeature;
-
-        FeatureListViewAdapter(List<Feature> items) {
-            mAvailableFeature = new ArrayList<>(items.size());
-            for (Feature f: items)
-                if(f.isEnabled())
-                    mAvailableFeature.add(f);
-
-            mSelectedFeature = new HashSet<>(mAvailableFeature.size());
-        }//NodeRecyclerViewAdapter
-
-        Set<Feature> getSelectedFeature(){
-            return mSelectedFeature;
-        }
-
-        void setSelectedFeature(Set<Feature> features){
-            mSelectedFeature = features;
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.feature_list_item, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-
-            //enable for the new ones
-            final Feature f = mAvailableFeature.get(position);
-            holder.mFeature = f;
-            holder.mFeatureNameLabel.setText(f.getName());
-            holder.mEnableLogButton.setChecked(
-                    mSelectedFeature.contains(f));
-        }//onBindViewHolder
-
-        @Override
-        public int getItemCount() {
-            return mAvailableFeature.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-
-            final TextView mFeatureNameLabel;
-            final CompoundButton mEnableLogButton;
-
-            Feature mFeature;
-
-            ViewHolder(View view) {
-                super(view);
-
-                mFeatureNameLabel = view.findViewById(R.id.log_featureNameLabel);
-                mEnableLogButton = view.findViewById(R.id.log_enableButton);
-                mEnableLogButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        mSelectedFeature.add(mFeature);
-                    } else
-                        mSelectedFeature.remove(mFeature);
-                });
-                mFeature=null;
-            }
-        }
-
+    @Override
+    public void onSelect(Feature f) {
+        mSelectedFeature.add(f);
+        if(!mSelectedFeature.isEmpty())
+            mStartLogButton.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void onDeSelect(Feature f) {
+        mSelectedFeature.remove(f);
+        if(mSelectedFeature.isEmpty())
+            mStartLogButton.setVisibility(View.GONE);
+    }
+
+
 }

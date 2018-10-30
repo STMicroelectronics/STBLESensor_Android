@@ -112,9 +112,10 @@ public interface CloutIotClientConnectionFactory {
     /**
      * listener that will send the data to the cloud service
      * @param broker mqtt to use for sned the mqtt message
+     * @param minUpdateIntervalMs send a cloud update only after minUpdateIntervalMs milliseconds
      * @return listener to use in a feature for load the data to the cloud
      */
-    FeatureListener getFeatureListener(CloutIotClient broker);
+    FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs);
 
     /**
      * close the connection with the cloud

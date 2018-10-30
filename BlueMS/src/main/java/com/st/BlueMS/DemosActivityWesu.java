@@ -65,8 +65,8 @@ import com.st.BlueSTSDK.Config.Register;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.ConfigControl;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.Utils.FwVersion;
-import com.st.BlueSTSDK.gui.DemosActivity;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 
@@ -82,12 +82,12 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
      *
      * @param c          context used for create the intent
      * @param node       node to use for the demo
-     * @param resetCache true if you want to reload the service and characteristics from the device
+     * @param option    options to use during the connection
      * @return intent for start a demo activity that use the node as data source
      */
-    public static Intent getStartIntent(Context c, @NonNull Node node, boolean resetCache) {
+    public static Intent getStartIntent(Context c, @NonNull Node node, ConnectionOption option) {
         Intent i = new Intent(c, com.st.BlueMS.DemosActivityWesu.class);
-        setIntentParameters(i, node, resetCache);
+        setIntentParameters(i, node, option);
         return i;
     }//getStartIntent
 
@@ -115,11 +115,6 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
     @Override
     protected Class<? extends DemoFragment>[] getAllDemos() {
         return ALL_DEMOS;
-    }
-
-    @Override
-    protected boolean enableLicenseManager() {
-        return true;
     }
 
     @Override

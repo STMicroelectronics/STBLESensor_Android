@@ -40,12 +40,12 @@
 
     <string name="blueVoice_google_asrKey">输入Google\u2122 语音API密匙:</string>
     <string name="blueVoice_asrEnabled">%1$s 技术</string>
-    <string name="blueVoice_asrDisabled">关闭</string>
+    <string name="stt_engine_disabled">关闭</string>
     <string name="blueVoice_muteButtonDescriptor">静音按钮</string>
     <string name="blueVoice_asrKeyInserted">密匙输入成功, 语音识别打开!</string>
     <string name="blueVoice_asrInvalidKey">"无效密匙: %1$s"</string>
     <string name="blueVoice_noAsrKeeyNeeded">"无需ASR密匙"</string>
-    <string name="blueVoice_recording">记录中…</string>
+    <string name="stt_engineStatus_recording">记录中…</string>
     <string name="blueVoice_waitForAsr">请稍等…</string>
     <string name="blueVoice_sendRequest">发送请求…</string>
     <string name="blueVoice_ioError">输入输出错误!</string>
@@ -64,7 +64,7 @@
     <string name="blueVoice_dialogConfirm">确认</string>
     <string name="blueVoice_dialogBack">返回</string>
     <string name="blueVoice_enableConnection">打开网络连接开始语音识别</string>
-    <string name="blueVoice_speechApiKey">语音API密钥</string>
+    <string name="stt_speechApiKey">语音API密钥</string>
     <string name="blueVoice_selectAsrEngine">ASR语言</string>
     <string name="blueVoice_addKeyButton">增加</string>
     <string name="blueVoice_chooseAsrLanguage">选择您的语言</string>

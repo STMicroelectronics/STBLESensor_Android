@@ -46,6 +46,7 @@
     <string name="sdLog_defaultSecondsValue">1</string>
     <string name="sdLog_featureToLogLabel">Features to log:</string>
     <string name="sdLog_no_sd_error">Error: SD card not found</string>
+    <string name="sdLog_warning">BLE sensor data not available while logging</string>
     <string name="sdLog_io_error">Error: SD card I/O error</string>
     <dimen name="sdLog_textFieldWidth">40dp</dimen>
 </resources>

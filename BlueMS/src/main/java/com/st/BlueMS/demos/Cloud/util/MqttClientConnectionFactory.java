@@ -37,21 +37,14 @@
 
 package com.st.BlueMS.demos.Cloud.util;
 
-import android.net.Uri;
-import android.support.annotation.Nullable;
+
 
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
-import com.st.BlueSTSDK.Feature;
-import com.st.BlueSTSDK.Node;
+
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
-
-/**
- * Created by giovannivisentini on 19/10/2017.
- */
 
 public abstract class MqttClientConnectionFactory implements CloutIotClientConnectionFactory {
 
@@ -103,6 +96,12 @@ public abstract class MqttClientConnectionFactory implements CloutIotClientConne
     @Override
     public boolean isConnected(CloutIotClient client) {
         MqttAndroidClient mqttClient = extractMqttClient(client);
-        return (mqttClient!= null && mqttClient.isConnected());
+        try {
+            return (mqttClient != null && mqttClient.isConnected());
+        }catch (IllegalArgumentException e){
+            //is connect can return illegal argument exception if the client is not available
+            // https://github.com/eclipse/paho.mqtt.android/issues/238
+            return false;
+        }
     }
 }

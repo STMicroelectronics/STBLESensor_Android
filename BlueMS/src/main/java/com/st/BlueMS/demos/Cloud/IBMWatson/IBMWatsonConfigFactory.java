@@ -49,9 +49,12 @@ import android.widget.EditText;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckRegularExpression;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckNotEmpty;
 import com.st.BlueSTSDK.Node;
+
+import static com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonUtil.VALID_NAME_CHARACTER;
 
 /**
  *  Object that help to configure the Ibm Watson Iot/BlueMX service
@@ -109,6 +112,8 @@ public class IBMWatsonConfigFactory implements CloutIotClientConfigurationFactor
         mDeviceIdText = deviceIdLayout.getEditText();
         mDeviceIdText.addTextChangedListener(
                 new CheckNotEmpty(deviceIdLayout,R.string.cloudLog_watson_deviceIdError));
+        mDeviceIdText.addTextChangedListener(
+                new CheckRegularExpression(deviceIdLayout,R.string.cloudLog_watson_invalidCharacterError,VALID_NAME_CHARACTER));
 
         TextInputLayout authTokenLayout = v.findViewById(R.id.blueMx_authTokenWrapper);
         mAuthTokenText = authTokenLayout.getEditText();
@@ -123,7 +128,8 @@ public class IBMWatsonConfigFactory implements CloutIotClientConfigurationFactor
         TextInputLayout deviceTypeLayout =  v.findViewById(R.id.blueMx_deviceTypeWrapper);
         mDeviceTypeText = deviceTypeLayout.getEditText();
         mDeviceTypeText.addTextChangedListener(new CheckNotEmpty(deviceTypeLayout,R.string.cloudLog_watson_deviceTypeError));
-
+        mDeviceTypeText.addTextChangedListener(
+                new CheckRegularExpression(deviceTypeLayout,R.string.cloudLog_watson_invalidCharacterError,VALID_NAME_CHARACTER));
         loadFromPreferences(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
     }
 
@@ -157,7 +163,7 @@ public class IBMWatsonConfigFactory implements CloutIotClientConfigurationFactor
                 mOrganizationText.getText().toString(),
                 mAuthTokenText.getText().toString(),
                 mDeviceTypeText.getText().toString(),
-                mDeviceIdText.getText().toString().replace("_",""));
+                mDeviceIdText.getText().toString());
     }
 
 }

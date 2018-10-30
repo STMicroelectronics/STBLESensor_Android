@@ -41,13 +41,13 @@ public class MotionIntensityFragment extends DemoFragment {
      * @param value intensity value to show
      */
     private void setGuiForIntensityValue(byte value){
-        if(value== mLastValue)
+        if(value == mLastValue)
             return;
         mLastValue =value;
         final float rotationOffset = mNeedleOffset.getFloat(value,0.0f);
         final String valueStr = String.format(mIntensityValueFormat,value);
-        /*
-        updateGui(()->{
+
+        updateGui(() -> {
             mIntensityValue.setText(valueStr);
 
             if(mRotationAnim.isRunning())
@@ -56,31 +56,15 @@ public class MotionIntensityFragment extends DemoFragment {
             float currentPosition = mIntensityNeedle.getRotation();
             mRotationAnim.setFloatValues(currentPosition,rotationOffset);
             mRotationAnim.start();
-
-        });
-        */
-        updateGui(new Runnable() {
-            @Override
-            public void run() {
-                mIntensityValue.setText(valueStr);
-
-                if(mRotationAnim.isRunning())
-                    mRotationAnim.pause();
-
-                float currentPosition = mIntensityNeedle.getRotation();
-                mRotationAnim.setFloatValues(currentPosition,rotationOffset);
-                mRotationAnim.start();
-            }
         });
     }
 
 
-    private Feature.FeatureListener mMotionListener = new Feature.FeatureListener() {
-        @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
-            byte value = FeatureMotionIntensity.getMotionIntensity(sample);
+    private Feature.FeatureListener mMotionListener = (f, sample) -> {
+        byte value = FeatureMotionIntensity.getMotionIntensity(sample);
+        //update the gui only if it is a valid value
+        if(value>= FeatureMotionIntensity.DATA_MIN && value<= FeatureMotionIntensity.DATA_MAX)
             setGuiForIntensityValue(value);
-        }
     };
 
     public MotionIntensityFragment() {
@@ -93,8 +77,8 @@ public class MotionIntensityFragment extends DemoFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_motion_intensity, container, false);
 
-        mIntensityValue = (TextView) root.findViewById(R.id.motionId_intensityValue);
-        mIntensityNeedle = (ImageView) root.findViewById(R.id.motionId_needleImage);
+        mIntensityValue = root.findViewById(R.id.motionId_intensityValue);
+        mIntensityNeedle = root.findViewById(R.id.motionId_needleImage);
 
         Resources res = root.getResources();
         mNeedleOffset = res.obtainTypedArray(R.array.motionId_angleOffset);

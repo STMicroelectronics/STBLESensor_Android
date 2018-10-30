@@ -54,6 +54,7 @@ public interface SDLogContract {
         void setLogInterval(long seconds);
         void displayIOErrorLoggingView();
         void displayNoSDCardErrorLoggingView();
+        void displayDisableDataWarning();
     }
 
 

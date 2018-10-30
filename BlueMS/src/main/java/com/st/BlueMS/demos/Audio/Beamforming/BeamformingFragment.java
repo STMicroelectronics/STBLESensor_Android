@@ -103,16 +103,12 @@ public class BeamformingFragment extends DemoFragment {
     private Map<CompoundButton,Integer> mButtonToDirection = new HashMap<>(8);
 
 
-    private CompoundButton.OnCheckedChangeListener mOnDirectionSelected = new CompoundButton.OnCheckedChangeListener() {
+    private CompoundButton.OnCheckedChangeListener mOnDirectionSelected = (compoundButton, isSelected) -> {
+        if(!isSelected)
+            return;
 
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean isSelected) {
-            if(!isSelected)
-                return;
-
-            @Direction int buttonDir = mButtonToDirection.get(compoundButton);
-            setBeamFormingButton(buttonDir);
-        }
+        @Direction int buttonDir = mButtonToDirection.get(compoundButton);
+        setBeamFormingButton(buttonDir);
     };
     //NOTE /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -130,13 +126,9 @@ public class BeamformingFragment extends DemoFragment {
      * listener for the audio feature, it will updates the audio values and if playback is active,
      * it write this data in the AudioTrack {@code audioTrack}.
      */
-    private final Feature.FeatureListener mAudioListener = new Feature.FeatureListener() {
-
-        @Override
-        public void onUpdate(final Feature f, final Feature.Sample sample) {
-            short[] audioSample = FeatureAudioADPCM.getAudio(sample);
-            playAudio(audioSample);
-        }
+    private final Feature.FeatureListener mAudioListener = (f, sample) -> {
+        short[] audioSample = FeatureAudioADPCM.getAudio(sample);
+        playAudio(audioSample);
     };
 
     private final Feature.FeatureListener mAudioListenerRec = new Feature.FeatureListener() {
@@ -168,12 +160,9 @@ public class BeamformingFragment extends DemoFragment {
     /**
      * listener for the audioSync feature, it will update the synchronism values
      */
-    private final Feature.FeatureListener mAudioSyncListener = new Feature.FeatureListener() {
-        @Override
-        public void onUpdate(Feature f, final Feature.Sample sample) {
-            if(mBVAudioSyncManager!=null){
-                mBVAudioSyncManager.setSyncParams(sample);
-            }
+    private final Feature.FeatureListener mAudioSyncListener = (f, sample) -> {
+        if(mBVAudioSyncManager!=null){
+            mBVAudioSyncManager.setSyncParams(sample);
         }
     };
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,14 +186,14 @@ public class BeamformingFragment extends DemoFragment {
     }
 
     private void loadDirectionButton(View root){
-        mTopButton = (CompoundButton) root.findViewById(R.id.radioBFdirTop);
-        mTopRightButton = (CompoundButton) root.findViewById(R.id.radioBFdirTopRight);
-        mRightButton = (CompoundButton) root.findViewById(R.id.radioBFdirRight);
-        mBottomRightButton = (CompoundButton) root.findViewById(R.id.radioBFdirBottomRight);
-        mBottomButton = (CompoundButton) root.findViewById(R.id.radioBFdirBottom);
-        mBottomLeftButton = (CompoundButton) root.findViewById(R.id.radioBFdirBottomLeft);
-        mLeftButton = (CompoundButton) root.findViewById(R.id.radioBFdirLeft);
-        mTopLeftButton = (CompoundButton) root.findViewById(R.id.radioBFdirTopLeft);
+        mTopButton = root.findViewById(R.id.radioBFdirTop);
+        mTopRightButton = root.findViewById(R.id.radioBFdirTopRight);
+        mRightButton = root.findViewById(R.id.radioBFdirRight);
+        mBottomRightButton = root.findViewById(R.id.radioBFdirBottomRight);
+        mBottomButton = root.findViewById(R.id.radioBFdirBottom);
+        mBottomLeftButton = root.findViewById(R.id.radioBFdirBottomLeft);
+        mLeftButton = root.findViewById(R.id.radioBFdirLeft);
+        mTopLeftButton = root.findViewById(R.id.radioBFdirTopLeft);
     }
 
     private void setupOnCheckedDirListener(){
@@ -274,24 +263,19 @@ public class BeamformingFragment extends DemoFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_beamforming, container, false);
 
-        mWaveformView = (WaveformView) view.findViewById(R.id.waveform_view);
+        mWaveformView = view.findViewById(R.id.blueVoice_waveform_view);
 
         loadDirectionButton(view);
         buildButtonToDirectionMap();
 
-        mBoard = (SquareImageView) view.findViewById(R.id.beamforming_board_image);
+        mBoard = view.findViewById(R.id.beamforming_board_image);
 
         Node n = getNode();
         if(n!=null)
             setBoardType(n.getType());
 
         //when the view is displayed
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                alignDirectionButtonOnCircle();
-            }
-        });
+        view.post(this::alignDirectionButtonOnCircle);
 
         if(savedInstanceState!=null){
             @Direction int temp = savedInstanceState.getInt(CURRENT_DIR,DEFAULT_DIRECTION);
@@ -351,11 +335,16 @@ public class BeamformingFragment extends DemoFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if(mAudioRecorder.isRecording())
+            mAudioRecorder.stopRec();
+    }
+
+    @Override
     public void onStop(){
         super.onStop();
         stopAudioTrack();
-        if(mAudioRecorder.isRecording())
-            mAudioRecorder.stopRec();
     }
 
     @Override

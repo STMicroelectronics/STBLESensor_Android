@@ -37,7 +37,6 @@
 
 package com.st.BlueMS.demos.Cloud;
 
-import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -45,10 +44,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -80,13 +83,21 @@ import java.util.List;
 /**
  * Sent the feature data to a cloud provider
  */
-@DemoDescriptionAnnotation(name = "Cloud Logging", requareAll = {},
+@DemoDescriptionAnnotation(name = "Cloud Logging",
         iconRes = R.drawable.ic_cloud_upload_24dp)
-public class CloudLogFragment extends DemoWithNetFragment implements CloutIotClientConnectionFactory.FwUpgradeAvailableCallback,
-        CloudFwUpgradeRequestDialog.CloudFwUpgradeRequestCallback {
+public class CloudLogFragment extends DemoWithNetFragment implements
+        CloutIotClientConnectionFactory.FwUpgradeAvailableCallback,
+        CloudFwUpgradeRequestDialog.CloudFwUpgradeRequestCallback,
+        CloudLogSelectIntervalDialogFragment.CloudLogSelectIntervalDialogCallback{
+
+    private static final String CONF_PREFIX_KEY = CloudLogFragment.class.getCanonicalName();
+    private static final String UPDATE_INTERVAL_DIALOG_TAG = CONF_PREFIX_KEY +".UPDATE_INTERVAL_DIALOG_TAG";
 
 
-    public static final String SELECTED_CLOUD_KEY = CloudLogFragment.class.getCanonicalName()+".SELECTED_CLOUD_KEY";
+    public static final String SELECTED_CLOUD_KEY = CONF_PREFIX_KEY +".SELECTED_CLOUD_KEY";
+    private static final String UPDATE_INTERVAL_KEY = CONF_PREFIX_KEY +".UPDATE_INTERVAL_KEY";
+    private static final int DEFAULT_UPDATE_INTERVAL_MS = 5000;
+
 
     private List<CloutIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
             new IBMWatsonQuickStartConfigFactory(),
@@ -211,6 +222,31 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
         super.onCreate(savedInstanceState);
         //save the fragment state when the activity is destroyed
         setRetainInstance(true);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_cloud_log_demo,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.cloudLog_menu_updateInterval) {
+            displaySelectUpdateIntervalDialog();
+            return true;
+        }//else
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void displaySelectUpdateIntervalDialog() {
+        DialogFragment dialog = CloudLogSelectIntervalDialogFragment.create(getActivity(),
+                getUpdateInterval());
+        dialog.show(getChildFragmentManager(),UPDATE_INTERVAL_DIALOG_TAG);
     }
 
 
@@ -248,7 +284,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
 
     /**
      * this will stop the  notification only the cloud connection is closed, this for permit to
-     * send data also if the activity is in background (becouse we are opening the browser)
+     * send data also if the activity is in background (because we are opening the browser)
      * @param node node where disable the notification
      */
     @Override
@@ -292,7 +328,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(SELECTED_CLOUD_KEY,mCloudClientSpinner.getSelectedItemPosition());
+        if(outState!=null && mCloudClientSpinner!=null)
+            outState.putInt(SELECTED_CLOUD_KEY,mCloudClientSpinner.getSelectedItemPosition());
 
     }
 
@@ -303,33 +340,20 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
 
 
     private void setUpDetailsButton(Button showDetailsButton) {
-        showDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeEnableState(mCloudConfig,false);
-                if(mCloudConfig.getVisibility()==View.VISIBLE){
-                    mCloudConfig.setVisibility(View.GONE);
-                }else
-                    mCloudConfig.setVisibility(View.VISIBLE);
-            }
+        showDetailsButton.setOnClickListener(view -> {
+            changeEnableState(mCloudConfig,false);
+            if(mCloudConfig.getVisibility()==View.VISIBLE){
+                mCloudConfig.setVisibility(View.GONE);
+            }else
+                mCloudConfig.setVisibility(View.VISIBLE);
         });
     }
 
     private void setUpDataPageLink(Button dataPageLink) {
-        /*
         dataPageLink.setOnClickListener(view -> {
             Uri page = mCloudConnectionFactory.getDataPage();
             if(page!=null)
                 getActivity().startActivity(new Intent(Intent.ACTION_VIEW, page));
-        });
-        */
-        dataPageLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri page = mCloudConnectionFactory.getDataPage();
-                if(page!=null)
-                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, page));
-            }
         });
         dataPageLink.setVisibility(View.GONE);
     }
@@ -368,13 +392,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
 
 
     private void setUpStartLogButton(ImageButton button) {
-        //button.setOnClickListener(this::onStartStopCloudLogClick);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onStartStopCloudLogClick(view);
-            }
-        });
+        button.setOnClickListener(this::onStartStopCloudLogClick);
         if (isOnline()) {
             enableCloudButton();
         }
@@ -385,9 +403,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
      * @return true if the connection with the cloud service is open, false otherwise
      */
     private boolean isCloudConnected() {
-        if(mCloudConnectionFactory!=null)
-            return mCloudConnectionFactory.isConnected(mMqttClient);
-        return false;
+        return mCloudConnectionFactory != null && mCloudConnectionFactory.isConnected(mMqttClient);
     }
 
 
@@ -410,7 +426,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
     }
 
     /**
-     * set up the fragment views to dipsplay when the connection is closed
+     * set up the fragment views to display when the connection is closed
      */
     private void showDisconnectedView() {
         mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_24dp);
@@ -449,7 +465,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
 
         try {
             mMqttClient = mCloudConnectionFactory.createClient(getActivity());
-            mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient);
+            mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient,getUpdateInterval());
             Context ctx = getActivity();
             final Context appContext = ctx.getApplicationContext();
             showConnectingView();
@@ -463,10 +479,18 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
                     updateGui(() -> showConnectedView());
                 }
 
+                private String getErrorMessage(final Throwable exception){
+                    Throwable e = exception.getCause();
+                    if(e!=null){
+                        return e.toString();
+                    }
+                    return exception.getLocalizedMessage();
+                }
+
                 @Override
                 public void onFailure(final Throwable exception) {
                     updateGui(() -> {
-                        buildMqttErrorDialog(CloudLogFragment.this.getActivity(), exception.getCause().getLocalizedMessage()).show();
+                        buildMqttErrorDialog(CloudLogFragment.this.getActivity(), getErrorMessage(exception)).show();
                         hideConnectingView();
                     });
                     exception.printStackTrace();
@@ -490,6 +514,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
     }
 
     private void stopAllNotification() {
+        if(mNode==null) // avoid NPE, in some devices..
+            return;
         for (Feature f : mNode.getFeatures()) {
             if (mNode.isEnableNotification(f)) {
                 f.removeFeatureListener(mCloudLogListener);
@@ -509,7 +535,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
     private void closeCloudConnection() {
         if (isCloudConnected()) {
             mCloudLogListener = null;
-            mFwDownloadReceiver.unregisterReceiver(getActivity());
+            Context ctx = getActivity();
+            if(ctx!=null) // can be null if called after the d
+                mFwDownloadReceiver.unregisterReceiver(getActivity());
             try {
                 mCloudConnectionFactory.disconnect(mMqttClient);
             } catch (Exception e) {
@@ -610,12 +638,27 @@ public class CloudLogFragment extends DemoWithNetFragment implements CloutIotCli
     @Override
     public void onCloudFwUpgradeRequestAccept(String fwUri) {
         downloadFile(fwUri);
-
-
     }
 
     @Override
     public void onCloudFwUpgradeRequestDelcine() {
 
+    }
+
+    void storeUpdateInterval(int updateInterval){
+        getActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE).edit()
+                    .putInt(UPDATE_INTERVAL_KEY,updateInterval)
+                    .apply();
+
+    }
+
+    int getUpdateInterval(){
+        return getActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE)
+                .getInt(UPDATE_INTERVAL_KEY,DEFAULT_UPDATE_INTERVAL_MS);
+    }
+
+    @Override
+    public void onNewUpdateIntervalSelected(int newUpdateInterval) {
+        storeUpdateInterval(newUpdateInterval);
     }
 }

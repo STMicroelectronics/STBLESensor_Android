@@ -37,7 +37,6 @@
   -->
 
 <resources>
-
     <string name="invalidNfc">Invalid Nfc payload</string>
     <string name="nodeNotFound">Node not found</string>
 </resources>

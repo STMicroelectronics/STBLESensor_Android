@@ -74,6 +74,7 @@ import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureActivity;
+import com.st.BlueSTSDK.Features.FeatureCOSensor;
 import com.st.BlueSTSDK.Features.FeatureCompass;
 import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
@@ -120,7 +121,8 @@ import java.util.concurrent.locks.ReentrantLock;
                     FeaturePedometer.class,
                     FeatureProximity.class,
                     FeaturePressure.class,
-                    FeatureTemperature.class
+                    FeatureTemperature.class,
+                    FeatureCOSensor.class
     })
 public class PlotFeatureFragment extends DemoFragment implements View.OnClickListener,
         AdapterView.OnItemSelectedListener {

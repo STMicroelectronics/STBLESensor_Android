@@ -35,102 +35,222 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="horizontal"
-             tools:context="com.st.BlueMS.demos.NodeStatusFragment">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="20dp"
-        android:layout_weight="1" >
+        android:orientation="vertical"
+        tools:context="com.st.BlueMS.demos.NodeStatus.NodeStatusFragment">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/status_nodeCard"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="@dimen/cardview_default_radius"
+            app:cardElevation="@dimen/cardview_default_elevation"
+            app:layout_constraintBottom_toBottomOf="@+id/status_rssiCard"
+            app:layout_constraintEnd_toStartOf="@+id/status_rssiCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/status_rssiCard">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/status_boardTypeIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/board_nucleo" />
+
+                <TextView
+                    android:id="@+id/status_boardName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    app:layout_constraintBottom_toTopOf="@+id/status_boardAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/status_boardTypeIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="Nucleo" />
+
+                <TextView
+                    android:id="@+id/status_boardAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/status_boardName"
+                    app:layout_constraintStart_toStartOf="@+id/status_boardName"
+                    app:layout_constraintTop_toBottomOf="@+id/status_boardName"
+                    tools:text="12:32:34:56:23" />
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/status_rssiCard"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="@dimen/cardview_default_radius"
+            app:cardElevation="@dimen/cardview_default_elevation"
+            app:layout_constraintBottom_toTopOf="@+id/status_batteryCard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/status_nodeCard"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/status_rssiImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/signal_strenght" />
+
+                <TextView
+                    android:id="@+id/status_rssiText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:layout_constraintBottom_toBottomOf="@+id/status_rssiImage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/status_rssiImage"
+                    app:layout_constraintTop_toTopOf="@+id/status_rssiImage"
+                    tools:text="Rssi: 123 [dBm]" />
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
 
 
-
-        <ImageView
-            android:id="@+id/signalImage"
+        <android.support.v7.widget.CardView
+            android:id="@+id/status_batteryCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:gravity="center"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/signal_strenght" />
+            android:layout_margin="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="@dimen/cardview_default_radius"
+            app:cardElevation="@dimen/cardview_default_elevation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/status_rssiCard"
+            app:layout_constraintStart_toStartOf="@+id/status_nodeCard"
+            app:layout_constraintTop_toBottomOf="@+id/status_rssiCard">
 
-        <TextView
-            android:id="@+id/rssiText"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_gravity="start|center_vertical"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:layout_marginBottom="20dp">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/batteryPercentageText"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/batteryStatusText"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"/>
-            <TextView
-                android:id="@+id/batteryVoltageText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <ImageView
+                    android:id="@+id/status_batteryImage"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/battery_missing" />
 
-            <TextView
-                android:id="@+id/batteryCurrentText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:id="@+id/status_batteryPercentageText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/status_batteryImage"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Charge: 12%" />
 
-            <TextView
-                android:id="@+id/batteryRemainingTimeText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:id="@+id/status_batteryStatusText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:layout_constraintEnd_toEndOf="@+id/status_batteryPercentageText"
+                    app:layout_constraintStart_toStartOf="@+id/status_batteryPercentageText"
+                    app:layout_constraintTop_toBottomOf="@+id/status_batteryPercentageText"
+                    tools:text="Status Charging" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/status_batteryVoltageText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:layout_constraintEnd_toEndOf="@+id/status_batteryStatusText"
+                    app:layout_constraintStart_toStartOf="@+id/status_batteryStatusText"
+                    app:layout_constraintTop_toBottomOf="@+id/status_batteryStatusText"
+                    tools:text="voltage 123.4V" />
 
-        <ImageView
-            android:id="@+id/batteryImage"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            app:srcCompat="@drawable/battery_missing" />
+                <TextView
+                    android:id="@+id/status_batteryCurrentText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:layout_constraintEnd_toEndOf="@+id/status_batteryVoltageText"
+                    app:layout_constraintStart_toStartOf="@+id/status_batteryVoltageText"
+                    app:layout_constraintTop_toBottomOf="@+id/status_batteryVoltageText"
+                    tools:text="Current Not Available" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/status_batteryRemainingTimeText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:layout_constraintEnd_toEndOf="@+id/status_batteryCurrentText"
+                    app:layout_constraintStart_toStartOf="@+id/status_batteryCurrentText"
+                    app:layout_constraintTop_toBottomOf="@+id/status_batteryCurrentText"
+                    tools:text="Remaing Time" />
 
-</LinearLayout>
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
 

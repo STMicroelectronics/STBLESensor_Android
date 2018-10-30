@@ -72,10 +72,10 @@
 
     <string name="selectMaxSamples">Select the time scale</string>
     <string-array name="availableMaxSamplesString" translatable="false">
-        <item>1s</item>
-        <item>5s</item>
-        <item>10s</item>
-        <item>30s</item>
+        <item>1 s</item>
+        <item>5 s</item>
+        <item>10 s</item>
+        <item>30 s</item>
     </string-array>
     <integer-array name="availableMaxSamplesValues">
         <item>1000</item>

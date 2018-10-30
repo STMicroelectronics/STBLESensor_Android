@@ -38,26 +38,15 @@
 package com.st.BlueMS.demos.Cloud.AwsIot;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckRegularExpression;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
-
-import java.util.regex.Pattern;
 
 
 public class AwSIotConfigurationFactory implements CloutIotClientConfigurationFactory {

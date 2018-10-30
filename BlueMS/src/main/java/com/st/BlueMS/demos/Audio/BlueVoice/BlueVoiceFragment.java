@@ -37,45 +37,25 @@
 
 package com.st.BlueMS.demos.Audio.BlueVoice;
 
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASREngine;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASREngineFactory;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRLanguage;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRMessage;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRRequestCallback;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.ASRSelector.AsrSelectorDialogFragment;
-import com.st.BlueMS.demos.Audio.BlueVoice.ASRServices.GoogleASR.GoogleASREngine;
-import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
-import com.st.BlueMS.demos.Audio.BlueVoice.util.DialogFragmentDismissCallback;
 import com.st.BlueMS.demos.Audio.Utils.AudioRecorder;
 import com.st.BlueMS.demos.Audio.Utils.WaveformView;
-import com.st.BlueMS.demos.util.DemoWithNetFragment;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAudioADPCM;
 import com.st.BlueSTSDK.Features.FeatureAudioADPCMSync;
@@ -84,8 +64,8 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.BVAudioSyncManager;
 import com.st.BlueSTSDK.Utils.LogFeatureActivity;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
+import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -96,8 +76,7 @@ import java.util.Locale;
  */
 @DemoDescriptionAnnotation(name="BlueVoice",iconRes= R.drawable.ic_bluetooth_audio,
         requareAll = {FeatureAudioADPCM.class,FeatureAudioADPCMSync.class})
-public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequestCallback,
-        AsrSelectorDialogFragment.AsrSelectorCallback,DialogFragmentDismissCallback.DialogDismissCallback{
+public class BlueVoiceFragment extends DemoFragment {
 
     private static final String TAG = BlueVoiceFragment.class.getCanonicalName();
 
@@ -105,16 +84,8 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
     private static final String VOLUME_LEVEL = TAG+".VOLUME_LEVEL";
     private static final String IS_MUTE = TAG+".IS_MUTE";
-    private static final String ASR_RESULTS = TAG +".ASR_RESULTS";
-    private static final String SELECTED_ASR_LANGUAGE = TAG+".SELECTED_ASR_LANGUAGE";
-    private static final String SELECTED_ASR_ENGINE = TAG+".SELECTED_ASR_ENGINE";
-
-    private static final String DEFAULT_ASR_ENGINE = GoogleASREngine.DESCRIPTION.getName();
-    private static final @ASRLanguage.Language int DEFAULT_ASR_LANGUAGE = ASRLanguage.Language.ENGLISH_UK;
 
     private static final int AUDIO_SAMPLING_FREQ = 8000;
-    private static final int MAX_RECORDING_TIME_S = 5;
-    private static final String ASR_DIALOG_TAG = TAG+".ASR_AUTH_KEY_DIALOG";
 
     private static final @FeatureBeamforming.Direction int DEFAULT_BEAM_FORMING_DIRECTION = FeatureBeamforming.Direction.RIGHT;
 
@@ -128,38 +99,15 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
     private AudioManager mAudioManager;
     private AudioTrack mAudioTrack;
 
-    private boolean mIsRecording;
-    private AudioBuffer mRecordedAudio;
-
-    private ASREngine mAsrEngine;
-
     private AudioRecorder mAudioWavDump;
 
     /**
      * listener for the audio feature, it will updates the audio values and if playback is active,
      * it write this data in the AudioTrack {@code audioTrack}.
      */
-    private final Feature.FeatureListener mAudioListener = new Feature.FeatureListener() {
-        @Override
-        public void onUpdate(final Feature f, final Feature.Sample sample) {
-            short[] audioSample = FeatureAudioADPCM.getAudio(sample);
-
-            if(mIsRecording){
-                if(mAsrEngine.hasContinuousRecognizer()) {
-                    mAsrEngine.sendASRRequest(new AudioBuffer(audioSample),BlueVoiceFragment.this);
-                } else {
-                    final int nRecordedSample = mRecordedAudio.append(audioSample);
-                    if(mRecordedAudio.isFull()){
-                        sendAsrRequest();
-                    }
-                    updateGui(() -> mRecordBar.setProgress(nRecordedSample));
-                }
-            }
-            else{
-                playAudio(audioSample);
-            }
-        }
-
+    private final Feature.FeatureListener mAudioListener = (f, sample) -> {
+        short[] audioSample = FeatureAudioADPCM.getAudio(sample);
+        playAudio(audioSample);
     };
 
     /**
@@ -206,67 +154,12 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
     private FeatureBeamforming mAudioBeamforming;
 
-
     private SeekBar mVolumeBar;
     private ManageMuteButton mMuteButton;
 
-    private View mRootView;
-
-    private View mAsrView;
-    private Snackbar mAsrSnackbar;
-    private TextView mAsrStatus;
-    private AbsListView mAsrResultListView;
-    private ArrayList<String> mAsrResults = new ArrayList<>();
-    private ArrayAdapter<String> mAsrResultsAdapter;
-
-    private TextView mRecordBarText;
-    private ProgressBar mRecordBar;
-    private TextView mRequestStatus;
-    private ImageButton mRecButton;
     private WaveformView mWaveformView;
 
     private Switch mBeamformingSwitch;
-
-    /**
-     * load the language to use for the asr from a preference file, if not selected english is the
-     * default one
-     * @param c context to use to load the language
-     * @return language to use for the asr
-     */
-    private static @ASRLanguage.Language int loadSelectedLanguage(Context c){
-        SharedPreferences pref = c.getSharedPreferences(TAG,Context.MODE_PRIVATE);
-        return pref.getInt(SELECTED_ASR_LANGUAGE, DEFAULT_ASR_LANGUAGE);
-    }
-
-    private static String loadSelectedEngine(Context c){
-        SharedPreferences pref = c.getSharedPreferences(TAG,Context.MODE_PRIVATE);
-        return pref.getString(SELECTED_ASR_ENGINE,DEFAULT_ASR_ENGINE);
-    }
-
-    /**
-     * function that store the user selected language in a shared preference file
-     * @param c context to use to store the value
-     * @param language value to store
-     */
-    private static void storeSelectedLanguage(Context c,String engineName,@ASRLanguage.Language int language) {
-        SharedPreferences pref = c.getSharedPreferences(TAG,Context.MODE_PRIVATE);
-        pref.edit()
-                .putInt(SELECTED_ASR_LANGUAGE, language)
-                .putString(SELECTED_ASR_ENGINE,engineName)
-                .apply();
-    }
-
-    /**
-     * Create an engine that works with the language selected by the user
-     * @param context context to use to create the engine
-     * @return engine to use to translate audio to text
-     */
-    private static @Nullable ASREngine loadAsrEngine(Context context){
-        @ASRLanguage.Language int language = loadSelectedLanguage(context);
-        String name = loadSelectedEngine(context);
-        return ASREngineFactory.getASREngine(context,name,language);
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -279,57 +172,33 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
                 FeatureAudioADPCM.AUDIO_PACKAGE_SIZE,
                 AudioTrack.MODE_STREAM);
 
-        mAsrEngine = loadAsrEngine(getActivity());
         mAudioWavDump = new AudioRecorder((LogFeatureActivity) getActivity(),FeatureAudioADPCM.FEATURE_NAME);
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mAsrEngine.destroyListener();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mRootView = inflater.inflate(R.layout.fragment_bluevoice2, container, false);
+        View mRootView = inflater.inflate(R.layout.fragment_bluevoice, container, false);
 
         //NOTE audio plot //////////////////////////////////////////////////////////////////////////
-        mWaveformView = mRootView.findViewById(R.id.waveform_view);
+        mWaveformView = mRootView.findViewById(R.id.blueVoice_waveform_view);
         //NOTE /////////////////////////////////////////////////////////////////////////////////////
 
         //NOTE beamforming /////////////////////////////////////////////////////////////////////////
-        mBeamformingSwitch = mRootView.findViewById(R.id.beamformingValue);
+        mBeamformingSwitch = mRootView.findViewById(R.id.blueVoice_beamformingValue);
         setupBeamformingSwitch();
         //NOTE /////////////////////////////////////////////////////////////////////////////////////
 
         mAudioManager = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        mVolumeBar = mRootView.findViewById(R.id.volumeValue);
+        mVolumeBar = mRootView.findViewById(R.id.blueVoice_volumeValue);
         setUpVolumeBar(mAudioManager.getStreamMaxVolume(AUDIO_STREAM));
 
-        mMuteButton = new ManageMuteButton(mRootView.findViewById(R.id.muteButton));
+        mMuteButton = new ManageMuteButton(mRootView.findViewById(R.id.blueVoice_muteButton));
 
-        TextView mSamplingRateValue = mRootView.findViewById(R.id.samplingRateValue);
+        TextView mSamplingRateValue = mRootView.findViewById(R.id.blueVoice_samplingRateValue);
         mSamplingRateValue.setText(String.format(Locale.getDefault(),"%d kHz", AUDIO_SAMPLING_FREQ/1000));
 
-        mAsrStatus = mRootView.findViewById(R.id.asrStatusValue);
-
-        mAsrView = mRootView.findViewById(R.id.card_view_asrResults);
-        mAsrResultListView = mRootView.findViewById(R.id.asrResults);
-        setupResultListView();
-
-        mRecButton = mRootView.findViewById(R.id.recordButton);
-        setupRecordButton();
-
-        mRecordBar = mRootView.findViewById(R.id.recordTimeValue);
-        mRecordBar.setIndeterminate(false);
-        mRecordBarText = mRootView.findViewById(R.id.recordedTime);
-        mRequestStatus = mRootView.findViewById(R.id.requestStatus);
-
-        mAsrSnackbar = Snackbar.make(mRootView, R.string.blueVoice_loadAsrKey,Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.blueVoice_addKeyButton, view -> displayAuthKeyDialog());
 
         if(savedInstanceState!=null){
             restoreGuiStatus(savedInstanceState);
@@ -347,107 +216,7 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
             }
         });
     }
-
-    private void enableBeamFormingView(){
-        mBeamformingSwitch.setVisibility(View.VISIBLE);
-        View rootView = getView();
-        if(rootView!=null)
-            rootView.findViewById(R.id.beamformingLabel).setVisibility(View.VISIBLE);
-    }
     //NOTE /////////////////////////////////////////////////////////////////////////////////////////
-
-    private void setupResultListView() {
-        mAsrResultsAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1,mAsrResults);
-        mAsrResultListView.setAdapter(mAsrResultsAdapter);
-        mAsrResultListView.setOnItemLongClickListener((adapterView, view, i, l) -> {
-            String res = mAsrResults.remove(i);
-            mAsrResultsAdapter.notifyDataSetChanged();
-            return !res.isEmpty();
-        });
-    }
-
-    private ASREngine.ASRConnectionCallback mEngineConnectionCallback = new ASREngine.ASRConnectionCallback() {
-        @Override
-        public void onEngineStart() {
-            mIsRecording=true;
-            updateGui(() ->{
-                if(isAdded()) {
-                    mRequestStatus.setText(R.string.blueVoice_connected);
-                    int color = getResources().getColor(R.color.blueVoice_continusStreamingButtonColor);
-                    mRecButton.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                }
-            });
-        }
-
-        @Override
-        public void onEngineFail(Throwable e) {
-            onEngineStop();
-            updateGui(()->{
-                if(isAdded())
-                    mRequestStatus.setText(e.getLocalizedMessage());
-            });
-        }
-
-        @Override
-        public void onEngineStop() {
-            mIsRecording=false;
-            updateGui(()->{
-                if(isAdded()) {
-                    mRequestStatus.setText("");
-                    int color = getResources().getColor(R.color.colorAccent);
-                    mRecButton.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                }
-            });
-        }
-    };
-
-    private void setupRecordButton() {
-        mRecButton.setOnTouchListener((view, motionEvent) -> {
-            int action = motionEvent.getActionMasked();
-            boolean returnValue = false;
-            if(mAsrEngine.hasContinuousRecognizer()) {
-                if (action == MotionEvent.ACTION_DOWN) {
-                    if(!mIsRecording){
-                        mRequestStatus.setText(R.string.blueVoice_connecting);
-                        mAsrEngine.startListener(mEngineConnectionCallback);
-                    }else{
-                        mAsrEngine.stopListener(mEngineConnectionCallback);
-                    }
-                    returnValue=true;
-                }
-            } else {
-                if (action == MotionEvent.ACTION_DOWN && !mIsRecording) {
-                    mRecordedAudio = new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S);
-                    mRecordBar.setMax(mRecordedAudio.getBufferLength());
-                    mRequestStatus.setText(R.string.blueVoice_recording);
-                    mRecordBar.setVisibility(View.VISIBLE);
-                    mRecordBarText.setVisibility(View.VISIBLE);
-                    mIsRecording = true;
-                    returnValue = true;
-                }
-                if ((action == MotionEvent.ACTION_UP ||
-                        action == MotionEvent.ACTION_CANCEL ) && mIsRecording) {
-                    mIsRecording = false;
-                    sendAsrRequest();
-                    returnValue = true;
-                }
-            }
-            view.performClick();
-            return returnValue;
-        });
-    }
-
-    void sendAsrRequest(){
-        mAsrEngine.sendASRRequest(mRecordedAudio,this);
-        mRecordedAudio = mIsRecording ? new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S) : null;
-        updateGui(() -> {
-            mRecordBar.setVisibility(View.GONE);
-            mRecordBarText.setVisibility(View.GONE);
-            mRequestStatus.setText(R.string.blueVoice_sendRequest);
-            mRecordBar.setProgress(0);
-        });
-    }
 
     @Override
     public void onStart() {
@@ -457,11 +226,16 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if(mAudioWavDump.isRecording())
+            mAudioWavDump.stopRec();
+    }
+
+    @Override
     public void onStop(){
         super.onStop();
         stopAudioTrack();
-        if(mAudioWavDump.isRecording())
-            mAudioWavDump.stopRec();
     }
 
     private void restoreGuiStatus(Bundle savedInstanceState) {
@@ -472,13 +246,6 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
         if(savedInstanceState.containsKey(IS_MUTE)){
             if(savedInstanceState.getBoolean(IS_MUTE)!=mMuteButton.isMute())
                 mMuteButton.changeState();
-        }
-
-        if(savedInstanceState.containsKey(ASR_RESULTS)){
-            ArrayList<String> oldResult=savedInstanceState.getStringArrayList(ASR_RESULTS);
-            if (oldResult != null) {
-                mAsrResultsAdapter.addAll(oldResult);
-            }
         }
     }
 
@@ -491,9 +258,6 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
         if(mMuteButton!=null)
             outState.putBoolean(IS_MUTE,mMuteButton.isMute());
-
-        if(!mAsrResults.isEmpty())
-            outState.putStringArrayList(ASR_RESULTS,mAsrResults);
 
     }
 
@@ -518,53 +282,18 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.startLog).setVisible(false);
 
-        inflater.inflate(R.menu.menu_bluevoice_feature_demo, menu);
-
         mAudioWavDump.registerRecordMenu(menu,inflater);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    /**
-     * if the engine need it this function show the dialog to request the key to the user
-     */
-    private void displayAuthKeyDialog(){
-        if(mAsrEngine.needAuthKey()){
-            DialogFragment dialog = mAsrEngine.getAuthKeyDialog();
-            if(dialog!=null)
-                dialog.show(getChildFragmentManager(),ASR_DIALOG_TAG);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.showASRDialog){
-            if(mAsrEngine.needAuthKey())
-                displayAuthKeyDialog();
-            else
-                Snackbar.make(mRootView, R.string.blueVoice_noAsrKeeyNeeded,Snackbar.LENGTH_LONG).show();
-            return true;
-        }
-        if(id == R.id.showSelectAsrEngineDialog){
-            DialogFragment dialog = new AsrSelectorDialogFragment();
-            dialog.show(getChildFragmentManager(),"selectLang");
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void enableNeededNotification(@NonNull Node node) {
+    private void startAudioStreaming(@NonNull Node node){
         mAudio = node.getFeature(FeatureAudioADPCM.class);
         mAudioSync = node.getFeature(FeatureAudioADPCMSync.class);
         mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
         if(mAudio!=null && mAudioSync!=null) {
             mAudio.addFeatureListener(mAudioListener);
-
             mAudio.addFeatureListener(mUpdatePlot);
-            mWaveformView.startPlotting();
-
             mAudio.addFeatureListener(mAudioListenerRec);
 
             mBVAudioSyncManager.reinitResetFlag();
@@ -574,11 +303,8 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
 
             mAudioSync.addFeatureListener(mAudioSyncListener);
             node.enableNotification(mAudioSync);
-
-            enableASR();
         }//if
         if(mAudioBeamforming!=null){
-            enableBeamFormingView();
             node.enableNotification(mAudioBeamforming);
             //NOTE beamforming /////////////////////////////////////////////////////////////////////
             if(mBeamformingSwitch!=null) {
@@ -590,27 +316,21 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
             }
             //NOTE /////////////////////////////////////////////////////////////////////////////////
         }
-    }//enableNeededNotification
+        updateGui(this::displayStreamingAudioStatus);
+    }
 
-    /**
-     * remove the listener and disable the notification
-     *
-     * @param node node where disable the notification
-     */
-    @Override
-    protected void disableNeedNotification(@NonNull Node node) {
-        if(mAudio!=null) {
+    private void displayStreamingAudioStatus(){
+        mWaveformView.startPlotting();
+        mBeamformingSwitch.setEnabled(mAudioBeamforming!=null);
+    }
+
+    private void stopAudioStreaming(@NonNull Node node){
+        if(mAudio!=null && mAudioSync!=null) {
             mAudio.removeFeatureListener(mAudioListener);
             mAudio.removeFeatureListener(mUpdatePlot);
             mAudio.removeFeatureListener(mAudioListenerRec);
-
             node.disableNotification(mAudio);
-            mWaveformView.stopPlotting();
-            if(mAsrEngine.hasContinuousRecognizer())
-                mAsrEngine.stopListener(mEngineConnectionCallback);
 
-        }
-        if(mAudioSync!=null) {
             mAudioSync.removeFeatureListener(mAudioSyncListener);
             node.disableNotification(mAudioSync);
         }
@@ -620,11 +340,27 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
                 mAudioBeamforming.enableBeamForming(false);
             node.disableNotification(mAudioBeamforming);
         }
-        if(mAsrSnackbar!=null)
-            mAsrSnackbar.dismiss();
+        updateGui(this::displayNoStreamingAudioStatus);
+    }
 
+    private void displayNoStreamingAudioStatus(){
+        mWaveformView.stopPlotting();
+        mBeamformingSwitch.setEnabled(false);
+    }
 
-        updateGui(this::disableASR);
+    @Override
+    protected void enableNeededNotification(@NonNull Node node) {
+          startAudioStreaming(node);
+    }//enableNeededNotification
+
+    /**
+     * remove the listener and disable the notification
+     *
+     * @param node node where disable the notification
+     */
+    @Override
+    protected void disableNeedNotification(@NonNull Node node) {
+        stopAudioStreaming(node);
     }//disableNeedNotification
 
     private void stopAudioTrack(){
@@ -638,100 +374,6 @@ public class BlueVoiceFragment extends DemoWithNetFragment implements ASRRequest
         synchronized (this) {
             mAudioTrack.write(sample, 0, sample.length);
         }
-    }
-
-    private void enableASR(){
-        if(!isOnline()){
-            Snackbar.make(mRootView, R.string.blueVoice_enableConnection,
-                    Snackbar.LENGTH_LONG).show();
-            return;
-        }
-        if(mAsrEngine.hasLoadedAuthKey()) {
-            mAsrSnackbar.dismiss();
-            final String enableValue = getResources().getString(R.string.blueVoice_asrEnabled,mAsrEngine.getDescription().getName());
-            updateGui(() -> {
-                //we are online and we have the asr key
-                mAsrView.setVisibility(View.VISIBLE);
-                mRequestStatus.setVisibility(View.VISIBLE);
-                mRecButton.setVisibility(View.VISIBLE);
-                mAsrStatus.setText(enableValue);
-            });
-        } else {
-            mAsrSnackbar.show();
-            disableASR();
-        }
-    }
-
-    @Override
-    protected void onSystemHasConnectivity() {
-        super.onSystemHasConnectivity();
-        if (!asrIsEnabled()){
-            enableASR();
-        }//if
-    }
-
-    @Override
-    protected void onSystemLostConnectivity() {
-        super.onSystemLostConnectivity();
-        disableASR();
-    }
-
-    private void disableASR() {
-        mAsrView.setVisibility(View.GONE);
-        mRequestStatus.setVisibility(View.GONE);
-        mRecButton.setVisibility(View.GONE);
-        mAsrStatus.setText(R.string.blueVoice_asrDisabled);
-    }
-
-    private boolean asrIsEnabled(){
-        return mRecButton.getVisibility()==View.VISIBLE;
-    }
-
-    @Override
-    public void onAsrRequestSend() {
-        mRequestStatus.setText(R.string.blueVoice_waitForAsr);
-    }
-
-    @Override
-    public void onAsrResponse(String text) {
-        updateGui(() -> {
-            //Log.d(TAG, "onAsrResponse: Resp:" + text);
-            if(text!=null) {
-                mAsrResultsAdapter.insert(text, 0);
-                mRequestStatus.setText("");
-            }
-        });
-
-    }
-
-    @Override
-    public void onAsrResponseError(@ASRMessage.Status int errorType){
-        updateGui(() -> {
-            if(getActivity()!=null)
-                mRequestStatus.setText(ASRMessage.getMessage(getActivity(),errorType));
-            if(mAsrEngine.hasContinuousRecognizer()){
-                mIsRecording = false;
-                mRecButton.getBackground().clearColorFilter();
-            }
-        });
-
-    }
-
-    @Override
-    public void onAsrEngineSelected(String name, int language) {
-        storeSelectedLanguage(getActivity(),name,language);
-        mAsrEngine = loadAsrEngine(getActivity());
-        enableASR();
-    }
-
-    /**
-     * called when the user dismiss the asr key dialog -> we recreate the engine and
-     * check if we can enable the asr.
-     * @param dialog dialog that was dismissed
-     */
-    @Override
-    public void onDialogDismiss(DialogFragment dialog) {
-        enableASR();
     }
 
     private class ManageMuteButton implements View.OnClickListener{

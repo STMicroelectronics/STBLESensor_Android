@@ -81,6 +81,23 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
             DetectableEvent.PEDOMETER,DetectableEvent.SINGLE_TAP,
             DetectableEvent.TILT, DetectableEvent.WAKE_UP};
 
+    private static final DetectableEvent IDB008_SUPPORTED_EVENT[] = {
+            DetectableEvent.NONE,
+            DetectableEvent.FREE_FALL,
+            DetectableEvent.SINGLE_TAP,
+            DetectableEvent.WAKE_UP,
+            DetectableEvent.TILT,
+            DetectableEvent.PEDOMETER,
+    };
+
+    private static final DetectableEvent BCN002V1_SUPPORTED_EVENT[] = {
+            DetectableEvent.NONE,
+            DetectableEvent.WAKE_UP,
+            DetectableEvent.SINGLE_TAP,
+            DetectableEvent.PEDOMETER,
+            DetectableEvent.TILT,
+            DetectableEvent.FREE_FALL,
+    };
 
     /**
      * get the list of supported event by the node
@@ -91,6 +108,10 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
         switch (type){
             case STEVAL_WESU1:
                 return WESU_SUPPORTED_EVENT;
+            case STEVAL_IDB008VX:
+                return IDB008_SUPPORTED_EVENT;
+            case STEVAL_BCN002V1:
+                return BCN002V1_SUPPORTED_EVENT;
             case SENSOR_TILE:
             case BLUE_COIN:
             case NUCLEO:
@@ -109,6 +130,10 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
         switch (type){
             case STEVAL_WESU1:
                 return DetectableEvent.MULTIPLE;
+            case STEVAL_IDB008VX:
+                return DetectableEvent.FREE_FALL;
+            case STEVAL_BCN002V1:
+                return DetectableEvent.WAKE_UP;
             case SENSOR_TILE:
             case BLUE_COIN:
             case NUCLEO:
@@ -127,8 +152,6 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
      * view to show when a multiple event type is selected
      */
     private MultipleEventView mMultipleEventView;
-
-    private DetectableEvent mPreviousStateEvent = DetectableEvent.NONE;
 
     /**
      * current selected event
@@ -196,8 +219,6 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
     private FeatureAccelerationEvent.FeatureAccelerationEventListener mFeatureListener =
             new FeatureAccelerationEvent.FeatureAccelerationEventListener() {
 
-
-
                 @Override
                 public void onDetectableEventChange(FeatureAccelerationEvent f,
                                                     DetectableEvent event, boolean newStatus) {
@@ -215,12 +236,7 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
 
                     final int nSteps = FeatureAccelerationEvent.getPedometerSteps(sample);
 
-                    updateGui(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayEvent(event,nSteps);
-                        }
-                    });
+                    updateGui(() -> displayEvent(event,nSteps));
                 }//on update
             };//FeatureAccelerationEventListener
 
@@ -234,7 +250,7 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
      * @param type node type, it is used for choose the default event and the list of event
      */
     private void initializeEventSelector(Node.Type type){
-        mDetectableEventArrayAdapter = new ArrayAdapter<>(getActivity(),
+        mDetectableEventArrayAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_list_item_1,
                 getDetectableEvent(type));
         mEventSelector.setAdapter(mDetectableEventArrayAdapter);
@@ -279,7 +295,7 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_acc_event, container, false);
@@ -328,7 +344,7 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
         }//if null
     }
 
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         //we have an event to save
         savedInstanceState.putSerializable(CURRENT_SELECTED_EVENT,mCurrentEvent);

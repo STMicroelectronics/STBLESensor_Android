@@ -44,6 +44,7 @@ import android.util.Log;
 
 import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
+import com.st.BlueMS.demos.Cloud.util.SubSamplingFeatureListener;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
@@ -112,8 +113,8 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker) {
-        return new GenericMqttFeatureListener(mClientId,extractMqttClient(broker));
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs) {
+        return new GenericMqttFeatureListener(mClientId,extractMqttClient(broker), minUpdateIntervalMs);
     }
 
     @Nullable
@@ -137,7 +138,7 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
      * each update is published as a string in the topic:
      * ClientId/FeatureName/FieldName
      */
-    private static class GenericMqttFeatureListener implements Feature.FeatureListener {
+    private static class GenericMqttFeatureListener extends SubSamplingFeatureListener {
 
         private IMqttAsyncClient mBroker;
         private String mClientId;
@@ -147,15 +148,14 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
          * @param clientId name of the device that generate the data
          * @param client object where publish the data
          */
-        GenericMqttFeatureListener(String clientId,IMqttAsyncClient client) {
+        GenericMqttFeatureListener(String clientId,IMqttAsyncClient client,long minUpdateInterval) {
+            super(minUpdateInterval);
             mBroker = client;
             mClientId=clientId;
         }
 
-
-
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
             Field fields[] = sample.dataDesc;
             Number data[] = sample.data;
             try {
@@ -171,9 +171,11 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
 
             } catch (MqttException | IllegalArgumentException e) {
                 Log.e(getClass().getName(), "Error Logging the sample: " +
-                    sample + "\nError:" + e.getMessage());
+                        sample + "\nError:" + e.getMessage());
             }//try catch
-        }//onUpdate
+        }
+
+
     }//
 
 }

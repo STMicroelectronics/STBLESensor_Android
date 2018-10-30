@@ -46,6 +46,7 @@ import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.util.JSONSampleSerializer;
 import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
+import com.st.BlueMS.demos.Cloud.util.SubSamplingFeatureListener;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Node;
 
@@ -64,10 +65,10 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
 
     private static final String BLUEMX_URL=
             "ssl://%s.messaging.internetofthings.ibmcloud.com:8883";
-    private static final Uri BLUEMX_PAGE_DATA = Uri.parse("https://play.internetofthings.ibmcloud.com/dashboard/");
+    private static final String BLUEMX_PAGE_DATA_FORMAT = "https://%s.internetofthings.ibmcloud.com/dashboard/";
 
     private static String getDeviceId(String mOrganization,String nodeType ,String deviceName){
-        Log.d("BlueMX", "getDeviceId: "+"d:"+mOrganization+":"+nodeType+':'+deviceName);
+        //Log.d("BlueMX", "getDeviceId: "+"d:"+mOrganization+":"+nodeType+':'+deviceName);
         return "d:"+mOrganization+":"+nodeType+':'+deviceName;
     }
 
@@ -79,16 +80,16 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     IBMWatsonFactory(String organization,String authKey, String boardType,String boardId) throws IllegalArgumentException{
 
         if(organization==null || organization.isEmpty())
-            throw new IllegalArgumentException("Organization can not be empty");
+            throw new IllegalArgumentException("Organization ID can not be empty");
 
         if(authKey==null || authKey.isEmpty())
-            throw new IllegalArgumentException("authKey can not be empty");
+            throw new IllegalArgumentException("Authentication Token can not be empty");
 
-        if(boardType==null || boardType.isEmpty())
-            throw new IllegalArgumentException("boardType can not be empty");
+        if(!IBMWatsonUtil.isValidString(boardType))
+            throw new IllegalArgumentException("Invalid Board Type");
 
-        if(boardId==null || boardId.isEmpty())
-            throw new IllegalArgumentException("boardId can not be empty");
+        if(!IBMWatsonUtil.isValidString(boardId))
+            throw new IllegalArgumentException("Invalid Board ID");
 
         mOrganization = organization;
         mAuthKey=authKey;
@@ -126,13 +127,13 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker){
-        return new IBMWatsonMqttFeatureListener(extractMqttClient(broker));
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs){
+        return new IBMWatsonMqttFeatureListener(extractMqttClient(broker), minUpdateIntervalMs);
     }
 
     @Override
     public @Nullable Uri getDataPage() {
-        return BLUEMX_PAGE_DATA;
+        return Uri.parse(String.format(BLUEMX_PAGE_DATA_FORMAT,mOrganization));
     }
 
     @Override
@@ -149,7 +150,7 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     /**
      * class that publish on all the sample to the cloud using the mqtt protocol
      */
-    public static class IBMWatsonMqttFeatureListener implements Feature.FeatureListener {
+    public static class IBMWatsonMqttFeatureListener extends SubSamplingFeatureListener {
 
         private IMqttAsyncClient mBroker;
 
@@ -157,18 +158,17 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
          * build an object that will publish all the update to the cloud
          * @param client object where publish the data
          */
-        public IBMWatsonMqttFeatureListener(IMqttAsyncClient client) {
+        public IBMWatsonMqttFeatureListener(IMqttAsyncClient client,long minUpdateInterval) {
+            super(minUpdateInterval);
             mBroker = client;
         }
 
         private static String getPublishTopic(Feature f) {
-            String featureName = f.getName().replace(' ', '_');
-            return "iot-2/evt/" + featureName + "/fmt/json";
-
+            return MqttClientUtil.sanitizeTopicName("iot-2/evt/" + f.getName() + "/fmt/json");
         }
 
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
             try {
                 JSONObject obj = JSONSampleSerializer.serialize(sample);
                 JSONObject quikStartObj = new JSONObject();

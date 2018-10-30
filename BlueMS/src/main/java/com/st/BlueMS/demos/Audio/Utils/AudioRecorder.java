@@ -36,19 +36,15 @@
  */
 package com.st.BlueMS.demos.Audio.Utils;
 
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Utils.LogFeatureActivity;
 import com.st.BlueSTSDK.Utils.NumberConversion;
-import com.st.BlueSTSDK.gui.preferences.LogPreferenceFragment;
 
 import java.io.DataOutput;
 import java.io.File;
@@ -156,23 +152,17 @@ public class AudioRecorder {
         inflater.inflate(R.menu.menu_record_audio, menu);
         final MenuItem stopMenuItem = menu.findItem(R.id.menu_stopAudioREC);
         final MenuItem startMenuItem = menu.findItem(R.id.menu_startAudioREC);
-        startMenuItem.getActionView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(startRec(mFileSuffix)) {
-                    startMenuItem.setVisible(false);
-                    stopMenuItem.setVisible(true);
-                }
+        startMenuItem.getActionView().setOnClickListener(view -> {
+            if(startRec(mFileSuffix)) {
+                startMenuItem.setVisible(false);
+                stopMenuItem.setVisible(true);
             }
         });
 
-        stopMenuItem.getActionView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startMenuItem.setVisible(true);
-                stopMenuItem.setVisible(false);
-                stopRec();
-            }
+        stopMenuItem.getActionView().setOnClickListener(view -> {
+            startMenuItem.setVisible(true);
+            stopMenuItem.setVisible(false);
+            stopRec();
         });
 
         stopMenuItem.setVisible(false);
@@ -234,16 +224,13 @@ public class AudioRecorder {
      */
     public synchronized void writeSample(final short[] sample){
         if(mIsRecStarted && sample!=null){
-            mWriteThread.post(new Runnable() {
-                @Override
-                public void run() {
-                try {
-                    writeSample(mOut, sample);
-                    mDataCursor += sample.length;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                }
+            mWriteThread.post(() -> {
+            try {
+                writeSample(mOut, sample);
+                mDataCursor += sample.length;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             });//post
         }//if
     }

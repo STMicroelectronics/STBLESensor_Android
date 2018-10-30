@@ -40,18 +40,21 @@ package com.st.BlueMS;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
 import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
+import com.st.BlueMS.demos.Audio.SpeechToText.SpeechToTextFragment;
+import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
 import com.st.BlueMS.demos.SDLog.SDLogFragment;
 import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
-import com.st.BlueMS.demos.HearRateFragment;
+import com.st.BlueMS.demos.HeartRateFragment;
 import com.st.BlueMS.demos.MemsGestureRecognitionFragment;
 import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.MotionIntensityFragment;
@@ -62,12 +65,17 @@ import com.st.BlueMS.demos.ProximityGestureRecognitionFragment;
 import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.SwitchFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
+import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.Utils.ConnectionOption;
+import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
+import com.st.STM32WB.fwUpgrade.feature.RebootOTAModeFeature;
+import com.st.STM32WB.p2pDemo.feature.FeatureControlLed;
+import com.st.STM32WB.p2pDemo.feature.FeatureSwitchStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 
 /**
  * Activity that display all the demo available for the node
@@ -79,18 +87,32 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
      *
      * @param c          context used for create the intent
      * @param node       node to use for the demo
-     * @param resetCache true if you want to reload the service and characteristics from the device
+     * @param options    options to use during the connection
      * @return intent for start a demo activity that use the node as data source
      */
-    public static Intent getStartIntent(Context c, @NonNull Node node, boolean resetCache) {
+    public static Intent getStartIntent(Context c, @NonNull Node node, ConnectionOption options) {
         Intent i = new Intent(c, DemosActivity.class);
-        setIntentParameters(i, node, resetCache);
+        setIntentParameters(i, node, options);
         return i;
     }//getStartIntent
 
     public static Intent getStartIntent(Context c, @NonNull Node node) {
-        return getStartIntent(c, node, false);
+        return  getStartIntent(c,node, ConnectionOption.buildDefault());
     }//getStartIntent
+
+    @DemoDescriptionAnnotation(name="Firmware Upgrade",
+            requareAll = {RebootOTAModeFeature.class},
+            iconRes = com.st.BlueSTSDK.gui.R.drawable.ota_upload_fw )
+    public static class StartOtaRebootFragment extends com.st.STM32WB.fwUpgrade.statOtaConfig.StartOtaRebootFragment{
+        //empty class redefined just to set the icon res in the annotation
+    }
+
+    @DemoDescriptionAnnotation(name="Led Control",
+            requareAll = {FeatureSwitchStatus.class,FeatureControlLed.class},
+            iconRes = com.st.BlueSTSDK.gui.R.drawable.stm32wb_led_on)
+    public static class LedButtonControlFragment extends com.st.STM32WB.p2pDemo.LedButtonControlFragment{
+        //empty class redefined just to set the icon res in the annotation
+    }
 
     /**
      * List of all the class that extend DemoFragment class, if the board match the requirement
@@ -102,7 +124,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
             PlotFeatureFragment.class,
-            CloudLogFragment.class,
             SDLogFragment.class,
             ActivityRecognitionFragment.class,
             CarryPositionFragment.class,
@@ -112,11 +133,16 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             AccEventFragment.class,
             SwitchFragment.class,
             BlueVoiceFragment.class,
+            SpeechToTextFragment.class,
             BeamformingFragment.class,
             SourceLocFragment.class,
-            HearRateFragment.class,
+            HeartRateFragment.class,
             MotionIntensityFragment.class,
             CompassFragment.class,
+            COSensorDemoFragment.class,
+            LedButtonControlFragment.class,
+            StartOtaRebootFragment.class,
+            CloudLogFragment.class,
             NodeStatusFragment.class,
             //FeatureDebugFragment.class
     };
@@ -124,24 +150,35 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     @SuppressWarnings("unchecked")
     @Override
     protected Class<? extends DemoFragment>[] getAllDemos() {
-
-        if(getNode().getType()== Node.Type.NUCLEO || getNode().getType()== Node.Type.BLUE_COIN)
-            return ALL_DEMOS;
-        else{
+        if(getNode().getType() == Node.Type.STEVAL_BCN002V1){
             ArrayList<Class<? extends DemoFragment>> demoList = new ArrayList<>(Arrays.asList(ALL_DEMOS));
-            demoList.remove(BeamformingFragment.class);
+            demoList.remove(SpeechToTextFragment.class);
             return demoList.toArray(new Class[demoList.size()]);
         }
-    }
-
-    @Override
-    protected boolean enableLicenseManager() {
-        return true;
+        return ALL_DEMOS;
     }
 
     @Override
     protected boolean enableFwUploading() {
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_demos_activity, menu);
+
+        //hide debug stuff if not available
+        Node n = getNode();
+        if(n!=null) {
+            Debug debug = n.getDebug();
+
+            if(debug==null){
+                menu.findItem(R.id.menu_start_license_manager).setVisible(false);
+            }
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -153,6 +190,12 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             startActivity(SettingsWithNucleoConfiguration.getStartIntent(this, getNode()));
             return true;
         }
+
+        if(id == R.id.menu_start_license_manager){
+            keepConnectionOpen(true,false);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

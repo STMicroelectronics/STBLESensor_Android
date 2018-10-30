@@ -39,6 +39,10 @@ package com.st.BlueMS;
 
 import com.st.BlueSTSDK.Features.standardCharacteristics.StdCharToFeatureMap;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.Utils.ConnectionOption;
+import com.st.STM32WB.fwUpgrade.FwUpgradeSTM32WBActivity;
+import com.st.STM32WB.fwUpgrade.feature.STM32OTASupport;
+import com.st.STM32WB.p2pDemo.Peer2PeerDemoConfiguration;
 
 /**
  * Activity that show the list of device found by the manager
@@ -52,11 +56,27 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
 
     @Override
     public void onNodeSelected(Node n) {
-        n.addExternalCharacteristics(new StdCharToFeatureMap());
+
+        ConnectionOption.ConnectionOptionBuilder optionsBuilder = ConnectionOption.builder()
+                .resetCache(clearCacheIsSelected())
+                .enableAutoConnect(false)
+                .setFeatureMap(STM32OTASupport.getOTAFeatures())
+                .setFeatureMap(new StdCharToFeatureMap());
+
+        if(Peer2PeerDemoConfiguration.isValidDeviceNode(n)){
+            optionsBuilder.setFeatureMap(Peer2PeerDemoConfiguration.getCharacteristicMapping());
+        }
+
+        ConnectionOption options = optionsBuilder.build();
+
         if(n.getType()== Node.Type.STEVAL_WESU1)
-            startActivity(DemosActivityWesu.getStartIntent(this,n,clearCacheIsSelected()));
-        else
-            startActivity(DemosActivity.getStartIntent(this,n,clearCacheIsSelected()));
+            startActivity(DemosActivityWesu.getStartIntent(this,n,options));
+        else if (STM32OTASupport.isOTANode(n)){
+            startActivity(FwUpgradeSTM32WBActivity.getStartIntent(this, n,null,null));
+        }else {
+            startActivity(DemosActivity.getStartIntent(this, n, options));
+        }
+
     }
 
 }//NodeListActivity

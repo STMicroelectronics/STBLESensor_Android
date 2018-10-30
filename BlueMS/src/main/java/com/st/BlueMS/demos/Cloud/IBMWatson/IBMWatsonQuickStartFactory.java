@@ -60,9 +60,7 @@ import java.util.Map;
  */
 public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
 
-    private static final long CLOUD_DATA_NOTIFICATION_PERIOD_MS = 1000;
-
-    //address where send the datas
+    //address where send the data
     private static final String QUICKSTART_URL="ssl://quickstart.messaging.internetofthings.ibmcloud.com:8883";
     //private static final String QUICKSTART_URL="tcp://quickstart.messaging.internetofthings.ibmcloud.com:1883";
 
@@ -84,10 +82,10 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
     private String mDeviceType;
 
     public IBMWatsonQuickStartFactory(String type,String id) throws IllegalArgumentException{
-        if(id==null || id.isEmpty())
-            throw new IllegalArgumentException("id can not be empty");
-        if(type==null || type.isEmpty())
-            throw new IllegalArgumentException("type name can not be empty");
+        if(!IBMWatsonUtil.isValidString(id))
+            throw new IllegalArgumentException("Invalid Device ID");
+        if(!IBMWatsonUtil.isValidString(type))
+            throw new IllegalArgumentException("Invalid Device Type");
 
         mDeviceName =id;
         mDeviceType=type;
@@ -120,9 +118,9 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
 
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker){
-        return new IBMWatsonQuickStartMqttFeatureListener(extractMqttClient(broker),
-                CLOUD_DATA_NOTIFICATION_PERIOD_MS);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs){
+        return new IBMWatsonFactory.IBMWatsonMqttFeatureListener(extractMqttClient(broker),
+                minUpdateIntervalMs);
     }
 
     @Override
@@ -132,50 +130,13 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
 
     @Override
     public boolean supportFeature(Feature f) {
-        return true;
+        return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, CloutIotClient mqttConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(Node node, CloutIotClient mqttConnection,
+                                        FwUpgradeAvailableCallback callback) {
         return false;
     }
 
-
-    /**
-     * Create a json object that is accepted by the quickstart page to display the data
-     */
-    public static class IBMWatsonQuickStartMqttFeatureListener extends IBMWatsonFactory.IBMWatsonMqttFeatureListener {
-
-        private Map<Feature,Long> mLastCloudUpdate=new HashMap<>();
-        private long mUpdateRateMs;
-
-        /**
-         * build and object for send an update to the cloud each updateRateMs milliseconds
-         * @param client object to use for publish the data
-         * @param updateRateMs minimum time between 2 published samples
-         */
-        public IBMWatsonQuickStartMqttFeatureListener(IMqttAsyncClient client, long updateRateMs){
-            super(client);
-            mUpdateRateMs=updateRateMs;
-        }
-
-        @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
-            if(!featureNeedCloudUpdate(f,sample.notificationTime))
-                return;
-            //otherwise send the data
-            super.onUpdate(f,sample);
-        }
-
-        private boolean featureNeedCloudUpdate(Feature f, long notificationTime) {
-            Long lastNotification = mLastCloudUpdate.get(f);
-            //first notification or old value
-            if(lastNotification==null ||
-                    ((notificationTime-lastNotification)>mUpdateRateMs)) {
-                mLastCloudUpdate.put(f,notificationTime);
-                return true;
-            }
-            return false;
-        }
-    }
 }

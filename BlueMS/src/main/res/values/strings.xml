@@ -37,11 +37,10 @@
 
 <resources>
 
-    <string name="app_name" translatable="false">ST BlueMS</string>
+    <string name="app_name" translatable="false">ST BLE Sensor</string>
 
     <string name="title_activity_debug_console">Debug Console</string>
 
-    <string name="action_settings">Settings</string>
     <string name="title_activity_nfc_node_connection">Nfc Node</string>
 
 </resources>

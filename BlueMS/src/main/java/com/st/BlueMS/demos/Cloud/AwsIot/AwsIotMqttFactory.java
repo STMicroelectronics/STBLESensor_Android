@@ -41,16 +41,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.iot.AWSIotKeystoreHelper;
 import com.amazonaws.mobileconnectors.iot.AWSIotMqttClientStatusCallback;
 import com.amazonaws.mobileconnectors.iot.AWSIotMqttManager;
 import com.amazonaws.mobileconnectors.iot.AWSIotMqttQos;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.JSONSampleSerializer;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
+import com.st.BlueMS.demos.Cloud.util.SubSamplingFeatureListener;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
+
+import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,24 +79,32 @@ class AwsIotMqttFactory implements CloutIotClientConnectionFactory {
         }
     }
 
-    private static @Nullable AWSIotMqttManager extractConnection(CloutIotClient client){
+    private static @Nullable AwsConnection extractConnection(CloutIotClient client){
         if(client==null || !(client instanceof AwsConnection))
             return null;
-        return ((AwsConnection) client).connection;
+        return ((AwsConnection) client);
     }
 
     private String mClientId;
     private String mEndpoint;
     private Uri mDeviceCertificate;
 
-    AwsIotMqttFactory(String clientId,String endpoint, Uri deviceCertificate,Uri privateKey){
-        mPrivateKey = privateKey;
+    AwsIotMqttFactory(@Nullable String clientId,@Nullable String endpoint,
+                      @Nullable  Uri deviceCertificate,@Nullable Uri privateKey){
+
 
         if(clientId==null || clientId.isEmpty())
             throw new IllegalArgumentException("Client Id Must Not be empty");
         if(endpoint==null || endpoint.isEmpty())
             throw new IllegalArgumentException("Invalid endpoint");
 
+        if(deviceCertificate==null)
+            throw new IllegalArgumentException("Invalid certificate path");
+
+        if(privateKey==null)
+            throw new IllegalArgumentException("Invalid private key path");
+
+        mPrivateKey = privateKey;
         mClientId = clientId;
         mEndpoint = endpoint;
         mDeviceCertificate = deviceCertificate;
@@ -227,15 +241,15 @@ class AwsIotMqttFactory implements CloutIotClientConnectionFactory {
 
     @Override
     public boolean isConnected(CloutIotClient client) {
-        if(client instanceof AwsConnection)
-           return ((AwsConnection)client).isConnected;
-        return false;
+        AwsConnection connection = extractConnection(client);
+        return connection != null && connection.isConnected;
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient client) {
-        if(client instanceof AwsConnection)
-            return new AwsMqttFeatureListener(mClientId,(AwsConnection)client);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient client,long minUpdateIntervalMs) {
+        AwsConnection connection = extractConnection(client);
+        if(connection!=null)
+            return new AwsMqttFeatureListener(mClientId,connection, minUpdateIntervalMs);
         return null;
     }
 
@@ -260,7 +274,7 @@ class AwsIotMqttFactory implements CloutIotClientConnectionFactory {
      * each update is published as a string in the topic:
      * ClientId/FeatureName/FieldName
      */
-    private static class AwsMqttFeatureListener implements Feature.FeatureListener {
+    private static class AwsMqttFeatureListener extends SubSamplingFeatureListener {
 
         private AwsConnection mConnection;
         private String mClientId;
@@ -270,23 +284,26 @@ class AwsIotMqttFactory implements CloutIotClientConnectionFactory {
          * @param clientId name of the device that generate the data
          * @param client object where publish the data
          */
-        AwsMqttFeatureListener(String clientId,AwsConnection client) {
+        AwsMqttFeatureListener(String clientId,AwsConnection client,long minUpdateInterval) {
+            super(minUpdateInterval);
             mConnection = client;
             mClientId=clientId;
         }
 
+
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
             if(!mConnection.isConnected)
                 return;
-            Field fields[] = sample.dataDesc;
-            Number data[] = sample.data;
-            for(int i =0; i<data.length ; i++){
-                String topic = MqttClientUtil.getPublishTopic(mClientId,f.getName(),
-                        fields[i].getName());
-                mConnection.connection.publishString(data[i].toString(),
+
+            String topic = MqttClientUtil.getPublishTopic(mClientId,f.getName());
+            try {
+                String jsonData = JSONSampleSerializer.serialize(sample).toString();
+                mConnection.connection.publishString(jsonData,
                         topic,
                         AWSIotMqttQos.QOS0);
+            }catch (AmazonClientException | JSONException e){
+                e.printStackTrace();
             }
         }//onUpdate
     }//

@@ -52,7 +52,7 @@ public class CloudLogFragmentTestJUnit {
     @Test
     public void deviceIdNotContainsColon(){
         Node n = mock(Node.class);
-        when(n.getTag()).thenReturn("Test:Test:");
+        when(n.getFriendlyName()).thenReturn("Test Test@");
         String deviceId = MqttClientUtil.getDefaultCloudDeviceName(n);
         Assert.assertFalse(deviceId.contains(":"));
     }

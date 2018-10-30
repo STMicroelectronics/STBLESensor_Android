@@ -51,8 +51,8 @@ import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNumberRange;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckRegularExpression;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckNumberRange;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckRegularExpression;
 import com.st.BlueSTSDK.Node;
 
 import java.util.regex.Pattern;

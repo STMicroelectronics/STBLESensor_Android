@@ -73,12 +73,7 @@ public class SwitchFragment extends DemoFragment {
                 newImage = SWITCH_OFF;
             }else
                 newImage = SWITCH_ON;
-            SwitchFragment.this.updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mSwitchImage.setImageResource(newImage);
-                }
-            });
+            SwitchFragment.this.updateGui(() -> mSwitchImage.setImageResource(newImage));
         }
     };
 
@@ -88,7 +83,7 @@ public class SwitchFragment extends DemoFragment {
 
         View root = inflater.inflate(R.layout.fragment_switch, container, false);
 
-        mSwitchImage = (ImageView) root.findViewById(R.id.switchImage);
+        mSwitchImage = root.findViewById(R.id.switchImage);
 
         return root;
     }
@@ -98,17 +93,15 @@ public class SwitchFragment extends DemoFragment {
         mSwitchFeature = node.getFeature(FeatureSwitch.class);
         if (mSwitchFeature != null) {
             mSwitchFeature.addFeatureListener(mStatusChanged);
-            mSwitchImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    byte currentStatus = FeatureSwitch.getSwitchStatus(mSwitchFeature.getSample());
-                    if(currentStatus==0)
-                        //switch on the first led
-                        mSwitchFeature.changeSwitchStatus((byte) 0x01);
-                    else
-                        //switch off all
-                        mSwitchFeature.changeSwitchStatus((byte) 0x00);
-                }//onClick
+            //onClick
+            mSwitchImage.setOnClickListener(view -> {
+                byte currentStatus = FeatureSwitch.getSwitchStatus(mSwitchFeature.getSample());
+                if(currentStatus==0)
+                    //switch on the first led
+                    mSwitchFeature.changeSwitchStatus((byte) 0x01);
+                else
+                    //switch off all
+                    mSwitchFeature.changeSwitchStatus((byte) 0x00);
             });
             node.enableNotification(mSwitchFeature);
         }//if

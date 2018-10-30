@@ -41,7 +41,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -51,7 +50,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.app.DialogFragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +72,6 @@ import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
 import com.st.BlueSTSDK.Features.FeatureProximity;
-import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
@@ -167,22 +164,20 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
                     FeatureMemsSensorFusionCompact.getQk(data),
                     FeatureMemsSensorFusionCompact.getQs(data));
 
-            final String rateText = String.format("Frame Rate :%03d fps",
+            final String rateText = getString(R.string.memsSensorFusion_frameRate,
                     mGlRenderer.getRenderingRate());
 
-            final String quaternionText = String.format("Quaternion Rate: %03d",
+            final String quaternionText = getString(R.string.memsSensorFusion_quaternionRate,
                     averageQuaternionRate);
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mFrameRateText.setText(rateText);
-                        mQuaternionRateText.setText(quaternionText);
-                    } catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    }//try -catch
-                }//run
+            //run
+            updateGui(() -> {
+                try {
+                    mFrameRateText.setText(rateText);
+                    mQuaternionRateText.setText(quaternionText);
+                } catch (NullPointerException e) {
+                    //this exception can happen when the task is run after the fragment is
+                    // destroyed
+                }//try -catch
             });
         }//onUpdate
 
@@ -264,7 +259,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         @Override
         public void onUpdate(Feature f,Feature.Sample sample) {
             int proximity = FeatureProximity.getProximityDistance(sample);
-            Field field = sample.dataDesc[0];
             if (proximity == FeatureProximity.OUT_OF_RANGE_VALUE)
                 mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
             else {
@@ -277,25 +271,12 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
 
     private void enableProximity(@NonNull final Node node){
 
-        if(mProximity!=null) //already enabled
-            return;
-
         mProximity = node.getFeature(FeatureProximity.class);
         if (mProximity != null) {
             /*
              * proximity sensor is present, show the button and attach the listener for
              * enable/disable the sensor reading
              */
-            //onClick
-            mProximityButton.setOnClickListener(v -> {
-                mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
-                if(mProximity==null) //it is calibrating and the proximity is disabled
-                    return;
-                if (node.isEnableNotification(mProximity))
-                    node.disableNotification(mProximity);
-                else
-                    node.enableNotification(mProximity);
-            });
             updateGui(() -> mProximityButton.setVisibility(View.VISIBLE));
             mProximity.addFeatureListener(mSensorProximity);
             if(mProximityButton.isChecked()) {
@@ -308,7 +289,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         if (mProximity != null) {
             mProximity.removeFeatureListener(mSensorProximity);
             node.disableNotification(mProximity);
-            mProximity=null;
             updateGui(() -> mProximityButton.setChecked(false));
         }
     }
@@ -344,13 +324,9 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
                 mLastNotificationTime =sample.notificationTime;
 
                 mVibratorManager.vibrate(mVibrationTime);
-                updateGui(new Runnable() {
-                    @Override
-                    public void run() {
-                        Snackbar.make(mRootLayout, R.string.wesu_motion_fx_freeFallDetected,
-                                Snackbar.LENGTH_SHORT).show();
-                    }//run
-                });// upadate Gui
+                //run
+                updateGui(() -> Snackbar.make(mRootLayout, R.string.wesu_motion_fx_freeFallDetected,
+                        Snackbar.LENGTH_SHORT).show());// upadate Gui
             }//if
         }//onUpdate
     }//FreeFallListener
@@ -361,7 +337,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
 
         mFreeFallEvent = node.getFeature(FeatureAccelerationEvent.class);
         if(mFreeFallEvent!=null){
-            mFreeFallListener = new FreeFallListener(getActivity());
+            mFreeFallListener = new FreeFallListener(requireActivity());
             mFreeFallEvent.detectEvent(FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT,false);
             mFreeFallEvent.detectEvent(FeatureAccelerationEvent.DetectableEvent.FREE_FALL,true);
             mFreeFallEvent.addFeatureListener(mFreeFallListener);
@@ -382,15 +358,6 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     public MemsSensorFusionFragment() {
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Node node = getNode();
-        if (node != null) {
-
-        }
-    }
-
     /**
      * get the fragment background color, to be used for fill the opengl background
      * <p>If the background is not a color we return white</p>
@@ -399,7 +366,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
      */
     private int getBgColor() {
         TypedValue a = new TypedValue();
-        getActivity().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true);
+        requireActivity().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true);
         if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
             // windowBackground is a color
             return a.data;
@@ -422,7 +389,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_mems_sensor_fusion, container, false);
@@ -431,27 +398,18 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         mQuaternionRateText = root.findViewById(R.id.renderingRateText);
 
         mCalibButton = root.findViewById(R.id.calibrationImage);
-
-        /**
+        /*
          * when the user will click on the button we will request to start the calibration
          * procedure
          */
-        mCalibButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onStartCalibrationClicked();
-            }//onClick
-        });
+        mCalibButton.setOnClickListener(v -> onStartCalibrationClicked());
 
 
         mResetButton = root.findViewById(R.id.resetButton);
-        mResetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onResetPositionButtonClicked();
-            }//onClick
-        });
+        mResetButton.setOnClickListener(v -> onResetPositionButtonClicked());
 
+        mProximityButton = root.findViewById(R.id.proximityButton);
+        mProximityButton.setOnClickListener(v -> onProximityButtonClicked());
 
         mGlSurface = root.findViewById(R.id.glSurface);
         // Request an OpenGL ES 2.0 compatible context.
@@ -460,9 +418,21 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
         mGlSurface.setRenderer(mGlRenderer);
 
-        mProximityButton = root.findViewById(R.id.proximityButton);
+
 
         return root;
+    }
+
+    private void onProximityButtonClicked(){
+        mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
+        Node node = getNode();
+        if(mProximity==null || node==null ) //it is calibrating and the proximity is disabled
+            return;
+
+        if (node.isEnableNotification(mProximity))
+            disableProximity(node);
+        else
+            enableProximity(node);
     }
 
     @Override
@@ -515,7 +485,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
 
     private Dialog buildResetInfoDialog(@StringRes int messageId, @DrawableRes int imageId){
 
-        Activity activity = getActivity();
+        Activity activity = requireActivity();
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
         dialog.setTitle(R.string.memsSensorFusionInfoTitle);
 
@@ -530,12 +500,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
 
         dialog.setView(view);
 
-        dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                resetPosition();
-            }
-        });
+        dialog.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> resetPosition());
         return dialog.create();
     }
 
@@ -546,13 +511,16 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
                         R.drawable.steval_wesu1_reset_position);
             case SENSOR_TILE:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
-                        R.drawable.ic_board_sensortile_bg);
+                    R.drawable.ic_board_sensortile_bg);
             case NUCLEO:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
                         R.drawable.ic_board_nucleo_bg);
             case BLUE_COIN:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
                         R.drawable.ic_board_bluecoin_bg);
+            case STEVAL_BCN002V1:
+                return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
+                        R.drawable.ic_board_bluenrgtile);
             case GENERIC:
             default:
                 return null;

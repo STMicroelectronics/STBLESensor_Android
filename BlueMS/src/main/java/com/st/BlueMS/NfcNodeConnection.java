@@ -71,7 +71,7 @@ import java.util.Arrays;
  * added to the manager without scanning
  */
 public class NfcNodeConnection extends NodeScanActivity {
-    private static final int SEARCH_NODE_TIMEOUT_MS=2000;
+    private static final int SEARCH_NODE_TIMEOUT_MS=4000;
     private static byte[] sPairingPin;
 
     private static byte[] pinToByte(int pin){

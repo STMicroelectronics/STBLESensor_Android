@@ -144,7 +144,7 @@
             app:contentPadding="8dp">
 
             <com.st.BlueMS.demos.Audio.Utils.WaveformView
-                android:id="@+id/waveform_view"
+                android:id="@+id/blueVoice_waveform_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

@@ -39,6 +39,7 @@ package com.st.BlueMS.demos;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +115,7 @@ public class FeatureDebugFragment extends DemoFragment {
      * @param node node to use for enable the notification
      */
     @Override
-    protected void enableNeededNotification(Node node) {
+    protected void enableNeededNotification(@NonNull Node node) {
     }
 
     /**
@@ -123,7 +124,7 @@ public class FeatureDebugFragment extends DemoFragment {
      * @param node node to use for disable the notification
      */
     @Override
-    protected void disableNeedNotification(Node node) {
+    protected void disableNeedNotification(@NonNull Node node) {
         List<Feature> features = node.getFeatures();
         for (Feature f : features) {
             if (node.isEnableNotification(f))

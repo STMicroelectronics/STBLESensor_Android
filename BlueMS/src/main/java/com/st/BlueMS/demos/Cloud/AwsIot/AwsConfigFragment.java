@@ -56,8 +56,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckRegularExpression;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckNotEmpty;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckRegularExpression;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +71,7 @@ public class AwsConfigFragment extends Fragment {
 
     private static final String CONF_PREFERENCE = AwsConfigFragment.class.getCanonicalName();
     private static final String ENDPOINT_KEY = CONF_PREFERENCE+".ENDPOINT";
+    private static final String CLIENT_ID_KEY = CONF_PREFERENCE+".DEVICE_ID";
     private static final int SELECT_PRIVATEKEY_FILE = 2;
     private static final int SELECT_CERTIFICATE_FILE = 1;
     private static final Pattern ENPOINT_MATCHER =
@@ -100,6 +101,9 @@ public class AwsConfigFragment extends Fragment {
      */
     private void loadFromPreferences(SharedPreferences pref){
         mEndpointText.setText(pref.getString(ENDPOINT_KEY,""));
+        mClientId = pref.getString(CLIENT_ID_KEY,null);
+        if(mClientId!=null)
+            mClientIdText.setText(mClientId);
     }
 
     /**
@@ -110,6 +114,7 @@ public class AwsConfigFragment extends Fragment {
         SharedPreferences.Editor editor = pref.edit();
 
         editor.putString(ENDPOINT_KEY, mEndpointText.getText().toString());
+        editor.putString(CLIENT_ID_KEY, mClientIdText.getText().toString());
 
         editor.apply();
     }
@@ -139,20 +144,12 @@ public class AwsConfigFragment extends Fragment {
                 new CheckNotEmpty(clientIdLayout,R.string.cloudLog_aws_clientId_error));
 
         mSelectCertificate =root.findViewById(R.id.aws_certificate_button);
-        mSelectCertificate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(getFileSelectIntent(), SELECT_CERTIFICATE_FILE);
-            }
-        });
+        mSelectCertificate.setOnClickListener(view ->
+                startActivityForResult(getFileSelectIntent(), SELECT_CERTIFICATE_FILE));
 
         mSelectPrivateKey = root.findViewById(R.id.aws_privatekey_button);
-        mSelectPrivateKey.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(getFileSelectIntent(), SELECT_PRIVATEKEY_FILE);
-            }
-        });
+        mSelectPrivateKey.setOnClickListener(view ->
+                startActivityForResult(getFileSelectIntent(), SELECT_PRIVATEKEY_FILE));
 
         return root;
     }
@@ -190,6 +187,9 @@ public class AwsConfigFragment extends Fragment {
             return;
 
         Uri file = data.getData();
+        if (file==null)
+            return;
+
         String fileName = getFileName(file);
 
         if(requestCode==SELECT_CERTIFICATE_FILE){
@@ -247,7 +247,7 @@ public class AwsConfigFragment extends Fragment {
     public void setClientId(String clientId){
         if(mClientIdText==null) {
             mClientId = clientId;
-        }else{
+        }else if(mClientIdText.getText().toString().isEmpty()){
             mClientIdText.setText(mClientId);
         }
     }

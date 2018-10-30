@@ -43,13 +43,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.st.BlueMS.DemosActivity;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.wesu.util.CalibrationManagerWesu;
 import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
 
 /**
  * Sensor Fusion demo for the STEVAL_WESU1 node
@@ -63,7 +63,7 @@ public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
     private CalibrationManagerWesu mCalibManager;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View demo = super.onCreateView(inflater, container, savedInstanceState);
         if(demo!=null)
             mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
@@ -76,13 +76,7 @@ public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
         super.enableNeededNotification(node);
         CheckLicenseStatus.checkLicenseRegister((DemosActivity) getActivity(), mLayout, node,
                 RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS, R.string.wesu_motion_fx_not_found);
-        //mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationStatus);
-        mCalibManager = new CalibrationManagerWesu(node, new CalibrationManagerWesu.CalibrationEventCallback() {
-            @Override
-            public void onCalibrationStatusChange(boolean success) {
-                setCalibrationButtonState(success);
-            }
-        });
+        mCalibManager = new CalibrationManagerWesu(node, this::setCalibrationButtonState);
     }
 
 
@@ -92,9 +86,11 @@ public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
     }
 
     @Override
-    protected void disableNeedNotification(Node node) {
+    protected void disableNeedNotification(@NonNull Node node) {
         super.disableNeedNotification(node);
-        mCalibManager.stopCalibration();
+        if(mCalibManager!=null) {
+            mCalibManager.stopCalibration();
+        }
     }
 
 }

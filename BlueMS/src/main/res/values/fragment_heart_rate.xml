@@ -38,6 +38,6 @@
 
 <resources>
     <string name="heartRateDataFormat" translatable="false">%1$d %2$s</string>
-    <string name="energyExpendedDataFormat" translatable="false">%1$f %2$s</string>
-    <string name="rrIntervalDataFormat" translatable="false">%1$d %2$s</string>
+    <string name="energyExpendedDataFormat" translatable="false">%1$d %2$s</string>
+    <string name="rrIntervalDataFormat" translatable="false">%1$.2f %2$s</string>
 </resources>

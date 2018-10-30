@@ -45,6 +45,8 @@ import android.util.Log;
 import com.st.BlueMS.demos.Cloud.AzureIot.util.ConnectionParameters;
 import com.st.BlueMS.demos.Cloud.AzureIot.util.Signature;
 import com.st.BlueMS.demos.Cloud.util.MqttClientConnectionFactory;
+import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
+import com.st.BlueMS.demos.Cloud.util.SubSamplingFeatureListener;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
@@ -126,8 +128,8 @@ public class AzureIotFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker) {
-        return new AzureIotMqttLogger(extractMqttClient(broker),mParam.deviceId);
+    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs) {
+        return new AzureIotMqttLogger(extractMqttClient(broker),mParam.deviceId, minUpdateIntervalMs);
     }
 
     @Nullable
@@ -138,7 +140,7 @@ public class AzureIotFactory extends MqttClientConnectionFactory {
 
     @Override
     public boolean supportFeature(Feature f) {
-        return true;
+        return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
@@ -159,7 +161,7 @@ public class AzureIotFactory extends MqttClientConnectionFactory {
      *     }
      * }
      */
-    private static class AzureIotMqttLogger implements Feature.FeatureListener{
+    private static class AzureIotMqttLogger extends SubSamplingFeatureListener{
 
         private IMqttAsyncClient mBroker;
         private String mDeviceId;
@@ -171,13 +173,14 @@ public class AzureIotFactory extends MqttClientConnectionFactory {
          * build an object that will publish all the update to the cloud
          * @param client object where publish the data
          */
-        AzureIotMqttLogger(IMqttAsyncClient client, String deviceId) {
+        AzureIotMqttLogger(IMqttAsyncClient client, String deviceId,long minUpdateInterval) {
+            super(minUpdateInterval);
             mBroker = client;
             mDeviceId=deviceId;
         }
 
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
             try {
                 JSONObject obj = prepareMessage(f,sample);
                 MqttMessage msg = new MqttMessage(obj.toString().getBytes());
@@ -215,6 +218,7 @@ public class AzureIotFactory extends MqttClientConnectionFactory {
          */
         private void appendSampleData(JSONObject obj, String featureName, Feature.Sample sample) throws  JSONException{
             Field[] desc = sample.dataDesc;
+            featureName = MqttClientUtil.sanitizeTopicName(featureName); //remove space/strange char ecc
             if(desc.length==1){
                 obj.put(featureName,sample.data[0]);
             }else{

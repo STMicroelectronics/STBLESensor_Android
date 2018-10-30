@@ -60,12 +60,13 @@ android {
     defaultConfig {
         //19 since we need the setpin api
         minSdkVersion 19
-        versionCode 17
-        versionName '3.7'
+        versionCode 23
+        versionName '4.0.0'
         applicationId "com.st.bluems"
         targetSdkVersion rootProject.ext.targetSdkVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -80,7 +81,7 @@ android {
         }
     }
 
-    sourceSets{
+    sourceSets {
         all {
             res.srcDirs += ['st_images']
         }
@@ -88,6 +89,12 @@ android {
 
     productFlavors {
 
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
     //to use until all the string doesn't have a chinese translation
@@ -105,11 +112,18 @@ android {
 
 }
 
+ext {
+    leakcanaryVersion = '1.5.4'
+    retrofitVersion = '2.4.0'
+}
 
 dependencies {
+
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation project(':BlueSTSDK')
     implementation project(':BlueSTSDK_Gui_Android')
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation group: 'com.android.support', name: 'design', version: "$rootProject.supportLibraryVersion"
     implementation group: 'com.android.support', name: 'support-v13', version: "$rootProject.supportLibraryVersion"
@@ -119,33 +133,36 @@ dependencies {
     implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
 
     //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
-    implementation group: 'com.google.android.gms', name: 'play-services-base', version: '11.6.2'
+    implementation group: 'com.google.android.gms', name: 'play-services-base', version: '15.0.1'
 
     //necessary to cloud demo, for mqtt connection
     implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
     implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.1.1'
 
+    //necessary to azure iot
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: "$retrofitVersion"
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: "$retrofitVersion"
+
     //amazon aws iot
-    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: '2.6.9'
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: "$rootProject.amazonSDKVersion"
 
     // ibm speech to text
-    implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '4.0.0'
+    implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '6.4.0'
 
+    //generic websocket speech to cloud
+    implementation group: 'com.squareup.okhttp3', name:'okhttp', version: '3.11.0'
+
+    //memory leak detector
+    debugImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: "$leakcanaryVersion"
+    releaseImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: "$leakcanaryVersion"
+    testImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: "$leakcanaryVersion"
 
     testImplementation group: 'org.json', name: 'json', version: '20140107'
     //since the json lib is inside the android sdk
     testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"
 
-    //memory leak detector
-    debugImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: '1.5.4'
-    releaseImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: '1.5.4'
-    testImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: '1.5.4'
-
-    androidTestCompile "com.android.support.test:runner:$rootProject.runnerVersion"
-    androidTestCompile "com.android.support.test:rules:$rootProject.rulesVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
-
-    //androidTestCompile ('com.crittercism.dexmaker:dexmaker-mockito:1.4');
-    //androidTestCompile ("com.crittercism.dexmaker:dexmaker-dx:1.4");
+    androidTestImplementation "com.android.support.test:runner:$rootProject.runnerVersion"
+    androidTestImplementation "com.android.support.test:rules:$rootProject.rulesVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
 }

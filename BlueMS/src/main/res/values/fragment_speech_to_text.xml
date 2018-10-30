@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="blueVoice_google_asrKey">Insert Google\u2122 Speech API Key:</string>
+    <string name="blueVoice_asrEnabled">%1$s technology</string>
+    <string name="stt_engine_disabled">Disabled</string>
+    <string name="blueVoice_muteButtonDescriptor">Mute button</string>
+    <string name="blueVoice_asrKeyInserted">Key inserted, speech recognition enabled!</string>
+    <string name="blueVoice_asrInvalidKey">"Invalid key: %1$s"</string>
+    <string name="blueVoice_noAsrKeeyNeeded">"ASR key not needed"</string>
+    <string name="stt_engineStatus_recording">Recording…</string>
+    <string name="blueVoice_waitForAsr">Waiting…</string>
+    <string name="blueVoice_sendRequest">Sending request…</string>
+    <string name="blueVoice_ioError">I/O Error!</string>
+    <string name="blueVoice_notRecognized">Token not recognized</string>
+    <string name="blueVoice_requestFailed">Error sending the data</string>
+    <string name="blueVoice_responseError">Error receiving the data</string>
+    <string name="blueVoice_networkError">Network communication error</string>
+
+    <string name="blueVoice_recordTime">RecordTime:</string>
+    <string name="blueVoice_asr">Speech recognition:</string>
+    <string name="blueVoice_loadAsrKey">Please load a valid Speech Recognition API key</string>
+    <string name="blueVoice_dialogConfirm">Confirm</string>
+    <string name="blueVoice_dialogBack">Back</string>
+
+    <string name="blueVoice_enableConnection">Enable connection to enable the Speech
+        Recognition</string>
+    <string name="stt_engineStatus_connecting">Connecting…</string>
+    <string name="stt_engineStatus_connected">Connected</string>
+    <string name="stt_engineStatus_disconnected">Disconnected</string>
+    <string name="blueVoice_startAudioRec">REC</string>
+    <string name="blueVoice_stopAudioRec">Stop REC</string>
+    <string name="stt_speechApiKey">Speech API key</string>
+    <string name="blueVoice_selectAsrEngine">Select ASR Engine</string>
+    <string name="blueVoice_addKeyButton">Add</string>
+    <string name="blueVoice_chooseAsrLanguage">Choose your language</string>
+    <string name="blueVoice_asrLanguageSelection">Language Selection</string>
+    <string name="blueVoice_asrLanguageSelected">language selected: %1$s</string>
+    <color  name="blueVoice_continusStreamingButtonColor">#aeea00</color>
+
+    <string name="blueVoice_langEnglish_us">English (US)</string>
+    <string name="blueVoice_langEnglish_uk">English (UK)</string>
+    <string name="blueVoice_langItalian">Italian</string>
+    <string name="blueVoice_langChinese">Chinese</string>
+    <string name="blueVoice_langFrench">French</string>
+    <string name="blueVoice_langSpanish">Spanish</string>
+    <string name="blueVoice_langGerman">German</string>
+    <string name="blueVoice_langPortuguese">Portuguese</string>
+    <string name="blueVoice_langKorean">Korean</string>
+    <string name="blueVoice_langUnknown">Unknown</string>
+    <string name="blueVoice_errorLowConfidence">Low confidence response</string>
+
+    <string name="blueVoice_watson_asrDialogTitle">Insert IBM Watson speech-to-text credentials</string>
+    <string name="dialog_watson_userHint">User</string>
+    <string name="dialog_watson_passwordHint">Password</string>
+
+    <string name="blueVoice_websocket_dialogTitle">WebSocket configuration</string>
+    <string name="dialog_websocket_title">"WebSocket - Speech To Text"</string>
+    <string name="dialog_websocket_endpointHint">enpoint</string>
+    <string name="dialog_websocket_passwordHint">password</string>
+    <string name="dialog_websocket_userHint">user</string>
+    <string name="dialog_watson_endpointHint">Api endpoint</string>
+
+    <string name="stt_engine_name_format">%s - %s</string>
+    <string name="stt_provider">Provider:</string>
+    <string name="stt_provider_select">Select</string>
+    <string name="stt_provider_setKey">Set Key</string>
+    <string name="stt_engineNameLabel">Engine:</string>
+    <string name="stt_engineStatusLabel">Cloud status:</string>
+
+</resources>

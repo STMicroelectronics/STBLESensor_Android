@@ -44,12 +44,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.st.BlueMS.DemosActivity;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
 
 /**
  * Carry position demo for the STEVAL_WESU1 node

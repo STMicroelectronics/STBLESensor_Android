@@ -39,7 +39,7 @@ package com.st.BlueMS.demos.Audio.BlueVoice;
 
 import android.media.AudioTrack;
 
-import com.st.BlueMS.demos.Audio.BlueVoice.util.AudioBuffer;
+import com.st.BlueMS.demos.Audio.Utils.AudioBuffer;
 import com.st.BlueMS.matcher.MatchShortArray;
 
 import junit.framework.Assert;

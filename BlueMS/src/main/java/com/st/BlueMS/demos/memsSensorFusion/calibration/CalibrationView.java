@@ -38,10 +38,10 @@
 package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.os.Handler;
 import android.support.annotation.DrawableRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.widget.ImageButton;
 
 import com.st.BlueMS.R;
@@ -78,30 +78,25 @@ public class CalibrationView implements CalibrationContract.View {
 
     @Override
     public void showCalibrationDialog() {
-        mainThread.post(new Runnable() {
-            @Override
-            public void run() {
-                //check if a dialog is already displayed
-                DialogFragment dialog = (DialogFragment)
-                        mFragmentManager.findFragmentByTag(CALIBRATION_DIALOG_TAG);
-                if(dialog==null) {
-                    dialog = new CalibrationDialogFragment();
+        mainThread.post(() -> {
+            //check if a dialog is already displayed
+            DialogFragment dialog = (DialogFragment)
+                    mFragmentManager.findFragmentByTag(CALIBRATION_DIALOG_TAG);
+            if(dialog==null) {
+                dialog = new CalibrationDialogFragment();
+                if(!mFragmentManager.isStateSaved())
                     dialog.show(mFragmentManager, CALIBRATION_DIALOG_TAG);
-                }
             }
         });
     }
 
     @Override
     public void hideCalibrationDialog() {
-        mainThread.post(new Runnable() {
-            @Override
-            public void run() {
-                DialogFragment dialog = (DialogFragment)
-                        mFragmentManager.findFragmentByTag(CALIBRATION_DIALOG_TAG);
-                if(dialog!=null) {
-                    dialog.dismiss();
-                }
+        mainThread.post(() -> {
+            DialogFragment dialog = (DialogFragment)
+                    mFragmentManager.findFragmentByTag(CALIBRATION_DIALOG_TAG);
+            if(dialog!=null) {
+                dialog.dismiss();
             }
         });
 
@@ -109,12 +104,9 @@ public class CalibrationView implements CalibrationContract.View {
 
     @Override
     public void setCalibrationButtonState(final boolean isCalibrated) {
-        mainThread.post(new Runnable() {
-            @Override
-            public void run() {
-                @DrawableRes int imgId = isCalibrated ? R.drawable.calibrated : R.drawable.uncalibrated;
-                mCalibButton.setImageResource(imgId);
-            }
+        mainThread.post(() -> {
+            @DrawableRes int imgId = isCalibrated ? R.drawable.calibrated : R.drawable.uncalibrated;
+            mCalibButton.setImageResource(imgId);
         });
     }
 }

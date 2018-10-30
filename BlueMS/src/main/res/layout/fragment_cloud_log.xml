@@ -54,10 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             app:cardCornerRadius="2dp"
-            app:contentPadding="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp">
+            app:contentPadding="8dp">
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -96,7 +93,8 @@
         </android.support.v7.widget.CardView>
 
         <LinearLayout
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:id="@+id/cloudConnectionProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,7 +119,7 @@
             <android.support.v7.widget.CardView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
                 app:cardCornerRadius="2dp"
                 app:contentPadding="8dp"
                 android:id="@+id/cloudLogFeatureListContainer">
@@ -132,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    app:layoutManager="LinearLayoutManager"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                     tools:listitem="@layout/node_list_item"/>
 
             </android.support.v7.widget.CardView>

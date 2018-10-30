@@ -2,14 +2,12 @@
 
 buildscript {
     repositories {
-//        jcenter(){
-//            url "http://jcenter.bintray.com/"
-//        }
         jcenter()
         google()
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,29 +18,25 @@ allprojects {
     repositories {
         google()
         jcenter()
-
-//        maven { // to use google support library
-//            url "https://maven.google.com"
-//        }
-//        jcenter(){
-//            url "http://jcenter.bintray.com/"
-//        }
     }
 }
 
 // Define versions in a single place
 ext {
     // Sdk and tools
-    targetSdkVersion = 25
-    compileSdkVersion = 26
-    buildToolsVersion = '27.0.1'
+    targetSdkVersion = 27
+    compileSdkVersion = 27
+    buildToolsVersion = '28.0.2'
 
     // App dependencies
-    supportLibraryVersion = '27.0.2'
-    constraintLayoutVersion = '1.0.2'
+    supportLibraryVersion = '27.1.1'
+    constraintLayoutVersion = '1.1.3'
     junitVersion = '4.12'
     mockitoVersion = '1.9.5'
     runnerVersion = '1.0.1'
     rulesVersion = '1.0.1'
     espressoVersion = '3.0.1'
+
+    //Analytics
+    amazonSDKVersion = '2.7.3'
 }

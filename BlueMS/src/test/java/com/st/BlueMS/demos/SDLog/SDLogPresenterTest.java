@@ -64,9 +64,11 @@ import com.st.BlueSTSDK.Features.FeatureTemperature;
 import com.st.BlueSTSDK.Node;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -141,12 +143,12 @@ public class SDLogPresenterTest {
     @Test
     public void ifFeatureIsNotLoggingTheViewGoesInStartLoggingMode() {
         mPresenter.onUpdate(mFeature, NOT_LOGGING_SAMPLE);
-
         verify(mView).displayStartLoggingView(anyListOf(Feature.class));
     }
 
+
     @Test
-    public void ifFeatureIsLoggingTheViewGoesInStopLoggingMode() {
+    public void ifFeatureIsLoggingTheViewGoesInStopLoggingModeAndShowTheWarning() {
         mPresenter.onUpdate(mFeature, LOGGING_SAMPLE);
         verify(mView).displayStopLoggingView();
     }
@@ -164,7 +166,9 @@ public class SDLogPresenterTest {
         mPresenter.onUpdate(mFeature, NOT_LOGGING_SAMPLE); // go to logging state
         mPresenter.onStartStopLogPressed();
         verify(mView).displayStartLoggingView(anyListOf(Feature.class));
+        verify(mView).displayDisableDataWarning();
     }
+
 
 
     /**
@@ -175,35 +179,33 @@ public class SDLogPresenterTest {
      * @return the feature or null if the class doesn't has a method that request a node as a
      * parameter
      */
-    protected
     @Nullable
-    <T extends Feature> T buildFeatureFromClass(Class<T> featureClass) {
+    private <T extends Feature> T buildFeatureFromClass(Class<T> featureClass) {
         try {
             Constructor<T> constructor = featureClass.getConstructor(Node.class);
             return constructor.newInstance(mNode);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | InvocationTargetException |
+                IllegalAccessException | InstantiationException e) {
             return null;
-        } catch (InvocationTargetException e) {
-            return null;
-        } catch (InstantiationException e) {
-            return null;
-        } catch (IllegalAccessException e) {
-            return null;
-        }//try-catch
+        }
+        //try-catch
     }//buildFeatureFromClass
 
-    private void theNodeHasTheFeatureOfType(Class<? extends Feature> featureType) {
-        Feature fakeFeature = buildFeatureFromClass(featureType);
+    private <T extends Feature> void theNodeHasTheFeatureOfType(Class<T> featureType) {
+        T fakeFeature = buildFeatureFromClass(featureType);
         assertNotNull(fakeFeature);
-        when(mNode.getFeatures()).thenReturn(Collections.singletonList(fakeFeature));
+        when(mNode.getFeatures(featureType)).thenReturn(Collections.singletonList(fakeFeature));
     }
+
+
+    @Captor
+    private ArgumentCaptor<List<Feature>> featureListCapture;
 
     public List<Feature> getDisplayFeatureWhenNodeContains(Class<? extends Feature> featureType) {
         theNodeHasTheFeatureOfType(featureType);
         mPresenter.onUpdate(mFeature, NOT_LOGGING_SAMPLE);
-        ArgumentCaptor<List> arg = ArgumentCaptor.forClass(List.class);
-        verify(mView).displayStartLoggingView(arg.capture());
-        return arg.getValue();
+        verify(mView).displayStartLoggingView(featureListCapture.capture());
+        return featureListCapture.getValue();
     }
 
     public void assertNotDisplayFeatureOfType(Class<? extends Feature> featureType) {
@@ -244,15 +246,15 @@ public class SDLogPresenterTest {
         assertDisplayFeatureOfType(FeatureTemperature.class);
     }
 
-    //@Test
+    @Test
+    @Ignore("needs android mock to build a FeatureMemsSensorFusionCompact class")
     public void displayFeatureAreFiltered_7() {
-        //needs android mock to build a memssensorFusionCompact class
         assertDisplayFeatureOfType(FeatureMemsSensorFusionCompact.class);
     }
 
     @Test
     public void displayFeatureAreFiltered_8() {
-        assertDisplayFeatureOfType(FeatureMemsSensorFusion.class);
+        assertNotDisplayFeatureOfType(FeatureMemsSensorFusion.class);
     }
 
     @Test
@@ -343,16 +345,28 @@ public class SDLogPresenterTest {
         verify(mView).displayIOErrorLoggingView();
     }
 
+    @Mock
+    private Set<Feature> mockFeatureSet;
+
     @Test
     public void ifLoggingPressingTheButtonStartIt() {
         long logInterval = 19;
-        Set<Feature> selectedFeature = (Set<Feature>) mock(Set.class);
         when(mFeature.getSample()).thenReturn(NOT_LOGGING_SAMPLE);
         when(mView.getLogInterval()).thenReturn(logInterval);
-        when(mView.getSelectedFeature()).thenReturn(selectedFeature);
+        when(mView.getSelectedFeature()).thenReturn(mockFeatureSet);
         mPresenter.onStartStopLogPressed();
-        verify(mFeature).startLogging(selectedFeature, logInterval);
+        verify(mFeature).startLogging(mockFeatureSet, logInterval);
     }
+
+    @Test
+    public void ifLoggingIntervalIs0ItChangeTo1() {
+        when(mFeature.getSample()).thenReturn(NOT_LOGGING_SAMPLE);
+        when(mView.getLogInterval()).thenReturn(0L);
+        when(mView.getSelectedFeature()).thenReturn(mockFeatureSet);
+        mPresenter.onStartStopLogPressed();
+        verify(mFeature).startLogging(mockFeatureSet, 1);
+    }
+
 
     @Test
     public void whenTheLogIsStartedTheViewGoInStopState() {

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"
@@ -37,4 +42,20 @@
             android:layout_height="wrap_content"
             android:hint="@string/dialog_watson_passwordHint" />
     </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp">
+
+        <EditText
+            android:id="@+id/dialog_watson_endpointValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_watson_endpointHint"
+            android:inputType="textUri" />
+    </android.support.design.widget.TextInputLayout>
 </LinearLayout>
+</ScrollView>

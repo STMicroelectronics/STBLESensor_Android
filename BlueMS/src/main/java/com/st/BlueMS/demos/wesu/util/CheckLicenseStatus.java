@@ -43,13 +43,13 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
+import com.st.BlueMS.DemosActivity;
 import com.st.BlueSTSDK.Config.Command;
 import com.st.BlueSTSDK.Config.Register;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines.RegistersName;
 import com.st.BlueSTSDK.ConfigControl;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.DemosActivity;
 
 /**
  * Class that read the license register and notify the read result thought a callback
@@ -76,19 +76,9 @@ public class CheckLicenseStatus {
             }
         });
         */
-        new CheckLicenseStatus(node.getConfigRegister(), register, new LicenseStatusReadEvent(){
-
-            @Override
-            public void onLicenseStatusRead(RegistersName regAddress, boolean licIsPresent) {
-                if(!licIsPresent){
-                    Snackbar.make(rootView,noLicMessage,Snackbar.LENGTH_INDEFINITE)
-                            .setAction("License", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    activity.startLicenseManagerActivity(node);
-                                }
-                            }).show();
-                }
+        new CheckLicenseStatus(node.getConfigRegister(), register, (regAddress, licIsPresent) -> {
+            if(!licIsPresent){
+                Snackbar.make(rootView,noLicMessage,Snackbar.LENGTH_INDEFINITE);
             }
         });
     }

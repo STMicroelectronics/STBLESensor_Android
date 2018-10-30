@@ -54,10 +54,14 @@ public abstract class DemoWithNetFragment extends DemoFragment {
      * tell if the mobile has an internet connection
      * @return true if the system has an internet connection
      */
-    protected boolean isOnline(){
-        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context
+    protected boolean isOnline() {
+        Context ctx = getActivity();
+        if(ctx==null)
+            return false;
+        ConnectivityManager connMgr = (ConnectivityManager) ctx.getSystemService(Context
                 .CONNECTIVITY_SERVICE);
-        return connMgr.getActiveNetworkInfo() != null &&
+        return connMgr != null &&
+                connMgr.getActiveNetworkInfo() != null &&
                 connMgr.getActiveNetworkInfo().isAvailable() &&
                 connMgr.getActiveNetworkInfo().isConnected();
     }
@@ -74,9 +78,10 @@ public abstract class DemoWithNetFragment extends DemoFragment {
     }
     private BroadcastReceiver mUpdateConnectionStatus=null;
 
+
     @Override
-    public void startDemo () {
-        super.startDemo();
+    public void onResume() {
+        super.onResume();
         if(mUpdateConnectionStatus==null)
             mUpdateConnectionStatus = new OnConnectionStatusChange();
         getActivity().registerReceiver(mUpdateConnectionStatus, new IntentFilter(android.net
@@ -92,18 +97,18 @@ public abstract class DemoWithNetFragment extends DemoFragment {
         super.stopDemo();
         Context c = getActivity();
         if(mUpdateConnectionStatus!=null && c!=null)
-            getActivity().unregisterReceiver(mUpdateConnectionStatus);
+            c.unregisterReceiver(mUpdateConnectionStatus);
         mUpdateConnectionStatus=null;
     }
 
     /**
      * method called when the system has internet connection
      */
-    protected void onSystemHasConnectivity(){};
+    protected void onSystemHasConnectivity(){}
 
     /**
      * method called when the system lost its internet connection
      */
-    protected void onSystemLostConnectivity(){};
+    protected void onSystemLostConnectivity(){}
 
 }

@@ -47,12 +47,16 @@ import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureActivity;
+import com.st.BlueSTSDK.Features.FeatureBattery;
+import com.st.BlueSTSDK.Features.FeatureCOSensor;
+import com.st.BlueSTSDK.Features.FeatureCarryPosition;
 import com.st.BlueSTSDK.Features.FeatureCompass;
 import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
 import com.st.BlueSTSDK.Features.FeatureHumidity;
 import com.st.BlueSTSDK.Features.FeatureLuminosity;
 import com.st.BlueSTSDK.Features.FeatureMagnetometer;
+import com.st.BlueSTSDK.Features.FeatureMemsGesture;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
 import com.st.BlueSTSDK.Features.FeatureMicLevel;
@@ -60,8 +64,10 @@ import com.st.BlueSTSDK.Features.FeatureMotionIntensity;
 import com.st.BlueSTSDK.Features.FeaturePedometer;
 import com.st.BlueSTSDK.Features.FeaturePressure;
 import com.st.BlueSTSDK.Features.FeatureProximity;
+import com.st.BlueSTSDK.Features.FeatureProximityGesture;
 import com.st.BlueSTSDK.Features.FeatureTemperature;
 import com.st.BlueSTSDK.Features.Field;
+import com.st.BlueSTSDK.Features.standardCharacteristics.FeatureHeartRate;
 import com.st.BlueSTSDK.Node;
 
 import java.io.IOException;
@@ -82,7 +88,10 @@ public class MqttClientUtil {
     private final static String SSL_PROTOCOL =  "TLSv1.2";
 
     public static String getDefaultCloudDeviceName(Node n){
-        return n.getTag().replace(':','_');
+        return n.getFriendlyName()
+                .replace(":","")
+                .replace(" ","")
+                .replace('@','_');
     }
 
     public static SocketFactory createSSLSocketFactory(Context context, @RawRes int certificateID)
@@ -105,11 +114,20 @@ public class MqttClientUtil {
         return sslContext.getSocketFactory();
     }
 
-    public static String getPublishTopic(String clientId,String featureName, String fieldName) {
-        return (clientId+"/"+featureName+"/"+fieldName).toLowerCase()
+    public static String sanitizeTopicName(String str){
+        return  str.toLowerCase()
                 .replace(' ', '_')
                 .replace("(","")
                 .replace(")","");
+    }
+
+    public static String getPublishTopic(String clientId,String featureName) {
+        return sanitizeTopicName(clientId+"/"+featureName);
+    }
+
+
+    public static String getPublishTopic(String clientId,String featureName, String fieldName) {
+        return sanitizeTopicName(clientId+"/"+featureName+"/"+fieldName);
     }
 
     public static boolean isSupportedFeature(Feature f){
@@ -120,20 +138,26 @@ public class MqttClientUtil {
             FeatureAcceleration.class,
             FeatureAccelerationEvent.class,
             FeatureActivity.class,
+            FeatureBattery.class,
+            FeatureCarryPosition.class,
             FeatureCompass.class,
             FeatureDirectionOfArrival.class,
             FeatureGyroscope.class,
             FeatureHumidity.class,
             FeatureLuminosity.class,
             FeatureMagnetometer.class,
+            FeatureMemsGesture.class,
             FeatureMemsSensorFusionCompact.class,
             FeatureMemsSensorFusion.class,
             FeatureMicLevel.class,
             FeatureMotionIntensity.class,
             FeaturePedometer.class,
             FeatureProximity.class,
+            FeatureProximityGesture.class,
             FeaturePressure.class,
-            FeatureTemperature.class
+            FeatureTemperature.class,
+            FeatureCOSensor.class,
+            FeatureHeartRate.class
     );
 
 }

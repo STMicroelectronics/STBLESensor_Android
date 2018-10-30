@@ -43,6 +43,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +60,7 @@ import com.st.BlueSTSDK.Features.FeatureSDLogging;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
+import com.st.BlueSTSDK.gui.util.SimpleFragmentDialog;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -72,6 +74,8 @@ import java.util.Set;
 @DemoDescriptionAnnotation(name="SD Logging",iconRes=R.drawable.multiple_log_icon,
         requareAll = FeatureSDLogging.class)
 public class SDLogFragment extends DemoFragment implements SDLogContract.View, FeatureListViewAdapter.FeatureListCallback{
+
+    private static String WARNING_DIALOG_TAG = SDLogFragment.class.getCanonicalName()+".WarningDialogTag";
 
     private TextView mHoursValue;
     private TextView mMinuteValue;
@@ -106,8 +110,11 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
 
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
-        mPresenter.stopDemo();
-        Activity currentActivity = getActivity();
+        if(mPresenter!=null) {
+            // can be null in some device, disableNotification call before enable?
+            mPresenter.stopDemo();
+        }
+        Activity currentActivity = requireActivity();
         hideSoftKeyboard(currentActivity,currentActivity.getCurrentFocus());
     }
 
@@ -180,6 +187,12 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
     @Override
     public void displayNoSDCardErrorLoggingView() {
         displayErrorView(R.string.sdLog_no_sd_error);
+    }
+
+    @Override
+    public void displayDisableDataWarning() {
+        DialogFragment warning = SimpleFragmentDialog.newInstance(R.string.sdLog_warning);
+        warning.show(getFragmentManager(),WARNING_DIALOG_TAG);
     }
 
     @Override

@@ -39,6 +39,7 @@ package com.st.BlueMS.demos.Cloud;
 
 import android.app.DownloadManager;
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -52,6 +53,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeService;
 
 /**
  * Service that request to the download manager to download the fw file
@@ -75,6 +77,11 @@ public class DownloadFwFileService extends IntentService {
      */
     public static void displayAvailableFwNotification(Context c, Uri firmwareRemoteLocation){
         Context appContext = c.getApplicationContext();
+        NotificationManager notificationManager = (NotificationManager)
+                appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if(notificationManager==null)
+            return;
+
         PendingIntent startDwService = PendingIntent.getService(appContext,0,
                 downloadFwFile(appContext,firmwareRemoteLocation),0);
 
@@ -87,7 +94,8 @@ public class DownloadFwFileService extends IntentService {
         String notificationDesc = appContext.getString(R.string.cloudLog_fwUpgrade_notification_desc,
                 firmwareRemoteLocation.getLastPathSegment());
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext,
+                FwUpgradeService.createNotificationChannel(appContext,notificationManager))
                 .setContentTitle(appContext.getString(R.string.cloudLog_fwUpgrade_notification_title))
                 .setContentText(notificationDesc)
                 .setAutoCancel(true)
@@ -97,7 +105,7 @@ public class DownloadFwFileService extends IntentService {
                 .addAction(download)
                 .setSmallIcon(R.drawable.ic_cloud_fw_upgrade_24dp);
 
-        NotificationManagerCompat.from(appContext).notify(FW_UPGRADE_NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(FW_UPGRADE_NOTIFICATION_ID, notificationBuilder.build());
     }
 
     /**

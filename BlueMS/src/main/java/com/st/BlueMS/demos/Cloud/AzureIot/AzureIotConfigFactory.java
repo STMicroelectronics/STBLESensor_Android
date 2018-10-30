@@ -51,7 +51,7 @@ import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.AzureIot.util.ConnectionParameters;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.InputChecker;
+import com.st.BlueSTSDK.gui.util.InputChecker.InputChecker;
 import com.st.BlueSTSDK.Node;
 
 public class AzureIotConfigFactory implements CloutIotClientConfigurationFactory {

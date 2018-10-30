@@ -39,11 +39,11 @@ package com.st.BlueMS.demos.Cloud.util;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 
 public class CloudFwUpgradeRequestDialog extends DialogFragment {
 

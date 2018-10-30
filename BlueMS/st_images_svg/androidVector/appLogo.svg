@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg718"
+   version="1.1"
+   viewBox="0 0 52.084287 55.706907"
+   height="157.90935pt"
+   width="147.6405pt">
+  <defs
+     id="defs712" />
+  <metadata
+     id="metadata715">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-51.820951,-66.551307)"
+     id="layer1">
+    <g
+       id="g742">
+      <g
+         transform="matrix(0.35277777,0,0,-0.35277777,86.40972,76.019094)"
+         id="g160">
+        <path
+           id="path162"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           d="M 0,0 C 0,0 -34.882,-21.851 31.471,-53.832 51.556,-63.513 29.618,-74.115 16.952,-74.355 0.048,-74.677 -22.252,-59.749 -26.312,-42.371 -26.315,-42.363 -34.339,-8.028 0,0" />
+      </g>
+      <g
+         transform="matrix(0.35277777,0,0,-0.35277777,55.348729,95.492163)"
+         id="g164">
+        <path
+           id="path166"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           d="M 0,0 C 0,0 43.714,-8.508 19.922,59.101 12.858,79.171 35.098,72.152 44.115,62.977 56.356,50.521 59.953,22.844 49.235,7.983 49.228,7.973 28.606,-20.62 0,0" />
+      </g>
+      <g
+         transform="matrix(0.35277777,0,0,-0.35277777,86.276766,109.06825)"
+         id="g168">
+        <path
+           id="path170"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           d="m 0,0 c 0,0 -21.003,36.728 -58.795,-20.731 -11.915,-18.117 -20.946,5.101 -18.854,17.937 2.666,16.352 23.97,35.956 41.004,36.632 0.01,0 35.242,1.398 36.645,-33.838" />
+      </g>
+    </g>
+  </g>
+</svg>

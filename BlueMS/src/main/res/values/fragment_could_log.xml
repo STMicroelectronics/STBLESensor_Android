@@ -43,6 +43,7 @@
     <string name="cloudLog_watson_organizationIDHint">Organization Id</string>
 
     <string name="cloudLog_watson_deviceIdError">Device Id must not be empty</string>
+    <string name="cloudLog_watson_invalidCharacterError">Use only:a–z A-Z 0-9 . - and _</string>
     <string name="cloudLog_watson_deviceTypeError">Device Type must not be empty</string>
     <string name="cloudLog_watson_authTokenError">Authentication Token must not be empty</string>
     <string name="cloudLog_watson_organizationIDError">Organization Id must not be empty</string>
@@ -88,5 +89,20 @@
     <string name="cloudLog_details">Details</string>
     <string name="cloudLog_connecting">Connecting…</string>
 
+    <string name="cloudLog_updateIntervalMsg">Select minimum interval between cloud communications</string>
+    <string-array name="cloudLog_updateIntervalString" translatable="false">
+        <item>0.0 s</item>
+        <item>0.5 s</item>
+        <item>1 s</item>
+        <item>5 s</item>
+        <item>10 s</item>
+    </string-array>
+    <integer-array name="cloudLog_updateIntervalValues">
+        <item>0</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>5000</item>
+        <item>10000</item>
+    </integer-array>
 
 </resources>

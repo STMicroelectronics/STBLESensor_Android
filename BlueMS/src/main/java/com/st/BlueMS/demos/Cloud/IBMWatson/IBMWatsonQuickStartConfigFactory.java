@@ -38,7 +38,6 @@
 package com.st.BlueMS.demos.Cloud.IBMWatson;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
@@ -49,9 +48,12 @@ import android.widget.EditText;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConfigurationFactory;
 import com.st.BlueMS.demos.Cloud.CloutIotClientConnectionFactory;
-import com.st.BlueMS.demos.Cloud.util.InputChecker.CheckNotEmpty;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckNotEmpty;
+import com.st.BlueSTSDK.gui.util.InputChecker.CheckRegularExpression;
 import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
+
+import static com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonUtil.VALID_NAME_CHARACTER;
 
 /**
  *  Object that help to configure the Ibm Watson Iot/BlueMX service, using the quickstart configuration
@@ -59,7 +61,6 @@ import com.st.BlueSTSDK.Node;
 public class IBMWatsonQuickStartConfigFactory implements CloutIotClientConfigurationFactory {
 
     private static final String FACTORY_NAME="IBM Watson IoT - Quickstart";
-
     private EditText mDeviceIdText;
     private Node.Type mNodeType;
 
@@ -72,6 +73,8 @@ public class IBMWatsonQuickStartConfigFactory implements CloutIotClientConfigura
         TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMXQuick_deviceIdWrapper);
         mDeviceIdText.addTextChangedListener(
                 new CheckNotEmpty(deviceIdLayout,R.string.cloudLog_watson_deviceIdError));
+        mDeviceIdText.addTextChangedListener(
+                new CheckRegularExpression(deviceIdLayout,R.string.cloudLog_watson_invalidCharacterError,VALID_NAME_CHARACTER));
     }
 
     @Override
@@ -92,7 +95,6 @@ public class IBMWatsonQuickStartConfigFactory implements CloutIotClientConfigura
 
     @Override
     public CloutIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
-        Context c = mDeviceIdText.getContext();
         return new IBMWatsonQuickStartFactory(mNodeType.name(),mDeviceIdText.getText().toString());
     }
 }

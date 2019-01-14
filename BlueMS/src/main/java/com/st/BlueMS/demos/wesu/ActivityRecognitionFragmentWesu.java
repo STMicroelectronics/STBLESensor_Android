@@ -46,7 +46,7 @@ import android.view.ViewGroup;
 
 import com.st.BlueMS.DemosActivity;
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.ActivityRecognitionFragment;
+import com.st.BlueMS.demos.ActivityRecognition.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.wesu.util.CheckLicenseStatus;
 import com.st.BlueSTSDK.Config.STWeSU.RegisterDefines;
 import com.st.BlueSTSDK.Node;
@@ -61,7 +61,7 @@ public class ActivityRecognitionFragmentWesu extends ActivityRecognitionFragment
     private View mLayout;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View demo= super.onCreateView(inflater, container, savedInstanceState);
 
         CoordinatorLayout demoContainer = new CoordinatorLayout(container.getContext());

@@ -44,14 +44,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
-import com.st.BlueMS.demos.ActivityRecognitionFragment;
+import com.st.BlueMS.demos.ActivityRecognition.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
 import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
 import com.st.BlueMS.demos.Audio.SpeechToText.SpeechToTextFragment;
+import com.st.BlueMS.demos.AudioSceneClassificationFragment;
 import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
+import com.st.BlueMS.demos.Level.LevelDemoFragment;
 import com.st.BlueMS.demos.SDLog.SDLogFragment;
+import com.st.BlueMS.demos.aiDataLog.AIDataLogDemoFragment;
+import com.st.BlueMS.demos.fftAmpitude.FFTAmplitudePlotFragment;
 import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HeartRateFragment;
@@ -120,9 +124,9 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
      */
     @SuppressWarnings("unchecked")
     private final static Class<? extends DemoFragment> ALL_DEMOS[] = new Class[]{
-
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
+            FFTAmplitudePlotFragment.class,
             PlotFeatureFragment.class,
             SDLogFragment.class,
             ActivityRecognitionFragment.class,
@@ -136,14 +140,17 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             SpeechToTextFragment.class,
             BeamformingFragment.class,
             SourceLocFragment.class,
+            AudioSceneClassificationFragment.class,
             HeartRateFragment.class,
             MotionIntensityFragment.class,
             CompassFragment.class,
+            LevelDemoFragment.class,
             COSensorDemoFragment.class,
             LedButtonControlFragment.class,
             StartOtaRebootFragment.class,
+            AIDataLogDemoFragment.class,
             CloudLogFragment.class,
-            NodeStatusFragment.class,
+            NodeStatusFragment.class
             //FeatureDebugFragment.class
     };
 
@@ -168,16 +175,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_demos_activity, menu);
 
-        //hide debug stuff if not available
-        Node n = getNode();
-        if(n!=null) {
-            Debug debug = n.getDebug();
-
-            if(debug==null){
-                menu.findItem(R.id.menu_start_license_manager).setVisible(false);
-            }
-        }
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -188,11 +185,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
         if (id == R.id.settings) {
             keepConnectionOpen(true,false);
             startActivity(SettingsWithNucleoConfiguration.getStartIntent(this, getNode()));
-            return true;
-        }
-
-        if(id == R.id.menu_start_license_manager){
-            keepConnectionOpen(true,false);
             return true;
         }
 

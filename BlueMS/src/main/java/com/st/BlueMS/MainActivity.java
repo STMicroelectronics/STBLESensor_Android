@@ -43,7 +43,6 @@ import android.view.View;
 import com.st.BlueSTSDK.gui.AboutActivity;
 import com.st.BlueSTSDK.gui.thirdPartyLibLicense.LibLicense;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -69,6 +68,7 @@ public class MainActivity extends com.st.BlueSTSDK.gui.MainActivity {
         LIB_LICENSES.add(new LibLicense("Paho",R.raw.lic_paho));
         LIB_LICENSES.add(new LibLicense("Play Services Base",R.raw.lic_android_support));
     }
+
 
     private static final String ABOUT_PAGE_URL = "file:///android_asset/about.html";
 

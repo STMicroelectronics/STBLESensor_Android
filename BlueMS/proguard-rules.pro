@@ -19,12 +19,6 @@
 -keep class com.androidplot.xy.** { *; }
 -keep class com.androidplot.ui.** { *; }
 
-
-#needed for the chinese voice to text
-#see: MSC Develop Manual for Android.pdf
--keep class com.iflytek.**{*;}
--keepattributes Signature
-
 #retrofit proguard rules http://square.github.io/retrofit/
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
@@ -44,32 +38,6 @@
 #ingore warnings about class that do not exist in android
 -dontwarn javax.naming.InitialContext
 -dontwarn javax.naming.Context
-
-#need for amazon mobile analytics
-#https://github.com/aws/aws-sdk-android/blob/master/Proguard.md
-# Class names are needed in reflection
-# Class names are needed in reflection
--keepnames class com.amazonaws.**
--keepnames class com.amazon.**
-# Request handlers defined in request.handlers
--keep class com.amazonaws.services.**.*Handler
-# The following are referenced but aren't required to run
--dontwarn com.fasterxml.jackson.**
--dontwarn org.apache.commons.logging.**
-# Android 6.0 release removes support for the Apache HTTP client
--dontwarn org.apache.http.**
-# The SDK has several references of Apache HTTP client
--dontwarn com.amazonaws.http.**
--dontwarn com.amazonaws.metrics.**
-
--dontwarn com.amazonaws.mobile.auth.facebook.FacebookSignInProvider
--dontwarn com.amazonaws.mobile.auth.google.GoogleSignInProvider
--dontwarn com.amazonaws.mobile.auth.userpools.CognitoUserPoolsSignInProvider
-
-#need for Crashlytics
--keepattributes *Annotation*                      # Keep Crashlytics annotations
--keepattributes SourceFile,LineNumberTable        # Keep file names/line numbers
--keep public class * extends java.lang.Exception
 
 #need for okhttp
 -dontwarn okhttp3.**

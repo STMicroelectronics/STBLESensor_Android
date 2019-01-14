@@ -561,7 +561,7 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
     }
 
     /**
-     * when the calibration start, stop the free fall and proximity notification
+     * when the calibration start, ai_log_stop the free fall and proximity notification
      * @param isCalibrated true if the system is calibrated
      */
     @Override

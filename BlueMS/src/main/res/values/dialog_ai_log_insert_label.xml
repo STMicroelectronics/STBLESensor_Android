@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="iaLog_insertLabel_title">Insert a new label</string>
+    <string name="iaLog_insertLabel_add">Add</string>
+    <string name="iaLog_insertLabel_cancel">Cancel</string>
+
+
+</resources>

@@ -71,6 +71,10 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYStepMode;
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
+import com.st.BlueSTSDK.Features.FeatureEulerAngle;
+import com.st.BlueSTSDK.Features.FeatureGyroscopeNorm;
+import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureActivity;
@@ -122,7 +126,11 @@ import java.util.concurrent.locks.ReentrantLock;
                     FeatureProximity.class,
                     FeaturePressure.class,
                     FeatureTemperature.class,
-                    FeatureCOSensor.class
+                    FeatureCOSensor.class,
+                    FeatureEulerAngle.class,
+                    FeatureAccelerationNorm.class,
+                    FeatureMagnetometerNorm.class,
+                    FeatureGyroscopeNorm.class
     })
 public class PlotFeatureFragment extends DemoFragment implements View.OnClickListener,
         AdapterView.OnItemSelectedListener {
@@ -518,7 +526,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
     }
 
     /**
-     * stop receiving data from the feature and avoid to update the plot
+     * ai_log_stop receiving data from the feature and avoid to update the plot
      */
     public void stopPlotting() {
         mIsPlotting = false;
@@ -547,7 +555,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
     }
 
     /**
-     * call when the user click on the button, will start/stop plotting the data for the selected
+     * call when the user click on the button, will start/ai_log_stop plotting the data for the selected
      * feature
      * @param v clicked item (not used)
      */
@@ -567,7 +575,7 @@ public class PlotFeatureFragment extends DemoFragment implements View.OnClickLis
 
     /**
      * call when the user select a feature from the list
-     * <p>if we are plotting another feature we stop that feature and start ploting the new one</p>
+     * <p>if we are plotting another feature we ai_log_stop that feature and start ploting the new one</p>
      * @param parent adapter that contains the display feature
      * @param view not used
      * @param position not used

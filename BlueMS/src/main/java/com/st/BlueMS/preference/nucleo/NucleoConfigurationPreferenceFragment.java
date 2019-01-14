@@ -36,6 +36,8 @@
  */
 package com.st.BlueMS.preference.nucleo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -45,6 +47,7 @@ import android.widget.Toast;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.preferences.PreferenceFragmentWithNode;
+import com.st.BlueSTSDK.gui.util.SimpleFragmentDialog;
 
 import java.util.Date;
 
@@ -74,6 +77,12 @@ public class NucleoConfigurationPreferenceFragment extends PreferenceFragmentWit
                 try {
                     console.setName((String) newValue);
                 }catch (IllegalArgumentException e) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.pref_local_name_errorTitle)
+                            .setMessage(e.getMessage())
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                            .create()
+                            .show();
                     return false;
                 }
             }

@@ -291,6 +291,7 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback 
 
     }
 
+
     // stop and destroy the thread that update the surface
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {

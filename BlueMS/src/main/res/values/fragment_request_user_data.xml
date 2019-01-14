@@ -37,6 +37,14 @@
   -->
 
 <resources>
-    <string name="LicenseManager_agreeButton">Agree</string>
-    <string name="LicenseManager_disagreeButton">Disagree</string>
+
+    <string name="LicenseManager_username">Name</string>
+    <string name="LicenseManager_eMail">E-Mail</string>
+    <string name="LicenseManager_companyName">Company Name</string>
+    <string name="LicenseManager_sendButton">Send</string>
+    <string name="LicenseManager_notLatinChar">Please use only Latin characters</string>
+    <string name="LicenseManager_invalidUserName">Invalid name</string>
+    <string name="LicenseManager_invalidEmail">Invalid email address</string>
+    <string name="LicenseManager_invalidCompanyName">Invalid company name</string>
+
 </resources>

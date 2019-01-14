@@ -35,79 +35,68 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<android.support.v7.widget.GridLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:grid="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    grid:columnCount="3"
-    grid:orientation="vertical" grid:rowCount="2"
-    tools:context="com.st.BlueMS.demos.ActivityRecognitionFragment">
+    tools:context="com.st.BlueMS.licenseManager.RequestUserDataFragment">
 
-    <ImageView
-        android:id="@+id/stationaryImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/stationaryImageDesc"
-        app:srcCompat="@drawable/activity_stationary"
-        grid:layout_column="0"
-        grid:layout_columnWeight="1"
-        grid:layout_row="0"
-        grid:layout_rowWeight="1"/>
+<LinearLayout android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/usernameWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/walkingImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/walkingImageDesc"
-        app:srcCompat="@drawable/activity_walking"
-        grid:layout_column="1"
-        grid:layout_columnWeight="1"
-        grid:layout_row="0"
-        grid:layout_rowWeight="1"/>
-    <ImageView
-        android:id="@+id/fastWalkImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/fastWalkingImageDesc"
-        app:srcCompat="@drawable/activity_fastwalking"
-        grid:layout_column="2"
-        grid:layout_columnWeight="1"
-        grid:layout_row="0"
-        grid:layout_rowWeight="1"/>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/username"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/LicenseManager_username"/>
 
-    <ImageView
-        android:id="@+id/joggingImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/joggingImageDesc"
-        app:srcCompat="@drawable/activity_jogging"
-        grid:layout_column="0"
-        grid:layout_columnWeight="1"
-        grid:layout_row="1"
-        grid:layout_rowWeight="1"/>
-    <ImageView
-        android:id="@+id/bikingImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/bikingImageDesc"
-        app:srcCompat="@drawable/activity_biking"
-        grid:layout_column="1"
-        grid:layout_columnWeight="1"
-        grid:layout_row="1"
-        grid:layout_rowWeight="1"/>
-    <ImageView
-        android:id="@+id/drivingImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/drivingImageDesc"
-        app:srcCompat="@drawable/activity_driving"
-        grid:layout_column="2"
-        grid:layout_columnWeight="1"
-        grid:layout_row="1"
-        grid:layout_rowWeight="1"/>
+    </android.support.design.widget.TextInputLayout>
 
-</android.support.v7.widget.GridLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/emailWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="textEmailAddress"
+            android:hint="@string/LicenseManager_eMail"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/companyWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/company"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/LicenseManager_companyName"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sendRequestButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_send_24dp"/>
+
+</android.support.design.widget.CoordinatorLayout>

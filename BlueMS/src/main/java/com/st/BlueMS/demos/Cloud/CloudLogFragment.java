@@ -37,7 +37,9 @@
 
 package com.st.BlueMS.demos.Cloud;
 
+import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -352,8 +354,15 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private void setUpDataPageLink(Button dataPageLink) {
         dataPageLink.setOnClickListener(view -> {
             Uri page = mCloudConnectionFactory.getDataPage();
-            if(page!=null)
-                getActivity().startActivity(new Intent(Intent.ACTION_VIEW, page));
+            if(page!=null) {
+                Activity activity = requireActivity();
+                try {
+                    activity.startActivity(new Intent(Intent.ACTION_VIEW, page));
+                }catch (ActivityNotFoundException e){
+                    Toast.makeText(activity, R.string.cloudLog_browserNotFound, Toast.LENGTH_SHORT).show();
+                }
+
+            }
         });
         dataPageLink.setVisibility(View.GONE);
     }

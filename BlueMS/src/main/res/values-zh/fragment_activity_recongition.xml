@@ -38,13 +38,13 @@
 
 <resources>
 
-    <string name="stationaryImageDesc">静止</string>
-    <string name="walkingImageDesc">步行</string>
-    <string name="fastWalkingImageDesc">快走</string>
-    <string name="joggingImageDesc">跑步</string>
-    <string name="bikingImageDesc">骑行</string>
-    <string name="drivingImageDesc">驾驶</string>
+    <string name="activityRecognition_stationaryImageDesc">静止</string>
+    <string name="activityRecognition_walkingImageDesc">步行</string>
+    <string name="activityRecognition_fastWalkingImageDesc">快走</string>
+    <string name="activityRecognition_joggingImageDesc">跑步</string>
+    <string name="activityRecognition_bikingImageDesc">骑行</string>
+    <string name="activityRecognition_drivingImageDesc">驾驶</string>
 
-    <string name="activityRecognitionStarted">活动识别开始</string>
+    <string name="activityRecognition_started">活动识别开始</string>
 
 </resources>

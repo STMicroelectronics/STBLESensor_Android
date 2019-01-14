@@ -51,6 +51,7 @@
     <string name="cloudLog_mqttErrorTitle">Mqtt Error</string>
     <string name="cloudLog_displayDataPage">View cloud data</string>
     <string name="cloudLog_warningConnectionOn">Cloud connection is active</string>
+    <string name="cloudLog_browserNotFound">Impossible open an external webpage</string>
 
     <string name="cloudLog_genericMqtt_brokerUrlHint">Broker url</string>
     <string name="cloudLog_genericMqtt_addressHint">tcp://address or ssl://address</string>

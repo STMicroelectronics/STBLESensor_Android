@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audioScene_inVehicle">In vehicle</string>
+    <string name="audioScene_outdoor">Outdoor</string>
+    <string name="audioScene_indoor">Indoor</string>
+</resources>

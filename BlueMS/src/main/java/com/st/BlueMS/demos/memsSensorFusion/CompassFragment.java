@@ -47,6 +47,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueSTSDK.Features.FeatureEulerAngle;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationContract;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationPresenter;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationView;
@@ -58,10 +59,11 @@ import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
-@DemoDescriptionAnnotation(name="Compass", requareAll = {FeatureCompass.class},
+@DemoDescriptionAnnotation(name="Compass", requareOneOf = {FeatureCompass.class,FeatureEulerAngle.class},
         iconRes = R.drawable.compass_demo_icon)
 public class CompassFragment extends DemoFragment {
 
+    private FeatureEulerAngle mEulerAngle;
     private FeatureCompass mCompassFeature;
     private ImageView mCompassNeedle;
     private TextView mCompassAngle;
@@ -86,21 +88,25 @@ public class CompassFragment extends DemoFragment {
 
     }
 
-    private Feature.FeatureListener mCompassUpdate = new Feature.FeatureListener() {
-        @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
-            final float angle = FeatureCompass.getCompass(sample);
-            final String angleStr = String.format(mAngleFormat,angle);
-            final String orientationStr = String.format(mOrientationFormat,getOrientationName(angle));
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mCompassNeedle.setRotation(angle);
-                    mCompassAngle.setText(angleStr);
-                    mCompassDirection.setText(orientationStr);
-                }
-            });
-        }
+    private void updateCompassAngle(float angle){
+
+        final String angleStr = String.format(mAngleFormat,angle);
+        final String orientationStr = String.format(mOrientationFormat,getOrientationName(angle));
+        updateGui(() -> {
+            mCompassNeedle.setRotation(angle);
+            mCompassAngle.setText(angleStr);
+            mCompassDirection.setText(orientationStr);
+        });
+    }
+
+    private Feature.FeatureListener mCompassUpdate = (f, sample) -> {
+        final float angle = FeatureCompass.getCompass(sample);
+        updateCompassAngle(angle);
+    };
+
+    private Feature.FeatureListener mEulerUpdate = (f, sample) -> {
+        final float angle = FeatureEulerAngle.getYaw(sample);
+        updateCompassAngle(angle);
     };
 
     public CompassFragment() {
@@ -110,22 +116,30 @@ public class CompassFragment extends DemoFragment {
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         mCompassFeature = node.getFeature(FeatureCompass.class);
-        if(mCompassFeature==null)
-            return;
-        mCompassFeature.addFeatureListener(mCompassUpdate);
-        CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
-        mCalibPresenter.manage(calibView,mCompassFeature);
-        node.enableNotification(mCompassFeature);
+        if(mCompassFeature!=null) {
+            mCompassFeature.addFeatureListener(mCompassUpdate);
+            CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
+            mCalibPresenter.manage(calibView, mCompassFeature);
+            mCompassFeature.enableNotification();
+        }else {
+            mEulerAngle = node.getFeature(FeatureEulerAngle.class);
+            if(mEulerAngle != null) {
+                mEulerAngle.addFeatureListener(mEulerUpdate);
+                mEulerAngle.enableNotification();
+            }
+        }
     }
 
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
-        if(mCompassFeature==null)
-            return;
-
-        mCompassFeature.removeFeatureListener(mCompassUpdate);
-        mCalibPresenter.unManageFeature();
-        node.disableNotification(mCompassFeature);
+        if(mCompassFeature!=null) {
+            mCompassFeature.removeFeatureListener(mCompassUpdate);
+            mCalibPresenter.unManageFeature();
+            node.disableNotification(mCompassFeature);
+        }else if(mEulerAngle != null){
+            mEulerAngle.disableNotification();
+            mEulerAngle.removeFeatureListener(mEulerUpdate);
+        }
 
     }
 
@@ -141,12 +155,7 @@ public class CompassFragment extends DemoFragment {
         mCompassDirection = root.findViewById(R.id.compass_direction);
 
         mCalibButton = root.findViewById(R.id.compass_calibButton);
-        mCalibButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCalibPresenter.startCalibration();
-            }
-        });
+        mCalibButton.setOnClickListener(view -> mCalibPresenter.startCalibration());
 
         Resources res = root.getResources();
 

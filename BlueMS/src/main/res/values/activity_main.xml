@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_flowButton">Create a new App</string>
+    <string name="new_app_dialog_title">Warning</string>
+    <string name="new_app_dialog_content">This functionality is only available with SensorTile.101</string>
+</resources>

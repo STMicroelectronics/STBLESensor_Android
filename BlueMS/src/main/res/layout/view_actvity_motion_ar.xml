@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/activity_ar_stationaryImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/activityRecognition_stationaryImageDesc"
+        app:srcCompat="@drawable/activity_stationary"
+        app:layout_constraintBottom_toTopOf="@+id/activity_ar_fastWalkImage"
+        app:layout_constraintEnd_toStartOf="@+id/activity_ar_verticalHalf"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/activity_ar_fastWalkImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/activityRecognition_fastWalkingImageDesc"
+        app:srcCompat="@drawable/activity_fastwalking"
+        app:layout_constraintBottom_toTopOf="@+id/activity_ar_bikingImage"
+        app:layout_constraintEnd_toStartOf="@+id/activity_ar_verticalHalf"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_ar_stationaryImage" />
+
+    <ImageView
+        android:id="@+id/activity_ar_bikingImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/activityRecognition_bikingImageDesc"
+        app:srcCompat="@drawable/activity_biking"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/activity_ar_verticalHalf"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_ar_fastWalkImage" />
+
+    <ImageView
+        android:id="@+id/activity_ar_walkingImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/activityRecognition_walkingImageDesc"
+        app:srcCompat="@drawable/activity_walking"
+        app:layout_constraintBottom_toTopOf="@+id/activity_ar_joggingImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/activity_ar_verticalHalf"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/activity_ar_joggingImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/activityRecognition_joggingImageDesc"
+        app:srcCompat="@drawable/activity_jogging"
+        app:layout_constraintBottom_toTopOf="@+id/activity_ar_drivingImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/activity_ar_verticalHalf"
+        app:layout_constraintTop_toBottomOf="@+id/activity_ar_walkingImage" />
+
+    <ImageView
+        android:id="@+id/activity_ar_drivingImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/activityRecognition_drivingImageDesc"
+        app:srcCompat="@drawable/activity_driving"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/activity_ar_verticalHalf"
+        app:layout_constraintTop_toBottomOf="@+id/activity_ar_joggingImage" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/activity_ar_verticalHalf"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>

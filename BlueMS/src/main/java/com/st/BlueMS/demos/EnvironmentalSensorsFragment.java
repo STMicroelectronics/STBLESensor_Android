@@ -150,14 +150,11 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
      */
     private final static float HUMIDITY_MIN_VAL = 0.0f;
 
+    //getData
     /**
      * object that extract the humidity_icon from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataHum  = new ExtractDataFunction(){
-        public float getData(Feature.Sample s){
-            return FeatureHumidity.getHumidity(s);
-        }//getData
-    };
+    private final static ExtractDataFunction sExtractDataHum  = FeatureHumidity::getHumidity;
 
     /**
      * listener for the humidity_icon feature, it will update the humidity_icon value and change the alpha
@@ -167,7 +164,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
 
         private Drawable image;
 
-        public HumidityListener(Resources res){
+        HumidityListener(Resources res){
             image = res.getDrawable(R.drawable.humidity_icon);
         }
 
@@ -179,17 +176,14 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
             final int imageAlpha = (int) (100.0f *
                     (clamp(data[0], HUMIDITY_MIN_VAL, HUMIDITY_MAX_VAL) - HUMIDITY_MIN_VAL) /
                     (HUMIDITY_MAX_VAL - HUMIDITY_MIN_VAL));
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mHumidityImage.setImageDrawable(image);
-                        mHumidityImage.setImageAlpha(imageAlpha);
-                        mHumidityText.setText(dataString);
-                    } catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    }
+            updateGui(() -> {
+                try {
+                    mHumidityImage.setImageDrawable(image);
+                    mHumidityImage.setImageAlpha(imageAlpha);
+                    mHumidityText.setText(dataString);
+                } catch (NullPointerException e) {
+                    //this exception can happen when the task is run after the fragment is
+                    // destroyed
                 }
             });
 
@@ -216,11 +210,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
     /**
      * object that extract the temperature from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataTemp  = new ExtractDataFunction(){
-        public float getData(Feature.Sample s){
-            return FeatureTemperature.getTemperature(s);
-        }//getData
-    };
+    private final static ExtractDataFunction sExtractDataTemp  = FeatureTemperature::getTemperature;
 
     /**
      * listener for the humidity_icon feature, it will update the humidity_icon value and change the image
@@ -235,15 +225,12 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
             float data[] =extractData(mTemperature,sExtractDataTemp);
             final String dataString = getDisplayString(TEMP_FORMAT,unit,data);
 
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mTemperatureText.setText(dataString);
-                    }catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    }
+            updateGui(() -> {
+                try {
+                    mTemperatureText.setText(dataString);
+                }catch (NullPointerException e) {
+                    //this exception can happen when the task is run after the fragment is
+                    // destroyed
                 }
             });
         }//onUpdate
@@ -266,11 +253,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
     /**
      * object that extract the pressure from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataPres  = new ExtractDataFunction(){
-        public float getData(Feature.Sample s){
-            return FeaturePressure.getPressure(s);
-        }//getData
-    };
+    private final static ExtractDataFunction sExtractDataPres  = FeaturePressure::getPressure;
 
     /**
      * listener for the pressure feature, it will update the pressure value and change the image
@@ -283,17 +266,14 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
             String unit = mPressure.get(0).getFieldsDesc()[0].getUnit();
             float data[] =extractData(mPressure, sExtractDataPres);
             final String dataString = getDisplayString(PRES_FORMAT, unit, data);
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mPressureText.setText(dataString);
-                    } catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    }//try-catch
+            updateGui(() -> {
+                try {
+                    mPressureText.setText(dataString);
+                } catch (NullPointerException e) {
+                    //this exception can happen when the task is run after the fragment is
+                    // destroyed
+                }//try-catch
 
-                }
             });
         }
     };
@@ -316,11 +296,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
     /**
      * object that extract the luminosity from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataLux  = new ExtractDataFunction(){
-        public float getData(Feature.Sample s){
-            return FeatureLuminosity.getLuminosity(s);
-        }//getData
-    };
+    private final static ExtractDataFunction sExtractDataLux  = FeatureLuminosity::getLuminosity;
 
     /**
      * listener for the luminosity feature, it will update the luminosity value and change the image
@@ -335,17 +311,12 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
             float data[] =extractData(mLuminosity, sExtractDataLux);
             final String dataString = getDisplayString(LUX_FORMAT, unit, data);
 
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-
-                        mLuminosityText.setText(dataString);
-
-                    } catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                    }
+            updateGui(() -> {
+                try {
+                    mLuminosityText.setText(dataString);
+                } catch (NullPointerException e) {
+                    //this exception can happen when the task is run after the fragment is
+                    // destroyed
                 }
             });
         }
@@ -356,23 +327,23 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         View root = inflater.inflate(R.layout.fragment_eviromental_sensors, container, false);
-        mHumidityText = (TextView) root.findViewById(R.id.humidityText);
-        mHumidityImage = (ImageView) root.findViewById(R.id.humidityImage);
+        mHumidityText = root.findViewById(R.id.humidityText);
+        mHumidityImage = root.findViewById(R.id.humidityImage);
 
 
-        mTemperatureText = (TextView) root.findViewById(R.id.thermometerText);
-        mTemperatureImage = (ImageView) root.findViewById(R.id.thermometerImage);
+        mTemperatureText = root.findViewById(R.id.thermometerText);
+        mTemperatureImage = root.findViewById(R.id.thermometerImage);
 
-        mPressureText = (TextView) root.findViewById(R.id.barometerText);
-        mPressureImage = (ImageView) root.findViewById(R.id.barometerImage);
+        mPressureText = root.findViewById(R.id.barometerText);
+        mPressureImage = root.findViewById(R.id.barometerImage);
 
-        mLuminosityText = (TextView) root.findViewById(R.id.luminosityText);
-        mLuminosityImage = (ImageView) root.findViewById(R.id.luminosityImage);
+        mLuminosityText = root.findViewById(R.id.luminosityText);
+        mLuminosityImage = root.findViewById(R.id.luminosityImage);
 
         return root;
     }
@@ -400,12 +371,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
 
 
         }else{
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mHumidityImage.setImageResource(R.drawable.humidity_missing);
-                }
-            });
+            updateGui(() -> mHumidityImage.setImageResource(R.drawable.humidity_missing));
         }
 
         mTemperature = node.getFeatures(FeatureTemperature.class);
@@ -417,12 +383,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
                 node.enableNotification(f);
             }//for
         }else{
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mTemperatureImage.setImageResource(R.drawable.temperature_missing_icon);
-                }
-            });
+            updateGui(() -> mTemperatureImage.setImageResource(R.drawable.temperature_missing_icon));
         }
 
         mPressure = node.getFeatures(FeaturePressure.class);
@@ -434,12 +395,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
                 node.enableNotification(f);
             }//for
         }else{
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mPressureImage.setImageResource(R.drawable.pressure_missing_icon);
-                }
-            });
+            updateGui(() -> mPressureImage.setImageResource(R.drawable.pressure_missing_icon));
         }
 
         mLuminosity = node.getFeatures(FeatureLuminosity.class);
@@ -451,12 +407,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
                 node.enableNotification(f);
             }//for
         }else{
-            updateGui(new Runnable() {
-                @Override
-                public void run() {
-                    mLuminosityImage.setImageResource(R.drawable.illuminance_missing);
-                }
-            });
+            updateGui(() -> mLuminosityImage.setImageResource(R.drawable.illuminance_missing));
 
         }
 
@@ -518,7 +469,7 @@ public class EnvironmentalSensorsFragment extends DemoFragment {
         /**
          * @param feature feature to read when the user click on a view
          */
-        public ForceUpdateFeature(List<? extends Feature> feature) {
+        ForceUpdateFeature(List<? extends Feature> feature) {
             mFeatures = feature;
         }
 

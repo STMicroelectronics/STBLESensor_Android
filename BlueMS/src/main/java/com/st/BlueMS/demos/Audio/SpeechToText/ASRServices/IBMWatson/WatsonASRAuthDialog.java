@@ -12,7 +12,7 @@
  *   conditions and the following disclaimer in the documentation and/or other materials provided
  *   with the distribution.
  *
- * - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+ * - Neither the apiKey nor trademarks of STMicroelectronics International N.V. nor any other
  *   STMicroelectronics company nor the names of its contributors may be used to endorse or
  *   promote products derived from this software without specific prior written permission.
  *
@@ -42,6 +42,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -60,23 +61,21 @@ public class WatsonASRAuthDialog extends DialogFragmentDismissCallback {
         return LayoutInflater.from(c).inflate(layout,null);
     }
 
-    private EditText mPasswordField;
-    private EditText mNameField;
+    private EditText mApiKeyField;
     private EditText mEndpointField;
 
     private View buildView(Context c,@Nullable WatsonARSKey key){
         View root = loadView(c,R.layout.dialog_watson_auth);
-        mPasswordField = root.findViewById(R.id.dialog_watson_passwordValue);
-        mNameField = root.findViewById(R.id.dialog_watson_userValue);
+        mApiKeyField = root.findViewById(R.id.dialog_watson_apiKeyValue);
         mEndpointField = root.findViewById(R.id.dialog_watson_endpointValue);
         if(key!=null) {
-            mNameField.setText(key.name);
-            mPasswordField.setText(key.password);
+            mApiKeyField.setText(key.apiKey);
             mEndpointField.setText(key.endpoint);
         }
         return root;
     }
 
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         final Context context = getActivity();
@@ -94,8 +93,7 @@ public class WatsonASRAuthDialog extends DialogFragmentDismissCallback {
             try {
                 WatsonARSKey asrKey = new WatsonARSKey(
                         mEndpointField.getText().toString(),
-                        mNameField.getText().toString(),
-                        mPasswordField.getText().toString());
+                        mApiKeyField.getText().toString());
                 asrKey.store(context);
             }catch (IllegalArgumentException e){
                 Snackbar mInvalidKeySnackbar = Snackbar.make(rootView,

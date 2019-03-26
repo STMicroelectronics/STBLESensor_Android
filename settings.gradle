@@ -1,5 +1,3 @@
-apply from: 'BlueSTSDK_Gui_Android/settings.gradle'
-
-include ':BlueSTSDK', ':BlueSTSDK_Gui_Android', ':BlueMS'
+include ':BlueSTSDK', ':BlueSTSDK_Gui_Android', ':BlueMS', ':BlueMSCloud'
 
 project(':BlueSTSDK').projectDir = new File('BlueSTSDK/BlueSTSDK')

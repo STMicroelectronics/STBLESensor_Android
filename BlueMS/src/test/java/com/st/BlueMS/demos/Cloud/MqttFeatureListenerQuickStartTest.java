@@ -37,8 +37,8 @@
 
 package com.st.BlueMS.demos.Cloud;
 
-import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonFactory.IBMWatsonMqttFeatureListener;
-import com.st.BlueMS.demos.Cloud.util.JSONSampleSerializer;
+import com.st.blesensor.cloud.IBMWatson.IBMWatsonFactory.IBMWatsonMqttFeatureListener;
+import com.st.blesensor.cloud.util.JSONSampleSerializer;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 

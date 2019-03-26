@@ -66,7 +66,7 @@ public class MemsSensorFusionFragmentWesu extends MemsSensorFusionFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View demo = super.onCreateView(inflater, container, savedInstanceState);
         if(demo!=null)
-            mLayout = demo.findViewById(R.id.memsSensorFusionRootLayout);
+            mLayout = demo.findViewById(R.id.memsSensorfusion_rootLayout);
         return demo;
     }
 

@@ -53,12 +53,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureMemsGesture;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 
 /**
@@ -66,7 +66,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
  */
 @DemoDescriptionAnnotation(name="Mems Gesture", requareAll = {FeatureMemsGesture.class},
         iconRes=R.drawable.demo_sensors_fusion)
-public class MemsGestureRecognitionFragment extends DemoFragment {
+public class MemsGestureRecognitionFragment extends BaseDemoFragment {
 
     private static long AUTOMATIC_DESELECT_TIMEOUT_MS = 3000;
 

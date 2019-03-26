@@ -12,22 +12,19 @@ class WatsonARSKey {
 
     private static final String DEFAULT_ENDPOINT = "https://stream.watsonplatform.net/speech-to-text/api";
     private static final String PREF_NAME = WatsonARSKey.class.getCanonicalName();
-    private static final String PREF_USERNAME = PREF_NAME+".ASR_USERNAME";
-    private static final String PREF_PASSWORD = PREF_NAME+".ASR_PASSWORD";
+    private static final String PREF_API_KEY = PREF_NAME+".ASR_USERNAME";
     private static final String PREF_ENDPIINT = PREF_NAME+".ASR_ENDPOINT";
 
-    final String name;
-    final String password;
+    final String apiKey;
     final String endpoint;
 
     static @Nullable
     WatsonARSKey loadKey(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
-        String user = pref.getString(PREF_USERNAME, null);
-        String password = pref.getString(PREF_PASSWORD, null);
+        String apiKey = pref.getString(PREF_API_KEY, null);
         String endpoint = pref.getString(PREF_ENDPIINT, DEFAULT_ENDPOINT);
         try {
-            return new WatsonARSKey(endpoint,user,password);
+            return new WatsonARSKey(endpoint,apiKey);
         } catch (IllegalArgumentException e){
             return null;
         }
@@ -65,9 +62,8 @@ class WatsonARSKey {
     }
 
 
-    WatsonARSKey(String endpoint,String name, String password) throws IllegalArgumentException{
-       this.name = sanitizeLoginString(name);
-       this.password = sanitizeLoginString(password);
+    WatsonARSKey(String endpoint,String apiKey) throws IllegalArgumentException{
+       this.apiKey = sanitizeLoginString(apiKey);
        this.endpoint = sanitizeEndpoint(endpoint);
 
     }
@@ -75,8 +71,7 @@ class WatsonARSKey {
     public void store(Context context){
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
         pref.edit()
-                .putString(PREF_USERNAME,name)
-                .putString(PREF_PASSWORD,password)
+                .putString(PREF_API_KEY, apiKey)
                 .putString(PREF_ENDPIINT, endpoint)
                 .apply();
     }

@@ -52,6 +52,8 @@
     <string name="memsSensorFusionDialogResetText_STEVAL_WESU1">Keep the board as shown in the
         image</string>
 
-    <string name="memsSensorFusion_frameRate">Frame Rate :%03d fps</string>
-    <string name="memsSensorFusion_quaternionRate">Quaternion Rate :%03d</string>
+    <string name="memsSensorFusion_frameRate">Frame Rate: %03d fps</string>
+    <string name="memsSensorFusion_quaternionRate">Quaternion Rate: %03d</string>
+    <string name="memsSensorFusion_proximityFormat">Distance: %4d mm</string>
+    <string name="memsSensorFusion_proximityOutOfRange">Distance: Out of range</string>
 </resources>

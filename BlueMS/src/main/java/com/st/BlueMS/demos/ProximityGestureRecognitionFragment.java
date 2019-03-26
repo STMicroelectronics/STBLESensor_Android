@@ -49,19 +49,19 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureProximityGesture;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Demo showing the gesture detected using 2 proximity sensors
  */
 @DemoDescriptionAnnotation(name="Proximity Gesture", requareAll = {FeatureProximityGesture.class} ,
         iconRes = R.drawable.proximity_gesture_demo_icon)
-public class ProximityGestureRecognitionFragment extends DemoFragment {
+public class ProximityGestureRecognitionFragment extends BaseDemoFragment {
 
     /**
      * filter for convert a color image in a gray scale one

@@ -6,7 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 
-@Database(entities = {Annotation.class}, version = 1)
+@Database(entities = {Annotation.class},
+        version = 1,
+        exportSchema = false)
 public abstract class AnnotationDB extends RoomDatabase {
     
     public abstract AnnotationDao getAnnotations();

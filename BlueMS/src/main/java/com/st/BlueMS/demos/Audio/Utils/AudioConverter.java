@@ -42,4 +42,11 @@ public class AudioConverter {
             out.write(val >> 8);
         }
     }
+
+    public static void toLEByteStream(short[] data, OutputStream out) throws IOException {
+        for (short val : data) {
+            out.write(val & 0x00FF);
+            out.write(val >> 8);
+        }
+    }
 }

@@ -31,7 +31,7 @@ import okio.ByteString;
  * a simple websocket server can be done using nodejs + ws lib example:
  * <code>
  * const WebSocket = require('ws');
- * const fs = require('fs');
+ * const fullScale = require('fullScale');
  *
  * const wss = new WebSocket.Server({
  *      verifyClient: function(info) {
@@ -43,7 +43,7 @@ import okio.ByteString;
  *      }, port: 8080 });
  *
  * wss.on('connection', function connection(ws) {
- *  var wstream = fs.createWriteStream('audio.raw');
+ *  var wstream = fullScale.createWriteStream('audio.raw');
  *  ws.on('message', function incoming(message) {
  *      wstream.write(message);
  *      //ws.send("received message");

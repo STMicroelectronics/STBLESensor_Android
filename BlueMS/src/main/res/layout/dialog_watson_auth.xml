@@ -24,23 +24,10 @@
         android:layout_marginBottom="0dp"
         android:layout_marginTop="0dp">
         <EditText
-            android:id="@+id/dialog_watson_userValue"
+            android:id="@+id/dialog_watson_apiKeyValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dialog_watson_userHint" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp">
-
-        <EditText
-            android:id="@+id/dialog_watson_passwordValue"
-            android:inputType="textVisiblePassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/dialog_watson_passwordHint" />
+            android:hint="@string/dialog_watson_apiKeyHint" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout

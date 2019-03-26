@@ -57,6 +57,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureBattery;
@@ -64,13 +65,12 @@ import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.NodeGui;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Display the battery status and the Rssi value
  */
 @DemoDescriptionAnnotation(name="Rssi & Battery",iconRes=R.drawable.demo_battery)
-public class NodeStatusFragment extends DemoFragment implements Node.BleConnectionParamUpdateListener {
+public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConnectionParamUpdateListener {
 
     private static final String BATTERY_CAPACITY = NodeStatusFragment.class.getName()+".BATTERY_CAPACITY";
 
@@ -321,7 +321,7 @@ public class NodeStatusFragment extends DemoFragment implements Node.BleConnecti
     }//onRSSIChanged
 
     @Override
-    public void onTxPowerChange(Node node, int newPower) {}
+    public void onMtuChange(Node node, int newMtu) { }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

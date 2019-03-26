@@ -51,8 +51,8 @@ import android.widget.Toast;
 
 import com.st.BlueSTSDK.Manager;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.Utils.BleAdvertiseParser;
-import com.st.BlueSTSDK.Utils.InvalidBleAdvertiseFormat;
+import com.st.BlueSTSDK.Utils.BlueSTSDKAdvertiseFilter;
+import com.st.BlueSTSDK.Utils.advertise.BleAdvertiseInfo;
 import com.st.BlueSTSDK.Utils.NodeScanActivity;
 import com.st.BlueSTSDK.Utils.NumberConversion;
 import com.st.BlueSTSDK.Utils.SearchSpecificNode;
@@ -174,11 +174,11 @@ public class NfcNodeConnection extends NodeScanActivity {
             int pin = NumberConversion.LittleEndian.bytesToInt32(messagePayload,
                     messagePayload.length-4);
             sPairingPin=pinToByte(pin);
-            try {
-                mNodeTag = new BleAdvertiseParser(messagePayload).getAddress();
-                Log.d("InsertPin", "nodeTag: "+mNodeTag + "Pin: "+pin);
-            } catch (InvalidBleAdvertiseFormat invalidBleAdvertiseFormat) {
+            BleAdvertiseInfo nodeInfo = new BlueSTSDKAdvertiseFilter().filter(messagePayload);
+            if(nodeInfo==null){
                 startNodeListActivityAndFinish(R.string.invalidNfc);
+            }else{
+                mNodeTag = nodeInfo.getAddress();
             }
         }else {
             startNodeListActivityAndFinish(R.string.invalidNfc);

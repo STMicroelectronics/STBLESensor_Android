@@ -58,8 +58,9 @@ public class AudioBuffer {
         mLastWriteData=0;
     }
 
-    public AudioBuffer(short[] sampleData){
+    public AudioBuffer(short[] sampleData,int samplingRate){
         mData=sampleData;
+        mSamplingRate = samplingRate;
         mLastWriteData = sampleData.length;
     }
 

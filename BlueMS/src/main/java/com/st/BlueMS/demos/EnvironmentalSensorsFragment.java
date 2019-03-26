@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureHumidity;
@@ -55,7 +56,6 @@ import com.st.BlueSTSDK.Features.FeaturePressure;
 import com.st.BlueSTSDK.Features.FeatureTemperature;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ import java.util.List;
 @DemoDescriptionAnnotation(name="Environmental",iconRes=R.drawable.demo_environmental_sensor,
     requareOneOf = {FeatureHumidity.class,FeatureLuminosity.class,FeaturePressure.class,
             FeatureTemperature.class})
-public class EnvironmentalSensorsFragment extends DemoFragment {
+public class EnvironmentalSensorsFragment extends BaseDemoFragment {
 
     /**
      * format used for print the different environmental values

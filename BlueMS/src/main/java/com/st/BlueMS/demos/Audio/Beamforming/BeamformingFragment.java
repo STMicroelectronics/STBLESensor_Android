@@ -50,19 +50,19 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Audio.Utils.AudioRecorder;
 import com.st.BlueMS.demos.Audio.Utils.SquareImageView;
 import com.st.BlueMS.demos.Audio.Utils.WaveformView;
 import com.st.BlueSTSDK.Feature;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCM;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCMSync;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudio;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudioConf;
 import com.st.BlueSTSDK.Features.FeatureBeamforming;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.Utils.BVAudioSyncManager;
+import com.st.BlueSTSDK.Features.Audio.AudioCodecManager;
 import com.st.BlueSTSDK.Utils.LogFeatureActivity;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,12 +76,13 @@ import static com.st.BlueSTSDK.Features.FeatureBeamforming.Direction;
  * audio to text
  */
 @DemoDescriptionAnnotation(name="Beamforming",iconRes= R.drawable.beamforming_icon,
-        requareAll = {FeatureAudioADPCM.class,FeatureAudioADPCMSync.class, FeatureBeamforming.class})
-public class BeamformingFragment extends DemoFragment {
+        requareAll = {FeatureAudio.class,FeatureAudioConf.class, FeatureBeamforming.class})
+public class BeamformingFragment extends BaseDemoFragment {
 
     private static final String TAG = BeamformingFragment.class.getCanonicalName();
     private static final String CURRENT_DIR = TAG+".CURRENT_BF_DIRECTION";
     private static final int AUDIO_SAMPLING_FREQ = 8000;
+    private static final short AUDIO_CHANNELS = 1;
 
     private static final @FeatureBeamforming.Direction int DEFAULT_DIRECTION = Direction.RIGHT;
 
@@ -118,16 +119,16 @@ public class BeamformingFragment extends DemoFragment {
     /**
      * feature where we read  the audio values
      */
-    private FeatureAudioADPCM mAudio;
+    private FeatureAudio mAudio;
     private AudioTrack mAudioTrack;
-    private BVAudioSyncManager mBVAudioSyncManager = new BVAudioSyncManager();
+    private AudioCodecManager mBVAudioSyncManager;
 
     /**
      * listener for the audio feature, it will updates the audio values and if playback is active,
      * it write this data in the AudioTrack {@code audioTrack}.
      */
     private final Feature.FeatureListener mAudioListener = (f, sample) -> {
-        short[] audioSample = FeatureAudioADPCM.getAudio(sample);
+        short[] audioSample = ((FeatureAudio)f).getAudio(sample);
         playAudio(audioSample);
     };
 
@@ -136,7 +137,7 @@ public class BeamformingFragment extends DemoFragment {
         @Override
         public void onUpdate(final Feature f, final Feature.Sample sample) {
             if(mAudioRecorder != null && mAudioRecorder.isRecording()) {
-                short[] audioSample = FeatureAudioADPCM.getAudio(sample);
+                short[] audioSample = ((FeatureAudio)f).getAudio(sample);
                 mAudioRecorder.writeSample(audioSample);
             }
         }
@@ -146,7 +147,7 @@ public class BeamformingFragment extends DemoFragment {
     private final Feature.FeatureListener mUpdatePlot = new Feature.FeatureListener() {
         @Override
         public void onUpdate(Feature f, Feature.Sample sample) {
-            short[] audioSample = FeatureAudioADPCM.getAudio(sample);
+            short[] audioSample = ((FeatureAudio)f).getAudio(sample);
             mWaveformView.updateAudioData(audioSample);
         }
     };
@@ -155,14 +156,14 @@ public class BeamformingFragment extends DemoFragment {
     /**
      * feature where we read the audio sync values
      */
-    private FeatureAudioADPCMSync mAudioSync;
+    private FeatureAudioConf mAudioSync;
 
     /**
      * listener for the audioSync feature, it will update the synchronism values
      */
     private final Feature.FeatureListener mAudioSyncListener = (f, sample) -> {
         if(mBVAudioSyncManager!=null){
-            mBVAudioSyncManager.setSyncParams(sample);
+            mBVAudioSyncManager.updateParams(sample);
         }
     };
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,14 +176,26 @@ public class BeamformingFragment extends DemoFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        initAudioTrack(AUDIO_SAMPLING_FREQ,AUDIO_CHANNELS);
+    }
 
-        mAudioTrack= new AudioTrack(AudioManager.STREAM_MUSIC, AUDIO_SAMPLING_FREQ,
-                AudioFormat.CHANNEL_OUT_MONO,
+    private void initAudioTrack(int samplingFreq, short channels) {
+        int minBufSize = AudioTrack.getMinBufferSize(samplingFreq,
+                channels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT);
+
+        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                samplingFreq,
+                channels,
                 AudioFormat.ENCODING_PCM_16BIT,
-                FeatureAudioADPCM.AUDIO_PACKAGE_SIZE,
+                minBufSize,
                 AudioTrack.MODE_STREAM);
+    }
 
-        mAudioRecorder = new AudioRecorder((LogFeatureActivity) getActivity(),FeatureAudioADPCM.FEATURE_NAME);
+    private void initializeAudioDump(FeatureAudio fa) {
+        LogFeatureActivity activity = (LogFeatureActivity) requireActivity();
+        mAudioRecorder = new AudioRecorder(activity, fa != null ? fa.getName() : "Audio");
+        activity.invalidateOptionsMenu();
     }
 
     private void loadDirectionButton(View root){
@@ -260,7 +273,7 @@ public class BeamformingFragment extends DemoFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_beamforming, container, false);
 
         mWaveformView = view.findViewById(R.id.blueVoice_waveform_view);
@@ -337,7 +350,7 @@ public class BeamformingFragment extends DemoFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(mAudioRecorder.isRecording())
+        if(mAudioRecorder!=null && mAudioRecorder.isRecording())
             mAudioRecorder.stopRec();
     }
 
@@ -356,8 +369,8 @@ public class BeamformingFragment extends DemoFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         menu.findItem(R.id.startLog).setVisible(false);
-
-        mAudioRecorder.registerRecordMenu(menu,inflater);
+        if(mAudioRecorder!=null)
+            mAudioRecorder.registerRecordMenu(menu,inflater);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -365,17 +378,17 @@ public class BeamformingFragment extends DemoFragment {
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         setBoardType(node.getType());
-
-        mAudio = node.getFeature(FeatureAudioADPCM.class);
-        mAudioSync = node.getFeature(FeatureAudioADPCMSync.class);
+        mAudio = node.getFeature(FeatureAudio.class);
+        mAudioSync = node.getFeature(FeatureAudioConf.class);
         mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
         if(mAudio!=null && mAudioSync!=null && mAudioBeamforming!=null) {
-
+            mBVAudioSyncManager = mAudioSync.instantiateManager();
+            initializeAudioDump(mAudio);
             mAudio.addFeatureListener(mAudioListener);
             mAudio.addFeatureListener(mUpdatePlot);
             mWaveformView.startPlotting();
-            mBVAudioSyncManager.reinitResetFlag();
-            mAudio.setAudioSyncManager(mBVAudioSyncManager);
+            mBVAudioSyncManager.reinit();
+            mAudio.setAudioCodecManager(mBVAudioSyncManager);
             node.enableNotification(mAudio);
 
             mAudioSync.addFeatureListener(mAudioSyncListener);

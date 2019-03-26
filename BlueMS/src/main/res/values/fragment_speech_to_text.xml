@@ -50,8 +50,7 @@
     <string name="blueVoice_errorLowConfidence">Low confidence response</string>
 
     <string name="blueVoice_watson_asrDialogTitle">Insert IBM Watson speech-to-text credentials</string>
-    <string name="dialog_watson_userHint">User</string>
-    <string name="dialog_watson_passwordHint">Password</string>
+    <string name="dialog_watson_apiKeyHint">Api key</string>
 
     <string name="blueVoice_websocket_dialogTitle">WebSocket configuration</string>
     <string name="dialog_websocket_title">"WebSocket - Speech To Text"</string>

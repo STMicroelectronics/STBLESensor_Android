@@ -50,20 +50,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Features.standardCharacteristics.FeatureHeartRate;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Display the data coming from an herat rate sensor
  */
 @DemoDescriptionAnnotation(name="Heart Rate", requareAll = {FeatureHeartRate.class},
         iconRes = R.drawable.heart_rate_icon)
-public class HeartRateFragment extends DemoFragment {
+public class HeartRateFragment extends BaseDemoFragment {
 
     private Feature mHeartRateFeature;
 

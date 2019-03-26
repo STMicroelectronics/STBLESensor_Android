@@ -47,12 +47,12 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Demo streaming the audio from the node.
@@ -62,7 +62,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
  */
 @DemoDescriptionAnnotation(name="Source Localization",iconRes= R.drawable.source_localization_icon,
         requareAll = {FeatureDirectionOfArrival.class})
-public class SourceLocFragment extends DemoFragment {
+public class SourceLocFragment extends BaseDemoFragment {
 
     private ImageView mSLocNeedleImage;
     private TextView mSLocAngleText;

@@ -37,12 +37,18 @@
 
 package com.st.BlueMS;
 
+import com.st.BlueNRG.fwUpgrade.BlueNRGAdvertiseFilter;
+import com.st.BlueNRG.fwUpgrade.feature.BlueNRGOTASupport;
 import com.st.BlueSTSDK.Features.standardCharacteristics.StdCharToFeatureMap;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
+import com.st.BlueSTSDK.Utils.advertise.AdvertiseFilter;
+import com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity;
 import com.st.STM32WB.fwUpgrade.FwUpgradeSTM32WBActivity;
 import com.st.STM32WB.fwUpgrade.feature.STM32OTASupport;
 import com.st.STM32WB.p2pDemo.Peer2PeerDemoConfiguration;
+
+import java.util.List;
 
 /**
  * Activity that show the list of device found by the manager
@@ -55,12 +61,20 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
     }
 
     @Override
+    protected List<AdvertiseFilter> buildAdvertiseFilter() {
+        List<AdvertiseFilter> defaultList =  super.buildAdvertiseFilter();
+        defaultList.add(new BlueNRGAdvertiseFilter());
+        return defaultList;
+    }
+
+    @Override
     public void onNodeSelected(Node n) {
 
         ConnectionOption.ConnectionOptionBuilder optionsBuilder = ConnectionOption.builder()
                 .resetCache(clearCacheIsSelected())
                 .enableAutoConnect(false)
                 .setFeatureMap(STM32OTASupport.getOTAFeatures())
+                .setFeatureMap(BlueNRGOTASupport.getOTAFeatures())
                 .setFeatureMap(new StdCharToFeatureMap());
 
         if(Peer2PeerDemoConfiguration.isValidDeviceNode(n)){
@@ -69,7 +83,9 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
 
         ConnectionOption options = optionsBuilder.build();
 
-        if(n.getType()== Node.Type.STEVAL_WESU1)
+        if(n.getAdvertiseInfo() instanceof BlueNRGAdvertiseFilter.BlueNRGAdvertiseInfo)
+            startActivity(FwUpgradeActivity.getStartIntent(this, n,false,options));
+        else if(n.getType()== Node.Type.STEVAL_WESU1)
             startActivity(DemosActivityWesu.getStartIntent(this,n,options));
         else if (STM32OTASupport.isOTANode(n)){
             startActivity(FwUpgradeSTM32WBActivity.getStartIntent(this, n,null,null));

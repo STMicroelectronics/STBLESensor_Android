@@ -48,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.st.BlueSTSDK.Features.FeatureEulerAngle;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationContract;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationPresenter;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationView;
@@ -57,11 +58,10 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
 import com.st.BlueMS.R;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 @DemoDescriptionAnnotation(name="Compass", requareOneOf = {FeatureCompass.class,FeatureEulerAngle.class},
         iconRes = R.drawable.compass_demo_icon)
-public class CompassFragment extends DemoFragment {
+public class CompassFragment extends BaseDemoFragment {
 
     private FeatureEulerAngle mEulerAngle;
     private FeatureCompass mCompassFeature;

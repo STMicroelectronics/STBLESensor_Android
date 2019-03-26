@@ -70,6 +70,11 @@ import com.androidplot.xy.XYLegendWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYStepMode;
+import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
+import com.st.BlueSTSDK.Features.FeatureEulerAngle;
+import com.st.BlueSTSDK.Features.FeatureGyroscopeNorm;
+import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
 import com.st.BlueSTSDK.Features.FeatureEulerAngle;
@@ -96,7 +101,6 @@ import com.st.BlueSTSDK.Features.FeatureTemperature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -132,7 +136,7 @@ import java.util.concurrent.locks.ReentrantLock;
                     FeatureMagnetometerNorm.class,
                     FeatureGyroscopeNorm.class
     })
-public class PlotFeatureFragment extends DemoFragment implements View.OnClickListener,
+public class PlotFeatureFragment extends BaseDemoFragment implements View.OnClickListener,
         AdapterView.OnItemSelectedListener {
     
     //on the fw side the timestamp is incremented each 10ms

@@ -2,7 +2,8 @@
 <resources>
 
     <string name="fftAmpl_title">FFT Data</string>
-
+    <string name="fftAmpl_noDataText">Data acquisition ongoing…</string>
+    <string name="fftAmpl_detailsButton">Details</string>
     <string name="fftDetails_title">FFT Details</string>
     <string name="fftDetails_freqInfo_title">Frequency Data Info</string>
     <string name="fftDetails_freqInfo_format">%s: Max: %.4f @ %.2f Hz</string>
@@ -10,6 +11,6 @@
     <string name="fftDetails_timeInfo_title">Time Data Info</string>
     <string name="fftDetails_timeInfo_format">%s: Acc Peak: %.2f %s\n\tRMS Speed %.2f %s</string>
     <string name="fftDetails_timeInfo_not_available">Not Available</string>
-
+    <string name="menu_fft_amplitude_settings">FFT Settings</string>
 </resources>
 

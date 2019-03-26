@@ -43,12 +43,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
-
 /**
  * DemoFragment that will notify if the mobile has an internet connection
  */
-public abstract class DemoWithNetFragment extends DemoFragment {
+public abstract class DemoWithNetFragment extends BaseDemoFragment {
 
     /**
      * tell if the mobile has an internet connection
@@ -93,8 +91,8 @@ public abstract class DemoWithNetFragment extends DemoFragment {
     }
 
     @Override
-    public void stopDemo() {
-        super.stopDemo();
+    public void onPause() {
+        super.onPause();
         Context c = getActivity();
         if(mUpdateConnectionStatus!=null && c!=null)
             c.unregisterReceiver(mUpdateConnectionStatus);

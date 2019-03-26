@@ -38,22 +38,14 @@
     package="com.st.BlueMS">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-    <!-- needed for the BlueVoice demos -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- needed for the BlueVoice demos -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- add for paho -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <!-- Memes Sensor Fusion vibrate when a free fall is detected -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Memes Sensor Fusion vibrate when a free fall is detected -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" />
-
-    <!-- needed for the BlueVoice demos -->
+        android:required="true" /> <!-- needed for the BlueVoice demos -->
     <uses-feature
         android:name="android.hardware.audio.low_latency"
         android:required="false" />
@@ -65,6 +57,10 @@
         android:label="@string/app_name"
         android:logo="@drawable/app_logo"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".demos.fftAmpitude.FFTExportedService"
+            android:exported="false"></service>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|screenSize"
@@ -104,20 +100,6 @@
                 android:value="com.st.BlueMS.NodeListActivity" />
         </activity>
         <activity
-            android:name="com.st.BlueSTSDK.gui.DebugConsoleActivity"
-            android:parentActivityName=".DemosActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.st.BlueMS.DemosActivity" />
-        </activity>
-        <activity
-            android:name="com.st.BlueSTSDK.gui.AboutActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.st.BlueMS.MainActivity" />
-        </activity>
-        <activity
             android:name=".preference.wesu.SettingsWithWesuRegisters"
             android:label="@string/settings"
             android:parentActivityName=".DemosActivityWesu">
@@ -144,12 +126,27 @@
 
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/com.st.w2stapp" />
             </intent-filter>
+        </activity> <!-- Start: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
+        <activity
+            android:name="com.st.BlueSTSDK.gui.DebugConsoleActivity"
+            android:parentActivityName=".DemosActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.st.BlueMS.DemosActivity" />
         </activity>
-
-        <!-- Start: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
+        <activity
+            android:name="com.st.BlueSTSDK.gui.AboutActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.st.BlueMS.MainActivity" />
+        </activity>
+        <!-- End: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
         <activity android:name="com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -159,8 +156,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.st.BlueMS.NodeListActivity" />
-        </activity>
-        <!-- End: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
+        </activity> <!-- End: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
 
         <receiver android:name=".NfcNodeConnection$InsertPairPin">
             <intent-filter>
@@ -170,14 +166,11 @@
         </receiver>
 
         <service
-            android:name="org.eclipse.paho.android.service.MqttService"
-            android:enabled="true" />
-        <service
             android:name=".demos.Cloud.DownloadFwFileService"
             android:exported="false" />
         <service
             android:name=".demos.aiDataLog.SessionAnnotationLoggingService"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

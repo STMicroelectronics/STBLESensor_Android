@@ -83,7 +83,7 @@ public class DownloadFwFileService extends IntentService {
             return;
 
         PendingIntent startDwService = PendingIntent.getService(appContext,0,
-                downloadFwFile(appContext,firmwareRemoteLocation),0);
+                downloadFwFile(appContext,firmwareRemoteLocation),PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action download = new NotificationCompat.Action.Builder(
                 R.drawable.ic_fw_upgrade_check_24dp,
@@ -154,12 +154,24 @@ public class DownloadFwFileService extends IntentService {
         }
     }
 
+    private static boolean canBeDownloaded(Uri file){
+        String scheme = file.getScheme();
+        if(scheme == null){
+            return false;
+        }
+        scheme = scheme.toLowerCase();
+        return scheme.equals("http") || scheme.equals("https");
+    }
+
     /**
      * remove the notification and start the download manager
      * @param file
      */
     private void handleDownloadFwFileAction(Uri file) {
         removeNotification(this);
+        if(!canBeDownloaded(file)){
+            return;
+        }
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request dwRequest = new DownloadManager.Request(file);
         dwRequest.setTitle(file.getLastPathSegment());

@@ -53,9 +53,10 @@ import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
 import com.st.BlueMS.demos.Level.LevelDemoFragment;
+import com.st.BlueMS.demos.PredictiveMaintenance.PredictiveMaintenanceFragment;
 import com.st.BlueMS.demos.SDLog.SDLogFragment;
 import com.st.BlueMS.demos.aiDataLog.AIDataLogDemoFragment;
-import com.st.BlueMS.demos.fftAmpitude.FFTAmplitudePlotFragment;
+import com.st.BlueMS.demos.fftAmpitude.FFTAmplitudeFragment;
 import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HeartRateFragment;
@@ -126,7 +127,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     private final static Class<? extends DemoFragment> ALL_DEMOS[] = new Class[]{
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
-            FFTAmplitudePlotFragment.class,
+            FFTAmplitudeFragment.class,
             PlotFeatureFragment.class,
             SDLogFragment.class,
             ActivityRecognitionFragment.class,
@@ -150,6 +151,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             StartOtaRebootFragment.class,
             AIDataLogDemoFragment.class,
             CloudLogFragment.class,
+            PredictiveMaintenanceFragment.class,
             NodeStatusFragment.class
             //FeatureDebugFragment.class
     };

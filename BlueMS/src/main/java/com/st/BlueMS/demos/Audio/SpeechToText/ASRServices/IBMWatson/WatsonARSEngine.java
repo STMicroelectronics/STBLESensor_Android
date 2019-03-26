@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
+import com.ibm.watson.developer_cloud.service.security.IamOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.GetModelOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
@@ -108,7 +109,10 @@ public class WatsonARSEngine implements ASREngine {
        mServiceCallback.setRequestCallback(callback);
         try {
             if(mServiceCallback.isConnect()) {
-                AudioConverter.upSamplingSignalToLE(audio.getData(), mAppPipe);
+                if(audio.getSamplingRate() != 16000)
+                    AudioConverter.upSamplingSignalToLE(audio.getData(), mAppPipe);
+                else
+                    AudioConverter.toLEByteStream(audio.getData(),mAppPipe);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -140,7 +144,7 @@ public class WatsonARSEngine implements ASREngine {
 
         private static RecognizeOptions getRecognizeOptions(InputStream inputStream, @ASRLanguage.Language int model){
             return new RecognizeOptions.Builder()
-                    //.interimResults(true)
+                    .interimResults(true)
                     .audio(inputStream)
                     //.inactivityTimeout(2000)
                     .inactivityTimeout(-1)//inactivity timeout to +inf
@@ -205,7 +209,7 @@ public class WatsonARSEngine implements ASREngine {
 
         @Override
         public void onConnected() {
-            mSetupCallback.onEngineStart();
+            //mSetupCallback.onEngineStart();
         }
 
         @Override
@@ -263,10 +267,16 @@ public class WatsonARSEngine implements ASREngine {
 
     private void setServiceLogin(SpeechToText service){
         WatsonARSKey mAsrKey = WatsonARSKey.loadKey(mContext);
-        if (mAsrKey == null || mAsrKey.name == null || mAsrKey.password == null)
+        if (mAsrKey == null || mAsrKey.apiKey == null)
             service.setSkipAuthentication(true);
-        else
-            service.setUsernameAndPassword(mAsrKey.name, mAsrKey.password);
+        else{
+            IamOptions options = new IamOptions.Builder()
+                    .apiKey(mAsrKey.apiKey)
+                    .build();
+            service.setIamCredentials(options);
+        }
+
+
 
         if(mAsrKey!=null && mAsrKey.endpoint!=null)
             service.setEndPoint(mAsrKey.endpoint);

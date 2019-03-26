@@ -98,8 +98,8 @@ public class FFTDataViewModel extends ViewModel {
     private Feature.FeatureListener mFFTListener = (f, sample) -> {
         if(FeatureFFTAmplitude.isComplete(sample)){
             List<float[]> data = FeatureFFTAmplitude.getComponents(sample);
-            float deltaX = FeatureFFTAmplitude.getFreqStep(sample);
-            mFrequencyStep.postValue(deltaX);
+            float deltaFreq = FeatureFFTAmplitude.getFreqStep(sample);
+            mFrequencyStep.postValue(deltaFreq);
             mFftData.postValue(data);
         }else{
             mLoadingStatus.postValue(FeatureFFTAmplitude.getDataLoadPercentage(sample));

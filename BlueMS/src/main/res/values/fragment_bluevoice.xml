@@ -40,6 +40,7 @@
 
     <string name="blueVoice_codec">Codec:</string>
     <string name="blueVoice_pcmCodec">ADPCM</string>
+    <string name="blueVoice_opusCodec">Opus</string>
     <string name="blueVoice_samplingFreq">Sampling freq:</string>
     <string name="blueVoice_volume">Volume:</string>
     <string name="blueVoice_beamforming">Beamforming:</string>

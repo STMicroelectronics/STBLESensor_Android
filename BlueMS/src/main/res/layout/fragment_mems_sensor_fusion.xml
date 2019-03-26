@@ -40,38 +40,38 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/memsSensorFusionRootLayout">
+    android:id="@+id/memsSensorfusion_rootLayout">
     <RelativeLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
     <view android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          class="com.st.BlueMS.demos.util.HidableTextView" android:id="@+id/quaternionRateText"
+          class="com.st.BlueMS.demos.util.HidableTextView" android:id="@+id/memsSensorfusion_quaternionRateText"
           android:layout_alignParentTop="true" android:layout_alignParentStart="true" />
 
     <view android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          class="com.st.BlueMS.demos.util.HidableTextView" android:id="@+id/renderingRateText"
+          class="com.st.BlueMS.demos.util.HidableTextView" android:id="@+id/memsSensorfusion_renderingRateText"
           android:layout_alignParentTop="true" android:layout_alignParentEnd="true" />
 
 
-        <Button
-            android:id="@+id/resetButton"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/CalibImgH"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignStart="@+id/proximityButton"
-            android:layout_alignTop="@+id/calibrationImage"
-            android:text="@string/ResetButton" />
+    <Button
+        android:id="@+id/memsSensorfusion_resetButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/CalibImgH"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignStart="@+id/memsSensorfusion_proximityButton"
+        android:layout_alignTop="@+id/calibrationImage"
+        android:text="@string/ResetButton" />
 
     <android.support.v7.widget.SwitchCompat
         android:layout_width="wrap_content"
         android:layout_height="@dimen/CalibImgH"
         android:text="@string/enableProximityButton"
-        android:id="@+id/proximityButton"
+        android:id="@+id/memsSensorfusion_proximityButton"
         android:visibility="invisible"
         android:layout_alignTop="@+id/calibrationImage"
         android:layout_centerHorizontal="true"
@@ -79,26 +79,35 @@
         android:checked="true"/>
 
 
-        <ImageButton
-            android:id="@+id/calibrationImage"
-            android:layout_width="@dimen/CalibImgW"
-            android:layout_height="@dimen/CalibImgH"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:clickable="false"
-            android:contentDescription="@string/CalibButtonDesc"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:scaleType="fitCenter"
-            android:src="@drawable/uncalibrated" />
+    <ImageButton
+        android:id="@+id/calibrationImage"
+        android:layout_width="@dimen/CalibImgW"
+        android:layout_height="@dimen/CalibImgH"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:clickable="false"
+        android:contentDescription="@string/CalibButtonDesc"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:scaleType="fitCenter"
+        android:src="@drawable/uncalibrated" />
 
     <android.opengl.GLSurfaceView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/glSurface"
-        android:layout_below="@id/quaternionRateText" android:layout_alignParentStart="true"
-        android:layout_above="@id/proximityButton"/>
+        android:id="@+id/memsSensorfusion_glSurface"
+        android:layout_below="@id/memsSensorfusion_quaternionRateText" android:layout_alignParentStart="true"
+        android:layout_above="@id/memsSensorfusion_proximityButton"/>
+
+    <TextView
+        android:id="@+id/memsSensorfusion_proximityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/memsSensorfusion_glSurface"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

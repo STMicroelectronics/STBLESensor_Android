@@ -12,17 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureCOSensor;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 
 @DemoDescriptionAnnotation(name = "CO Sensor",iconRes = R.drawable.co_sensor_icon,
         requareAll = {FeatureCOSensor.class})
-public class COSensorDemoFragment extends DemoFragment implements
+public class COSensorDemoFragment extends BaseDemoFragment implements
         SetSensitivityDialogFragment.SetSensitivityDialogFragmentCallback {
 
     private static final String SET_SENSITIVITY_DIALOG_TAG=COSensorDemoFragment.class.getCanonicalName() + ".TAG";

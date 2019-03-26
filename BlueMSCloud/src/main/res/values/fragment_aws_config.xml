@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="cloudLog_aws_endpoint_hint">"AWS IoT Endpoint"</string>
+    <string name="cloudLog_aws_clientId_hint">"Client Id"</string>
+    <string name="cloudLog_aws_clientId_error">"Client Id most not be empty"</string>
+    <string name="cloudLog_aws_endpoint_value_hint"><![CDATA[xxxxxxxxxx.iot.<region>.amazonaws.com]]></string>
+    <string name="cloudLog_aws_endpoint_invalid_value">Invalid endpoint name</string>
+    <string name="cloudLog_aws_certificate">Certificate</string>
+    <string name="cloudLog_aws_select_file">Select file</string>
+    <string name="cloudLog_aws_privatekey">Private key</string>
+
+</resources>

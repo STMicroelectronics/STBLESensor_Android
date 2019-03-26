@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_iotCentral_scopeIdHit">Scope Id</string>
+    <string name="azure_iotCentral_scopeIdEmptyError">Scope Id can not be empty</string>
+    <string name="azure_iotCentral_masterKeyHit">Master Key</string>
+    <string name="azure_iotCentral_masterKeyEmptyError">Master key can not be empty</string>
+    <string name="azure_iotCentral_deviceIdHit">Device Id</string>
+    <string name="azure_iotCentral_deviceIdEmptyError">Device Id can not be empty</string>
+    <string name="azure_iotCentral_createAppButton">Create new App</string>
+</resources>

@@ -45,12 +45,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureCarryPosition;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Demo showing the output of the osxMotionCP library.
@@ -59,7 +59,7 @@ import com.st.BlueSTSDK.gui.demos.DemoFragment;
  */
 @DemoDescriptionAnnotation(name="Carry Position",requareAll = {FeatureCarryPosition.class},
         iconRes = R.drawable.carry_demo_icon)
-public class CarryPositionFragment extends DemoFragment {
+public class CarryPositionFragment extends BaseDemoFragment {
 
     private static final String LAST_VALUE = CarryPositionFragment.class.getCanonicalName() +
             ".PositionValue";

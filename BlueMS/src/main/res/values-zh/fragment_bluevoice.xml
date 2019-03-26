@@ -56,6 +56,7 @@
 
     <string name="blueVoice_codec">编解码器:</string>
     <string name="blueVoice_pcmCodec">ADPCM</string>
+    <string name="blueVoice_opusCodec">Opus</string>
     <string name="blueVoice_samplingFreq">采样频率:</string>
     <string name="blueVoice_volume">音量:</string>
     <string name="blueVoice_recordTime">录音时间:</string>

@@ -60,6 +60,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationContract;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationPresenter;
@@ -74,7 +75,6 @@ import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
 import com.st.BlueSTSDK.Features.FeatureProximity;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -87,8 +87,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * </p>
  */
 @DemoDescriptionAnnotation(name="Mems Sensor Fusion",iconRes=R.drawable.demo_sensors_fusion,
-        requareOneOf = {FeatureMemsSensorFusion.class,FeatureMemsSensorFusionCompact.class})
-public class MemsSensorFusionFragment extends DemoFragment implements CalibrationContract.View{
+    requareOneOf = {FeatureMemsSensorFusion.class,FeatureMemsSensorFusionCompact.class})
+public class MemsSensorFusionFragment extends BaseDemoFragment implements CalibrationContract.View{
     private final static String TAG = MemsSensorFusionFragment.class.getCanonicalName();
 
     /**
@@ -247,6 +247,8 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
      */
     private Feature mProximity;
 
+    private TextView mProximityText;
+
     /**
      * class that will update the cube size in function of the proximity values,
      * when out of range the cube will be reset to the original size
@@ -259,12 +261,16 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         @Override
         public void onUpdate(Feature f,Feature.Sample sample) {
             int proximity = FeatureProximity.getProximityDistance(sample);
-            if (proximity == FeatureProximity.OUT_OF_RANGE_VALUE)
+            String proximityStr;
+            if (proximity == FeatureProximity.OUT_OF_RANGE_VALUE) {
                 mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
-            else {
+                proximityStr = getString(R.string.memsSensorFusion_proximityOutOfRange);
+            } else {
+                proximityStr = getString(R.string.memsSensorFusion_proximityFormat,proximity);
                 proximity = Math.min(proximity,MAX_DISTANCE);
                 mGlRenderer.setScaleCube(proximity*SCALE_FACTOR);
             }
+            updateGui(() -> mProximityText.setText(proximityStr));
         }//onUpdate
     };
 
@@ -277,7 +283,10 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
              * proximity sensor is present, show the button and attach the listener for
              * enable/disable the sensor reading
              */
-            updateGui(() -> mProximityButton.setVisibility(View.VISIBLE));
+            updateGui(() -> {
+                mProximityButton.setVisibility(View.VISIBLE);
+                mProximityText.setVisibility(View.VISIBLE);
+            });
             mProximity.addFeatureListener(mSensorProximity);
             if(mProximityButton.isChecked()) {
                 node.enableNotification(mProximity);
@@ -289,7 +298,11 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         if (mProximity != null) {
             mProximity.removeFeatureListener(mSensorProximity);
             node.disableNotification(mProximity);
-            updateGui(() -> mProximityButton.setChecked(false));
+            updateGui(() ->{
+                mProximityButton.setChecked(false);
+                mProximityText.setVisibility(View.GONE);
+
+            });
         }
     }
     /////////////////////// END PROXIMITY ////////////////////////////////////
@@ -393,9 +406,9 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_mems_sensor_fusion, container, false);
-        mRootLayout = root.findViewById(R.id.memsSensorFusionRootLayout);
-        mFrameRateText = root.findViewById(R.id.quaternionRateText);
-        mQuaternionRateText = root.findViewById(R.id.renderingRateText);
+        mRootLayout = root.findViewById(R.id.memsSensorfusion_rootLayout);
+        mFrameRateText = root.findViewById(R.id.memsSensorfusion_quaternionRateText);
+        mQuaternionRateText = root.findViewById(R.id.memsSensorfusion_renderingRateText);
 
         mCalibButton = root.findViewById(R.id.calibrationImage);
         /*
@@ -405,20 +418,18 @@ public class MemsSensorFusionFragment extends DemoFragment implements Calibratio
         mCalibButton.setOnClickListener(v -> onStartCalibrationClicked());
 
 
-        mResetButton = root.findViewById(R.id.resetButton);
+        mResetButton = root.findViewById(R.id.memsSensorfusion_resetButton);
         mResetButton.setOnClickListener(v -> onResetPositionButtonClicked());
 
-        mProximityButton = root.findViewById(R.id.proximityButton);
+        mProximityButton = root.findViewById(R.id.memsSensorfusion_proximityButton);
         mProximityButton.setOnClickListener(v -> onProximityButtonClicked());
-
-        mGlSurface = root.findViewById(R.id.glSurface);
+        mProximityText = root.findViewById(R.id.memsSensorfusion_proximityText);
+        mGlSurface = root.findViewById(R.id.memsSensorfusion_glSurface);
         // Request an OpenGL ES 2.0 compatible context.
         mGlSurface.setEGLContextClientVersion(2);
         mGlRenderer = new GLCubeRender(getActivity(), getBgColor());
         mGlRenderer.setScaleCube(INITIAL_CUBE_SCALE);
         mGlSurface.setRenderer(mGlRenderer);
-
-
 
         return root;
     }

@@ -49,19 +49,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeaturePedometer;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Demo showing the frequency and the number of steps detected by the node
  */
 @DemoDescriptionAnnotation(name="Pedometer", requareAll = {FeaturePedometer.class},iconRes = R
         .drawable.pedometer_demo_icon)
-public class PedometerFragment extends DemoFragment {
+public class PedometerFragment extends BaseDemoFragment {
 
 
     private String mStepCountTextFormat;

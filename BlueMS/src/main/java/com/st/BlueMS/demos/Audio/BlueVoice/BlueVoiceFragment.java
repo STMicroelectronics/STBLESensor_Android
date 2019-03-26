@@ -53,18 +53,18 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.st.BlueSTSDK.Features.Audio.AudioCodecManager;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudio;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudioConf;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Audio.Utils.AudioRecorder;
 import com.st.BlueMS.demos.Audio.Utils.WaveformView;
 import com.st.BlueSTSDK.Feature;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCM;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCMSync;
 import com.st.BlueSTSDK.Features.FeatureBeamforming;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.Utils.BVAudioSyncManager;
 import com.st.BlueSTSDK.Utils.LogFeatureActivity;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 import java.util.Locale;
 
@@ -75,8 +75,8 @@ import java.util.Locale;
  * audio to text
  */
 @DemoDescriptionAnnotation(name="BlueVoice",iconRes= R.drawable.ic_bluetooth_audio,
-        requareAll = {FeatureAudioADPCM.class,FeatureAudioADPCMSync.class})
-public class BlueVoiceFragment extends DemoFragment {
+        requareAll = {FeatureAudio.class,FeatureAudioConf.class})
+public class BlueVoiceFragment extends BaseDemoFragment {
 
     private static final String TAG = BlueVoiceFragment.class.getCanonicalName();
 
@@ -85,7 +85,9 @@ public class BlueVoiceFragment extends DemoFragment {
     private static final String VOLUME_LEVEL = TAG+".VOLUME_LEVEL";
     private static final String IS_MUTE = TAG+".IS_MUTE";
 
-    private static final int AUDIO_SAMPLING_FREQ = 8000;
+    private int audioSamplingFreq;
+    private short audioChannels;
+    private Boolean audioEnabled;
 
     private static final @FeatureBeamforming.Direction int DEFAULT_BEAM_FORMING_DIRECTION = FeatureBeamforming.Direction.RIGHT;
 
@@ -93,21 +95,23 @@ public class BlueVoiceFragment extends DemoFragment {
     /**
      * feature where we read  the audio values
      */
-    private BVAudioSyncManager mBVAudioSyncManager = new BVAudioSyncManager();
-    private FeatureAudioADPCM mAudio;
+    private AudioCodecManager mAudioCodecManager;
+    private FeatureAudio mAudio;
 
     private AudioManager mAudioManager;
     private AudioTrack mAudioTrack;
-
     private AudioRecorder mAudioWavDump;
+
+    private Switch mBeamformingSwitch;
 
     /**
      * listener for the audio feature, it will updates the audio values and if playback is active,
      * it write this data in the AudioTrack {@code audioTrack}.
      */
     private final Feature.FeatureListener mAudioListener = (f, sample) -> {
-        short[] audioSample = FeatureAudioADPCM.getAudio(sample);
-        playAudio(audioSample);
+        short[] audioSample = ((FeatureAudio)f).getAudio(sample);
+        if(audioSample != null)
+            playAudio(audioSample);
     };
 
     /**
@@ -118,11 +122,11 @@ public class BlueVoiceFragment extends DemoFragment {
         @Override
         public void onUpdate(final Feature f, final Feature.Sample sample) {
             if(mAudioWavDump != null && mAudioWavDump.isRecording()) {
-                short[] audioSample = FeatureAudioADPCM.getAudio(sample);
-                mAudioWavDump.writeSample(audioSample);
+                short[] audioSample = ((FeatureAudio)f).getAudio(sample);
+                if(audioSample != null)
+                    mAudioWavDump.writeSample(audioSample);
             }
         }
-
     };
 
     /**
@@ -131,8 +135,9 @@ public class BlueVoiceFragment extends DemoFragment {
     private final Feature.FeatureListener mUpdatePlot = new Feature.FeatureListener() {
         @Override
         public void onUpdate(Feature f, Feature.Sample sample) {
-            short[] audioSample = FeatureAudioADPCM.getAudio(sample);
-            mWaveformView.updateAudioData(audioSample);
+            short[] audioSample = ((FeatureAudio)f).getAudio(sample);
+            if(audioSample != null)
+                mWaveformView.updateAudioData(audioSample);
         }
     };
 
@@ -140,17 +145,53 @@ public class BlueVoiceFragment extends DemoFragment {
     /**
      * feature where we read the audio sync values
      */
-    private FeatureAudioADPCMSync mAudioSync;
+    private FeatureAudioConf mAudioSync;
 
     /**
      * listener for the audioSync feature, it will update the synchronism values
      */
     private final Feature.FeatureListener mAudioSyncListener = (f, sample) -> {
-        if(mBVAudioSyncManager!=null){
-            mBVAudioSyncManager.setSyncParams(sample);
+        if(mAudioCodecManager != null){
+            mAudioCodecManager.updateParams(sample);
+        }
+
+        if(audioSamplingFreq != mAudioCodecManager.getSamplingFreq() ||
+                audioChannels!= mAudioCodecManager.getChannels()) {
+            audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
+            audioChannels = mAudioCodecManager.getChannels();
+        }
+
+        if(audioEnabled == null || audioEnabled != mAudioCodecManager.isAudioEnabled()) {
+            audioEnabled = mAudioCodecManager.isAudioEnabled();
+            if (audioEnabled)
+                startAudioStreaming(f.getParentNode());
+            else
+                stopAudioStreaming();
         }
     };
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void initAudioTrack(int samplingFreq, short channels) {
+        int minBufSize = AudioTrack.getMinBufferSize(samplingFreq,
+                channels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT);
+
+        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                samplingFreq,
+                channels,
+                AudioFormat.ENCODING_PCM_16BIT,
+                minBufSize,
+                AudioTrack.MODE_STREAM);
+
+        mAudioWavDump.updateParams(samplingFreq,channels);
+    }
+
+    private void updateCodecUI(String codecName, int samplingFreq) {
+        updateGui(() -> {
+            mSamplingRateValue.setText(String.format(Locale.getDefault(), "%d kHz", samplingFreq / 1000));
+            mCodecValue.setText(codecName);
+        });
+    }
 
     private FeatureBeamforming mAudioBeamforming;
 
@@ -159,24 +200,23 @@ public class BlueVoiceFragment extends DemoFragment {
 
     private WaveformView mWaveformView;
 
-    private Switch mBeamformingSwitch;
+    private TextView mSamplingRateValue;
+    private TextView mCodecValue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
 
-        mAudioTrack= new AudioTrack(AudioManager.STREAM_MUSIC, AUDIO_SAMPLING_FREQ,
-                AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                FeatureAudioADPCM.AUDIO_PACKAGE_SIZE,
-                AudioTrack.MODE_STREAM);
-
-        mAudioWavDump = new AudioRecorder((LogFeatureActivity) getActivity(),FeatureAudioADPCM.FEATURE_NAME);
+    private void initializeAudioDump(FeatureAudio fa) {
+        LogFeatureActivity activity = (LogFeatureActivity) requireActivity();
+        mAudioWavDump = new AudioRecorder(activity, fa != null ? fa.getName() : "Audio");
+        activity.invalidateOptionsMenu();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View mRootView = inflater.inflate(R.layout.fragment_bluevoice, container, false);
 
@@ -188,17 +228,16 @@ public class BlueVoiceFragment extends DemoFragment {
         mBeamformingSwitch = mRootView.findViewById(R.id.blueVoice_beamformingValue);
         setupBeamformingSwitch();
         //NOTE /////////////////////////////////////////////////////////////////////////////////////
-
-        mAudioManager = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager)requireContext().getSystemService(Context.AUDIO_SERVICE);
 
         mVolumeBar = mRootView.findViewById(R.id.blueVoice_volumeValue);
         setUpVolumeBar(mAudioManager.getStreamMaxVolume(AUDIO_STREAM));
 
         mMuteButton = new ManageMuteButton(mRootView.findViewById(R.id.blueVoice_muteButton));
 
-        TextView mSamplingRateValue = mRootView.findViewById(R.id.blueVoice_samplingRateValue);
-        mSamplingRateValue.setText(String.format(Locale.getDefault(),"%d kHz", AUDIO_SAMPLING_FREQ/1000));
+        mSamplingRateValue = mRootView.findViewById(R.id.blueVoice_samplingRateValue);
 
+        mCodecValue = mRootView.findViewById(R.id.blueVoice_codecValue);
 
         if(savedInstanceState!=null){
             restoreGuiStatus(savedInstanceState);
@@ -219,16 +258,9 @@ public class BlueVoiceFragment extends DemoFragment {
     //NOTE /////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mAudioTrack.play();
-
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        if(mAudioWavDump.isRecording())
+        if(mAudioWavDump!=null && mAudioWavDump.isRecording())
             mAudioWavDump.stopRec();
     }
 
@@ -242,7 +274,6 @@ public class BlueVoiceFragment extends DemoFragment {
         if(savedInstanceState.containsKey(VOLUME_LEVEL)){
             mVolumeBar.setProgress(savedInstanceState.getInt(VOLUME_LEVEL));
         }
-
         if(savedInstanceState.containsKey(IS_MUTE)){
             if(savedInstanceState.getBoolean(IS_MUTE)!=mMuteButton.isMute())
                 mMuteButton.changeState();
@@ -250,15 +281,12 @@ public class BlueVoiceFragment extends DemoFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
         if(mVolumeBar!=null)
             outState.putInt(VOLUME_LEVEL,mVolumeBar.getProgress());
-
         if(mMuteButton!=null)
             outState.putBoolean(IS_MUTE,mMuteButton.isMute());
-
     }
 
     private void setUpVolumeBar(int maxVolume){
@@ -268,41 +296,62 @@ public class BlueVoiceFragment extends DemoFragment {
             public void onProgressChanged(SeekBar seekBar, int newVolumeLevel, boolean b) {
                 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolumeLevel, 0);
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
         mVolumeBar.setProgress(maxVolume / 2);
     }
 
-
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.startLog).setVisible(false);
-
-        mAudioWavDump.registerRecordMenu(menu,inflater);
-
+        if(mAudioWavDump!=null)
+            mAudioWavDump.registerRecordMenu(menu,inflater);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private void startConfStreaming(@NonNull Node node){
+
+        mAudioSync = node.getFeature(FeatureAudioConf.class);
+
+        if(mAudioSync!=null) {
+
+            mAudioCodecManager = mAudioSync.instantiateManager();
+            audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
+            audioChannels = mAudioCodecManager.getChannels();
+            audioEnabled = mAudioCodecManager.isAudioEnabled();
+
+            mAudioSync.addFeatureListener(mAudioSyncListener);
+            node.enableNotification(mAudioSync);
+        }
+    }
+
     private void startAudioStreaming(@NonNull Node node){
-        mAudio = node.getFeature(FeatureAudioADPCM.class);
-        mAudioSync = node.getFeature(FeatureAudioADPCMSync.class);
-        mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
-        if(mAudio!=null && mAudioSync!=null) {
+        mAudio = node.getFeature(FeatureAudio.class);
+
+        mBeamformingSwitch.setEnabled(false);
+
+        if(node.getFeature(FeatureBeamforming.class) != null){
+            mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
+        }
+
+        if(mAudio!=null) {
+
+            initializeAudioDump(mAudio);
+            initAudioTrack(audioSamplingFreq, audioChannels);
+            updateCodecUI(mAudioCodecManager.getCodecName(), audioSamplingFreq);
+
             mAudio.addFeatureListener(mAudioListener);
             mAudio.addFeatureListener(mUpdatePlot);
             mAudio.addFeatureListener(mAudioListenerRec);
 
-            mBVAudioSyncManager.reinitResetFlag();
-            mAudio.setAudioSyncManager(mBVAudioSyncManager);
-
+            mAudio.setAudioCodecManager(mAudioCodecManager);
             node.enableNotification(mAudio);
 
-            mAudioSync.addFeatureListener(mAudioSyncListener);
-            node.enableNotification(mAudioSync);
+            mAudioCodecManager.reinit();
+            mAudioTrack.play();
+
         }//if
         if(mAudioBeamforming!=null){
             node.enableNotification(mAudioBeamforming);
@@ -324,21 +373,24 @@ public class BlueVoiceFragment extends DemoFragment {
         mBeamformingSwitch.setEnabled(mAudioBeamforming!=null);
     }
 
-    private void stopAudioStreaming(@NonNull Node node){
+    private void stopConfStreaming(){
+        if(mAudioSync!=null) {
+            mAudioSync.removeFeatureListener(mAudioSyncListener);
+            mAudioSync.disableNotification();
+        }
+    }
+
+    private void stopAudioStreaming(){
         if(mAudio!=null && mAudioSync!=null) {
             mAudio.removeFeatureListener(mAudioListener);
             mAudio.removeFeatureListener(mUpdatePlot);
             mAudio.removeFeatureListener(mAudioListenerRec);
-            node.disableNotification(mAudio);
-
-            mAudioSync.removeFeatureListener(mAudioSyncListener);
-            node.disableNotification(mAudioSync);
+            mAudio.disableNotification();
         }
-
         if(mAudioBeamforming!=null){
             if(mBeamformingSwitch!=null && mBeamformingSwitch.isChecked())
                 mAudioBeamforming.enableBeamForming(false);
-            node.disableNotification(mAudioBeamforming);
+            mAudioBeamforming.disableNotification();
         }
         updateGui(this::displayNoStreamingAudioStatus);
     }
@@ -350,7 +402,8 @@ public class BlueVoiceFragment extends DemoFragment {
 
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
-          startAudioStreaming(node);
+        startConfStreaming(node);
+        startAudioStreaming(node);
     }//enableNeededNotification
 
     /**
@@ -360,13 +413,16 @@ public class BlueVoiceFragment extends DemoFragment {
      */
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
-        stopAudioStreaming(node);
+        stopAudioStreaming();
+        stopConfStreaming();
     }//disableNeedNotification
 
     private void stopAudioTrack(){
         synchronized(this) {
-            mAudioTrack.pause();
-            mAudioTrack.flush();
+            if(mAudioTrack!=null) {
+                mAudioTrack.pause();
+                mAudioTrack.flush();
+            }
         }
     }
 
@@ -414,5 +470,4 @@ public class BlueVoiceFragment extends DemoFragment {
             mVolumeBar.setEnabled(true);
         }
     }
-
 }

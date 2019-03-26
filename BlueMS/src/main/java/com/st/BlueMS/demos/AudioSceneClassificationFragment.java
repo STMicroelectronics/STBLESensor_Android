@@ -54,7 +54,7 @@ import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAudioSceneClassification;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
 /**
@@ -63,7 +63,7 @@ import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 @DemoDescriptionAnnotation(name="Audio Classification",
         requareAll = {FeatureAudioSceneClassification.class},
         iconRes = R.drawable.ic_bluetooth_audio)
-public class AudioSceneClassificationFragment extends DemoFragment {
+public class AudioSceneClassificationFragment extends BaseDemoFragment {
 
     /**
      * filter for convert a color image in a gray scale one

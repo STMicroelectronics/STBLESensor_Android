@@ -37,56 +37,19 @@
   -->
 
 <resources>
-    <string name="cloudLog_watson_deviceIdHint">Device Id</string>
-    <string name="cloudLog_watson_deviceTypeHint">Device Type</string>
-    <string name="cloudLog_watson_authTokenHint">Authentication Token</string>
-    <string name="cloudLog_watson_organizationIDHint">Organization Id</string>
-
-    <string name="cloudLog_watson_deviceIdError">Device Id must not be empty</string>
-    <string name="cloudLog_watson_invalidCharacterError">Use only:a–z A-Z 0-9 . - and _</string>
-    <string name="cloudLog_watson_deviceTypeError">Device Type must not be empty</string>
-    <string name="cloudLog_watson_authTokenError">Authentication Token must not be empty</string>
-    <string name="cloudLog_watson_organizationIDError">Organization Id must not be empty</string>
-
     <string name="cloudLog_mqttErrorTitle">Mqtt Error</string>
     <string name="cloudLog_displayDataPage">View cloud data</string>
     <string name="cloudLog_warningConnectionOn">Cloud connection is active</string>
     <string name="cloudLog_browserNotFound">Impossible open an external webpage</string>
 
-    <string name="cloudLog_genericMqtt_brokerUrlHint">Broker url</string>
-    <string name="cloudLog_genericMqtt_addressHint">tcp://address or ssl://address</string>
-    <string name="cloudLog_genericMqtt_userHint">User</string>
-    <string name="cloudLog_genericMqtt_passwordHint">Password</string>
-    <string name="cloudLog_genericMqtt_portHint">Port</string>
-    <string name="cloudLog_genericMqtt_secureConnectionHint">Ssh</string>
-
-    <string name="cloudLog_genericMqtt_clientIdHint">Client ID</string>
-    <string name="cloudLog_genericMqtt_brokerUrlError">Invalid url</string>
-    <string name="cloudLog_genericMqtt_userError">User must not be empty</string>
-    <string name="cloudLog_genericMqtt_portError">Invalid port number</string>
-
-    <string name="cloudLog_StAzure_licConsoleMissing">Impossible retrieve node data</string>
-    <string name="cloudLog_StAzure_licConsoleFound">Load node data</string>
-    <string name="cloudLog_StAzure_nodeRegistration">Node registration…</string>
-    <string name="cloudLog_StAzure_registrationComplete">Registration completed</string>
-    <string name="cloudLog_StAzure_registrationFail">Impossible complete the device registration</string>
-    <string name="cloudLog_StAzure_invalidDeviceData">Invalid device data</string>
     <string name="cloudLog_fwUpgrade_startUpgrade">Start firmware upgrade</string>
     <string name="cloudLog_fwUpgrade_notification_title">A new firmware is available</string>
     <string name="cloudLog_fwUpgrade_notification_desc">Download and install %1s ?</string>
     <string name="cloudLog_fw_upgrade_download_desc">Downloading firmware</string>
 
-    <string name="cloudLog_azure_connectionStringHit">Connection string</string>
-    <string name="cloudLog_azure_connectionStringError">Invalid connection string format</string>
+    <string name="cloudLog_downloadFw_title">Download firmware file</string>
+    <string name="cloudLog_downloadFw_desc">Downloading new firmware for: %1s</string>
 
-    <string name="cloudLog_aws_endpoint_hint">"AWS IoT Endpoint"</string>
-    <string name="cloudLog_aws_clientId_hint">"Client Id"</string>
-    <string name="cloudLog_aws_clientId_error">"Client Id most not be empty"</string>
-    <string name="cloudLog_aws_endpoint_value_hint"><![CDATA[xxxxxxxxxx.iot.<region>.amazonaws.com]]></string>
-    <string name="cloudLog_aws_endpoint_invalid_value">Invalid endpoint name</string>
-    <string name="cloudLog_aws_certificate">Certificate</string>
-    <string name="cloudLog_aws_select_file">Select file</string>
-    <string name="cloudLog_aws_privatekey">Private key</string>
     <string name="cloudLog_details">Details</string>
     <string name="cloudLog_connecting">Connecting…</string>
 

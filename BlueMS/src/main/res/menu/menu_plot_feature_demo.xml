@@ -40,6 +40,5 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_plot_length"
-        app:showAsAction="ifRoom"
         android:title="@string/setPlotLength"/>
 </menu>

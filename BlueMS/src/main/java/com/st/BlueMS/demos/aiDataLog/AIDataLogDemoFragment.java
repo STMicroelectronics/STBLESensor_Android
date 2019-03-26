@@ -15,14 +15,15 @@ import com.st.BlueMS.R;
 import com.st.BlueMS.demos.aiDataLog.viewModel.AnnotationLogViewModel;
 import com.st.BlueSTSDK.Features.FeatureAILogging;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
 @DemoDescriptionAnnotation(name="AI Data Log",
         iconRes=R.drawable.multiple_log_icon,
         requareAll = {FeatureAILogging.class}
 )
-public class AIDataLogDemoFragment extends DemoFragment implements AILogSetParametersDemoFragment.OnDataSelectedListener {
+public class AIDataLogDemoFragment extends BaseDemoFragment
+        implements AILogSetParametersDemoFragment.OnDataSelectedListener {
 
     private static String SELECT_DATA_FRAGMENT_TAG = AIDataLogDemoFragment.class.getName()+".SELECT_DATA_FRAGMENT_TAG";
 

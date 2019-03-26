@@ -80,7 +80,9 @@ public class CalibrationManagerWesu {
         public void onRegisterReadResult(ConfigControl config, Command cmd, int error) {
             if (cmd.getRegister().getAddress() == RegisterDefines.RegistersName.MOTION_FX_CALIBRATION_LIC_STATUS.getRegister().getAddress()) {
                 Log.d(TAG, "Calibration WeSU read calibration status regs");
-                if ((cmd.getData()[0]) == 1) { //0x8C session - calibration state (0 mag not calibrated- 1 mag calibrated ) only LSB (FX Calibration Status)
+                byte[] responseData = cmd.getData();
+                //0x8C session - calibration state (0 mag not calibrated- 1 mag calibrated ) only LSB (FX Calibration Status)
+                if (responseData!=null && responseData[0] == 1) {
                     mCalibrationStatus = true;
                     if (mCalibEventNotify != null)
                         mCalibEventNotify.onCalibrationStatusChange(true);

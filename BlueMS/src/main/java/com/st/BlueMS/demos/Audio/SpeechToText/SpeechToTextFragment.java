@@ -71,18 +71,16 @@ import com.st.BlueMS.demos.Audio.Utils.AudioBuffer;
 import com.st.BlueMS.demos.Audio.Utils.AudioRecorder;
 import com.st.BlueMS.demos.util.DemoWithNetFragment;
 import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Features.Audio.AudioCodecManager;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudio;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudioConf;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCM;
-import com.st.BlueSTSDK.Features.FeatureAudioADPCMSync;
 import com.st.BlueSTSDK.Features.FeatureBeamforming;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.Utils.BVAudioSyncManager;
 import com.st.BlueSTSDK.Utils.LogFeatureActivity;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
-
 import java.util.ArrayList;
-
 
 /**
  * Demo streaming the audio to an online service for speech to text
@@ -91,7 +89,7 @@ import java.util.ArrayList;
  * translate  audio to text
  */
 @DemoDescriptionAnnotation(name="SpeechToText",iconRes= R.drawable.ic_bluetooth_audio,
-        requareAll = {FeatureAudioADPCM.class,FeatureAudioADPCMSync.class})
+        requareAll = {FeatureAudio.class,FeatureAudioConf.class})
 public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequestCallback,
         AsrSelectorDialogFragment.AsrSelectorCallback,
         DialogFragmentDismissCallback.DialogDismissCallback{
@@ -105,7 +103,10 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     private static final String DEFAULT_ASR_ENGINE = GoogleASREngine.DESCRIPTION.getName();
     private static final @ASRLanguage.Language int DEFAULT_ASR_LANGUAGE = ASRLanguage.Language.ENGLISH_UK;
 
-    private static final int AUDIO_SAMPLING_FREQ = 8000;
+    private int audioSamplingFreq;
+    private short audioChannels;
+    private Boolean audioEnabled;
+
     private static final int MAX_RECORDING_TIME_S = 5;
     private static final String ASR_KEY_DIALOG_TAG = TAG+".ASR_AUTH_KEY_DIALOG";
     private static final String ASR_ENGINE_DIALOG_TAG = TAG+".ASR_ENGINE_DIALOG";
@@ -116,8 +117,8 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     /**
      * feature where we read  the audio values
      */
-    private BVAudioSyncManager mBVAudioSyncManager = new BVAudioSyncManager();
-    private FeatureAudioADPCM mAudio;
+    private AudioCodecManager mAudioCodecManager;
+    private FeatureAudio mAudio;
 
     private boolean mIsRecording;
     private AudioBuffer mRecordedAudio;
@@ -127,17 +128,18 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     private AudioRecorder mAudioWavDump;
 
     /**
-     * listener for the audio feature, it will updates the audio values and if playback is active,
-     * it write this data in the AudioTrack {@code audioTrack}.
+     * listener for the audio feature, it will updates the audio values and if the user is recording,
+     * it sends this data to the ASR.
      */
     private final Feature.FeatureListener mAudioListener = new Feature.FeatureListener() {
         @Override
         public void onUpdate(final Feature f, final Feature.Sample sample) {
-            short[] audioSample = FeatureAudioADPCM.getAudio(sample);
+            short[] audioSample = ((FeatureAudio)f).getAudio(sample);
 
-            if(mIsRecording){
+            if(mIsRecording && audioSample != null){
                 if(mAsrEngine.hasContinuousRecognizer()) {
-                    mAsrEngine.sendASRRequest(new AudioBuffer(audioSample), SpeechToTextFragment.this);
+                    mAsrEngine.sendASRRequest(new AudioBuffer(audioSample,audioSamplingFreq),
+                            SpeechToTextFragment.this);
                 } else {
                     final int nRecordedSample = mRecordedAudio.append(audioSample);
                     if(mRecordedAudio.isFull()){
@@ -147,7 +149,6 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
                 }
             }
         }
-
     };
 
     /**
@@ -158,8 +159,9 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
         @Override
         public void onUpdate(final Feature f, final Feature.Sample sample) {
             if(mAudioWavDump != null && mAudioWavDump.isRecording()) {
-                short[] audioSample = FeatureAudioADPCM.getAudio(sample);
-                mAudioWavDump.writeSample(audioSample);
+                short[] audioSample = ((FeatureAudio)f).getAudio(sample);
+                if(audioSample != null)
+                    mAudioWavDump.writeSample(audioSample);
             }
         }
 
@@ -169,21 +171,39 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     /**
      * feature where we read the audio sync values
      */
-    private FeatureAudioADPCMSync mAudioSync;
+    private FeatureAudioConf mAudioSync;
 
     /**
      * listener for the audioSync feature, it will update the synchronism values
      */
     private final Feature.FeatureListener mAudioSyncListener = (f, sample) -> {
-        if(mBVAudioSyncManager!=null){
-            mBVAudioSyncManager.setSyncParams(sample);
+        if (mAudioCodecManager != null) {
+            mAudioCodecManager.updateParams(sample);
+        }
+
+        if(audioSamplingFreq != mAudioCodecManager.getSamplingFreq() || audioChannels!= mAudioCodecManager.getChannels())
+        {
+            audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
+            audioChannels = mAudioCodecManager.getChannels();
+        }
+
+        boolean newAudioStatus =  mAudioCodecManager.isAudioEnabled();
+        if(audioEnabled == null || audioEnabled != newAudioStatus) {
+            audioEnabled = newAudioStatus;
+            if (audioEnabled) {
+                startAudioStreaming();
+                mIsRecording = false;
+            }
+            else {
+                stopAudioStreaming();
+                mIsRecording=true;
+            }
+            changeAudioStreamStatus();
         }
     };
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private FeatureBeamforming mAudioBeamforming;
-
-
     private FeatureAccelerationEvent mAccEvent;
 
     private Feature.FeatureListener mTapListener = new Feature.FeatureListener() {
@@ -191,16 +211,15 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
         private long mLastEvent=0;
 
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
-            if(FeatureAccelerationEvent.hasAccelerationEvent(sample,FeatureAccelerationEvent.DOUBLE_TAP)){
+        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
+            if(FeatureAccelerationEvent.hasAccelerationEvent(sample,FeatureAccelerationEvent.DOUBLE_TAP)
+                && mAsrEngine.hasContinuousRecognizer()){
                 long now = System.currentTimeMillis();
                 if(now-mLastEvent > MIN_EVENT_TIME_DIFFERENCE_MS) {
                     mLastEvent = now;
                     changeAudioStreamStatus();
                 }
             }
-
-
         }
     };
 
@@ -212,7 +231,6 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
             mAsrEngine.stopListener(mEngineConnectionCallback);
         }
     }
-
 
     private View mRootView;
 
@@ -267,17 +285,13 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
         @ASRLanguage.Language int language = loadSelectedLanguage(context);
         String name = loadSelectedEngine(context);
         return ASREngineFactory.getASREngine(context,name,language);
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        mAudioWavDump = new AudioRecorder((LogFeatureActivity) getActivity(),FeatureAudioADPCM.FEATURE_NAME);
     }
-
 
     @Override
     public void onDestroy() {
@@ -290,7 +304,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     private TextView mEngineName;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_speech_to_text, container, false);
 
@@ -299,7 +313,6 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
 
         mSetEngineKeyButton = mRootView.findViewById(R.id.stt_setEngineKeyButton);
         mSetEngineKeyButton.setOnClickListener(v -> showSetEngineKeyDialog());
-
 
         mEngineName = mRootView.findViewById(R.id.stt_engineNameValue);
 
@@ -346,7 +359,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     //NOTE /////////////////////////////////////////////////////////////////////////////////////////
 
     private void setupResultListView() {
-        mAsrResultsAdapter = new ArrayAdapter<>(getActivity(),
+        mAsrResultsAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_list_item_1,mAsrResults);
         mAsrResultListView.setAdapter(mAsrResultsAdapter);
         mAsrResultListView.setOnItemLongClickListener((adapterView, view, i, l) -> {
@@ -409,7 +422,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
                 }
             } else {
                 if (action == MotionEvent.ACTION_DOWN && !mIsRecording) {
-                    mRecordedAudio = new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S);
+                    mRecordedAudio = new AudioBuffer(audioSamplingFreq, MAX_RECORDING_TIME_S);
                     mRecordBar.setMax(mRecordedAudio.getBufferLength());
                     mAsrEngine.startListener(mEngineConnectionCallback);
                     mEngineStatus.setText(R.string.stt_engineStatus_recording);
@@ -427,12 +440,11 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
             view.performClick();
             return returnValue;
         });
-
     }
 
     void sendAsrRequest(){
         mAsrEngine.sendASRRequest(mRecordedAudio,this);
-        mRecordedAudio = mIsRecording ? new AudioBuffer(AUDIO_SAMPLING_FREQ, MAX_RECORDING_TIME_S) : null;
+        mRecordedAudio = mIsRecording ? new AudioBuffer(audioSamplingFreq, MAX_RECORDING_TIME_S) : null;
         updateGui(() -> {
             mRecordBar.setVisibility(View.GONE);
             mEngineStatus.setText(R.string.blueVoice_sendRequest);
@@ -450,7 +462,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     @Override
     public void onPause() {
         super.onPause();
-        if(mAudioWavDump.isRecording())
+        if(mAudioWavDump!=null && mAudioWavDump.isRecording())
             mAudioWavDump.stopRec();
     }
 
@@ -465,7 +477,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if(!mAsrResults.isEmpty())
@@ -475,8 +487,8 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.startLog).setVisible(false);
-
-        mAudioWavDump.registerRecordMenu(menu,inflater);
+        if(mAudioWavDump!=null)
+            mAudioWavDump.registerRecordMenu(menu,inflater);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -497,27 +509,50 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
         dialog.show(getChildFragmentManager(),ASR_ENGINE_DIALOG_TAG);
     }
 
+    private void initializeAudioDump(FeatureAudio fa) {
+        LogFeatureActivity activity = (LogFeatureActivity) requireActivity();
+        mAudioWavDump = new AudioRecorder(activity, fa != null ? fa.getName() : "Audio");
+        activity.invalidateOptionsMenu();
+    }
+
+    private void startConfStreaming(@NonNull Node node){
+        mAudioSync = node.getFeature(FeatureAudioConf.class);
+        if(mAudioSync!=null) {
+            mAudioCodecManager = mAudioSync.instantiateManager();
+            audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
+            audioChannels = mAudioCodecManager.getChannels();
+            audioEnabled = mAudioCodecManager.isAudioEnabled();
+
+            mAudioSync.addFeatureListener(mAudioSyncListener);
+            node.enableNotification(mAudioSync);
+        }
+    }
 
     private void startAudioStreaming(){
         Node node = getNode();
         if(node==null)
             return;
 
-        mAudio = node.getFeature(FeatureAudioADPCM.class);
-        mAudioSync = node.getFeature(FeatureAudioADPCMSync.class);
-        mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
-        if(mAudio!=null && mAudioSync!=null) {
-            mAudio.addFeatureListener(mAudioListener);
+        mAudio = node.getFeature(FeatureAudio.class);
+        updateGui(() -> mBeamformingSwitch.setEnabled(false));
 
+
+        if(node.getFeature(FeatureBeamforming.class) != null){
+            mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
+        }
+
+        if(mAudio!=null) {
+            //updates the initialized audio recorder with the right AudioCodec Name
+            initializeAudioDump(mAudio);
+            mAudioWavDump.updateParams(audioSamplingFreq,audioChannels);
+
+            mAudio.addFeatureListener(mAudioListener);
             mAudio.addFeatureListener(mAudioListenerRec);
 
-            mBVAudioSyncManager.reinitResetFlag();
-            mAudio.setAudioSyncManager(mBVAudioSyncManager);
-
+            mAudio.setAudioCodecManager(mAudioCodecManager);
             node.enableNotification(mAudio);
 
-            mAudioSync.addFeatureListener(mAudioSyncListener);
-            node.enableNotification(mAudioSync);
+            mAudioCodecManager.reinit();
 
         }//if
         if(mAudioBeamforming!=null){
@@ -535,30 +570,25 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
         }
     }
 
-    private void stopAudioStreaming(){
-        Node node = getNode();
-        if(node==null)
-            return;
+    private void stopConfStreaming(){
+        if(mAudioSync!=null) {
+            mAudioSync.removeFeatureListener(mAudioSyncListener);
+            mAudioSync.disableNotification();
+        }
+    }
 
-        if(mAudio!=null && mAudioSync!=null &&
-                node.isEnableNotification(mAudio) &&
-                node.isEnableNotification(mAudioSync)) {
+    private void stopAudioStreaming(){
+        if(mAudio!=null && mAudioSync!=null) {
             mAudio.removeFeatureListener(mAudioListener);
             mAudio.removeFeatureListener(mAudioListenerRec);
-
-            node.disableNotification(mAudio);
-            if(mAsrEngine.hasContinuousRecognizer())
-                mAsrEngine.stopListener(mEngineConnectionCallback);
-
-            mAudioSync.removeFeatureListener(mAudioSyncListener);
-            node.disableNotification(mAudioSync);
+            mAudio.disableNotification();
+            audioEnabled = false;
         }
 
-        if(mAudioBeamforming!=null &&
-                node.isEnableNotification(mAudioBeamforming)){
+        if(mAudioBeamforming!=null){
             if(mBeamformingSwitch!=null && mBeamformingSwitch.isChecked())
                 mAudioBeamforming.enableBeamForming(false);
-            node.disableNotification(mAudioBeamforming);
+            mAudioBeamforming.disableNotification();
         }
         if(mAsrSnackbar!=null)
             mAsrSnackbar.dismiss();
@@ -567,17 +597,17 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
 
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
+        startConfStreaming(node);
+        initializeAudioDump(null);
         mAccEvent = node.getFeature(FeatureAccelerationEvent.class);
         if(mAccEvent!=null) {
             mAccEvent.detectEvent(FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT,false);
             mAccEvent.detectEvent(FeatureAccelerationEvent.DetectableEvent.DOUBLE_TAP,true);
             mAccEvent.addFeatureListener(mTapListener);
 
-            node.enableNotification(mAccEvent);
+            mAccEvent.enableNotification();
         }
-
         mBeamformingSwitch.setEnabled(node.getFeature(FeatureBeamforming.class)!=null);
-
     }//enableNeededNotification
 
     /**
@@ -589,16 +619,15 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     protected void disableNeedNotification(@NonNull Node node) {
         if(mAccEvent!=null){
             mAccEvent.removeFeatureListener(mTapListener);
-            node.disableNotification(mAccEvent);
+            mAccEvent.disableNotification();
         }
         stopAudioStreaming();
+        stopConfStreaming();
         if(mAsrEngine!=null && mIsRecording){
             mAsrEngine.stopListener(mEngineConnectionCallback);
             mAsrEngine.destroyListener();
         }
     }//disableNeedNotification
-
-
 
     private void enableASRView(){
         if(!isOnline()){
@@ -672,8 +701,8 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
 
     @Override
     public void onAsrEngineSelected(String name, int language) {
-        storeSelectedLanguage(getActivity(),name,language);
-        mAsrEngine = loadAsrEngine(getActivity());
+        storeSelectedLanguage(requireContext(),name,language);
+        mAsrEngine = loadAsrEngine(requireContext());
         displayEngineInfo(mAsrEngine);
         enableASRView();
     }
@@ -683,7 +712,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
             return;
         mEngineName.setText(getString(R.string.stt_engine_name_format,
                 engine.getDescription().getName(),
-                ASRLanguage.getLanguage(getActivity(),loadSelectedLanguage(getActivity()))));
+                ASRLanguage.getLanguage(getActivity(),loadSelectedLanguage(requireContext()))));
         if( engine.needAuthKey()){
             mSetEngineKeyButton.setVisibility(View.VISIBLE);
         }else{
@@ -700,5 +729,4 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     public void onDialogDismiss(DialogFragment dialog) {
         enableASRView();
     }
-
 }

@@ -64,19 +64,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.st.BlueMS.R;
-import com.st.BlueMS.demos.Cloud.AwsIot.AwSIotConfigurationFactory;
-import com.st.BlueMS.demos.Cloud.AzureIot.AzureIotConfigFactory;
-import com.st.BlueMS.demos.Cloud.GenericMqtt.GenericMqttConfigurationFactory;
-import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonConfigFactory;
-import com.st.BlueMS.demos.Cloud.IBMWatson.IBMWatsonQuickStartConfigFactory;
-import com.st.BlueMS.demos.Cloud.util.CloudFwUpgradeRequestDialog;
-import com.st.BlueMS.demos.Cloud.util.MqttClientConfigAdapter;
+import com.st.blesensor.cloud.AwsIot.AwSIotConfigurationFactory;
+import com.st.blesensor.cloud.AzureIot.AzureIotConfigFactory;
+import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
+import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
+import com.st.blesensor.cloud.GenericMqtt.GenericMqttConfigurationFactory;
+import com.st.blesensor.cloud.IBMWatson.IBMWatsonConfigFactory;
+import com.st.blesensor.cloud.IBMWatson.IBMWatsonQuickStartConfigFactory;
+import com.st.blesensor.cloud.util.CloudFwUpgradeRequestDialog;
+import com.st.blesensor.cloud.util.MqttClientConfigAdapter;
 import com.st.BlueMS.demos.util.DemoWithNetFragment;
 import com.st.BlueMS.demos.util.FeatureListViewAdapter;
 import com.st.BlueMS.demos.util.FeatureListViewAdapter.OnFeatureSelectChange;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
+import com.st.blesensor.cloud.AzureIoTCentral.AzureIoTCentralConfigFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +91,7 @@ import java.util.List;
 @DemoDescriptionAnnotation(name = "Cloud Logging",
         iconRes = R.drawable.ic_cloud_upload_24dp)
 public class CloudLogFragment extends DemoWithNetFragment implements
-        CloutIotClientConnectionFactory.FwUpgradeAvailableCallback,
+        CloudIotClientConnectionFactory.FwUpgradeAvailableCallback,
         CloudFwUpgradeRequestDialog.CloudFwUpgradeRequestCallback,
         CloudLogSelectIntervalDialogFragment.CloudLogSelectIntervalDialogCallback{
 
@@ -101,9 +104,10 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private static final int DEFAULT_UPDATE_INTERVAL_MS = 5000;
 
 
-    private List<CloutIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
+    private List<CloudIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
             new IBMWatsonQuickStartConfigFactory(),
             new IBMWatsonConfigFactory(),
+            new AzureIoTCentralConfigFactory(),
             new AzureIotConfigFactory(),
             new AwSIotConfigurationFactory(),
             new GenericMqttConfigurationFactory()
@@ -144,13 +148,13 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     /**
      * object used for build the cloud connection
      */
-    private CloutIotClientConnectionFactory mCloudConnectionFactory;
+    private CloudIotClientConnectionFactory mCloudConnectionFactory;
 
     /**
      * mqtt connection
      */
     private @Nullable
-    CloutIotClientConnectionFactory.CloutIotClient  mMqttClient;
+    CloudIotClientConnectionFactory.CloutIotClient  mMqttClient;
 
     /**
      * object to use for send the data to the cloud
@@ -183,7 +187,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         public void onFeatureSelect(Feature f) {
             if (mCloudLogListener != null) {
                 f.addFeatureListener(mCloudLogListener);
-                mNode.enableNotification(f);
+                f.enableNotification();
             }
         }
 
@@ -191,7 +195,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         public void onFeatureDeSelect(Feature f) {
             if (mCloudLogListener != null) {
                 f.removeFeatureListener(mCloudLogListener);
-                mNode.disableNotification(f);
+                f.disableNotification();
             }
         }
     };
@@ -246,7 +250,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     private void displaySelectUpdateIntervalDialog() {
-        DialogFragment dialog = CloudLogSelectIntervalDialogFragment.create(getActivity(),
+        DialogFragment dialog = CloudLogSelectIntervalDialogFragment.create(requireActivity(),
                 getUpdateInterval());
         dialog.show(getChildFragmentManager(),UPDATE_INTERVAL_DIALOG_TAG);
     }
@@ -277,11 +281,11 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     /**
-     * utility function that return the selected CloutIotClientConfigurationFactory from the spiner
+     * utility function that return the selected CloudIotClientConfigurationFactory from the spiner
      * @return current selection form the spinner
      */
-    private CloutIotClientConfigurationFactory getSelectCloud() {
-        return (CloutIotClientConfigurationFactory) mCloudClientSpinner.getSelectedItem();
+    private CloudIotClientConfigurationFactory getSelectCloud() {
+        return (CloudIotClientConfigurationFactory) mCloudClientSpinner.getSelectedItem();
     }
 
     /**
@@ -301,7 +305,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_cloud_log, container, false);
@@ -328,9 +332,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(outState!=null && mCloudClientSpinner!=null)
+        if(mCloudClientSpinner != null)
             outState.putInt(SELECTED_CLOUD_KEY,mCloudClientSpinner.getSelectedItemPosition());
 
     }
@@ -382,8 +386,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mCloudConfig.removeAllViews();
-                CloutIotClientConfigurationFactory selectedFactory =
-                        (CloutIotClientConfigurationFactory) adapterView.getItemAtPosition(i);
+                CloudIotClientConfigurationFactory selectedFactory =
+                        (CloudIotClientConfigurationFactory) adapterView.getItemAtPosition(i);
                 selectedFactory.attachParameterConfiguration(getActivity(), mCloudConfig);
                 selectedFactory.loadDefaultParameters(node);
             }
@@ -475,10 +479,10 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         try {
             mMqttClient = mCloudConnectionFactory.createClient(getActivity());
             mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient,getUpdateInterval());
-            Context ctx = getActivity();
+            Context ctx = requireContext();
             final Context appContext = ctx.getApplicationContext();
             showConnectingView();
-            mCloudConnectionFactory.connect(ctx, mMqttClient, new CloutIotClientConnectionFactory.ConnectionListener() {
+            mCloudConnectionFactory.connect(ctx, mMqttClient, new CloudIotClientConnectionFactory.ConnectionListener() {
                 @Override
                 public void onSuccess() {
                     mCloudConnectionFactory.enableCloudFwUpgrade(mNode, mMqttClient, fwUrl -> {
@@ -564,8 +568,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         if (!isCloudConnected()) {
             startCloudConnection();
         } else {
-            closeCloudConnection();
             stopAllNotification();
+            closeCloudConnection();
             showDisconnectedView();
         }//if-else
     }
@@ -635,11 +639,12 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     private long downloadFile(String fwUri){
-        DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request dwRequest = new DownloadManager.Request(Uri.parse(fwUri));
-        dwRequest.setTitle("download fw File");
-        dwRequest.setDescription("downloading new firemaware for: "+mNode.getName());
+        dwRequest.setTitle(getString(R.string.cloudLog_downloadFw_title));
+        dwRequest.setDescription(getString(R.string.cloudLog_downloadFw_desc,mNode.getName()));
         dwRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+
+        DownloadManager manager = (DownloadManager) requireContext().getSystemService(Context.DOWNLOAD_SERVICE);
         return  manager.enqueue(dwRequest);
 
     }
@@ -655,14 +660,14 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     void storeUpdateInterval(int updateInterval){
-        getActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE).edit()
+        requireActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE).edit()
                     .putInt(UPDATE_INTERVAL_KEY,updateInterval)
                     .apply();
 
     }
 
     int getUpdateInterval(){
-        return getActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE)
+        return requireActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE)
                 .getInt(UPDATE_INTERVAL_KEY,DEFAULT_UPDATE_INTERVAL_MS);
     }
 

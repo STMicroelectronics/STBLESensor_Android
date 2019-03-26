@@ -45,19 +45,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureSwitch;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Demo used to switch on and off a led in the node
  */
 @DemoDescriptionAnnotation(name = "Switch", iconRes = R.drawable.switch_demo_icon,
         requareAll ={FeatureSwitch.class})
-public class SwitchFragment extends DemoFragment {
+public class SwitchFragment extends BaseDemoFragment {
 
     private final static @DrawableRes int SWITCH_ON =R.drawable.switch_on;
     private final static @DrawableRes int SWITCH_OFF =R.drawable.switch_off;

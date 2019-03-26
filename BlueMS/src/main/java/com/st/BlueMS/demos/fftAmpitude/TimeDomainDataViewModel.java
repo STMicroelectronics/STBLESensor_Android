@@ -9,7 +9,6 @@ import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureMotorTimeParameter;
 import com.st.BlueSTSDK.Node;
 
-
 public class TimeDomainDataViewModel extends ViewModel {
 
 
@@ -28,15 +27,15 @@ public class TimeDomainDataViewModel extends ViewModel {
     private MutableLiveData<TimeDomainStats> mYStats = new MutableLiveData<>();
     private MutableLiveData<TimeDomainStats> mZStats = new MutableLiveData<>();
 
-    public LiveData<TimeDomainStats> getXComponentStats(){
+    LiveData<TimeDomainStats> getXComponentStats(){
         return mXStats;
     }
 
-    public LiveData<TimeDomainStats> getYComponentStats(){
+    LiveData<TimeDomainStats> getYComponentStats(){
         return mYStats;
     }
 
-    public LiveData<TimeDomainStats> getZComponentStats(){
+    LiveData<TimeDomainStats> getZComponentStats(){
         return mZStats;
     }
 

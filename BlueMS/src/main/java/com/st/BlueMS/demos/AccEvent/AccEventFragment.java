@@ -53,15 +53,15 @@ import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.AccelerationEvent;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent.DetectableEvent;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 /**
  * Demo showing a list of possible events and it shake the icon each time an event is detected
  */
 @DemoDescriptionAnnotation(name = "Acc Event", requareAll = {FeatureAccelerationEvent.class},
         iconRes = R.drawable.demo_sensors_fusion)
-public class AccEventFragment extends DemoFragment implements AdapterView.OnItemSelectedListener {
+public class AccEventFragment extends BaseDemoFragment implements AdapterView.OnItemSelectedListener {
 
     private static final String CURRENT_SELECTED_EVENT = AccEventFragment.class.getCanonicalName() +
             ".CURRENT_SELECTED_EVENT";
@@ -75,11 +75,26 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
      * list of possible events supported by the nucleo board
      */
     private static final DetectableEvent NUCLEO_SUPPORTED_EVENT[] = {
-            DetectableEvent.NONE,DetectableEvent.MULTIPLE,
+            DetectableEvent.NONE,
+            DetectableEvent.MULTIPLE,
             DetectableEvent.ORIENTATION,
-            DetectableEvent.DOUBLE_TAP,DetectableEvent.FREE_FALL,
-            DetectableEvent.PEDOMETER,DetectableEvent.SINGLE_TAP,
-            DetectableEvent.TILT, DetectableEvent.WAKE_UP};
+            DetectableEvent.DOUBLE_TAP,
+            DetectableEvent.FREE_FALL,
+            DetectableEvent.PEDOMETER,
+            DetectableEvent.SINGLE_TAP,
+            DetectableEvent.TILT,
+            DetectableEvent.WAKE_UP
+    };
+
+    private static final DetectableEvent SENSORTILE101_SUPPORTED_EVENT[] = {
+            DetectableEvent.NONE,
+            DetectableEvent.ORIENTATION,
+            DetectableEvent.DOUBLE_TAP,
+            DetectableEvent.FREE_FALL,
+            DetectableEvent.SINGLE_TAP,
+            DetectableEvent.TILT,
+            DetectableEvent.WAKE_UP
+    };
 
     private static final DetectableEvent IDB008_SUPPORTED_EVENT[] = {
             DetectableEvent.NONE,
@@ -116,6 +131,8 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
             case BLUE_COIN:
             case NUCLEO:
                 return NUCLEO_SUPPORTED_EVENT;
+            case SENSOR_TILE_101:
+                return SENSORTILE101_SUPPORTED_EVENT;
             default:
                 return new DetectableEvent[0];
         }
@@ -137,6 +154,7 @@ public class AccEventFragment extends DemoFragment implements AdapterView.OnItem
             case SENSOR_TILE:
             case BLUE_COIN:
             case NUCLEO:
+            case SENSOR_TILE_101:
                 return DetectableEvent.ORIENTATION;
             default:
                 return DetectableEvent.NONE;

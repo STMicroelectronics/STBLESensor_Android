@@ -12,16 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureMotionIntensity;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 @DemoDescriptionAnnotation(name="Motion Intensity", requareAll = {FeatureMotionIntensity.class},
         iconRes = com.st.BlueMS.R.drawable.activity_demo_icon)
-public class MotionIntensityFragment extends DemoFragment {
+public class MotionIntensityFragment extends BaseDemoFragment {
 
     private static final String LAST_VALUE = MotionIntensityFragment.class.getCanonicalName()
             +".MotionValue";

@@ -37,7 +37,7 @@
 
 package com.st.BlueMS.demos;
 
-import com.st.BlueMS.demos.Cloud.util.MqttClientUtil;
+import com.st.blesensor.cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
 
 import junit.framework.Assert;

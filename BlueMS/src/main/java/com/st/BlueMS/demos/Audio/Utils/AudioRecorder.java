@@ -66,6 +66,8 @@ public class AudioRecorder {
 
     //we use a single sheared thread to manage the write request
     private static Handler sWriteThread=null;
+    private int mSamplingFreq = 8000;
+    private short mChannels = 1;
 
     /**
      * initialize an singleton thread where queue the write request
@@ -82,7 +84,7 @@ public class AudioRecorder {
         }
     }
 
-    private final String mFileSuffix;
+    private String mFileSuffix;
     private final LogFeatureActivity mActivity;
     private boolean mIsRecStarted = false;
 
@@ -101,11 +103,11 @@ public class AudioRecorder {
                 mOut.writeBytes("fmt "); // subchunk 1 id
                 writeLittleEndianEInt(mOut, 16); // subchunk 1 size
                 writeLittleEndianEShort(mOut, (short) 1); // audio format (1 = PCM)
-                writeLittleEndianEShort(mOut, (short) 1); // number of channels
-                writeLittleEndianEInt(mOut, 8000); // sample rate
-                writeLittleEndianEInt(mOut, 8000 * 2); // byte rate
-                writeLittleEndianEShort(mOut, (short) 4); // block align
-                writeLittleEndianEShort(mOut, (short) 16); // bits per sample
+                writeLittleEndianEShort(mOut, (short) mChannels); // number of channels
+                writeLittleEndianEInt(mOut, mSamplingFreq); // sample rate
+                writeLittleEndianEInt(mOut, (mSamplingFreq * 16 * mChannels)/8); // byte rate //NOTE (Sample Rate * BitsPerSample * Channels) / 8
+                writeLittleEndianEShort(mOut, (short) ((16*mChannels)/8)); // block align //NOTE (BitsPerSample * Channels) / 8
+                writeLittleEndianEShort(mOut, (short) 16); // bits per sample //NOTE BitsPerSample
                 mOut.writeBytes("data"); // subchunk 2 id
                 writeLittleEndianEInt(mOut, 0); // subchunk 2 size
                 mIsRecStarted = true;
@@ -122,6 +124,11 @@ public class AudioRecorder {
             try {
                 mOut.seek(4);
                 writeLittleEndianEInt(mOut, 36 + (mDataCursor *2)); // chunk size
+                mOut.seek(22);
+                writeLittleEndianEShort(mOut, (short) mChannels); // number of channels
+                writeLittleEndianEInt(mOut, mSamplingFreq); // sample rate
+                writeLittleEndianEInt(mOut, (mSamplingFreq * 16 * mChannels)/8); // byte rate //NOTE (Sample Rate * BitsPerSample * Channels) / 8
+                writeLittleEndianEShort(mOut, (short) ((16*mChannels)/8)); // block align //NOTE (BitsPerSample * Channels) / 8
                 mOut.seek(40);
                 writeLittleEndianEInt(mOut, (mDataCursor *2));
                 mOut.close();
@@ -142,6 +149,7 @@ public class AudioRecorder {
         mFileSuffix = fileSufix;
         mWriteThread = createWriteQueue();
     }
+
 
     /**
      * add a menu items start and stop the file recording
@@ -245,6 +253,14 @@ public class AudioRecorder {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Update Audio Recorder parameters
+     */
+    public void updateParams(int samplingFreq, short channels) {
+        this.mSamplingFreq = samplingFreq;
+        this.mChannels = channels;
     }
 
     private void writeLittleEndianEInt(DataOutput output, int value) throws IOException {

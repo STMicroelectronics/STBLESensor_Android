@@ -43,7 +43,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureActivity;
@@ -51,13 +51,12 @@ import com.st.BlueSTSDK.Features.FeatureActivity.ActivityType;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
-
 /**
  * Fragment that show the 6 possible activity and change the alpha of the selected one
  */
 @DemoDescriptionAnnotation(name="Activity Recognition", requareAll = {FeatureActivity.class},
     iconRes = R.drawable.activity_demo_icon)
-public class ActivityRecognitionFragment extends DemoFragment {
+public class ActivityRecognitionFragment extends BaseDemoFragment {
 
     private static final String CURRENT_ALGORITHM = ActivityRecognitionFragment.class.getName()+".CURRENT_ALGORITHM";
     private static final String CURRENT_ACTION = ActivityRecognitionFragment.class.getName()+".CURRENT_ACTION";

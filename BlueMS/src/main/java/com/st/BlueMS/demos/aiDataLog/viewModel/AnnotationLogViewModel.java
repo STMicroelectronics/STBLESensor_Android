@@ -139,9 +139,7 @@ public class AnnotationLogViewModel extends AndroidViewModel {
         annotation.setSelected(true);
         if(mSessionId!=null){
             mLastAnnotation.setValue(new SessionAnnotationEvent(mSessionId,new Date(), getSelectedAnnotation()));
-            if(mLoggingFeature!=null){
-                mLoggingFeature.updateAnnotation(">"+annotation.annotation.label);
-            }
+            logAnnotationEnabled(annotation.annotation);
         }
     }
 
@@ -149,9 +147,7 @@ public class AnnotationLogViewModel extends AndroidViewModel {
         annotation.setSelected(false);
         if(mSessionId!=null){
             mLastAnnotation.setValue(new SessionAnnotationEvent(mSessionId,new Date(), getSelectedAnnotation()));
-            if(mLoggingFeature!=null) {
-                mLoggingFeature.updateAnnotation("<" + annotation.annotation.label);
-            }
+            logAnnotationDisabled(annotation.annotation);
         }
     }
 
@@ -230,11 +226,29 @@ public class AnnotationLogViewModel extends AndroidViewModel {
             new NucleoConsole(console).setDateAndTime(new Date());
         }
     }
+
+    private void syncSelectedAnnotation(){
+        for( Annotation annotation : getSelectedAnnotation()){
+            logAnnotationEnabled(annotation);
+        }
+    }
+
+    private void logAnnotationEnabled(Annotation annotation){
+        if(mLoggingFeature!=null)
+            mLoggingFeature.updateAnnotation(">"+annotation.label);
+    }
+
+    private void logAnnotationDisabled(Annotation annotation){
+        if(mLoggingFeature!=null)
+            mLoggingFeature.updateAnnotation("<"+annotation.label);
+    }
+
     private void startLogging(long featureMask, float environmentalFreq, float inertialFreq, float audioVolume){
         if(mLoggingFeature!=null) {
             setNodeTime(mLoggingFeature.getParentNode().getDebug());
             byte volume = (byte)(audioVolume*32.0f);
             mLoggingFeature.startLogging(featureMask, environmentalFreq, inertialFreq,volume);
+            syncSelectedAnnotation();
         }
     }
 

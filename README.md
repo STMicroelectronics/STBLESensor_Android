@@ -1,12 +1,12 @@
-# ST BlueMS
+# ST BLE Sensor
 
-This repository contains the ST BlueMS app source code.
+This repository contains the ST BLE Sensor mobile application source code.
 
-Used in conjunction with a firmware compatible with the BlueST protocol, the BlueMS application allow the user to access to all the sensors data, to request and download algorithm licenses, and to update the firmware directly from a mobile device via the Bluetooth® Low Energy protocol.
+Used in conjunction with a firmware compatible with the BlueST protocol, the ST BLE Sensor application allow the user to access to all the sensors data, to request and download algorithm licenses, and to update the firmware directly from a mobile device via the Bluetooth® Low Energy protocol.
 As an example, [BLUEMICROSYSTEM1](http://www.st.com/content/st_com/en/products/embedded-software/mems-and-sensors-software/open-mems/bluemicrosystem1.html) expansion software package for STM32Cube lets the user read and display real-time inertial (e.g. motion MEMS) and environmental (e.g. humidity, pressure, temperature) sensor data. It also provides a set of Open.Mems library functionalities like motion-sensor data fusion (osxMotionFX), activity recognition (osxMotionAR) and pedometer (osxMotionPM).
 The application is also compatible with the ST Open Development Environment compliant [FP-SNS-MOTENV1](http://www.st.com/content/st_com/en/products/embedded-software/mcus-embedded-software/stm32-embedded-software/stm32-ode-function-pack-sw/fp-sns-motenv1.html), [FP-SNS-ALLMEMS1](http://www.st.com/content/st_com/en/products/embedded-software/mcus-embedded-software/stm32-embedded-software/stm32-ode-function-pack-sw/fp-sns-allmems1.html) and [FP-SNS-FLIGHT1](http://www.st.com/content/st_com/en/products/embedded-software/mcus-embedded-software/stm32-embedded-software/stm32-ode-function-pack-sw/fp-sns-flight1.html) function packs.
 
-The application is built on top of BlueST SDK, a library that provides an implementation of BlueST protocol and helps to easily export the data via Bluetooth® Low Energy. The SDK source code is freely available on [github](https://github.com/STMicroelectronics-CentralLabs/)
+The application is built on top of BlueST SDK, a library that provides an implementation of BlueST protocol and helps to easily export the data via Bluetooth® Low Energy. The SDK source code is freely available on [GitHub](https://github.com/STMicroelectronics/BlueSTSDK_Android)
 
 ## Download the source
 

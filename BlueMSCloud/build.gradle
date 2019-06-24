@@ -49,7 +49,7 @@ dependencies {
     implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: "$rootProject.amazonSDKVersion"
 
     //azure iot client
-    implementation 'com.github.lucadruda:iotc-java-device-client:1.0.1'
+    implementation 'com.github.lucadruda:iotc-java-device-client:1.0.3'
 
     testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"

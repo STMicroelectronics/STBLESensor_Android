@@ -43,18 +43,19 @@
              tools:context=".demos.SwitchFragment" android:orientation="vertical">
 
     <TextView
+        android:id="@+id/switch_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/SwitchDemoDesc"
+        android:text="@string/switch_onOffDescription"
         android:layout_gravity="center_horizontal|top"
         android:layout_margin="@dimen/activity_vertical_margin"/>
 
     <ImageView
-        android:id="@+id/switchImage"
+        android:id="@+id/switch_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:contentDescription="@string/SwitchImgDesc"
+        android:contentDescription="@string/switch_imgDesc"
         app:srcCompat="@drawable/switch_off" />
 </LinearLayout>

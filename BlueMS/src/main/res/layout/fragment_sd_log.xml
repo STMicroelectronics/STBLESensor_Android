@@ -47,6 +47,21 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/sdLog_currentStatusLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sdLog_loggingIntervalLabel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintBottom_toTopOf="@+id/sdLog_intervalLabel"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/sdLog_intervalLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -57,10 +72,10 @@
             android:layout_marginTop="8dp"
             android:text="@string/sdLog_loggingIntervalLabel"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toTopOf="@+id/sdLog_hoursValues"
+            app:layout_constraintBottom_toTopOf="@+id/sdLog_hoursValue"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/sdLog_currentStatusLabel" />
 
         <TextView
             android:id="@+id/sdLog_hoursLabel"
@@ -68,15 +83,15 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="16dp"
-            android:labelFor="@id/sdLog_hoursValues"
+            android:labelFor="@id/sdLog_hoursValue"
             android:text="@string/sdLog_hoursLabel"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintBaseline_toBaselineOf="@+id/sdLog_hoursValues"
-            app:layout_constraintEnd_toStartOf="@+id/sdLog_hoursValues"
+            app:layout_constraintBaseline_toBaselineOf="@+id/sdLog_hoursValue"
+            app:layout_constraintEnd_toStartOf="@+id/sdLog_hoursValue"
             app:layout_constraintStart_toStartOf="@+id/sdLog_intervalLabel" />
 
         <EditText
-            android:id="@+id/sdLog_hoursValues"
+            android:id="@+id/sdLog_hoursValue"
             android:layout_width="@dimen/sdLog_textFieldWidth"
             android:layout_height="41dp"
             android:layout_marginTop="8dp"
@@ -90,18 +105,18 @@
             app:layout_constraintTop_toBottomOf="@+id/sdLog_intervalLabel" />
 
         <TextView
-            android:id="@+id/sdLog_minuteLabel"
+            android:id="@+id/sdLog_minutesLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:labelFor="@id/sdLog_minutesValues"
+            android:labelFor="@id/sdLog_minutesValue"
             android:text="@string/sdLog_minutesLabel"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintBaseline_toBaselineOf="@+id/sdLog_hoursValues"
-            app:layout_constraintStart_toEndOf="@+id/sdLog_hoursValues" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/sdLog_hoursValue"
+            app:layout_constraintStart_toEndOf="@+id/sdLog_hoursValue" />
 
         <EditText
-            android:id="@+id/sdLog_minutesValues"
+            android:id="@+id/sdLog_minutesValue"
             android:layout_width="@dimen/sdLog_textFieldWidth"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -110,8 +125,8 @@
             android:maxLines="1"
             android:text="@string/sdLog_defaultMinutesValue"
             android:textAlignment="textEnd"
-            app:layout_constraintBaseline_toBaselineOf="@+id/sdLog_minuteLabel"
-            app:layout_constraintStart_toEndOf="@+id/sdLog_minuteLabel" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/sdLog_minutesLabel"
+            app:layout_constraintStart_toEndOf="@+id/sdLog_minutesLabel" />
 
         <TextView
             android:id="@+id/sdLog_secondsLabel"
@@ -137,7 +152,7 @@
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toTopOf="@+id/sdLog_errorLabel"
             app:layout_constraintStart_toEndOf="@+id/sdLog_secondsLabel"
-            app:layout_constraintTop_toBottomOf="@+id/sdLog_hoursValues" />
+            app:layout_constraintTop_toBottomOf="@+id/sdLog_hoursValue" />
 
         <TextView
             android:id="@+id/sdLog_errorLabel"
@@ -186,6 +201,21 @@
             app:layout_constraintTop_toBottomOf="@+id/sdLog_featureListTitleLabel"
             tools:listitem="@layout/feature_list_item" />
 
+        <android.support.constraint.Group
+            android:id="@+id/sdLog_logIntervalGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="sdLog_intervalLabel,sdLog_hoursLabel,sdLog_hoursValue,sdLog_minutesValue,sdLog_minutesLabel,sdLog_secondsLabel,sdLog_secondsValue"
+            />
+
+        <android.support.constraint.Group
+            android:id="@+id/sdLog_featureListGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="sdLog_featureListTitleLabel,sdLog_featureList"
+            />
 
     </android.support.constraint.ConstraintLayout>
 

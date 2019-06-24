@@ -20,7 +20,7 @@ import com.st.BlueSTSDK.gui.util.InputChecker.CheckNotEmpty;
 import com.st.blesensor.cloud.R;
 
 public class AzureIoTCentralConfigFactory implements CloudIotClientConfigurationFactory {
-    private static final String CLOUD_NAME= "Azure IoT Central";
+    private static final String CLOUD_NAME= "Azure IoTCentralClient";
 
     private static final String CONF_PREFERENCE = AzureIoTCentralConfigFactory.class.getCanonicalName();
     private static final String SCOPE_ID_KEY = CONF_PREFERENCE+".SCOPE_ID_KEY";

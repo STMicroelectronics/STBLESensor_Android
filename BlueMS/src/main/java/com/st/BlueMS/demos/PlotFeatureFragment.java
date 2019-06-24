@@ -70,10 +70,9 @@ import com.androidplot.xy.XYLegendWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYStepMode;
-import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
+import com.st.BlueSTSDK.Features.FeatureMemsNorm;
 import com.st.BlueSTSDK.Features.FeatureEulerAngle;
-import com.st.BlueSTSDK.Features.FeatureGyroscopeNorm;
-import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
+import com.st.BlueSTSDK.Features.FeatureEventCounter;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
@@ -132,9 +131,8 @@ import java.util.concurrent.locks.ReentrantLock;
                     FeatureTemperature.class,
                     FeatureCOSensor.class,
                     FeatureEulerAngle.class,
-                    FeatureAccelerationNorm.class,
-                    FeatureMagnetometerNorm.class,
-                    FeatureGyroscopeNorm.class
+                    FeatureMemsNorm.class,
+                    FeatureEventCounter.class
     })
 public class PlotFeatureFragment extends BaseDemoFragment implements View.OnClickListener,
         AdapterView.OnItemSelectedListener {
@@ -457,7 +455,7 @@ public class PlotFeatureFragment extends BaseDemoFragment implements View.OnClic
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_plot_feature, container, false);
 

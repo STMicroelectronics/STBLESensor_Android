@@ -37,6 +37,7 @@
   -->
 
 <resources>
-    <string name="SwitchImgDesc">Switch Image</string>
-    <string name="SwitchDemoDesc">Click on the image to change the led status</string>
+    <string name="switch_imgDesc">Switch Image</string>
+    <string name="switch_onOffDescription">Click on the image to change the led status</string>
+    <string name="switch_eventDescription">The led is swithing on when an event is detected</string>
 </resources>

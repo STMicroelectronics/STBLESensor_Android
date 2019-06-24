@@ -131,7 +131,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
             case BLUE_COIN:
             case NUCLEO:
                 return NUCLEO_SUPPORTED_EVENT;
-            case SENSOR_TILE_101:
+            case SENSOR_TILE_BOX:
                 return SENSORTILE101_SUPPORTED_EVENT;
             default:
                 return new DetectableEvent[0];
@@ -154,7 +154,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
             case SENSOR_TILE:
             case BLUE_COIN:
             case NUCLEO:
-            case SENSOR_TILE_101:
+            case SENSOR_TILE_BOX:
                 return DetectableEvent.ORIENTATION;
             default:
                 return DetectableEvent.NONE;

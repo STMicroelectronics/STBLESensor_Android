@@ -38,6 +38,8 @@
 package com.st.BlueMS.demos.SDLog;
 
 
+import android.support.annotation.NonNull;
+
 import com.st.BlueMS.preference.nucleo.NucleoConsole;
 import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.Feature;
@@ -87,6 +89,8 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
         }
         //else
         mLogFeature.addFeatureListener(this);
+        mView.displayFeatureList();
+        mView.displayLogInterval();
         mView.setLogInterval(DEFAULT_LOG_INTERVAL);
         Node n = mLogFeature.getParentNode();
         n.enableNotification(mLogFeature);
@@ -153,7 +157,7 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
     }
 
     @Override
-    public void onUpdate(Feature f, Feature.Sample sample) {
+    public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
         @FeatureSDLogging.LoggingStatus int status = FeatureSDLogging.getLoggingStatus(sample);
         switch (status) {
             case FeatureSDLogging.LOGGING_STARTED:

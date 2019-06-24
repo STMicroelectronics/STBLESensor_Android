@@ -77,10 +77,13 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
 
     private static String WARNING_DIALOG_TAG = SDLogFragment.class.getCanonicalName()+".WarningDialogTag";
 
+    private View mIntervalGroupView;
+    private View mFeatureListGroupView;
     private TextView mHoursValue;
     private TextView mMinuteValue;
     private TextView mSecondsValue;
     private TextView mErrorMessage;
+    private TextView mCurrentStatusMessage;
     private RecyclerView mFeatureListView;
     private FeatureListViewAdapter mFeatureListAdapter;
     private ImageButton mStartLogButton;
@@ -95,7 +98,12 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         FeatureSDLogging logFeature = node.getFeature(FeatureSDLogging.class);
-        mPresenter = new SDLogPresenter(this, logFeature);
+        if(node.getType()== Node.Type.SENSOR_TILE_BOX){
+            mPresenter = new SDLogPresenterSTBox(this, logFeature);
+        }else{
+            mPresenter = new SDLogPresenter(this, logFeature);
+        }
+
         mPresenter.startDemo();
     }
 
@@ -124,11 +132,14 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_sd_log, container, false);
+        mCurrentStatusMessage = root.findViewById(R.id.sdLog_currentStatusLabel);
         mFeatureListView = root.findViewById(R.id.sdLog_featureList);
         mSecondsValue = root.findViewById(R.id.sdLog_secondsValue);
-        mMinuteValue = root.findViewById(R.id.sdLog_minutesValues);
-        mHoursValue = root.findViewById(R.id.sdLog_hoursValues);
+        mMinuteValue = root.findViewById(R.id.sdLog_minutesValue);
+        mHoursValue = root.findViewById(R.id.sdLog_hoursValue);
         mErrorMessage = root.findViewById(R.id.sdLog_errorLabel);
+        mFeatureListGroupView = root.findViewById(R.id.sdLog_featureListGroup);
+        mIntervalGroupView = root.findViewById(R.id.sdLog_logIntervalGroup);
         mStartLogButton = root.findViewById(R.id.sdLog_startButton);
         mStartLogButton.setOnClickListener(view -> mPresenter.onStartStopLogPressed());
         return root;
@@ -196,6 +207,26 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
     }
 
     @Override
+    public void hideLogInterval() {
+        mIntervalGroupView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void displayLogInterval() {
+        mIntervalGroupView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFeatureList() {
+        mFeatureListGroupView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void displayFeatureList() {
+        mFeatureListGroupView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void displayIOErrorLoggingView() {
         displayErrorView(R.string.sdLog_no_sd_error);
     }
@@ -236,6 +267,7 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
     public void displayStopLoggingView() {
         updateGui(() -> {
             setInputEnabled(false);
+            mCurrentStatusMessage.setText(R.string.sdLog_loggingStatusStartLog);
             mErrorMessage.setVisibility(View.GONE);
             mFeatureListView.setVisibility(View.INVISIBLE);
             mStartLogButton.setVisibility(View.VISIBLE);
@@ -254,9 +286,13 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
 
     private void showStartLoggingView() {
         setInputEnabled(true);
+        mCurrentStatusMessage.setText(R.string.sdLog_loggingStatusStopLog);
         mFeatureListView.setVisibility(View.VISIBLE);
         mStartLogButton.setEnabled(true);
         mStartLogButton.setImageResource(R.drawable.sd_log_start);
+        if(mFeatureListGroupView.getVisibility() == View.INVISIBLE){
+            mStartLogButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

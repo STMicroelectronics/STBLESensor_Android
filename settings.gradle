@@ -1,3 +1,8 @@
-include ':BlueSTSDK', ':BlueSTSDK_Gui_Android', ':BlueMS', ':BlueMSCloud'
+include ':BlueMS',
+        ':BlueMSCloud',
+        ':BlueSTSDK',
+        ':BlueSTSDK_Gui_Android'
+
+
 
 project(':BlueSTSDK').projectDir = new File('BlueSTSDK/BlueSTSDK')

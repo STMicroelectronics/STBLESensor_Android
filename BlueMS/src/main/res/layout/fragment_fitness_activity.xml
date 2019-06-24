@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.st.BlueMS.demos.motionAlgorithm.MotionAlgorithmFragment">
+
+    <Spinner
+        android:padding="8dp"
+        android:id="@+id/fitnessActivity_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog" />
+
+    <ImageView
+        android:id="@+id/fitnessActivity_resultIcon"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:layout_weight="1"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/fitnessActivity_resultLabel"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+</LinearLayout>

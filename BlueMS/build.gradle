@@ -60,10 +60,10 @@ android {
     defaultConfig {
 
         minSdkVersion rootProject.ext.minSdkVersion
-        versionCode 30
-        versionName '4.3.0'
-        applicationId "com.st.bluems"
         targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 34
+        versionName '4.4.3'
+        applicationId "com.st.bluems"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -115,10 +115,7 @@ android {
 }
 
 ext {
-    leakcanaryVersion = '1.5.4'
-    retrofitVersion = '2.4.0'
-    roomVersion = "1.1.1"
-    archLifecycleVersion = '1.1.1'
+    leakcanaryVersion = '1.6.3'
 }
 
 repositories {
@@ -134,8 +131,6 @@ dependencies {
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
     implementation 'com.android.support:multidex:1.0.3'
 
     implementation group: 'com.android.support', name: 'design', version: "$rootProject.supportLibraryVersion"
@@ -145,8 +140,8 @@ dependencies {
     implementation group: 'com.android.support', name: 'cardview-v7', version: "$rootProject.supportLibraryVersion"
     implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
 
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
 
     // Lifecycle components
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
@@ -155,9 +150,8 @@ dependencies {
     // ibm speech to text
     implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '6.12.0'
 
-    //generic websocket speech to cloud
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.13.1'
-
+    //generic websocket speech to cloud, keep 3.12.x to be compatible with device < api 21
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.12.2'
 
     //memory leak detector
     debugImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: "$leakcanaryVersion"
@@ -173,4 +167,3 @@ dependencies {
     androidTestImplementation "com.android.support.test:rules:$rootProject.rulesVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
 }
-

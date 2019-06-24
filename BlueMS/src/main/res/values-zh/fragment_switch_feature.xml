@@ -37,6 +37,6 @@
   -->
 
 <resources>
-    <string name="SwitchImgDesc">切换图片</string>
-    <string name="SwitchDemoDesc">点击图片改变mStatus</string>
+    <string name="switch_imgDesc">切换图片</string>
+    <string name="switch_onOffDescription">点击图片改变mStatus</string>
 </resources>

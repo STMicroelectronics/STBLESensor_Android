@@ -38,6 +38,8 @@
 
 <resources>
     <string name="sdLog_loggingIntervalLabel">Logging interval</string>
+    <string name="sdLog_loggingStatusStartLog">Status: Recording the data</string>
+    <string name="sdLog_loggingStatusStopLog">Press the button to start recording the data</string>
     <string name="sdLog_hoursLabel">Hours:</string>
     <string name="sdLog_defaultHoursValues">0</string>
     <string name="sdLog_minutesLabel">Minutes:</string>

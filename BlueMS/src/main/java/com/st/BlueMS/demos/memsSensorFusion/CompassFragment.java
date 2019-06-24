@@ -124,6 +124,8 @@ public class CompassFragment extends BaseDemoFragment {
         }else {
             mEulerAngle = node.getFeature(FeatureEulerAngle.class);
             if(mEulerAngle != null) {
+                CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
+                mCalibPresenter.manage(calibView, mEulerAngle);
                 mEulerAngle.addFeatureListener(mEulerUpdate);
                 mEulerAngle.enableNotification();
             }
@@ -145,7 +147,7 @@ public class CompassFragment extends BaseDemoFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_compass_demo, container, false);

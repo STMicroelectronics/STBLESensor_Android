@@ -64,6 +64,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileService;
+import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileCompletedReceiver;
 import com.st.blesensor.cloud.AwsIot.AwSIotConfigurationFactory;
 import com.st.blesensor.cloud.AzureIot.AzureIotConfigFactory;
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
@@ -171,7 +173,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      */
     private Node.NodeStateListener mCloseConnectionOnDisconnection = new Node.NodeStateListener() {
         @Override
-        public void onStateChange(Node node, Node.State newState, Node.State prevState) {
+        public void onStateChange(@NonNull Node node, @NonNull Node.State newState, @NonNull Node.State prevState) {
             if (prevState == Node.State.Connected) {
                 closeCloudConnection();
                 node.removeNodeStateListener(this);
@@ -203,7 +205,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     /**
      * Receiver called when the system download a new fw, it will start the fw upgrade procedure
      */
-    private FwDownloaderReceiver mFwDownloadReceiver;
+    private DownloadFwFileCompletedReceiver mFwDownloadReceiver;
 
     public CloudLogFragment() {
         // Required empty public constructor
@@ -273,7 +275,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         mNode = node;
-        mFwDownloadReceiver = new FwDownloaderReceiver(node);
+        mFwDownloadReceiver = new DownloadFwFileCompletedReceiver(requireContext(),node);
         if (isCloudConnected()) {
             showConnectedView();
         } else
@@ -509,7 +511,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
                     exception.printStackTrace();
                 }
             });
-            mFwDownloadReceiver.registerReceiver(getActivity());
+            mFwDownloadReceiver.registerReceiver();
         } catch (Exception e) {
             e.printStackTrace();
             buildMqttErrorDialog(getActivity(), e.getMessage()).show();
@@ -550,7 +552,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             mCloudLogListener = null;
             Context ctx = getActivity();
             if(ctx!=null) // can be null if called after the d
-                mFwDownloadReceiver.unregisterReceiver(getActivity());
+                mFwDownloadReceiver.unregisterReceiver();
             try {
                 mCloudConnectionFactory.disconnect(mMqttClient);
             } catch (Exception e) {

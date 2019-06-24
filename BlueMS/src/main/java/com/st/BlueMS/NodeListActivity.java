@@ -37,6 +37,8 @@
 
 package com.st.BlueMS;
 
+import android.support.annotation.NonNull;
+
 import com.st.BlueNRG.fwUpgrade.BlueNRGAdvertiseFilter;
 import com.st.BlueNRG.fwUpgrade.feature.BlueNRGOTASupport;
 import com.st.BlueSTSDK.Features.standardCharacteristics.StdCharToFeatureMap;
@@ -56,7 +58,7 @@ import java.util.List;
 public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
 
     @Override
-    public boolean displayNode(Node n) {
+    public boolean displayNode(@NonNull Node n) {
         return true;
     }
 
@@ -68,7 +70,7 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
     }
 
     @Override
-    public void onNodeSelected(Node n) {
+    public void onNodeSelected(@NonNull Node n) {
 
         ConnectionOption.ConnectionOptionBuilder optionsBuilder = ConnectionOption.builder()
                 .resetCache(clearCacheIsSelected())
@@ -88,7 +90,7 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
         else if(n.getType()== Node.Type.STEVAL_WESU1)
             startActivity(DemosActivityWesu.getStartIntent(this,n,options));
         else if (STM32OTASupport.isOTANode(n)){
-            startActivity(FwUpgradeSTM32WBActivity.getStartIntent(this, n,null,null));
+            startActivity(FwUpgradeSTM32WBActivity.getStartIntent(this, n,null,null,null));
         }else {
             startActivity(DemosActivity.getStartIntent(this, n, options));
         }

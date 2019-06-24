@@ -75,7 +75,7 @@ public class AzureIotCentralFactory implements CloudIotClientConnectionFactory {
     @Nullable
     @Override
     public Uri getDataPage() {
-        return null;
+        return Uri.parse("https://apps.azureiotcentral.com");
     }
 
     @Override

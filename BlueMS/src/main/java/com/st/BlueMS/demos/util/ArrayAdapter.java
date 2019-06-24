@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017  STMicroelectronics – All rights reserved
+ * Copyright (c) 2019  STMicroelectronics – All rights reserved
  * The STMicroelectronics corporate logo is a trademark of STMicroelectronics
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -34,61 +34,21 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
+package com.st.BlueMS.demos.util;
 
-package com.st.BlueMS.demos.Cloud;
-
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.annotation.ArrayRes;
+import android.support.annotation.NonNull;
 
-import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity;
+public class ArrayAdapter {
 
-/**
- * Wait the fw file download ends and start the fw upgrade activity when the file is downloaded
- */
-public class FwDownloaderReceiver extends BroadcastReceiver {
-
-    private static final IntentFilter sReceiverFilter = new IntentFilter(DownloadFwFileService.ACTION_DOWNLOAD_COMPLETE);
-
-    private Node mNode;
-
-    /**
-     * @param node where upload the fw
-     */
-    public FwDownloaderReceiver(Node node){
-        mNode=node;
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equals(DownloadFwFileService.ACTION_DOWNLOAD_COMPLETE)){
-            Uri file = intent.getParcelableExtra(DownloadFwFileService.EXTRA_DOWNLOAD_LOCATION);
-            Intent startFwActivity =FwUpgradeActivity.getStartIntent(context,mNode,true,file);
-            startFwActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(startFwActivity);
-        }
-    }
-
-    /**
-     * register the receiver to the local broadcast
-     * @param c
-     */
-    public void registerReceiver(Context c){
-        LocalBroadcastManager.getInstance(c.getApplicationContext())
-                .registerReceiver(this,sReceiverFilter);
-    }
-
-    /**
-     * unregister the receiver to the local broadcast
-     * @param c
-     */
-    public void unregisterReceiver(Context c){
-        LocalBroadcastManager.getInstance(c.getApplicationContext())
-                .unregisterReceiver(this);
+    public static android.widget.ArrayAdapter<CharSequence> createAdapterFromArray(@NonNull Context context, @ArrayRes int res){
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        android.widget.ArrayAdapter<CharSequence> adapter = android.widget.ArrayAdapter.createFromResource(context,
+                res, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
     }
 
 }

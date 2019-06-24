@@ -44,6 +44,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
@@ -64,10 +65,11 @@ public class SwitchFragment extends BaseDemoFragment {
 
     private FeatureSwitch mSwitchFeature;
     private ImageView mSwitchImage;
+    private TextView mSwitchText;
 
     private Feature.FeatureListener mStatusChanged = new Feature.FeatureListener() {
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
             final @DrawableRes int newImage;
             if(FeatureSwitch.getSwitchStatus(sample)==0){
                 newImage = SWITCH_OFF;
@@ -78,18 +80,28 @@ public class SwitchFragment extends BaseDemoFragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_switch, container, false);
 
-        mSwitchImage = root.findViewById(R.id.switchImage);
+        mSwitchImage = root.findViewById(R.id.switch_image);
+        mSwitchText = root.findViewById(R.id.switch_title);
 
         return root;
     }
 
+    private void setSwitchText(Node.Type nodeType){
+        if(nodeType == Node.Type.SENSOR_TILE_BOX){
+            mSwitchText.setText(R.string.switch_eventDescription);
+        }else{
+            mSwitchText.setText(R.string.switch_onOffDescription);
+        }
+    }
+
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
+        setSwitchText(node.getType());
         mSwitchFeature = node.getFeature(FeatureSwitch.class);
         if (mSwitchFeature != null) {
             mSwitchFeature.addFeatureListener(mStatusChanged);

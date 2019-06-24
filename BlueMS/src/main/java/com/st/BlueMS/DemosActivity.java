@@ -39,6 +39,7 @@ package com.st.BlueMS;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +58,7 @@ import com.st.BlueMS.demos.PredictiveMaintenance.PredictiveMaintenanceFragment;
 import com.st.BlueMS.demos.SDLog.SDLogFragment;
 import com.st.BlueMS.demos.aiDataLog.AIDataLogDemoFragment;
 import com.st.BlueMS.demos.fftAmpitude.FFTAmplitudeFragment;
+import com.st.BlueMS.demos.fitnessActivity.FitnessActivityFragment;
 import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HeartRateFragment;
@@ -69,12 +71,14 @@ import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.ProximityGestureRecognitionFragment;
 import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.SwitchFragment;
+import com.st.BlueMS.demos.motionAlgorithm.MotionAlgorithmFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
 import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
+import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileCompletedReceiver;
 import com.st.STM32WB.fwUpgrade.feature.RebootOTAModeFeature;
 import com.st.STM32WB.p2pDemo.feature.FeatureControlLed;
 import com.st.STM32WB.p2pDemo.feature.FeatureSwitchStatus;
@@ -124,7 +128,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
      * for the demo it will displayed
      */
     @SuppressWarnings("unchecked")
-    private final static Class<? extends DemoFragment> ALL_DEMOS[] = new Class[]{
+    private final static Class<? extends DemoFragment>[] ALL_DEMOS = new Class[]{
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
             FFTAmplitudeFragment.class,
@@ -152,6 +156,8 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             AIDataLogDemoFragment.class,
             CloudLogFragment.class,
             PredictiveMaintenanceFragment.class,
+            MotionAlgorithmFragment.class,
+            FitnessActivityFragment.class,
             NodeStatusFragment.class
             //FeatureDebugFragment.class
     };
@@ -159,11 +165,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     @SuppressWarnings("unchecked")
     @Override
     protected Class<? extends DemoFragment>[] getAllDemos() {
-        if(getNode().getType() == Node.Type.STEVAL_BCN002V1){
-            ArrayList<Class<? extends DemoFragment>> demoList = new ArrayList<>(Arrays.asList(ALL_DEMOS));
-            demoList.remove(SpeechToTextFragment.class);
-            return demoList.toArray(new Class[demoList.size()]);
-        }
         return ALL_DEMOS;
     }
 

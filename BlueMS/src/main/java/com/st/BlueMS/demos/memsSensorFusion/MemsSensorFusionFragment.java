@@ -151,13 +151,12 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         }
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample data) {
+        public void onUpdate(@NonNull Feature f, Feature.Sample data) {
             if (mFistQuaternionTime < 0)
                 mFistQuaternionTime = System.currentTimeMillis();
             //+1 for avoid division by 0 the first time that we initialize mFistQuaternionTime
             long averageQuaternionRate = (mNQuaternion.incrementAndGet() * 1000) /
                     (System.currentTimeMillis() - mFistQuaternionTime + 1);
-
             //update the cube rotation
             mGlRenderer.setRotation(FeatureMemsSensorFusionCompact.getQi(data),
                     FeatureMemsSensorFusionCompact.getQj(data),
@@ -259,7 +258,7 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         private final float SCALE_FACTOR = 1.0f/MAX_DISTANCE;
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
             int proximity = FeatureProximity.getProximityDistance(sample);
             String proximityStr;
             if (proximity == FeatureProximity.OUT_OF_RANGE_VALUE) {
@@ -328,7 +327,7 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         }
 
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
             if(!FeatureAccelerationEvent.hasAccelerationEvent(sample,
                     FeatureAccelerationEvent.FREE_FALL))
                 return;
@@ -523,6 +522,9 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
             case SENSOR_TILE:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
                     R.drawable.ic_board_sensortile_bg);
+            case SENSOR_TILE_BOX:
+                return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
+                        R.drawable.ic_sensortile_box);
             case NUCLEO:
                 return buildResetInfoDialog(R.string.memsSensorFusionDialogResetText_nucleo,
                         R.drawable.ic_board_nucleo_bg);
@@ -543,8 +545,11 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         if(node == null)
             return;
         Dialog dialog = buildResetInfoDialog(node.getType());
-        if(dialog!=null)
+        if(dialog!=null) {
             dialog.show();
+        }else {
+            resetPosition();
+        }
 
     }
 

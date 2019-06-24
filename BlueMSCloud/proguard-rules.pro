@@ -44,6 +44,7 @@
 -dontwarn com.amazonaws.mobile.auth.facebook.FacebookSignInProvider
 -dontwarn com.amazonaws.mobile.auth.google.GoogleSignInProvider
 -dontwarn com.amazonaws.mobile.auth.userpools.CognitoUserPoolsSignInProvider
+-dontwarn com.amazonaws.mobileconnectors.cognitoauth.**
 
 
 ### azure sdk ###

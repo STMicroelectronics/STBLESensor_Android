@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.st.BlueMS.demos.motionAlgorithm.MotionAlgorithmFragment">
+
+    <Spinner
+        android:padding="8dp"
+        android:id="@+id/motionAlgo_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog" />
+
+    <ImageView
+        android:id="@+id/motionAlgo_resultIcon"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/motion_algo_unknown" />
+
+    <TextView
+        android:id="@+id/motionAlgo_resultLabel"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/motionAlgo_unknown"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+</LinearLayout>

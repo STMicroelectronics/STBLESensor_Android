@@ -55,6 +55,11 @@ public interface SDLogContract {
         void displayIOErrorLoggingView();
         void displayNoSDCardErrorLoggingView();
         void displayDisableDataWarning();
+
+        void hideLogInterval();
+        void displayLogInterval();
+        void hideFeatureList();
+        void displayFeatureList();
     }
 
 

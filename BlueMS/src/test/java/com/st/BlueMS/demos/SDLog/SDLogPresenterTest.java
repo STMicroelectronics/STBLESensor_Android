@@ -37,7 +37,7 @@
 
 package com.st.BlueMS.demos.SDLog;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;

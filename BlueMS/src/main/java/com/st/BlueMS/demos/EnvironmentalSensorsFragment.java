@@ -40,7 +40,7 @@ package com.st.BlueMS.demos;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +169,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         }
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             String unit = mHumidity.get(0).getFieldsDesc()[0].getUnit();
             float data[] =extractData(mHumidity, sExtractDataHum);
             final String dataString = getDisplayString(HUM_FORMAT,unit,data);
@@ -219,7 +219,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     private final Feature.FeatureListener mTemperatureListener = new Feature.FeatureListener() {
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
 
             String unit = mTemperature.get(0).getFieldsDesc()[0].getUnit();
             float data[] =extractData(mTemperature,sExtractDataTemp);
@@ -262,7 +262,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     private final Feature.FeatureListener mPressureListener = new Feature.FeatureListener() {
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             String unit = mPressure.get(0).getFieldsDesc()[0].getUnit();
             float data[] =extractData(mPressure, sExtractDataPres);
             final String dataString = getDisplayString(PRES_FORMAT, unit, data);
@@ -305,7 +305,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     private final Feature.FeatureListener mLuminosityListener = new Feature.FeatureListener() {
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
 
             String unit = mLuminosity.get(0).getFieldsDesc()[0].getUnit();
             float data[] =extractData(mLuminosity, sExtractDataLux);

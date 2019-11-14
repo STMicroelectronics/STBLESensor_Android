@@ -39,7 +39,7 @@ package com.st.BlueMS.demos.AccEvent;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -248,7 +248,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
                  * @param sample new data received from the feature
                  */
                 @Override
-                public void onUpdate(Feature f, Feature.Sample sample) {
+                public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
                     final @AccelerationEvent int event =
                             FeatureAccelerationEvent.getAccelerationEvent(sample);
 

@@ -36,7 +36,7 @@
   -->
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -45,7 +45,7 @@
         android:orientation="vertical"
         tools:context="com.st.BlueMS.demos.NodeStatus.NodeStatusFragment">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/status_nodeCard"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -58,7 +58,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/status_rssiCard">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -103,10 +103,10 @@
                     app:layout_constraintStart_toStartOf="@+id/status_boardName"
                     app:layout_constraintTop_toBottomOf="@+id/status_boardName"
                     tools:text="12:32:34:56:23" />
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/status_rssiCard"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -122,7 +122,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -154,11 +154,11 @@
                     app:layout_constraintStart_toEndOf="@+id/status_rssiImage"
                     app:layout_constraintTop_toTopOf="@+id/status_rssiImage"
                     tools:text="Rssi: 123 [dBm]" />
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/status_batteryCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -173,7 +173,7 @@
             app:layout_constraintStart_toStartOf="@+id/status_nodeCard"
             app:layout_constraintTop_toBottomOf="@+id/status_rssiCard">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -249,8 +249,8 @@
                     app:layout_constraintTop_toBottomOf="@+id/status_batteryCurrentText"
                     tools:text="Remaing Time" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 

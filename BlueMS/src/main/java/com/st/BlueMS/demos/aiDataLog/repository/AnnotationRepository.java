@@ -37,7 +37,7 @@
 package com.st.BlueMS.demos.aiDataLog.repository;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;

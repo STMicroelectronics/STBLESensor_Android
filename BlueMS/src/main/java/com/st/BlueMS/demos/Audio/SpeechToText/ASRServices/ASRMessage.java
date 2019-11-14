@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import com.st.BlueMS.R;
 

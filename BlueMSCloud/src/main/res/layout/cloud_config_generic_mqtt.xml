@@ -46,80 +46,80 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/genericMqtt_brokerUrlWrapper"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
             android:hint="@string/cloudLog_genericMqtt_brokerUrlHint">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/genericMqtt_brockerUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/cloudLog_genericMqtt_addressHint"
                 android:maxLines="1" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/genericMqtt_portWrapper"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:hint="@string/cloudLog_genericMqtt_portHint">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/genericMqtt_port"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:inputType="number" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/genericMqtt_UserWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_genericMqtt_userHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/genericMqtt_User"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/genericMqtt_passwordWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_genericMqtt_passwordHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/genericMqtt_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:inputType="textPassword" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/genericMqtt_clientIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_genericMqtt_clientIdHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/genericMqtt_clientId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

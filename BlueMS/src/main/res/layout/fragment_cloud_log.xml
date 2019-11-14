@@ -35,7 +35,7 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -49,7 +49,7 @@
         android:orientation="vertical">
 
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cloudProviderConfigCard"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -90,7 +90,7 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_marginTop="8dp"
@@ -112,11 +112,11 @@
                 android:text="@string/cloudLog_connecting" />
         </LinearLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
@@ -124,20 +124,20 @@
                 app:contentPadding="8dp"
                 android:id="@+id/cloudLogFeatureListContainer">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cloudLogFeatureList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/node_list_item"/>
 
-            </android.support.v7.widget.CardView>
-        </android.support.v4.widget.NestedScrollView>
+            </androidx.cardview.widget.CardView>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/startCloudLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -146,6 +146,6 @@
         app:srcCompat="@drawable/ic_cloud_upload_24dp" />
 
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 <!--         app:layout_behavior="com.st.BlueMS.demos.util.behavior.ScrollAwareFABBehavior"
 -->

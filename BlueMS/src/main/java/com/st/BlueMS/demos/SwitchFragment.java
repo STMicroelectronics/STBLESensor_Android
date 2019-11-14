@@ -38,8 +38,8 @@
 package com.st.BlueMS.demos;
 
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +69,7 @@ public class SwitchFragment extends BaseDemoFragment {
 
     private Feature.FeatureListener mStatusChanged = new Feature.FeatureListener() {
         @Override
-        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             final @DrawableRes int newImage;
             if(FeatureSwitch.getSwitchStatus(sample)==0){
                 newImage = SWITCH_OFF;

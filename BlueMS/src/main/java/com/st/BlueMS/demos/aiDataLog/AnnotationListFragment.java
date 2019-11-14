@@ -36,19 +36,19 @@
  */
 package com.st.BlueMS.demos.aiDataLog;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,12 +82,12 @@ public class AnnotationListFragment extends Fragment {
             new ItemTouchHelper.SimpleCallback(0,
                     ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
 
-                public boolean onMove(RecyclerView recyclerView,
-                                      RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                public boolean onMove(@NonNull RecyclerView recyclerView,
+                                      @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                     return true;// true if moved, false otherwise
                 }
 
-                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                     int position = viewHolder.getAdapterPosition();
                     List<SelectableAnnotation> allAnnotation =  mAnnotationViewModel.getAllAnnotation().getValue();
                     if(allAnnotation!=null)
@@ -121,7 +121,7 @@ public class AnnotationListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mAdapter = new AnnotationListAdapter(context);
         mAdapter.setOnAnnotationInteractionCallback(new AnnotationListAdapter.AnnotationInteractionCallback() {
@@ -141,12 +141,17 @@ public class AnnotationListFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         FragmentActivity fragmentActivity = requireActivity();
         mAnnotationViewModel = ViewModelProviders.of(fragmentActivity).get(AnnotationLogViewModel.class);
         mLogParametersViewModel = ViewModelProviders.of(fragmentActivity).get(LogParametersViewModel.class);
-        mAnnotationViewModel.getAllAnnotation().observe(this, annotations -> mAdapter.setAnnotation(annotations));
+        mAnnotationViewModel.getAllAnnotation().observe(getViewLifecycleOwner(), annotations -> mAdapter.setAnnotation(annotations));
 
-        mAnnotationViewModel.getIsLogging().observe(this, isLogging -> {
+        mAnnotationViewModel.getIsLogging().observe(getViewLifecycleOwner(), isLogging -> {
             if(isLogging==null)
                 return;
             @DrawableRes int icon = isLogging ? R.drawable.ai_log_stop : R.drawable.ai_log_start;
@@ -155,20 +160,19 @@ public class AnnotationListFragment extends Fragment {
             mStartStopLogButton.setText(text);
         });
 
-        mAnnotationViewModel.getMissingSDError().observe(this, isMissingSd -> {
+        mAnnotationViewModel.getMissingSDError().observe(getViewLifecycleOwner(), isMissingSd -> {
             if( isMissingSd == null || !isMissingSd)
                 return;
             showError(R.string.aiLog_annotation_errorSDMissing);
             mAnnotationViewModel.missSDErrorShown();
         });
 
-        mAnnotationViewModel.getIOError().observe(this, hasIOError -> {
+        mAnnotationViewModel.getIOError().observe(getViewLifecycleOwner(), hasIOError -> {
             if( hasIOError == null || !hasIOError)
                 return;
             showError(R.string.aiLog_annotation_errorIOError);
             mAnnotationViewModel.ioErrorShown();
         });
-
     }
 
     private void showError(@StringRes int message) {

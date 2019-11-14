@@ -46,8 +46,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.RawRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.RawRes;
 import android.util.Log;
 
 import com.st.BlueMS.R;

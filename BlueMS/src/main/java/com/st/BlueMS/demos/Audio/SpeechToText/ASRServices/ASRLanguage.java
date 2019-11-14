@@ -38,8 +38,8 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 
 import com.st.BlueMS.R;
 

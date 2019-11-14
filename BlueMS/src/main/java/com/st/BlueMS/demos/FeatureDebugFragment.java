@@ -39,7 +39,7 @@ package com.st.BlueMS.demos;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -173,7 +173,7 @@ public class FeatureDebugFragment extends DemoFragment {
         }//GenericFragmentUpdate
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             final String featureDump = f.toString();
             updateGui(new Runnable() {
                 @Override

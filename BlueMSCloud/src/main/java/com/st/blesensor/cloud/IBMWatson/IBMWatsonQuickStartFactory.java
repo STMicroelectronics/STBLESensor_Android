@@ -39,7 +39,7 @@ package com.st.blesensor.cloud.IBMWatson;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.st.blesensor.cloud.R;
 import com.st.blesensor.cloud.util.MqttClientConnectionFactory;

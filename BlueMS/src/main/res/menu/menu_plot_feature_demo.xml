@@ -40,5 +40,5 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_plot_length"
-        android:title="@string/setPlotLength"/>
+        android:title="@string/plotFeature_settings"/>
 </menu>

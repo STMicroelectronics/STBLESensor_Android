@@ -40,7 +40,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.st.BlueMS.demos.aiDataLog.repository.Annotation;

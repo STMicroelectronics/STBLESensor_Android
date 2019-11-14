@@ -37,9 +37,9 @@
 package com.st.BlueMS.demos.COSensor;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,7 +69,7 @@ public class COSensorDemoFragment extends BaseDemoFragment implements
     private FeatureCOSensor.FeatureCOSensorListener mFeatureListener = new FeatureCOSensor.FeatureCOSensorListener(){
 
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             float gasConcentration = FeatureCOSensor.getGasPresence(sample);
             updateGui(()-> mCOValueText.setText(getString(R.string.coSensor_numberFormat,gasConcentration)));
         }

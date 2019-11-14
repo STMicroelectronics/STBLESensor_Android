@@ -45,11 +45,11 @@ import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -151,7 +151,7 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         }
 
         @Override
-        public void onUpdate(@NonNull Feature f, Feature.Sample data) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample data) {
             if (mFistQuaternionTime < 0)
                 mFistQuaternionTime = System.currentTimeMillis();
             //+1 for avoid division by 0 the first time that we initialize mFistQuaternionTime
@@ -258,7 +258,7 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         private final float SCALE_FACTOR = 1.0f/MAX_DISTANCE;
 
         @Override
-        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             int proximity = FeatureProximity.getProximityDistance(sample);
             String proximityStr;
             if (proximity == FeatureProximity.OUT_OF_RANGE_VALUE) {
@@ -327,7 +327,7 @@ public class MemsSensorFusionFragment extends BaseDemoFragment implements Calibr
         }
 
         @Override
-        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             if(!FeatureAccelerationEvent.hasAccelerationEvent(sample,
                     FeatureAccelerationEvent.FREE_FALL))
                 return;

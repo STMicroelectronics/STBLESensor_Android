@@ -39,7 +39,7 @@ package com.st.blesensor.cloud.AzureIot;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.st.blesensor.cloud.AzureIot.util.ConnectionParameters;

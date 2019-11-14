@@ -37,7 +37,7 @@
 
 package com.st.BlueMS;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.st.BlueNRG.fwUpgrade.BlueNRGAdvertiseFilter;
 import com.st.BlueNRG.fwUpgrade.feature.BlueNRGOTASupport;

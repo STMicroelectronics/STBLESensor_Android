@@ -39,7 +39,7 @@ package com.st.BlueMS.demos.wesu.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.st.BlueSTSDK.Config.Command;

@@ -36,11 +36,11 @@
  */
 package com.st.BlueMS.demos.fftAmpitude;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +84,7 @@ public class FFTAmplitudeDataStatsFragment extends DialogFragment {
     }
 
     private void registerFFTUpdate(){
-        mFFTViewModel.getFFTMax().observe(this, fftPoints -> {
+        mFFTViewModel.getFFTMax().observe(getViewLifecycleOwner(), fftPoints -> {
             if(fftPoints==null)
                 return;
             FFTComponentsConfig.LineConf[] lines = FFTComponentsConfig.LINES;
@@ -112,13 +112,13 @@ public class FFTAmplitudeDataStatsFragment extends DialogFragment {
     }
 
     private void registerTimeDomainUpdate(){
-        mTimeDomainViewModel.getXComponentStats().observe(this,
+        mTimeDomainViewModel.getXComponentStats().observe(getViewLifecycleOwner(),
                 timeDomainStats -> updateTimeDomainLabel(mTimeStatsX,"X",timeDomainStats));
 
-        mTimeDomainViewModel.getYComponentStats().observe(this,
+        mTimeDomainViewModel.getYComponentStats().observe(getViewLifecycleOwner(),
                 timeDomainStats -> updateTimeDomainLabel(mTimeStatsY,"Y",timeDomainStats));
 
-        mTimeDomainViewModel.getZComponentStats().observe(this,
+        mTimeDomainViewModel.getZComponentStats().observe(getViewLifecycleOwner(),
                 timeDomainStats -> updateTimeDomainLabel(mTimeStatsZ,"Z",timeDomainStats));
     }
 

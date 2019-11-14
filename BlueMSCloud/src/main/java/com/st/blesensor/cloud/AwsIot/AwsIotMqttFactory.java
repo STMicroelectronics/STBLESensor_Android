@@ -40,7 +40,7 @@ package com.st.blesensor.cloud.AwsIot;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.iot.AWSIotKeystoreHelper;

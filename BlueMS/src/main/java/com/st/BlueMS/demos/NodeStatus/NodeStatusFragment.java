@@ -43,11 +43,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.math.MathUtils;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.math.MathUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -135,7 +135,7 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
                 }
 
                 @Override
-                public void onUpdate(Feature f,Feature.Sample data) {
+                public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample data) {
                     final Field[] fieldsDesc = f.getFieldsDesc();
                     final Resources res = NodeStatusFragment.this.getResources();
                     float percentage = FeatureBattery.getBatteryLevel(data);

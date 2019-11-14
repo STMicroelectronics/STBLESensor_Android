@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.Audio.DirOfArrival;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +76,7 @@ public class SourceLocFragment extends BaseDemoFragment {
 
     private final Feature.FeatureListener mDOAListener = new Feature.FeatureListener() {
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             final short directionOfArrivalAngle = FeatureDirectionOfArrival.getSoundAngle(sample);
             final String angleStr = String.format(mAngleFormat,directionOfArrivalAngle);
             updateGui(new Runnable() {

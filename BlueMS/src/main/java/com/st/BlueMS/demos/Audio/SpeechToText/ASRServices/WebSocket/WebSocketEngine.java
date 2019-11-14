@@ -1,11 +1,10 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.WebSocket;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
-import com.ibm.watson.developer_cloud.http.HttpHeaders;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASREngine;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRLanguage;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRRequestCallback;
@@ -166,7 +165,7 @@ public class WebSocketEngine implements ASREngine {
 
     private void setAuthentication(Request.Builder builder,WebSocketParam param) {
         if(param.user!=null && param.password!=null)
-            builder.addHeader(HttpHeaders.AUTHORIZATION, Credentials.basic(param.user,param.password));
+            builder.addHeader("Authorization", Credentials.basic(param.user,param.password));
     }
 
     private OkHttpClient configureHttpClient(){
@@ -182,7 +181,8 @@ public class WebSocketEngine implements ASREngine {
     @Override
     public void stopListener(@NonNull ASRConnectionCallback callback) {
         mConnectionCallBack = callback;
-        mConnection.close(1000,null);
+        if(mConnection !=null)
+            mConnection.close(1000,null);
     }
 
     @Override

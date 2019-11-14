@@ -45,43 +45,26 @@
         <item>#FF00FFFF</item>  <!-- cyan -->
         <item>#FFFF00FF</item>  <!-- pink -->
     </array>
-    <string name="startPlotButton">Start Plot</string>
 
-    <string name="xAxisLabel">Time (ms)</string>
-    <string name="setPlotLength">Plot Length</string>
+    <string name="plotFeature_settings">Plot Settings</string>
+    <string name="plotFeature_noData">Select the feature to plot</string>
+    <string name="plotFeature_yAxis">Axis Y</string>
+    <string name="plotFeature_xAxis">Axis x</string>
+    <string name="plotFeature_minimumY">Minimum Value</string>
+    <string name="plotFeature_maximumY">Maximum Value</string>
+    <string name="plotFeatureSettings_timeStampRange">Seconds to plot</string>
 
-    <!-- size of the plot name -->
-    <dimen name="plot_title_font_size">18dp</dimen>
-    <dimen name="plot_margin_top">20dp</dimen>
-    <dimen name="plot_margin_left">25dp</dimen>
-    <dimen name="plot_margin_bottom">40dp</dimen>
-
-    <dimen name="domain_label_font_size">15sp</dimen>
-    <dimen name="range_label_font_size">15sp</dimen>
-
-    <dimen name="legend_text_font_size">15sp</dimen>
-    <!-- width for 10 char -> legendTextFontSize*10-->
-    <dimen name="legend_box_width">150dp</dimen>
-
-    <dimen name="legend_box_height">30dp</dimen>
-
-    <dimen name="legend_box_padding">5dp</dimen>
-    <dimen name="legend_icon_size">13dp</dimen>
-    <dimen name="range_tick_label_font_size">10sp</dimen>
-    <dimen name="domain_tick_label_font_size">10sp</dimen>
-
-    <string name="selectMaxSamples">Select the time scale</string>
-    <string-array name="availableMaxSamplesString" translatable="false">
+    <string-array name="plotFeatureSettings_secondsToPlotValue">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+    </string-array>
+    <string-array name="plotFeatureSettings_secondsToPlotString" translatable="false">
         <item>1 s</item>
         <item>5 s</item>
         <item>10 s</item>
         <item>30 s</item>
     </string-array>
-    <integer-array name="availableMaxSamplesValues">
-        <item>1000</item>
-        <item>5000</item>
-        <item>10000</item>
-        <item>30000</item>
-    </integer-array>
 
 </resources>

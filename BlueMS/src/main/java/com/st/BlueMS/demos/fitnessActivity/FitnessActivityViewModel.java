@@ -36,12 +36,11 @@
  */
 package com.st.BlueMS.demos.fitnessActivity;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureFitnessActivity;

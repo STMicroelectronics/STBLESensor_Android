@@ -39,7 +39,7 @@ package com.st.blesensor.cloud.GenericMqtt;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.st.blesensor.cloud.util.MqttClientConnectionFactory;
@@ -54,6 +54,13 @@ import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.security.KeyStore;
+import java.security.SecureRandom;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  * create a connection to a generic mqtt broker
@@ -99,9 +106,16 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
 
         IMqttAsyncClient client = extractMqttClient(connection);
 
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+
+        TrustManagerFactory trustManagerFactory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(keystore);
+
 
         MqttConnectOptions connOpts = new MqttConnectOptions();
         connOpts.setCleanSession(true);
+
         if(mUser!=null && !mUser.isEmpty()) {
             connOpts.setUserName(mUser);
         }
@@ -109,7 +123,7 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
             connOpts.setPassword(mPassword.toCharArray());
         }
 
-        return client.connect(connOpts,buildMqttListener(connectionListener))!=null;
+        return client.connect(connOpts,null,buildMqttListener(connectionListener))!=null;
     }
 
     @Override
@@ -153,6 +167,8 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
             mBroker = client;
             mClientId=clientId;
         }
+
+
 
         @Override
         public void onNewDataUpdate(Feature f, Feature.Sample sample) {

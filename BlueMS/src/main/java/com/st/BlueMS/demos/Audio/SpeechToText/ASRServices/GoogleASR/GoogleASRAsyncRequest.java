@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.GoogleASR;
 
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRMessage;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRRequestCallback;

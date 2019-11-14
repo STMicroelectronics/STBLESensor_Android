@@ -37,32 +37,15 @@
 
 package com.st.BlueMS.demos.util;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.test.espresso.ViewInteraction;
-import android.support.test.filters.Suppress;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.filters.Suppress;
+import androidx.test.rule.ActivityTestRule;
 
 
-import com.st.BlueSTSDK.Feature;
-import com.st.BlueSTSDK.Features.Field;
-
-import org.junit.Test;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-
-import junit.framework.Assert;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 /*
 @RunWith(AndroidJUnit4.class)
 public class FeatureListViewAdapterTest {

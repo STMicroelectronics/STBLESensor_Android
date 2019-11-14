@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.util.bluevoice;
 
 import android.os.AsyncTask;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import org.json.JSONException;
 

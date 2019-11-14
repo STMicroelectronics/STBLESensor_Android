@@ -37,7 +37,7 @@
 
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Interface Callback object used to notify the user of events generated after the execution of an

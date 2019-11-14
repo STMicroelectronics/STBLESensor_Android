@@ -39,7 +39,7 @@ package com.st.blesensor.cloud;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Feature.FeatureListener;

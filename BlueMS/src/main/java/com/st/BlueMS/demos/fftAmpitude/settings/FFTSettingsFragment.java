@@ -36,14 +36,14 @@
  */
 package com.st.BlueMS.demos.fftAmpitude.settings;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
+import androidx.annotation.ArrayRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -124,7 +124,7 @@ public class FFTSettingsFragment extends Fragment {
             }
         });
 
-        viewModel.getWindowType().observe(this, windowType -> {
+        viewModel.getWindowType().observe(getViewLifecycleOwner(), windowType -> {
             if(windowType==null)
                 return;
             int index = windowType.ordinal();
@@ -155,7 +155,7 @@ public class FFTSettingsFragment extends Fragment {
             }
         });
 
-        viewModel.getOdr().observe(this, newOdr -> {
+        viewModel.getOdr().observe(getViewLifecycleOwner(), newOdr -> {
             if(newOdr==null)
                 return;
             selector.setSelection(adapter.getPosition(newOdr.toString()));
@@ -183,7 +183,7 @@ public class FFTSettingsFragment extends Fragment {
             }
         });
 
-        viewModel.getSize().observe(this, newSize -> {
+        viewModel.getSize().observe(getViewLifecycleOwner(), newSize -> {
             if(newSize==null)
                 return;
             selector.setSelection(adapter.getPosition(newSize.toString()));
@@ -212,7 +212,7 @@ public class FFTSettingsFragment extends Fragment {
             }
         });
 
-        viewModel.getSensorFullScale().observe(this, newFs -> {
+        viewModel.getSensorFullScale().observe(getViewLifecycleOwner(), newFs -> {
             if(newFs==null)
                 return;
             selector.setSelection(adapter.getPosition(newFs.toString()));
@@ -242,7 +242,7 @@ public class FFTSettingsFragment extends Fragment {
             }
         });
 
-        viewModel.getSubRange().observe(this, newSubRange -> {
+        viewModel.getSubRange().observe(getViewLifecycleOwner(), newSubRange -> {
             if(newSubRange==null)
                 return;
             selector.setSelection(adapter.getPosition(newSubRange.toString()));
@@ -250,7 +250,7 @@ public class FFTSettingsFragment extends Fragment {
     }
 
     private void setUpOverlapInput(TextInputLayout layout, EditText textEdit, FFTSettingsViewModel viewModel){
-        viewModel.getOverlap().observe(this, newOvl -> {
+        viewModel.getOverlap().observe(getViewLifecycleOwner(), newOvl -> {
             if(newOvl == null){
                 return;
             }
@@ -285,7 +285,7 @@ public class FFTSettingsFragment extends Fragment {
     }
 
     private void setUpTimeAcquisitionInput(TextInputLayout layout, EditText textEdit, FFTSettingsViewModel viewModel){
-        viewModel.getTimeAcquisition().observe(this, newTime -> {
+        viewModel.getTimeAcquisition().observe(getViewLifecycleOwner(), newTime -> {
             if(newTime == null){
                 return;
             }
@@ -363,7 +363,7 @@ public class FFTSettingsFragment extends Fragment {
                 mTimeAcquisitionValue,mSettingsViewModel);
         setupSaveButton(view.findViewById(R.id.fftAmpl_settings_saveButton),mSettingsViewModel);
 
-        mSettingsViewModel.getUpdateParamCorrectly().observe(this, successUpdate -> {
+        mSettingsViewModel.getUpdateParamCorrectly().observe(getViewLifecycleOwner(), successUpdate -> {
             if(successUpdate==null)
                 return;
              @StringRes int message = successUpdate ?R.string.fttAmpl_settings_updateCorrect :

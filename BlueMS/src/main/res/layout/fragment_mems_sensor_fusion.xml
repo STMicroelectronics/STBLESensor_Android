@@ -36,7 +36,7 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -67,7 +67,7 @@
         android:layout_alignTop="@+id/calibrationImage"
         android:text="@string/ResetButton" />
 
-    <android.support.v7.widget.SwitchCompat
+    <androidx.appcompat.widget.SwitchCompat
         android:layout_width="wrap_content"
         android:layout_height="@dimen/CalibImgH"
         android:text="@string/enableProximityButton"
@@ -110,4 +110,4 @@
         android:visibility="gone" />
 
     </RelativeLayout>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

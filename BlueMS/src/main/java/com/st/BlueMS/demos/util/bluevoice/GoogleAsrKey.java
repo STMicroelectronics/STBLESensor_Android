@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.util.bluevoice;
 
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class GoogleAsrKey  {
     private static final int KEY_LENGTH=39;

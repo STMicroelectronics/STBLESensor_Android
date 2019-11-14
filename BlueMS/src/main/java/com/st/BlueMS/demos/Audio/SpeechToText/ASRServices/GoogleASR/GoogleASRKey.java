@@ -39,7 +39,7 @@ package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.GoogleASR;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Class containing the api key to use the Google Speech API

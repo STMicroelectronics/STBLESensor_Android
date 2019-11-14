@@ -37,8 +37,8 @@
 package com.st.BlueMS.demos.util;
 
 import android.content.Context;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.ArrayRes;
+import androidx.annotation.NonNull;
 
 public class ArrayAdapter {
 

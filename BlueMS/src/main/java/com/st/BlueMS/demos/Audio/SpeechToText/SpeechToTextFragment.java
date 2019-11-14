@@ -41,10 +41,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -133,7 +133,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
      */
     private final Feature.FeatureListener mAudioListener = new Feature.FeatureListener() {
         @Override
-        public void onUpdate(final Feature f, final Feature.Sample sample) {
+        public void onUpdate(@NonNull final Feature f, @NonNull final Feature.Sample sample) {
             short[] audioSample = ((FeatureAudio)f).getAudio(sample);
 
             if(mIsRecording && audioSample != null){
@@ -157,7 +157,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     private final Feature.FeatureListener mAudioListenerRec = new Feature.FeatureListener() {
 
         @Override
-        public void onUpdate(final Feature f, final Feature.Sample sample) {
+        public void onUpdate(@NonNull final Feature f, @NonNull final Feature.Sample sample) {
             if(mAudioWavDump != null && mAudioWavDump.isRecording()) {
                 short[] audioSample = ((FeatureAudio)f).getAudio(sample);
                 if(audioSample != null)
@@ -211,7 +211,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
         private long mLastEvent=0;
 
         @Override
-        public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             if(FeatureAccelerationEvent.hasAccelerationEvent(sample,FeatureAccelerationEvent.DOUBLE_TAP)
                 && mAsrEngine.hasContinuousRecognizer()){
                 long now = System.currentTimeMillis();

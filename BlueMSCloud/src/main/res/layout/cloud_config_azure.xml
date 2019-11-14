@@ -36,17 +36,17 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<android.support.design.widget.TextInputLayout
+<com.google.android.material.textfield.TextInputLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/azure_connectionStringWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="@string/cloudLog_azure_connectionStringHit">
 
-    <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/azure_connectionString"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="3" />
 
-</android.support.design.widget.TextInputLayout>
+</com.google.android.material.textfield.TextInputLayout>

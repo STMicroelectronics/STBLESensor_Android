@@ -137,7 +137,8 @@ public class AudioRecorder {
             }
             mIsRecStarted = false;
             File file = new File(mFileName);
-            LogFeatureActivity.exportDataByMail(mActivity,mDirectoryPath,new File[]{file},false);
+            if(!mActivity.isFinishing())
+                LogFeatureActivity.exportDataByMail(mActivity,mDirectoryPath,new File[]{file},false);
         }
     };
 

@@ -40,8 +40,8 @@ package com.st.BlueMS.demos;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +120,7 @@ public class ProximityGestureRecognitionFragment extends BaseDemoFragment {
     private Feature.FeatureListener mActivityListener = new  Feature.FeatureListener () {
 
         @Override
-        public void onUpdate(Feature f,Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             final FeatureProximityGesture.Gesture gesture = FeatureProximityGesture.getGesture(sample);
             updateGui(new Runnable() {
                 @Override

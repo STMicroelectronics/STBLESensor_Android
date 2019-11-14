@@ -39,8 +39,8 @@ package com.st.BlueMS.demos;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,7 +163,7 @@ public class MultipleLogFragment extends DemoFragment {
             public final Button mEnableLogButton;
             public final FeatureListener mUpdateFeatureValue= new FeatureListener() {
                 @Override
-                public void onUpdate(Feature f, Feature.Sample sample) {
+                public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
                     final String value = f.toString();
                     MultipleLogFragment.this.updateGui(new Runnable() {
                         @Override

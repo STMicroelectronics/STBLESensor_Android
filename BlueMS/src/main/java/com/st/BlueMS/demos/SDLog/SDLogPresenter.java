@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.SDLog;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.st.BlueMS.preference.nucleo.NucleoConsole;
 import com.st.BlueSTSDK.Debug;
@@ -47,7 +47,6 @@ import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
 import com.st.BlueSTSDK.Features.FeatureHumidity;
 import com.st.BlueSTSDK.Features.FeatureMagnetometer;
-import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
 import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
 import com.st.BlueSTSDK.Features.FeaturePressure;
 import com.st.BlueSTSDK.Features.FeatureSDLogging;
@@ -92,8 +91,7 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
         mView.displayFeatureList();
         mView.displayLogInterval();
         mView.setLogInterval(DEFAULT_LOG_INTERVAL);
-        Node n = mLogFeature.getParentNode();
-        n.enableNotification(mLogFeature);
+        mLogFeature.enableNotification();
         readFeature(mLogFeature);
     }
 
@@ -104,8 +102,7 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
     @Override
     public void stopDemo() {
         mLogFeature.removeFeatureListener(this);
-        Node n = mLogFeature.getParentNode();
-        n.disableNotification(mLogFeature);
+        mLogFeature.disableNotification();
     }
 
     private List<Feature> getAvailableFeatures() {
@@ -124,7 +121,18 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
     private void stopLogging(){
         mLogFeature.stopLogging();
         isLogging=false;
-        mView.displayStartLoggingView(getAvailableFeatures());
+        displayStartLoggingView();
+    }
+
+    private void displayStartLoggingView(){
+        List<Feature> availableFeatures = getAvailableFeatures();
+
+        if(availableFeatures.size() == 0){
+            mView.hideLogInterval();
+            mView.hideFeatureList();
+        }
+
+        mView.displayStartLoggingView(availableFeatures);
     }
 
     private void setNodeTime(){
@@ -156,17 +164,28 @@ class SDLogPresenter implements SDLogContract.Presenter, Feature.FeatureListener
         }
     }
 
+    private void displayStopLoggingView(){
+        List<Feature> availableFeatures = getAvailableFeatures();
+
+        mView.displayStopLoggingView();
+
+        if(availableFeatures.size() == 0){
+            mView.hideLogInterval();
+            mView.hideFeatureList();
+        }
+    }
+
     @Override
-    public void onUpdate(@NonNull Feature f, Feature.Sample sample) {
+    public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
         @FeatureSDLogging.LoggingStatus int status = FeatureSDLogging.getLoggingStatus(sample);
         switch (status) {
             case FeatureSDLogging.LOGGING_STARTED:
                 isLogging=true;
-                mView.displayStopLoggingView();
+                displayStopLoggingView();
                 break;
             case FeatureSDLogging.LOGGING_STOPPED:
                 isLogging=false;
-                mView.displayStartLoggingView(getAvailableFeatures());
+                displayStartLoggingView();
                 break;
             case FeatureSDLogging.LOGGING_IO_ERROR:
                 isLogging=false;

@@ -40,7 +40,7 @@ package com.st.blesensor.cloud.AwsIot;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;

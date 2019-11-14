@@ -36,10 +36,10 @@
  */
 package com.st.BlueMS.demos.fftAmpitude.settings;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.support.v4.math.MathUtils;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.core.math.MathUtils;
 
 import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.Node;

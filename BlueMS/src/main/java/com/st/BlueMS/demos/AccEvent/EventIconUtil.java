@@ -37,7 +37,7 @@
 
 package com.st.BlueMS.demos.AccEvent;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;

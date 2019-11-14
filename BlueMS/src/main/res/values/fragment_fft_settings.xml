@@ -33,6 +33,8 @@
         <item>416</item>
         <item>833</item>
         <item>1660</item>
+        <item>3330</item>
+        <item>6660</item>
     </string-array>
 
     <string-array name="fttAmpl_settings_sizeValues">

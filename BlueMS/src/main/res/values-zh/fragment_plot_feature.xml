@@ -40,7 +40,7 @@
 
     <string name="startPlotButton">开始绘制</string>
     <string name="xAxisLabel">时间 (ms)</string>
-    <string name="setPlotLength">绘制长度</string>
+    <string name="plotFeature_settings">绘制长度</string>
     <string name="selectMaxSamples">选择采样时间</string>
 
 </resources>

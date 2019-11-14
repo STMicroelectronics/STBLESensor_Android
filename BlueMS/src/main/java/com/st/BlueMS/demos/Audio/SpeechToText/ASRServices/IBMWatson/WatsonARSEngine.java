@@ -38,18 +38,18 @@ package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.IBMWatson;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.ibm.watson.developer_cloud.http.HttpMediaType;
-import com.ibm.watson.developer_cloud.service.security.IamOptions;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.GetModelOptions;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechRecognitionResult;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechRecognitionResults;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.RecognizeCallback;
+import com.ibm.cloud.sdk.core.http.HttpMediaType;
+import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+import com.ibm.watson.speech_to_text.v1.SpeechToText;
+import com.ibm.watson.speech_to_text.v1.model.GetModelOptions;
+import com.ibm.watson.speech_to_text.v1.model.RecognizeOptions;
+import com.ibm.watson.speech_to_text.v1.model.SpeechRecognitionResult;
+import com.ibm.watson.speech_to_text.v1.model.SpeechRecognitionResults;
+import com.ibm.watson.speech_to_text.v1.websocket.BaseRecognizeCallback;
+import com.ibm.watson.speech_to_text.v1.websocket.RecognizeCallback;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASREngine;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRLanguage;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRRequestCallback;
@@ -103,7 +103,6 @@ public class WatsonARSEngine implements ASREngine {
 
     private Context mContext;
     private boolean mIsAsrEnabled;
-    private SpeechToText mService;
     private PipedInputStream mWebSocketPipe;
     private PipedOutputStream mAppPipe;
     private @ASRLanguage.Language int mModel;
@@ -124,7 +123,6 @@ public class WatsonARSEngine implements ASREngine {
     private WatsonARSEngine(Context context, @ASRLanguage.Language int language){
         mContext = context;
         mIsAsrEnabled = false;
-        mService = new SpeechToText();
         mModel = language;
     }
 
@@ -172,9 +170,11 @@ public class WatsonARSEngine implements ASREngine {
         }
 
         mServiceCallback = new WatsonServiceCallback(callback);
-        setServiceLogin(mService);
-        new WatsonConnectionTask(mService,mModel,mServiceCallback).execute(mWebSocketPipe);
+        SpeechToText service = buildService();
+        new WatsonConnectionTask(service,mModel,mServiceCallback).execute(mWebSocketPipe);
     }
+
+
 
     private static class WatsonConnectionTask extends AsyncTask<InputStream,Void,Void>{
 
@@ -234,7 +234,7 @@ public class WatsonARSEngine implements ASREngine {
                 return;
 
             SpeechRecognitionResult res  = speechResults.getResults().get(0);
-            if(res.isFinalResults()){
+            if(res.isXFinal()){
                 String text = res.getAlternatives().get(0).getTranscript();
                 if(mRequestCallback!=null){
                     mRequestCallback.onAsrResponse(text);
@@ -301,22 +301,18 @@ public class WatsonARSEngine implements ASREngine {
         return mIsAsrEnabled;
     }
 
-    private void setServiceLogin(SpeechToText service){
-        WatsonARSKey mAsrKey = WatsonARSKey.loadKey(mContext);
-        if (mAsrKey == null || mAsrKey.apiKey == null)
-            service.setSkipAuthentication(true);
-        else{
-            IamOptions options = new IamOptions.Builder()
-                    .apiKey(mAsrKey.apiKey)
-                    .build();
-            service.setIamCredentials(options);
-        }
-
-
-
-        if(mAsrKey!=null && mAsrKey.endpoint!=null)
-            service.setEndPoint(mAsrKey.endpoint);
+    private @Nullable SpeechToText buildService() {
+        WatsonARSKey asrKey = WatsonARSKey.loadKey(mContext);
+        if(asrKey == null)
+            return null;
+        IamAuthenticator auth = new IamAuthenticator(asrKey.apiKey);
+        SpeechToText service = new SpeechToText(auth);
+        if(asrKey.endpoint != null)
+            service.setServiceUrl(asrKey.endpoint);
+        return service;
     }
+
+
 
     private void enableASR() {
         WatsonARSKey mAsrKey = WatsonARSKey.loadKey(mContext);

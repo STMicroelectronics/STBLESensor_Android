@@ -46,7 +46,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
@@ -54,8 +54,8 @@ import com.st.BlueMS.demos.Cloud.CloudLogFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
-import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.SwitchFragment;
+import com.st.BlueMS.demos.plot.PlotFeatureFragment;
 import com.st.BlueMS.demos.wesu.ActivityRecognitionFragmentWesu;
 import com.st.BlueMS.demos.wesu.CarryPositionFragmentWesu;
 import com.st.BlueMS.demos.wesu.MemsSensorFusionFragmentWesu;

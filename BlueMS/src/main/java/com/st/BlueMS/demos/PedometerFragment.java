@@ -42,7 +42,7 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +90,7 @@ public class PedometerFragment extends BaseDemoFragment {
     private Feature.FeatureListener mPedometerListener = new Feature.FeatureListener() {
 
         @Override
-        public void onUpdate(Feature f,final Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull final Feature.Sample sample) {
             final String stepCountStr = String.format(mStepCountTextFormat,
                     FeaturePedometer.getSteps(sample));
             int frequency =FeaturePedometer.getFrequency(sample);

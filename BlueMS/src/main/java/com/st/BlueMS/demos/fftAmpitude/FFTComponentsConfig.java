@@ -50,10 +50,10 @@ class FFTComponentsConfig {
         }
     }
 
-    static final LineConf LINES[] = new LineConf[]{
-            new LineConf(Color.RED,"X"),
-            new LineConf(Color.BLUE,"Y"),
-            new LineConf(Color.GREEN,"Z")
+    static final LineConf[] LINES = new LineConf[]{
+            new LineConf(Color.RED, "X"),
+            new LineConf(Color.BLUE, "Y"),
+            new LineConf(Color.GREEN, "Z")
     };
 
 }

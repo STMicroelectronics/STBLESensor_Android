@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.util;
 
 import android.content.DialogInterface;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Dialog fragment that will notify the parent when it will be dismissed or cancelled

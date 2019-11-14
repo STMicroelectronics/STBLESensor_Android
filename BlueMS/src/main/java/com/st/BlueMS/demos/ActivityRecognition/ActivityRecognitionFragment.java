@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.ActivityRecognition;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +70,7 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
     private ActivityView mMotionARView;
     private ActivityView mGMPView;
     private ActivityView mIGNView;
+    private ActivityView mMLCView;
 
     private ActivityView mAllView[];
 
@@ -84,6 +85,8 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
                 return  mGMPView;
             case 2:
                 return mIGNView;
+            case 3:
+                return mMLCView;
         }
         return null;
     }
@@ -130,8 +133,9 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
         mMotionARView = root.findViewById(R.id.activity_view_motionAR);
         mGMPView = root.findViewById(R.id.activity_view_GMP);
         mIGNView = root.findViewById(R.id.activity_view_IGN);
+        mMLCView = root.findViewById(R.id.activity_view_MLC);
 
-        mAllView = new ActivityView[]{mMotionARView,mGMPView,mIGNView};
+        mAllView = new ActivityView[]{mMotionARView,mGMPView,mIGNView,mMLCView};
 
         if (savedInstanceState != null &&
                 savedInstanceState.containsKey(CURRENT_ALGORITHM)&&

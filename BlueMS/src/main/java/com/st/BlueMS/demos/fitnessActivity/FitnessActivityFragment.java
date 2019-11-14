@@ -38,13 +38,13 @@ package com.st.BlueMS.demos.fitnessActivity;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.util.Log;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,13 +108,13 @@ public class FitnessActivityFragment extends DemoFragment {
     }
 
     private void setUpActivityIcon(FitnessActivityViewModel viewModel, ImageView icon) {
-        viewModel.getCurrentActivity().observe(this, activityType -> {
+        viewModel.getCurrentActivity().observe(getViewLifecycleOwner(), activityType -> {
             if(activityType == null)
                 return;
             icon.setImageResource(activityTypeImage(activityType));
         });
 
-        viewModel.getCurrentCounter().observe(this, integer -> {
+        viewModel.getCurrentCounter().observe(getViewLifecycleOwner(), integer -> {
             if(integer == null)
                 return;
             if(!mPulseAnim.isRunning()){
@@ -125,7 +125,7 @@ public class FitnessActivityFragment extends DemoFragment {
     }
 
     private void setUpActivityCounter(FitnessActivityViewModel viewModel, TextView label) {
-        viewModel.getCurrentCounter().observe(this, counter -> {
+        viewModel.getCurrentCounter().observe(getViewLifecycleOwner(), counter -> {
             if(counter == null || counter<0){
                 return;
             }
@@ -169,7 +169,7 @@ public class FitnessActivityFragment extends DemoFragment {
             }
         });
 
-        viewModel.getCurrentActivity().observe(this, algorithmType -> {
+        viewModel.getCurrentActivity().observe(getViewLifecycleOwner(), algorithmType -> {
             if(algorithmType==null)
                 return;
             int index = algorithmType.id;

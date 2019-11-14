@@ -41,7 +41,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -135,7 +135,7 @@ public class BeamformingFragment extends BaseDemoFragment {
     private final Feature.FeatureListener mAudioListenerRec = new Feature.FeatureListener() {
 
         @Override
-        public void onUpdate(final Feature f, final Feature.Sample sample) {
+        public void onUpdate(@NonNull final Feature f, @NonNull final Feature.Sample sample) {
             if(mAudioRecorder != null && mAudioRecorder.isRecording()) {
                 short[] audioSample = ((FeatureAudio)f).getAudio(sample);
                 mAudioRecorder.writeSample(audioSample);
@@ -146,7 +146,7 @@ public class BeamformingFragment extends BaseDemoFragment {
 
     private final Feature.FeatureListener mUpdatePlot = new Feature.FeatureListener() {
         @Override
-        public void onUpdate(Feature f, Feature.Sample sample) {
+        public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             short[] audioSample = ((FeatureAudio)f).getAudio(sample);
             mWaveformView.updateAudioData(audioSample);
         }

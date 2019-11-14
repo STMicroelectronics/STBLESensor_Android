@@ -10,15 +10,15 @@ The application is built on top of BlueST SDK, a library that provides an implem
 
 ## Download the source
 
-Since the project uses git submodules, <code>--recursive</code> option must be used to clone the repository:
+Since the project uses git submodules, <code>--recurse-submodule</code> option must be used to clone the repository:
 
 ```Shell
-git clone --recursive https://github.com/STMicroelectronics-CentralLabs/STBlueMS_Android
+git clone --recurse-submodule https://github.com/STMicroelectronics/STBlueMS_Android
 ```
 
 or run
 ```Shell
-git clone https://github.com/STMicroelectronics-CentralLabs/STBlueMS_Android
+git clone https://github.com/STMicroelectronics/STBlueMS_Android
 git submodule update --init --recursive
 ```
 

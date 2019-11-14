@@ -34,14 +34,14 @@
   ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
   ~ OF SUCH DAMAGE.
   -->
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -186,7 +186,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sdLog_errorLabel" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sdLog_featureList"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -201,7 +201,7 @@
             app:layout_constraintTop_toBottomOf="@+id/sdLog_featureListTitleLabel"
             tools:listitem="@layout/feature_list_item" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/sdLog_logIntervalGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -209,7 +209,7 @@
             app:constraint_referenced_ids="sdLog_intervalLabel,sdLog_hoursLabel,sdLog_hoursValue,sdLog_minutesValue,sdLog_minutesLabel,sdLog_secondsLabel,sdLog_secondsValue"
             />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/sdLog_featureListGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -217,9 +217,9 @@
             app:constraint_referenced_ids="sdLog_featureListTitleLabel,sdLog_featureList"
             />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sdLog_startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -227,4 +227,4 @@
         android:layout_margin="@dimen/fab_margin"
         android:visibility="gone"
         app:srcCompat="@drawable/sd_log_start" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

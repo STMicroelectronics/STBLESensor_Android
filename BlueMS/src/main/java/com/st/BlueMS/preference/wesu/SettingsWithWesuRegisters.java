@@ -39,7 +39,7 @@ package com.st.BlueMS.preference.wesu;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Node;

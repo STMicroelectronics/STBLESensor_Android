@@ -1,174 +1,99 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
-  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
-  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
-  ~
-  ~ Redistribution and use in source and binary forms, with or without modification,
-  ~ are permitted provided that the following conditions are met:
-  ~
-  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
-  ~   and the following disclaimer.
-  ~
-  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
-  ~   conditions and the following disclaimer in the documentation and/or other materials provided
-  ~   with the distribution.
-  ~
-  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
-  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
-  ~   promote products derived from this software without specific prior written permission.
-  ~
-  ~ - All of the icons, pictures, logos and other images that are provided with the source code
-  ~   in a directory whose title begins with st_images may only be used for internal purposes and
-  ~   shall not be redistributed to any third party or modified in any way.
-  ~
-  ~ - Any redistributions in binary form shall not include the capability to display any of the
-  ~   icons, pictures, logos and other images that are provided with the source code in a directory
-  ~   whose title begins with st_images.
-  ~
-  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-  ~ OF SUCH DAMAGE.
-  -->
-
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg6730" sodipodi:docname="carry_desk.svg"
-    viewBox="0 0 100 100" version="1.0" y="0" x="0" inkscape:version="0.48.4 r9939" width="100%"
-    height="100%">
-  <defs
-     id="defs3794" />
-  <sodipodi:namedview
-     id="namedview51"
-     bordercolor="#666666"
-     inkscape:pageshadow="2"
-     guidetolerance="10"
-     pagecolor="#ffffff"
-     gridtolerance="10"
-     inkscape:window-maximized="1"
-     inkscape:zoom="5.1726027"
-     objecttolerance="10"
-     borderopacity="1"
-     inkscape:current-layer="svg6730"
-     inkscape:cx="42.528305"
-     inkscape:cy="64.514132"
-     inkscape:window-y="-8"
-     inkscape:window-x="-8"
-     inkscape:window-width="1280"
-     showgrid="false"
-     inkscape:pageopacity="0"
-     inkscape:window-height="962"
-     units="pt" />
-  <g
-     id="g4304"
-     transform="matrix(0.11419326,0,0,0.11419326,9.2878087,25.142582)"
-     style="fill:#1a1a1a">
-    <path
-       d="m 141.29,168.13 v 252.93 l 19.284,13.535 v -261.39 l -19.284,-5.0756 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path1689"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 160.96,175.22 -0.29583,259.4 25.293,-4.565 v -258.22 l -24.997,3.3837 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path2315"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 487.54,17.13 0.17855,237.71 16.946,12.052 V 21.882 l -17.125,-4.7575 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path4821"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 505.21,23.781 -0.26271,243.14 22.462,-4.1066 v -242.21 l -22.199,3.1716 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path4822"
-       inkscape:connector-curvature="0" />
-    <path
-       d="M 661.38,101.42 V 344.8 l 17.557,12.355 v -250.86 l -17.557,-4.8711 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path4825"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 679.49,108.23 -0.26933,248.95 23.028,-4.2703 v -247.93 l -22.759,3.2474 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path4826"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 158.17,185.67 v 11.066 l 553.5,-83.444 v -10.767 l -553.39,83.036"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path2941"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 8.9874,78.494 0.17855,243.59 17.378,12.144 V 83.368 l -17.557,-4.8711 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path5455"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 27.094,85.087 -0.27,248.95 22.85,-4.48 0.178,-247.72 -22.758,3.247 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path5456"
-       inkscape:connector-curvature="0" />
-    <path
-       d="M 158.03,196.58 0.71,85.91 0.58776,76.727 l 157.46,108.95 -0.0217,10.899 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-opacity:1"
-       id="path4191"
-       inkscape:connector-curvature="0" />
-    <path
-       d="m 0.74242,76.877 157.49,108.28 554.22,-82.91 -199.98,-101.51 -511.73,76.137 z"
-       style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.97119999000000010;stroke-linejoin:round;stroke-opacity:1"
-       id="path4829"
-       inkscape:connector-curvature="0" />
-  </g>
-  <metadata
-     id="metadata3792">
-    <rdf:RDF>
-      <cc:Work>
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:publisher>
-          <cc:Agent
-             rdf:about="http://openclipart.org/">
-            <dc:title>Openclipart</dc:title>
-          </cc:Agent>
-        </dc:publisher>
-        <dc:title></dc:title>
-        <dc:date>2010-08-03T02:23:50</dc:date>
-        <dc:description />
-        <dc:source>https://openclipart.org/detail/76633/table-line-art-by-gammillian</dc:source>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>gammillian</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:subject>
-          <rdf:Bag>
-            <rdf:li>black and white</rdf:li>
-            <rdf:li>coloring book</rdf:li>
-            <rdf:li>line art</rdf:li>
-            <rdf:li>outline</rdf:li>
-            <rdf:li>table</rdf:li>
-          </rdf:Bag>
-        </dc:subject>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 144 144" style="enable-background:new 0 0 144 144;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{fill:#FFFFFF;}
+	.st2{fill:#B9C4CA;}
+	.st3{fill:#B9C4CA;stroke:#39A9DC;stroke-miterlimit:10;}
+	.st4{fill:none;stroke:#B9C4CA;stroke-width:2;stroke-miterlimit:10;}
+	.st5{opacity:0.2;}
+	.st6{fill:#39A9DC;}
+	.st7{opacity:0.79;fill:#FFFFFF;}
+	.st8{fill:none;stroke:#D4007A;stroke-width:3;stroke-miterlimit:10;}
+	.st9{fill:#D4007A;}
+	.st10{fill:none;stroke:#D4007A;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:3,3;}
+	.st11{fill:#FFFFFF;stroke:#39A9DC;stroke-width:2;stroke-miterlimit:10;}
+	.st12{fill:none;stroke:#B9C4CA;stroke-miterlimit:10;}
+	.st13{fill:#FFFFFF;stroke:#39A9DC;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#B9C4CA;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st15{fill:none;stroke:#D4007A;stroke-width:4;stroke-miterlimit:10;stroke-dasharray:3;}
+	.st16{fill:none;stroke:#D4007A;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+	.st17{stroke:#B9C4CA;stroke-miterlimit:10;}
+</style>
+<g id="Layer_1" class="st0">
+	
+		<image style="display:inline;overflow:visible;" width="144" height="144" xlink:href="data:image/jpeg;base64,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">
+	</image>
+</g>
+<g id="Layer_2">
+	<g>
+		<path class="st2" d="M46.7,53.8c2.3-0.1,4.3-1,5.9-2.7c1.6-1.7,2.3-3.8,2.3-6.1c-0.1-2.3-0.9-4.3-2.6-6c-1.7-1.7-3.7-2.5-6-2.4
+			c-2.3,0.1-4.3,1-5.9,2.7C38.8,41,38,43.1,38,45.4c0,2.3,0.9,4.3,2.6,6C42.3,53.1,44.4,53.9,46.7,53.8L46.7,53.8z M46.7,53.8"/>
+		<path class="st2" d="M43.5,58.2l-6,3.2c-1.4,1.1-2.2,2.7-2.2,4.5v21.7c0,0.6,0.1,1.1,0.3,1.6l0.5,1.4c0.5,1.6,1.8,2.9,3.5,3.4
+			l0.9,0.3c0.5,0.2,1,0.2,1.6,0.2h16l3.5,24.9c0.2,1.2,1,2.3,2.1,2.8l0,0c1.3,0.6,2.9,0.4,4-0.5l0.8-0.6c0.9-0.8,1.4-2,1.3-3.2
+			l-2.8-26.8c-0.2-1.5-1-2.8-2.2-3.6L64,87c-0.8-0.5-1.7-0.7-2.6-0.7h-8.2V74.6l5.9,3.4h9.4c0.4,0,0.7-0.1,1-0.3l3.3-1.9
+			c0.6-0.4,1-1.1,1-1.8v-2.2l0,0c0-1.1-0.9-2.1-2.1-2.1h-11L49.4,58.7c-0.8-0.8-1.9-1.3-3-1.3H46C45.1,57.3,44.2,57.6,43.5,58.2z"/>
+		<polyline class="st14" points="28,58 28,97.8 28,119 		"/>
+		<polyline class="st14" points="51,119 51,103 30,103 		"/>
+		<rect x="76" y="87" class="st2" width="34" height="36"/>
+		<polyline class="st14" points="69,85 99.8,85 116,85 		"/>
+		<line class="st13" x1="98" y1="78.5" x2="81" y2="78.5"/>
+		<g>
+			<g>
+				<line class="st10" x1="89.4" y1="21.4" x2="89.9" y2="59.1"/>
+				<g>
+					<polygon class="st9" points="90,69.7 83.8,54.8 89.9,58.3 95.9,54.7 					"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
 </svg>

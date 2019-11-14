@@ -38,7 +38,7 @@ package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.IBMWatson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -39,9 +39,9 @@ package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
 
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.DrawableRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import android.widget.ImageButton;
 
 import com.st.BlueMS.R;

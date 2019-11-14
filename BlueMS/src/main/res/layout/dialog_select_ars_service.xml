@@ -6,14 +6,14 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical">
 
-<android.support.v7.widget.RecyclerView
+<androidx.recyclerview.widget.RecyclerView
     android:id="@+id/asrSelector_itemList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="24dp"
     android:layout_marginStart="24dp"
     android:scrollbars="vertical"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@android:layout/simple_list_item_1" />
 
 <View style="@style/Divider" />

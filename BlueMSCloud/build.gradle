@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'proguard-rules.pro'
     }
 
@@ -33,13 +33,13 @@ dependencies {
     implementation project(':BlueSTSDK')
     implementation project(':BlueSTSDK_Gui_Android')
 
-    implementation group: 'com.android.support', name: 'design', version: "$rootProject.supportLibraryVersion"
-    implementation group: 'com.android.support', name: 'appcompat-v7', version: "$rootProject.supportLibraryVersion"
-    implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
+    implementation group: 'com.google.android.material', name: 'material', version: "$rootProject.androidx_materialVersion"
+    implementation group: 'androidx.appcompat', name: 'appcompat', version: "$rootProject.androidx_appCompatVersion"
+    implementation group: 'androidx.constraintlayout', name: 'constraintlayout', version: "$rootProject.androidx_constraintLayoutVersion"
 
 
     //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
-    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '16.2.0'
+    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '17.1.1'
 
     //necessary to cloud demo, for mqtt connection
     api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
@@ -54,7 +54,7 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"
 
-    androidTestImplementation "com.android.support.test:runner:$rootProject.runnerVersion"
-    androidTestImplementation "com.android.support.test:rules:$rootProject.rulesVersion"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
+    androidTestImplementation group:'androidx.test', name:'runner', version:"$rootProject.androidx_runnerVersion"
+    androidTestImplementation group:'androidx.test', name:'rules', version:"$rootProject.androidx_rulesVersion"
+    androidTestImplementation group:'androidx.test.espresso', name: 'espresso-core', version:"$rootProject.androidx_espressoVersion"
 }

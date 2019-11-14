@@ -1,123 +1,94 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
-  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
-  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
-  ~
-  ~ Redistribution and use in source and binary forms, with or without modification,
-  ~ are permitted provided that the following conditions are met:
-  ~
-  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
-  ~   and the following disclaimer.
-  ~
-  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
-  ~   conditions and the following disclaimer in the documentation and/or other materials provided
-  ~   with the distribution.
-  ~
-  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
-  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
-  ~   promote products derived from this software without specific prior written permission.
-  ~
-  ~ - All of the icons, pictures, logos and other images that are provided with the source code
-  ~   in a directory whose title begins with st_images may only be used for internal purposes and
-  ~   shall not be redistributed to any third party or modified in any way.
-  ~
-  ~ - Any redistributions in binary form shall not include the capability to display any of the
-  ~   icons, pictures, logos and other images that are provided with the source code in a directory
-  ~   whose title begins with st_images.
-  ~
-  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-  ~ OF SUCH DAMAGE.
-  -->
-
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg8106" sodipodi:docname="HeadProfile.svg"
-    viewBox="0 0 100 100" version="1.1" inkscape:version="0.48.4 r9939" width="100%" height="100%">
-  <defs
-     id="defs3034" />
-  <sodipodi:namedview
-     id="base"
-     bordercolor="#666666"
-     inkscape:pageshadow="2"
-     inkscape:window-y="-8"
-     fit-margin-left="0"
-     pagecolor="#ffffff"
-     fit-margin-top="0"
-     inkscape:window-maximized="1"
-     inkscape:zoom="1"
-     inkscape:window-x="-8"
-     inkscape:window-height="962"
-     showgrid="false"
-     borderopacity="1.0"
-     inkscape:current-layer="layer1"
-     inkscape:cx="-145.68695"
-     inkscape:cy="124.81141"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1280"
-     inkscape:pageopacity="0.0"
-     inkscape:document-units="px"
-     units="pt" />
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     transform="translate(-278.64,-352.02)">
-    <path
-       id="path7144"
-       sodipodi:nodetypes="csscccccccccccccccccccccccccccccccccccccsccccccccccccccczzccc"
-       style="fill:#333333"
-       inkscape:connector-curvature="0"
-       d="m 332.92292,370.77058 c -3.70393,0.0345 -7.36177,1.08882 -10.72077,2.66446 -2.41953,1.13495 -4.75691,2.59109 -6.39878,4.69953 -1.35367,1.73802 -2.16893,3.83595 -2.70643,5.97233 -0.4115,1.63547 -0.67349,3.31039 -1.20983,4.90931 -0.11244,0.33527 -0.23533,0.66945 -0.3147,1.01403 -0.0792,0.34459 -0.11489,0.70996 -0.042,1.05599 0.0852,0.40414 0.3064,0.75992 0.51053,1.11893 0.20414,0.35901 0.39686,0.74122 0.4126,1.15389 0.0141,0.37127 -0.11351,0.73508 -0.30068,1.05599 -0.18727,0.32091 -0.43079,0.60777 -0.65738,0.90215 -1.04229,1.35366 -1.79336,2.91366 -2.88127,4.23105 -0.30903,0.37428 -0.6469,0.73928 -0.84618,1.18186 -0.0996,0.2213 -0.16447,0.46365 -0.16086,0.70632 0.004,0.24267 0.0759,0.48598 0.22379,0.67836 0.13939,0.18119 0.33879,0.31053 0.55249,0.39162 0.21376,0.0811 0.44393,0.11636 0.67136,0.13986 0.45475,0.0471 0.92674,0.0474 1.33573,0.25176 0.29084,0.14533 0.53185,0.39163 0.67133,0.68535 0.13945,0.29375 0.17751,0.6326 0.11192,0.9511 -0.0436,0.21184 -0.12754,0.41263 -0.20282,0.61542 -0.0752,0.20278 -0.14058,0.41326 -0.13287,0.62941 0.008,0.22228 0.0912,0.43687 0.22377,0.61542 0.13274,0.17852 0.31354,0.3232 0.51053,0.42658 0.086,0.0452 0.17579,0.0853 0.24478,0.15385 0.0344,0.0343 0.0629,0.0723 0.0769,0.11889 0.0138,0.0465 0.0135,0.0958 -0.007,0.13987 -0.0229,0.0494 -0.0659,0.0897 -0.11189,0.11888 -0.0459,0.0291 -0.0995,0.0544 -0.13988,0.0909 -0.0462,0.0418 -0.0763,0.0953 -0.0979,0.15385 -0.0213,0.0585 -0.0327,0.12011 -0.042,0.18183 -0.04,0.26818 -0.044,0.54631 0.0141,0.81121 0.0578,0.26493 0.176,0.51806 0.35662,0.72031 0.20875,0.23377 0.49432,0.38824 0.76929,0.5385 0.27504,0.15027 0.55243,0.3058 0.76227,0.5385 0.21373,0.23692 0.34728,0.54813 0.34267,0.86716 -0.005,0.37027 -0.18833,0.71677 -0.3776,1.03501 -0.18934,0.31822 -0.39909,0.63229 -0.48256,0.99306 -0.11471,0.49548 0.0321,1.03448 0.32866,1.44761 0.2966,0.4131 0.73244,0.70896 1.20286,0.90215 0.58761,0.24128 1.23216,0.32728 1.86724,0.33568 0.63511,0.008 1.26932,-0.0579 1.90217,-0.11189 0.63289,-0.054 1.26988,-0.095 1.9022,-0.035 0.63229,0.0601 1.2637,0.22608 1.80427,0.55948 0.46908,0.28924 0.86656,0.71796 1.02802,1.24483 0.14174,0.46246 0.0943,0.96148 0.0279,1.44062 -0.0663,0.47914 -0.14935,0.96471 -0.0629,1.44062 0.0765,0.421 0.28052,0.80939 0.52451,1.16088 0.24396,0.35148 0.52734,0.67644 0.79024,1.01403 1.06627,1.36944 2.17714,8.05979 2.46864,10.58782 7.6004,-2.44707 14.12587,-7.26613 18.71408,-13.58809 -0.50984,-1.03479 -1.06324,-2.2121 -1.25179,-2.76936 -0.83238,-2.4602 -1.10933,-5.10905 -0.78324,-7.68569 0.11564,-0.91491 0.30347,-1.81553 0.56647,-2.69943 1.82415,-2.72392 3.269,-5.70484 4.27275,-8.82553 0.9099,-2.82834 1.45643,-5.78481 1.48957,-8.7556 0.0345,-3.09473 -0.73382,-6.05009 -1.52375,-8.32727 -0.78992,-2.27736 -1.44532,-3.49854 -3.66536,-5.61736 -2.22004,-2.11888 -6.86256,-4.11377 -10.81861,-4.22383 -0.24725,-0.007 -0.49435,-0.009 -0.74128,-0.007 z" />
-  </g>
-  <metadata
-     id="metadata3032">
-    <rdf:RDF>
-      <cc:Work>
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:publisher>
-          <cc:Agent
-             rdf:about="http://openclipart.org/">
-            <dc:title>Openclipart</dc:title>
-          </cc:Agent>
-        </dc:publisher>
-        <dc:title></dc:title>
-        <dc:date>2011-12-21T08:45:07</dc:date>
-        <dc:description>Head profile</dc:description>
-        <dc:source>https://openclipart.org/detail/166375/head-profile-by-printerkiller</dc:source>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>PrinterKiller</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:subject>
-          <rdf:Bag>
-            <rdf:li>Head profile silhouette</rdf:li>
-          </rdf:Bag>
-        </dc:subject>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 144 144" style="enable-background:new 0 0 144 144;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{fill:#FFFFFF;}
+	.st2{fill:#B9C4CA;}
+	.st3{fill:#B9C4CA;stroke:#39A9DC;stroke-miterlimit:10;}
+	.st4{fill:none;stroke:#B9C4CA;stroke-width:2;stroke-miterlimit:10;}
+	.st5{opacity:0.2;}
+	.st6{fill:#39A9DC;}
+	.st7{opacity:0.79;fill:#FFFFFF;}
+	.st8{fill:none;stroke:#D4007A;stroke-width:3;stroke-miterlimit:10;}
+	.st9{fill:#D4007A;}
+	.st10{fill:none;stroke:#D4007A;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:3,3;}
+	.st11{fill:#FFFFFF;stroke:#39A9DC;stroke-width:2;stroke-miterlimit:10;}
+	.st12{fill:none;stroke:#B9C4CA;stroke-miterlimit:10;}
+	.st13{fill:#FFFFFF;stroke:#39A9DC;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#B9C4CA;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st15{fill:none;stroke:#D4007A;stroke-width:4;stroke-miterlimit:10;stroke-dasharray:3;}
+	.st16{fill:none;stroke:#D4007A;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+	.st17{stroke:#B9C4CA;stroke-miterlimit:10;}
+</style>
+<g id="Layer_1" class="st0">
+	
+		<image style="display:inline;overflow:visible;" width="144" height="144" xlink:href="data:image/jpeg;base64,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">
+	</image>
+</g>
+<g id="Layer_2">
+	<g>
+		<path class="st2" d="M98.1,31.2c2.3-0.1,4.3-1,5.9-2.7c1.6-1.7,2.3-3.8,2.3-6.1c-0.1-2.3-0.9-4.3-2.6-6c-1.7-1.7-3.7-2.5-6-2.4
+			c-2.3,0.1-4.3,1-5.9,2.7c-1.6,1.7-2.4,3.8-2.4,6.1c0,2.3,0.9,4.3,2.6,6C93.7,30.5,95.8,31.3,98.1,31.2L98.1,31.2z M98.1,31.2"/>
+		<path class="st2" d="M95.1,35.7h5.8c1.8,0,3.5,0.7,4.8,1.8l15.8,14.1c0.9,0.8,1.4,2,1.4,3.2v21.3c0,2.3-1.9,4.1-4.1,4.1h-0.3l0,0
+			c-2.3,0-4.1-1.9-4.1-4.1V60.6c0-1.6-0.8-3.1-2.2-4l-3.5-2.8v74.1c0,2.3-1.8,4.1-4.1,4.1l0,0h-1.2c-2.2,0-3.7-1.8-3.7-4.1
+			l-0.1-40.5h-3.9v40.5c0,2.3-1.8,4.1-4.1,4.1h-0.2h-0.3c-2.3,0-4.1-1.8-4.1-4.1V55.1l-16.3-9.3c-0.8-0.7-1.2-1.6-1.2-2.7V35
+			c0-0.6,0.1-1.1,0.4-1.6l8.9-18c0.6-1.1,1.8-1.8,3-1.8l0,0c0.5,0,2.1,2.3,2.1,2.3c0.9,2.4,0.1,4.9-0.7,7.3l-0.5,1.6
+			c0,0.1,0,0.3-0.1,0.4l-4,9.4c-0.3,0.7-0.5,2.3-0.5,2.3c0,0.9,0.4,1.8,1.1,2.4l8,3.4C87.2,42.6,93.2,35.7,95.1,35.7z"/>
+		<line class="st13" x1="86.5" y1="12" x2="86.5" y2="28"/>
+		<g>
+			<g>
+				<line class="st10" x1="21.1" y1="19.6" x2="58.8" y2="19.1"/>
+				<g>
+					<polygon class="st9" points="69.4,19 54.5,25.2 58,19.1 54.4,13 					"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
 </svg>

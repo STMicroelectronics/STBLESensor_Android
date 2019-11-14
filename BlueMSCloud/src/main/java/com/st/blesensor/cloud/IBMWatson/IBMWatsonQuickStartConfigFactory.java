@@ -38,8 +38,8 @@
 package com.st.blesensor.cloud.IBMWatson;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -36,13 +36,13 @@
  */
 package com.st.BlueMS.demos.fftAmpitude;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,7 +147,7 @@ public class FFTAmplitudePlotFragment extends Fragment {
     }
 
     private void registerFFTDataListener(){
-        mFFTViewModel.getFftData().observe(this, data -> {
+        mFFTViewModel.getFftData().observe(getViewLifecycleOwner(), data -> {
             Float freqStep = mFFTViewModel.getFrequencyStep().getValue();
             if(freqStep!=null && data!=null)
                 updatePlot(data,freqStep);
@@ -155,7 +155,7 @@ public class FFTAmplitudePlotFragment extends Fragment {
     }
 
     private void registerFFTUpdateListener(){
-        mFFTViewModel.getLoadingStatus().observe(this, percentage -> {
+        mFFTViewModel.getLoadingStatus().observe(getViewLifecycleOwner(), percentage -> {
             if(percentage==null)
                 return;
             if(percentage >= 100) { // complete

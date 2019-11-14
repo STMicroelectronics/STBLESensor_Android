@@ -39,8 +39,8 @@ package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices;
 
 import android.app.DialogFragment;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.st.BlueMS.demos.Audio.SpeechToText.util.DialogFragmentDismissCallback;
 import com.st.BlueMS.demos.Audio.Utils.AudioBuffer;

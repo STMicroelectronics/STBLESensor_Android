@@ -38,10 +38,10 @@
 package com.st.BlueMS.demos.PredictiveMaintenance;
 
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,13 +94,13 @@ public class PredictiveMaintenanceFragment extends BaseDemoFragment {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(PredictiveMaintenanceViewModel.class);
 
-        mViewModel.getAccStatus().observe(this, viewStatus -> {
+        mViewModel.getAccStatus().observe(getViewLifecycleOwner(), viewStatus -> {
             if(viewStatus!=null){
                 mAccelerationStatusView.updateStatus(viewStatus);
             }
         });
 
-        mViewModel.getAccStatusVisibility().observe(this, isVisible -> {
+        mViewModel.getAccStatusVisibility().observe(getViewLifecycleOwner(), isVisible -> {
             if(isVisible!=null && isVisible){
                 mAccelerationStatusView.setVisibility(View.VISIBLE);
             }else{
@@ -108,13 +108,13 @@ public class PredictiveMaintenanceFragment extends BaseDemoFragment {
             }
         });
 
-        mViewModel.getFrequencyStatus().observe(this, viewStatus -> {
+        mViewModel.getFrequencyStatus().observe(getViewLifecycleOwner(), viewStatus -> {
             if(viewStatus!=null){
                 mFrequencyStatusView.updateStatus(viewStatus);
             }
         });
 
-        mViewModel.getFrequencyStatusVisibility().observe(this, isVisible -> {
+        mViewModel.getFrequencyStatusVisibility().observe(getViewLifecycleOwner(), isVisible -> {
             if(isVisible!=null && isVisible){
                 mFrequencyStatusView.setVisibility(View.VISIBLE);
             }else{
@@ -122,13 +122,13 @@ public class PredictiveMaintenanceFragment extends BaseDemoFragment {
             }
         });
 
-        mViewModel.getSpeedStatus().observe(this, viewStatus -> {
+        mViewModel.getSpeedStatus().observe(getViewLifecycleOwner(), viewStatus -> {
             if(viewStatus!=null){
                 mSpeedStatusView.updateStatus(viewStatus);
             }
         });
 
-        mViewModel.getSpeedStatusVisibility().observe(this, isVisible -> {
+        mViewModel.getSpeedStatusVisibility().observe(getViewLifecycleOwner(), isVisible -> {
             if(isVisible!=null && isVisible){
                 mSpeedStatusView.setVisibility(View.VISIBLE);
             }else{

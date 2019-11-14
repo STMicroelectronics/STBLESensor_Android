@@ -38,6 +38,7 @@
 
 <resources>
 
+    <string name="activityRecognition_unknownImageDesc">Unknown</string>
     <string name="activityRecognition_stationaryImageDesc">Stationary</string>
     <string name="activityRecognition_walkingImageDesc">Walking</string>
     <string name="activityRecognition_fastWalkingImageDesc">Fast walking</string>
@@ -48,5 +49,7 @@
 
     <string name="activityRecognition_started">Activity recognition started</string>
     <string name="activityRecognition_waitingData">Waiting data…</string>
+
+    <string name="audioClassification_waitingData">Waiting data…</string>
 
 </resources>

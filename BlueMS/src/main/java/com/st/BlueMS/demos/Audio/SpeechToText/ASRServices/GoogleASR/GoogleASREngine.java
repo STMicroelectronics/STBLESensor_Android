@@ -38,8 +38,8 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.GoogleASR;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASREngine;
 import com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.ASRLanguage;

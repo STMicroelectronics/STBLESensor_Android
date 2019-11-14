@@ -41,46 +41,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/azure_iotCentral_deviceIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/azure_iotCentral_deviceIdHit">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/azure_iotCentral_deviceId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/azure_iotCentral_scopeIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/azure_iotCentral_scopeIdHit">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/azure_iotCentral_scopeId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/azure_iotCentral_masterKeyWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/azure_iotCentral_masterKeyHit">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/azure_iotCentral_masterKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/azure_iotCentral_createAppButton"

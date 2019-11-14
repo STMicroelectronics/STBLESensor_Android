@@ -40,8 +40,7 @@ package com.st.BlueMS;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.view.Menu;
+import androidx.annotation.NonNull;
 import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
@@ -49,7 +48,7 @@ import com.st.BlueMS.demos.ActivityRecognition.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
 import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
 import com.st.BlueMS.demos.Audio.SpeechToText.SpeechToTextFragment;
-import com.st.BlueMS.demos.AudioSceneClassificationFragment;
+import com.st.BlueMS.demos.AudioClassification.AudioClassificationFragment;
 import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
@@ -67,13 +66,13 @@ import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.MotionIntensityFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
-import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.ProximityGestureRecognitionFragment;
 import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.SwitchFragment;
 import com.st.BlueMS.demos.motionAlgorithm.MotionAlgorithmFragment;
+import com.st.BlueMS.demos.multiNN.MultiNeuralNetworkFragment;
+import com.st.BlueMS.demos.plot.PlotFeatureFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
-import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
@@ -145,7 +144,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             SpeechToTextFragment.class,
             BeamformingFragment.class,
             SourceLocFragment.class,
-            AudioSceneClassificationFragment.class,
+            AudioClassificationFragment.class,
             HeartRateFragment.class,
             MotionIntensityFragment.class,
             CompassFragment.class,
@@ -154,11 +153,12 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             LedButtonControlFragment.class,
             StartOtaRebootFragment.class,
             AIDataLogDemoFragment.class,
+            MultiNeuralNetworkFragment.class,
             CloudLogFragment.class,
             PredictiveMaintenanceFragment.class,
             MotionAlgorithmFragment.class,
             FitnessActivityFragment.class,
-            NodeStatusFragment.class
+            NodeStatusFragment.class,
             //FeatureDebugFragment.class
     };
 
@@ -173,13 +173,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_demos_activity, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

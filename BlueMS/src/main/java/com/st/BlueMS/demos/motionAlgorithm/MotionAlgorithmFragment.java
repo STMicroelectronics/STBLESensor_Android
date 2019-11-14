@@ -36,12 +36,12 @@
  */
 package com.st.BlueMS.demos.motionAlgorithm;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +56,6 @@ import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Features.FeatureMotionAlgorithm;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
 @DemoDescriptionAnnotation(
         iconRes = R.drawable.activity_demo_icon,
@@ -102,7 +101,7 @@ public class MotionAlgorithmFragment extends BaseDemoFragment {
     }
 
     private void setupDesktopTypeListener(MotionAlgorithmViewModel viewModel, TextView label, ImageView icon) {
-        viewModel.getDesktopType().observe(this, desktopType -> {
+        viewModel.getDesktopType().observe(getViewLifecycleOwner(), desktopType -> {
             if(desktopType == null){
                 label.setText(desktopString(FeatureMotionAlgorithm.DesktopType.UNKNOWN));
                 icon.setImageResource(desktopIcon(FeatureMotionAlgorithm.DesktopType.UNKNOWN));
@@ -142,7 +141,7 @@ public class MotionAlgorithmFragment extends BaseDemoFragment {
 
 
     private void setupVerticalContextListener(MotionAlgorithmViewModel viewModel, TextView label, ImageView icon) {
-        viewModel.getVerticalContext().observe(this, verticalContext -> {
+        viewModel.getVerticalContext().observe(getViewLifecycleOwner(), verticalContext -> {
             if(verticalContext == null){
                 label.setText(verticalContextString(FeatureMotionAlgorithm.VerticalContext.UNKNOWN));
                 icon.setImageResource(verticalContextIcon(FeatureMotionAlgorithm.VerticalContext.UNKNOWN));
@@ -195,7 +194,7 @@ public class MotionAlgorithmFragment extends BaseDemoFragment {
 
 
     private void setupPoseEstimationListener(MotionAlgorithmViewModel viewModel, TextView label, ImageView icon) {
-        viewModel.getPoseEstimation().observe(this, pose -> {
+        viewModel.getPoseEstimation().observe(getViewLifecycleOwner(), pose -> {
             if(pose == null){
                 label.setText(poseContextString(FeatureMotionAlgorithm.Pose.UNKNOWN));
                 icon.setImageResource(poseContextIcon(FeatureMotionAlgorithm.Pose.UNKNOWN));
@@ -269,7 +268,7 @@ public class MotionAlgorithmFragment extends BaseDemoFragment {
             }
         });
 
-        viewModel.getCurrentAlgorithm().observe(this, algorithmType -> {
+        viewModel.getCurrentAlgorithm().observe(getViewLifecycleOwner(), algorithmType -> {
             if(algorithmType==null)
                 return;
             int index = algorithmType.id;

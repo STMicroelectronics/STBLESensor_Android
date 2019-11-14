@@ -41,10 +41,10 @@ package com.st.BlueMS.demos.SDLog;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -98,11 +98,7 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
         FeatureSDLogging logFeature = node.getFeature(FeatureSDLogging.class);
-        if(node.getType()== Node.Type.SENSOR_TILE_BOX){
-            mPresenter = new SDLogPresenterSTBox(this, logFeature);
-        }else{
-            mPresenter = new SDLogPresenter(this, logFeature);
-        }
+        mPresenter = new SDLogPresenter(this, logFeature);
 
         mPresenter.startDemo();
     }
@@ -208,22 +204,32 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
 
     @Override
     public void hideLogInterval() {
-        mIntervalGroupView.setVisibility(View.INVISIBLE);
+        updateGui(() -> {
+            mIntervalGroupView.setVisibility(View.INVISIBLE);
+            mIntervalGroupView.requestLayout();
+        });
     }
 
     @Override
     public void displayLogInterval() {
-        mIntervalGroupView.setVisibility(View.VISIBLE);
+        updateGui(() -> {
+            mIntervalGroupView.setVisibility(View.VISIBLE);
+        });
     }
 
     @Override
     public void hideFeatureList() {
-        mFeatureListGroupView.setVisibility(View.INVISIBLE);
+        updateGui(() -> {
+            mFeatureListGroupView.setVisibility(View.INVISIBLE);
+            mFeatureListGroupView.requestLayout();
+        });
     }
 
     @Override
     public void displayFeatureList() {
-        mFeatureListGroupView.setVisibility(View.VISIBLE);
+        updateGui(() -> {
+            mFeatureListGroupView.setVisibility(View.VISIBLE);
+        });
     }
 
     @Override

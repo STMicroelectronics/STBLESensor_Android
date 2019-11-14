@@ -37,8 +37,7 @@
 
 package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
@@ -126,5 +125,5 @@ public class CalibrationPresenter implements CalibrationContract.Presenter,
     }
 
     @Override
-    public void onUpdate(Feature f, Feature.Sample sample) { }
+    public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) { }
 }

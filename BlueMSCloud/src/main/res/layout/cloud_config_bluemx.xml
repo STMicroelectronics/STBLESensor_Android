@@ -41,60 +41,60 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/blueMx_organizationWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_watson_organizationIDHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/blueMx_organization"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/blueMx_authTokenWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_watson_authTokenHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/blueMx_authToken"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/blueMx_deviceTypeWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_watson_deviceTypeHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/blueMx_deviceType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/blueMx_deviceIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/cloudLog_watson_deviceIdHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/blueMx_deviceId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

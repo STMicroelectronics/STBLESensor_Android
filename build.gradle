@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -22,9 +22,9 @@ allprojects {
 // Define versions in a single place
 ext {
     // Sdk and tools
-    minSdkVersion=19 //19 since we need the setPin api
-    targetSdkVersion = 27
-    compileSdkVersion = 27
+    minSdkVersion=28 //19 since we need the setPin api
+    targetSdkVersion = 28
+    compileSdkVersion = 28
 
     buildToolsVersion = '28.0.3'
 

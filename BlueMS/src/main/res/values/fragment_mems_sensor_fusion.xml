@@ -40,17 +40,16 @@
     <dimen name="CalibImgW" >100dp</dimen>
     <dimen name="CalibImgH" >42dp</dimen>
 
-    <string name="ResetButton">Reset</string>
+    <string name="ResetButton"></string>
     <string name="enableProximityButton">Proximity</string>
     <string name="CalibButtonDesc">Start calibration</string>
 
-    <string name="memsSensorFusionNotFound">Mems Sensor Fusion Feature is not present</string>
+    <string name="memsSensorFusionNotFound">Calibration is not enabled. Ensure Heel2Toe is powered on and connected</string>
     <string name="memsSensorFusionInfoTitle">Calibration</string>
-    <string name="memsSensorFusionDialogCalibrateText">Usage: move the board as shown in the image</string>
+    <string name="memsSensorFusionDialogCalibrateText">Usage: Attach Heel2toe on your shoe. Keep still until you hear 3 beeps</string>
     <string name="memsSensorFusionDialogResetText_nucleo">Keep the board as shown in the
         image</string>
-    <string name="memsSensorFusionDialogResetText_STEVAL_WESU1">Keep the board as shown in the
-        image</string>
+    <string name="memsSensorFusionDialogResetText_STEVAL_WESU1">Reset not available</string>
 
     <string name="memsSensorFusion_frameRate">Frame Rate: %03d fps</string>
     <string name="memsSensorFusion_quaternionRate">Quaternion Rate: %03d</string>

@@ -42,14 +42,14 @@ dependencies {
     implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '16.2.0'
 
     //necessary to cloud demo, for mqtt connection
-    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.2'
     api group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.1.1'
 
     //amazon aws iot
-    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: "$rootProject.amazonSDKVersion"
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: '2.16.3'
 
     //azure iot client
-    implementation 'com.github.lucadruda:iotc-java-device-client:1.0.1'
+    implementation 'com.github.lucadruda:iotc-java-device-client:1.0.5-beta.3'
 
     testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"

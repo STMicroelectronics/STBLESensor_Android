@@ -137,8 +137,8 @@
 
     <string-array name="data_read_group_b">
         <item>Pedometer</item>
-        <item>MEMS Sensor Fusion</item>
-        <item>MEMS Sensor Fusion (Compact)</item>
+        <item>Calibrate Heel2toe</item>
+        <item>Calibrate Heel2toe (Compact)</item>
         <item>FreeFall</item>
         <item>Accelerometer Events</item>
         <item>Activity Recognition</item>

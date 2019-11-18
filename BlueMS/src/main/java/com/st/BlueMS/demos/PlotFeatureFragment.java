@@ -70,34 +70,16 @@ import com.androidplot.xy.XYLegendWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYStepMode;
-import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
-import com.st.BlueSTSDK.Features.FeatureEulerAngle;
-import com.st.BlueSTSDK.Features.FeatureGyroscopeNorm;
-import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
-import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.R;
-import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
-import com.st.BlueSTSDK.Features.FeatureEulerAngle;
-import com.st.BlueSTSDK.Features.FeatureGyroscopeNorm;
-import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
-import com.st.BlueSTSDK.Features.FeatureActivity;
-import com.st.BlueSTSDK.Features.FeatureCOSensor;
-import com.st.BlueSTSDK.Features.FeatureCompass;
-import com.st.BlueSTSDK.Features.FeatureDirectionOfArrival;
+import com.st.BlueSTSDK.Features.FeatureAccelerationNorm;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
-import com.st.BlueSTSDK.Features.FeatureHumidity;
-import com.st.BlueSTSDK.Features.FeatureLuminosity;
+import com.st.BlueSTSDK.Features.FeatureGyroscopeNorm;
 import com.st.BlueSTSDK.Features.FeatureMagnetometer;
-import com.st.BlueSTSDK.Features.FeatureMemsSensorFusion;
-import com.st.BlueSTSDK.Features.FeatureMemsSensorFusionCompact;
-import com.st.BlueSTSDK.Features.FeatureMicLevel;
-import com.st.BlueSTSDK.Features.FeatureMotionIntensity;
-import com.st.BlueSTSDK.Features.FeaturePedometer;
-import com.st.BlueSTSDK.Features.FeaturePressure;
+import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
 import com.st.BlueSTSDK.Features.FeatureProximity;
-import com.st.BlueSTSDK.Features.FeatureTemperature;
 import com.st.BlueSTSDK.Features.Field;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
@@ -114,24 +96,24 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Fragment that plot the feature data in an xy plot
  */
-@DemoDescriptionAnnotation(name="Plot Data",iconRes=R.drawable.demo_charts,
+@DemoDescriptionAnnotation(name="Plot Raw Data",iconRes=R.drawable.demo_charts,
     requareOneOf = {FeatureAcceleration.class,
-                    FeatureCompass.class,
-                    FeatureDirectionOfArrival.class,
+                    //FeatureCompass.class,
+                    //FeatureDirectionOfArrival.class,
                     FeatureGyroscope.class,
-                    FeatureHumidity.class,
-                    FeatureLuminosity.class,
+                    //FeatureHumidity.class,
+                    //FeatureLuminosity.class,
                     FeatureMagnetometer.class,
-                    FeatureMemsSensorFusionCompact.class,
-                    FeatureMemsSensorFusion.class,
-                    FeatureMicLevel.class,
-                    FeatureMotionIntensity.class,
-                    FeaturePedometer.class,
-                    FeatureProximity.class,
-                    FeaturePressure.class,
-                    FeatureTemperature.class,
-                    FeatureCOSensor.class,
-                    FeatureEulerAngle.class,
+                    //FeatureMemsSensorFusionCompact.class,
+                    //FeatureMemsSensorFusion.class,
+                    //FeatureMicLevel.class,
+                    //FeatureMotionIntensity.class,
+                    //FeaturePedometer.class,
+                    //FeatureProximity.class,
+                    //FeaturePressure.class,
+                    //FeatureTemperature.class,
+                    //FeatureCOSensor.class,
+                    //FeatureEulerAngle.class,
                     FeatureAccelerationNorm.class,
                     FeatureMagnetometerNorm.class,
                     FeatureGyroscopeNorm.class
@@ -168,30 +150,30 @@ public class PlotFeatureFragment extends BaseDemoFragment implements View.OnClic
                 new PlotBoundary(FeatureMagnetometer.DATA_MAX, FeatureMagnetometer.DATA_MIN, 21));
         sKnowFeatureBoundary.put(FeatureGyroscope.class,
                 new PlotBoundary(FeatureGyroscope.DATA_MAX, FeatureGyroscope.DATA_MIN, 11));
-        sKnowFeatureBoundary.put(FeatureHumidity.class,
-                new PlotBoundary(FeatureHumidity.DATA_MAX, FeatureHumidity.DATA_MIN, 11));
-        sKnowFeatureBoundary.put(FeatureLuminosity.class,
-                new PlotBoundary(FeatureLuminosity.DATA_MAX, FeatureLuminosity.DATA_MIN, 11));
-        sKnowFeatureBoundary.put(FeatureMemsSensorFusion.class,
-                new PlotBoundary(FeatureMemsSensorFusion.DATA_MAX,
-                        FeatureMemsSensorFusion.DATA_MIN, 21));
-        sKnowFeatureBoundary.put(FeatureCompass.class,
-                new PlotBoundary(FeatureCompass.DATA_MAX,
-                        FeatureCompass.DATA_MIN, 19));
-        sKnowFeatureBoundary.put(FeatureMemsSensorFusionCompact.class,
-                new PlotBoundary(FeatureMemsSensorFusion.DATA_MAX,
-                        FeatureMemsSensorFusion.DATA_MIN, 21));
+        //sKnowFeatureBoundary.put(FeatureHumidity.class,
+         //       new PlotBoundary(FeatureHumidity.DATA_MAX, FeatureHumidity.DATA_MIN, 11));
+        //sKnowFeatureBoundary.put(FeatureLuminosity.class,
+         //       new PlotBoundary(FeatureLuminosity.DATA_MAX, FeatureLuminosity.DATA_MIN, 11));
+        //sKnowFeatureBoundary.put(FeatureMemsSensorFusion.class,
+         //       new PlotBoundary(FeatureMemsSensorFusion.DATA_MAX,
+         //               FeatureMemsSensorFusion.DATA_MIN, 21));
+        //sKnowFeatureBoundary.put(FeatureCompass.class,
+         //       new PlotBoundary(FeatureCompass.DATA_MAX,
+          //              FeatureCompass.DATA_MIN, 19));
+        //sKnowFeatureBoundary.put(FeatureMemsSensorFusionCompact.class,
+         //       new PlotBoundary(FeatureMemsSensorFusion.DATA_MAX,
+          //              FeatureMemsSensorFusion.DATA_MIN, 21));
         /*sKnowFeatureBoundary.put(FeatureProximity.class,
                 new PlotBoundary(FeatureProximity.DATA_MAX,
                         FeatureProximity.DATA_MIN, 11));*/
-        sKnowFeatureBoundary.put(FeatureDirectionOfArrival.class,
-                new PlotBoundary(FeatureDirectionOfArrival.DATA_MAX,
-                        FeatureDirectionOfArrival.DATA_MIN, 37));
-        sKnowFeatureBoundary.put(FeaturePressure.class, new PlotBoundary(1060.0f, 960, 11));
-        sKnowFeatureBoundary.put(FeatureTemperature.class, new PlotBoundary(50.0f, 0.0f, 11));
-        sKnowFeatureBoundary.put(FeatureActivity.class, new PlotBoundary(FeatureActivity.DATA_MAX,
-                FeatureActivity.DATA_MIN,
-                (int)(FeatureActivity.DATA_MAX-FeatureActivity.DATA_MIN+1)));
+        //sKnowFeatureBoundary.put(FeatureDirectionOfArrival.class,
+         //       new PlotBoundary(FeatureDirectionOfArrival.DATA_MAX,
+         //               FeatureDirectionOfArrival.DATA_MIN, 37));
+        //sKnowFeatureBoundary.put(FeaturePressure.class, new PlotBoundary(1060.0f, 960, 11));
+        //sKnowFeatureBoundary.put(FeatureTemperature.class, new PlotBoundary(50.0f, 0.0f, 11));
+        //sKnowFeatureBoundary.put(FeatureActivity.class, new PlotBoundary(FeatureActivity.DATA_MAX,
+         //       FeatureActivity.DATA_MIN,
+           //     (int)(FeatureActivity.DATA_MAX-FeatureActivity.DATA_MIN+1)));
 
     }
 

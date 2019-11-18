@@ -88,7 +88,7 @@ import java.util.List;
 /**
  * Sent the feature data to a cloud provider
  */
-@DemoDescriptionAnnotation(name = "Cloud Logging",
+@DemoDescriptionAnnotation(name = "Cloud Log (Future)",
         iconRes = R.drawable.ic_cloud_upload_24dp)
 public class CloudLogFragment extends DemoWithNetFragment implements
         CloudIotClientConnectionFactory.FwUpgradeAvailableCallback,

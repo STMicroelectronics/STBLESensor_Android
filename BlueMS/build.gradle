@@ -62,7 +62,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         versionCode 30
         versionName '4.3.0'
-        applicationId "com.st.bluems"
+        applicationId 'com.physiobiometrics.Mems'
         targetSdkVersion rootProject.ext.targetSdkVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -153,10 +153,10 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     // ibm speech to text
-    implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '6.12.0'
+    implementation group: 'com.ibm.watson.developer_cloud', name: 'speech-to-text', version: '6.14.2'
 
     //generic websocket speech to cloud
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.13.1'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
 
     //memory leak detector
@@ -164,7 +164,7 @@ dependencies {
     releaseImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: "$leakcanaryVersion"
     testImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: "$leakcanaryVersion"
 
-    testImplementation group: 'org.json', name: 'json', version: '20140107'
+    testImplementation group: 'org.json', name: 'json', version: '20190722'
     //since the json lib is inside the android sdk
     testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"

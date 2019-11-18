@@ -86,7 +86,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * if present the data from the proximity sensor will be used for change the cube size
  * </p>
  */
-@DemoDescriptionAnnotation(name="Mems Sensor Fusion",iconRes=R.drawable.demo_sensors_fusion,
+@DemoDescriptionAnnotation(name="Calibrate Heel2toe",iconRes=R.drawable.demo_sensors_fusion,
     requareOneOf = {FeatureMemsSensorFusion.class,FeatureMemsSensorFusionCompact.class})
 public class MemsSensorFusionFragment extends BaseDemoFragment implements CalibrationContract.View{
     private final static String TAG = MemsSensorFusionFragment.class.getCanonicalName();

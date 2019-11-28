@@ -79,6 +79,12 @@
         android:text="@string/accEvent_tap" />
 
     <TextView
+        android:id="@+id/counttime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
         android:layout_height="140dp"

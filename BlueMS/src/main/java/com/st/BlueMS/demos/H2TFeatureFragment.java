@@ -39,12 +39,12 @@ package com.st.BlueMS.demos;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.androidplot.xy.XYPlot;
@@ -62,6 +62,8 @@ import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Fragment that plot the feature data in an xy plot
@@ -79,22 +81,30 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private boolean mIsPlotting;
     private XYPlot mChart;
     private ImageButton mStartPlotButton;
-    /** list of available feature */
-    private Spinner mFeatureSelector;
-
-    /** index of the last selected index */
-    private int mFeatureSelectorSelectedIndex=0;
-
-    /** label where show the last feature value, is null if the layout is horizontal */
-    private TextView mFeatureText;
-    /** feature that we are plotting */
-    private Feature mPlotFeature;
 
     /** domain axis label */
     private String mXAxisLabel;
     private TextView mAccelData;
     private TextView mGyroData;
     private TextView mH2tstatus;
+    private TextView counttime;
+
+    // timers fo rH2t session
+    private Timer timer;
+    private CountDownTimer countdown;
+    private int maxSessionSeconds = 10;
+    private int maxSessionMilliSeconds = maxSessionSeconds*1000;
+    public  int counter;
+
+    public class RemindTask extends TimerTask {
+        public void run() {
+            mH2tstatus.setText("Timeout. Processing data");
+            timer.cancel(); //Terminate the timer thread
+            mIsPlotting = false;
+            stopH2tFeature();
+            setButtonStartStatus();
+        }
+    }
 
     private class H2TgyroListener implements Feature.FeatureListener {
 
@@ -154,10 +164,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         Resources res = getResources();
         mH2tstatus = root.findViewById(R.id.h2tstatus);
         mH2tstatus.setText("No steps detected");
-
+        counttime= root.findViewById(R.id.counttime);
+        counttime.setText("Idle. Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
         mXAxisLabel = "time (ms)";
-
-
         return root;
     }
 
@@ -203,6 +212,22 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }
         mIsPlotting = true;
         mH2tstatus.setText("Step Detection in Progress");
+
+        timer = new Timer();
+        timer.schedule(new RemindTask(), maxSessionMilliSeconds);
+
+        countdown = new CountDownTimer(maxSessionMilliSeconds,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                counttime.setText(String.valueOf(maxSessionSeconds-counter));
+                counter++;
+            }
+            @Override
+            public void onFinish() {
+                counter = 0;
+                counttime.setText("Finished");
+            }
+        }.start();
     }
 
     /**
@@ -275,8 +300,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         //restoreChart();
         //we are plotting something -> change the button label
         setButtonStopStatus();
-        if(mFeatureText!=null)
-            mFeatureText.setVisibility(View.VISIBLE);
     }
 
     private static List<Class<? extends Feature>> getSupportedFeatures(){

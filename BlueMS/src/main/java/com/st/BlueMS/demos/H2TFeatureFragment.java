@@ -94,6 +94,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private String mXAxisLabel;
     private TextView mAccelData;
     private TextView mGyroData;
+    private TextView mH2tstatus;
 
     private class H2TgyroListener implements Feature.FeatureListener {
 
@@ -146,12 +147,13 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mStartPlotButton.setOnClickListener(this);
         mStartPlotButton.setEnabled(false);
 
-        mAccelData = root.findViewById((R.id.accelData));
+        mAccelData = root.findViewById(R.id.accelData);
         mAccelData.setText("Aceleration data");
-        mGyroData = root.findViewById((R.id.gyroData));
+        mGyroData = root.findViewById(R.id.gyroData);
         mGyroData.setText("GyroScope data");
         Resources res = getResources();
-
+        mH2tstatus = root.findViewById(R.id.h2tstatus);
+        mH2tstatus.setText("No steps detected");
 
         mXAxisLabel = "time (ms)";
 
@@ -200,6 +202,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }//for
         }
         mIsPlotting = true;
+        mH2tstatus.setText("Step Detection in Progress");
     }
 
     /**
@@ -241,6 +244,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mStartPlotButton.setContentDescription("Stop");
     }
 
+    private void h2tSummary() {
+        mH2tstatus.setText("Step Detection Complete. You are a good walker!!!");
+    }
+
     /**
      * call when the user click on the button, will start/ai_log_stop plotting the data for the selected
      * feature
@@ -251,6 +258,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         if (mIsPlotting) {
             stopH2tFeature();
             setButtonStartStatus();
+            h2tSummary();
         } else {
             startH2tFeature(); // TED
             setButtonStopStatus();

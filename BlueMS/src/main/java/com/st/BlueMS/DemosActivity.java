@@ -79,6 +79,8 @@ import com.st.STM32WB.fwUpgrade.feature.RebootOTAModeFeature;
 import com.st.STM32WB.p2pDemo.feature.FeatureControlLed;
 import com.st.STM32WB.p2pDemo.feature.FeatureSwitchStatus;
 
+import com.st.BlueMS.demos.H2TFeatureFragment;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -125,33 +127,34 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
      */
     @SuppressWarnings("unchecked")
     private final static Class<? extends DemoFragment> ALL_DEMOS[] = new Class[]{
-            EnvironmentalSensorsFragment.class,
+            //EnvironmentalSensorsFragment.class,
+            H2TFeatureFragment.class,
             MemsSensorFusionFragment.class,
-            FFTAmplitudeFragment.class,
+            //FFTAmplitudeFragment.class,
             PlotFeatureFragment.class,
-            SDLogFragment.class,
-            ActivityRecognitionFragment.class,
-            CarryPositionFragment.class,
-            ProximityGestureRecognitionFragment.class,
-            MemsGestureRecognitionFragment.class,
+            //SDLogFragment.class,
+            //ActivityRecognitionFragment.class,
+            //CarryPositionFragment.class,
+            //ProximityGestureRecognitionFragment.class,
+            //MemsGestureRecognitionFragment.class,
             PedometerFragment.class,
             AccEventFragment.class,
             SwitchFragment.class,
-            BlueVoiceFragment.class,
-            SpeechToTextFragment.class,
-            BeamformingFragment.class,
+            //BlueVoiceFragment.class,
+            //SpeechToTextFragment.class,
+            //BeamformingFragment.class,
             SourceLocFragment.class,
-            AudioSceneClassificationFragment.class,
-            HeartRateFragment.class,
+            //AudioSceneClassificationFragment.class,
+            //HeartRateFragment.class,
             MotionIntensityFragment.class,
-            CompassFragment.class,
-            LevelDemoFragment.class,
-            COSensorDemoFragment.class,
+            //CompassFragment.class,
+            //LevelDemoFragment.class,
+            //COSensorDemoFragment.class,
             LedButtonControlFragment.class,
-            StartOtaRebootFragment.class,
-            AIDataLogDemoFragment.class,
+            //StartOtaRebootFragment.class,
+            //AIDataLogDemoFragment.class,
             CloudLogFragment.class,
-            PredictiveMaintenanceFragment.class,
+            //PredictiveMaintenanceFragment.class,
             NodeStatusFragment.class
             //FeatureDebugFragment.class
     };

@@ -146,6 +146,8 @@ dependencies {
     implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
 
     implementation "android.arch.persistence.room:runtime:$roomVersion"
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
 
     // Lifecycle components
@@ -173,4 +175,3 @@ dependencies {
     androidTestImplementation "com.android.support.test:rules:$rootProject.rulesVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
 }
-

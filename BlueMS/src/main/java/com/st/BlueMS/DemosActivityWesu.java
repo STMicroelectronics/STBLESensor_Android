@@ -51,7 +51,7 @@ import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
-import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
+import com.st.BlueMS.demos.H2TFeatureFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;
@@ -68,8 +68,6 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.Utils.FwVersion;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
-
-
 /**
  * Activity that display all the demo available a STEVAL_WeSU1 node + check the firmware version
  */
@@ -98,7 +96,8 @@ public class DemosActivityWesu extends DemosActivity implements ConfigControl.Co
     @SuppressWarnings("unchecked")
     private final static Class<? extends DemoFragment> ALL_DEMOS[] = new Class[]{
 
-            EnvironmentalSensorsFragment.class,
+            //EnvironmentalSensorsFragment.class,
+            H2TFeatureFragment.class,
             MemsSensorFusionFragmentWesu.class,
             PlotFeatureFragment.class,
             CloudLogFragment.class,

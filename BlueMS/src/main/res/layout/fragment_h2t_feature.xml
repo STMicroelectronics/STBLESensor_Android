@@ -84,11 +84,34 @@
         android:layout_height="wrap_content"
         android:text="TextView" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:minHeight="30dip"
+        android:progress="5" />
+
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:text="@string/name" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="5" />
+
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>
 

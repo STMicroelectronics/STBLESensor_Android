@@ -49,6 +49,7 @@ import android.widget.TextView;
 
 import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
+import com.st.BlueMS.StepDetect;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
@@ -64,7 +65,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 /**
  * Fragment that plot the feature data in an xy plot
  */
@@ -94,7 +94,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private CountDownTimer countdown;
     private int maxSessionSeconds = 10;
     private int maxSessionMilliSeconds = maxSessionSeconds*1000;
-    public  int counter;
+    private  int counter;
+
+    // step detection
+    private StepDetect stepDetect;
+    private double[] zGyroArrayFilt;
 
     public class RemindTask extends TimerTask {
         public void run() {
@@ -112,6 +116,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         public void onUpdate(final Feature f,Feature.Sample sample) {
             long timestamp = sample.timestamp;
             final String dataString = f.toString();
+
+            //zGyroArrayFilt = stepDetect.filter(sample.timestamp,
+            //        (double) sample.data[0], (double) sample.data[1], (double) sample.data[2]);
+            //StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
+
             updateGui(() -> {
                 try {
                     mGyroData.setText(dataString);
@@ -167,6 +176,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         counttime= root.findViewById(R.id.counttime);
         counttime.setText("Idle. Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
         mXAxisLabel = "time (ms)";
+
+        // setup the step detector
+        stepDetect = new StepDetect();
+
         return root;
     }
 

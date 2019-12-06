@@ -112,6 +112,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/processfileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="process file" />
+
 
 </LinearLayout>
 

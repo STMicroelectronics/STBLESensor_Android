@@ -46,6 +46,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Button;
 
 import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
@@ -65,6 +66,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import android.content.Context;
 /**
  * Fragment that plot the feature data in an xy plot
  */
@@ -78,6 +81,7 @@ import java.util.TimerTask;
         })
 public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener {
 
+    private Context thiscontext;
     private boolean mIsPlotting;
     private XYPlot mChart;
     private ImageButton mStartPlotButton;
@@ -99,6 +103,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     // step detection
     private StepDetect stepDetect;
     private double[] zGyroArrayFilt;
+
+    private Button processFileButton;
 
     public class RemindTask extends TimerTask {
         public void run() {
@@ -177,8 +183,13 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         counttime.setText("Idle. Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
         mXAxisLabel = "time (ms)";
 
+        processFileButton = root.findViewById(R.id.processfileButton);
+        processFileButton.setOnClickListener(this);
+
         // setup the step detector
         stepDetect = new StepDetect();
+
+        thiscontext = container.getContext();
 
         return root;
     }
@@ -293,14 +304,24 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
      */
     @Override
     public void onClick(View v) {
-        if (mIsPlotting) {
-            stopH2tFeature();
-            setButtonStartStatus();
-            h2tSummary();
-        } else {
-            startH2tFeature(); // TED
-            setButtonStopStatus();
-        }//if-else
+        switch (v.getId()) {
+            case R.id.startPlotButton:
+                if (mIsPlotting) {
+                    stopH2tFeature();
+                    setButtonStartStatus();
+                    h2tSummary();
+                } else {
+                    startH2tFeature(); // TED
+                    setButtonStopStatus();
+                }//if-else
+                break;
+
+            case R.id.processfileButton:
+                List<String[]> csvData = stepDetect.readCSV(thiscontext, "data.csv");
+                int x = 1;
+                break;
+
+        }
     }
 
     /**

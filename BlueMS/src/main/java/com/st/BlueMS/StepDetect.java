@@ -5,6 +5,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
+import android.content.Context;
 
 public class StepDetect {
     public double[] filter_b = { 0.0096, 0.0287, 0.0287, 0.0096 };
@@ -214,6 +221,29 @@ public class StepDetect {
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    public List<String[]> readCSV(Context context, String fileName) {
+        List<String[]> rows = new ArrayList<>();
+        try {
+            InputStream is = context.getAssets().open("data.csv");
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            String csvSplitBy = ",";
+
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(csvSplitBy);
+                rows.add(row);
+            }
+            return rows;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

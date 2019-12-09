@@ -121,6 +121,61 @@ public class StepDetect {
         return stepResults;
     }
 
+    public String stepResults (List<StepResults> allStepResults,
+                               List<StepResults> goodstepResults, List<StepResults> badstepResults, int samples ) {
+        int goodsteps = goodstepResults.size();
+        int badsteps = badstepResults.size();
+        int nSteps = goodsteps + badsteps;
+        System.out.println("steps = "+ nSteps);
+        System.out.println("good steps : " + goodsteps);
+        System.out.println("bad steps : " + badsteps);
+        double percent =  (double) goodsteps/ (double) nSteps * 100;
+        System.out.println("goodStepPercent : " + percent);
+        percent =  (double) badsteps/(double) nSteps * 100;
+        System.out.println("badStepPercent : " + percent);
+        double totalTime = (double) (samples * 20) / 1000;
+        System.out.println("totalTime : " + totalTime);
+
+        double stepwalkingtime = 0;
+        double totalwalkingtime = 0;
+        double startWalking = 0;
+        double totalAngularVelocity = 0;
+        int index = 0;
+        while (index <  allStepResults.size()) {
+            StepResults step =  allStepResults.get(index);
+            if (index > 0) {
+                stepwalkingtime = step.timestamp - startWalking;
+            }
+            startWalking = step.timestamp;
+            totalwalkingtime += stepwalkingtime;
+
+            //TODO calculate from raw data not filtered!
+            totalAngularVelocity += step.degreesPerSecond;
+            index++;
+        }
+        totalwalkingtime = totalwalkingtime / 1000;
+        double avgstep = totalwalkingtime / (double) nSteps;
+        double avgCadence = 120 / avgstep;
+
+        double meanAngularVelocity = totalAngularVelocity / (double) nSteps;
+        double stdAngularVelocity = 0;
+        index = 0;
+        while (index <  allStepResults.size()) {
+            StepResults step =  allStepResults.get(index);
+            stdAngularVelocity += Math.pow(step.degreesPerSecond - meanAngularVelocity, 2);
+            index++;
+        }
+
+        stdAngularVelocity = Math.sqrt(stdAngularVelocity/(double) nSteps);
+
+        System.out.println("walkingTime : " + totalwalkingtime);
+        System.out.println("avgCadence : " + avgCadence + " 2 x steps / min (avg step : = " + avgstep + " s )");
+        System.out.println("avgAngularVelocity : " + meanAngularVelocity);
+        System.out.println("stdAngularVelocity : " + stdAngularVelocity);
+
+        return (" steps summary");
+    }
+
     public double[] shiftArray(double[] aOld) {
         double[] aNew = new double[aOld.length];
         for (int i = 1; i < aOld.length; i++) {

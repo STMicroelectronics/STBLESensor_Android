@@ -356,6 +356,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         //  Handle activity result here
         List<String[]> inertialMeasurements;
+        double ms = 0;
+
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (intent != null && intent.getData() != null) {
@@ -369,7 +371,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 return;
             }
             try {
-                double ms = 0;
                 for (String[] sArray : inertialMeasurements) {
                     double GyroscopeX_ds = Double.parseDouble(sArray[0]);
                     System.out.print("GyroscopeX_ds : " + GyroscopeX_ds);
@@ -411,6 +412,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 // print an error message
                 return;
             }
+            stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,(int) ms);
         }
     }
 

@@ -37,16 +37,19 @@
 
 package com.st.BlueMS.demos;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Button;
 
 import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
@@ -62,12 +65,11 @@ import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import android.content.Context;
 /**
  * Fragment that plot the feature data in an xy plot
  */
@@ -317,12 +319,49 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 break;
 
             case R.id.processfileButton:
-                List<String[]> csvData = stepDetect.readCSV(thiscontext, "data.csv");
-                int x = 1;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("text/csv");
+                intent = Intent.createChooser(intent, "Choose a file");
+                startActivityForResult(intent, 1);
+
+                //FilePicker filePicher = new FilePicker();
+                //FilePicker.pickCsvFile(getActivity());
                 break;
 
         }
     }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent,requestCode);
+        String csvFile = null;
+        if (intent != null && intent.getData() != null) {
+            csvFile =  intent.getData().getPath();
+        }
+        //String csvFile = FilePicker.parseFilePath(requestCode, resultCode, intent);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        //  Handle activity result here
+        String csvFileDescriptor = null;
+        File csvFile;
+        boolean canr;
+        if (intent != null && intent.getData() != null) {
+            //csvFileDescriptor =  intent.getData().getPath();
+            Uri content_describer = intent.getData();
+            csvFileDescriptor = content_describer.getPath();
+            csvFile = new File(csvFileDescriptor);
+            canr = csvFile.canRead();
+            if (canr) {
+                int x = 1;
+            }
+            //List<String[]> csvData = stepDetect.readCSV(thiscontext, csvFile);
+        }
+    }
+
 
     /**
      * after a screen rotation the gui item are recreated so we have to restore the status

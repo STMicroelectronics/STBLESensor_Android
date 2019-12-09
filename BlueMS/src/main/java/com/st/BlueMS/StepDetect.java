@@ -1,17 +1,17 @@
 package com.st.BlueMS;
 
+import android.content.Context;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
-import android.content.Context;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StepDetect {
     public double[] filter_b = { 0.0096, 0.0287, 0.0287, 0.0096 };
@@ -227,7 +227,7 @@ public class StepDetect {
     public List<String[]> readCSV(Context context, String fileName) {
         List<String[]> rows = new ArrayList<>();
         try {
-            InputStream is = context.getAssets().open("data.csv");
+            InputStream is = context.getAssets().open(fileName);
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             String line;

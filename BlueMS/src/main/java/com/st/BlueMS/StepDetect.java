@@ -247,4 +247,26 @@ public class StepDetect {
         }
     }
 
+    public List<String[]> readCSV(InputStream is) {
+        List<String[]> rows = new ArrayList<>();
+        try {
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            String csvSplitBy = ",";
+
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(csvSplitBy);
+                rows.add(row);
+            }
+            return rows;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

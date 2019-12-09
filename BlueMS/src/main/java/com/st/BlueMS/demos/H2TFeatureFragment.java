@@ -37,9 +37,12 @@
 
 package com.st.BlueMS.demos;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -54,6 +57,7 @@ import android.widget.TextView;
 import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
 import com.st.BlueMS.StepDetect;
+import com.st.BlueMS.StepResults;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
@@ -65,7 +69,9 @@ import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -84,6 +90,7 @@ import java.util.TimerTask;
 public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener {
 
     private Context thiscontext;
+    private ContentResolver contentResolver;
     private boolean mIsPlotting;
     private XYPlot mChart;
     private ImageButton mStartPlotButton;
@@ -105,8 +112,13 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     // step detection
     private StepDetect stepDetect;
     private double[] zGyroArrayFilt;
+    List<StepResults> allStepResults = new ArrayList<StepResults>();
+    List<StepResults> goodstepResults = new ArrayList<StepResults>();
+    List<StepResults> badstepResults = new ArrayList<StepResults>();
 
     private Button processFileButton;
+
+    ToneGenerator toneGen1;
 
     public class RemindTask extends TimerTask {
         public void run() {
@@ -191,7 +203,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         // setup the step detector
         stepDetect = new StepDetect();
 
-        thiscontext = container.getContext();
+        this.thiscontext = container.getContext();
+        this.contentResolver = thiscontext.getContentResolver();
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
 
         return root;
     }
@@ -324,11 +339,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 intent.setType("text/csv");
                 intent = Intent.createChooser(intent, "Choose a file");
                 startActivityForResult(intent, 1);
-
-                //FilePicker filePicher = new FilePicker();
-                //FilePicker.pickCsvFile(getActivity());
                 break;
-
         }
     }
 
@@ -339,26 +350,67 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         if (intent != null && intent.getData() != null) {
             csvFile =  intent.getData().getPath();
         }
-        //String csvFile = FilePicker.parseFilePath(requestCode, resultCode, intent);
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         //  Handle activity result here
-        String csvFileDescriptor = null;
-        File csvFile;
-        boolean canr;
+        List<String[]> inertialMeasurements;
+        super.onActivityResult(requestCode, resultCode, intent);
+
         if (intent != null && intent.getData() != null) {
-            //csvFileDescriptor =  intent.getData().getPath();
             Uri content_describer = intent.getData();
-            csvFileDescriptor = content_describer.getPath();
-            csvFile = new File(csvFileDescriptor);
-            canr = csvFile.canRead();
-            if (canr) {
-                int x = 1;
+            try {
+                InputStream inputStream = this.contentResolver.openInputStream(content_describer);
+                inertialMeasurements = stepDetect.readCSV(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // print an error message
+                return;
             }
-            //List<String[]> csvData = stepDetect.readCSV(thiscontext, csvFile);
+            try {
+                double ms = 0;
+                for (String[] sArray : inertialMeasurements) {
+                    double GyroscopeX_ds = Double.parseDouble(sArray[0]);
+                    System.out.print("GyroscopeX_ds : " + GyroscopeX_ds);
+                    double GyroscopeY_ds = Double.parseDouble(sArray[7]);
+                    System.out.print(" GyroscopeY_ds : " + GyroscopeY_ds);
+                    double GyroscopeZ_ds = Double.parseDouble(sArray[4]);
+                    System.out.print(" GyroscopeZ_ds : " + GyroscopeZ_ds);
+                    zGyroArrayFilt = stepDetect.filter(ms*20, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds);
+                    StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
+                    allStepResults.add(stepResults);
+                    if (stepResults.goodstep) {
+                        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+                        try {
+                            Thread.sleep(20);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        stepResults.timestamp = ms;
+                        goodstepResults.add(stepResults);
+                    }
+                    if (stepResults.badstep) {
+                        stepResults.timestamp = ms;
+                        badstepResults.add(stepResults);
+                    }
+                    System.out.println();
+                    ms++;
+                    if (false) {
+                        try {
+                            Thread.sleep(20);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
+                }
+            } catch (NullPointerException| NumberFormatException e) {
+                e.printStackTrace();
+                // print an error message
+                return;
+            }
         }
     }
 

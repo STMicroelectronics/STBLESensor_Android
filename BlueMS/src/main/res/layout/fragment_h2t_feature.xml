@@ -66,6 +66,25 @@
             android:text="Heel2toe detection" />
     </RelativeLayout>
 
+    <RadioButton
+        android:id="@+id/radioButton"
+        android:layout_width="191dp"
+        android:layout_height="wrap_content"
+        android:text="Beep for good step" />
+
+    <EditText
+        android:id="@+id/threshold"
+        android:layout_width="202dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/accelData"
         android:layout_width="match_parent"
@@ -99,24 +118,24 @@
         android:layout_height="140dp"
         android:text="@string/name" />
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="5" />
-
-    <SeekBar
-        android:id="@+id/seekBar2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <Button
         android:id="@+id/processfileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="process file" />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" />
+
+    <RadioButton
+        android:id="@+id/simulate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="simulate wallking while processing file" />
 
 
 </LinearLayout>

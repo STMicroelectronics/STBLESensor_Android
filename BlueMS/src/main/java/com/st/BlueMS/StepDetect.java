@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -122,19 +123,22 @@ public class StepDetect {
     }
 
     public String stepResults (List<StepResults> allStepResults,
-                               List<StepResults> goodstepResults, List<StepResults> badstepResults, int samples ) {
+                               List<StepResults> goodstepResults, List<StepResults> badstepResults, int samples,  int frequency) {
+        String results = null;
+        DecimalFormat df2 = new DecimalFormat("#.##");
+        double rate = 1/ (double)frequency;
+        double rateMilliseconds = rate * 1000;
+
         int goodsteps = goodstepResults.size();
         int badsteps = badstepResults.size();
         int nSteps = goodsteps + badsteps;
-        System.out.println("steps = "+ nSteps);
-        System.out.println("good steps : " + goodsteps);
-        System.out.println("bad steps : " + badsteps);
-        double percent =  (double) goodsteps/ (double) nSteps * 100;
-        System.out.println("goodStepPercent : " + percent);
-        percent =  (double) badsteps/(double) nSteps * 100;
-        System.out.println("badStepPercent : " + percent);
-        double totalTime = (double) (samples * 20) / 1000;
-        System.out.println("totalTime : " + totalTime);
+        double totalTime = (double) samples * rate;
+        double goodpercent =  (double) goodsteps/ (double) nSteps * 100;
+        double badpercent =  (double) badsteps/(double) nSteps * 100;
+
+        results =  "Total steps: " + nSteps +     " Total time: " + totalTime + System.getProperty("line.separator");
+        results += "Good steps: " + goodsteps + " (" + df2.format(goodpercent) + "%)" + System.getProperty("line.separator");
+        results += "Bad steps: " + badsteps +  " (" + df2.format(badpercent) + "%)"+ System.getProperty("line.separator");
 
         double stepwalkingtime = 0;
         double totalwalkingtime = 0;
@@ -167,13 +171,11 @@ public class StepDetect {
         }
 
         stdAngularVelocity = Math.sqrt(stdAngularVelocity/(double) nSteps);
-
-        System.out.println("walkingTime : " + totalwalkingtime);
-        System.out.println("avgCadence : " + avgCadence + " 2 x steps / min (avg step : = " + avgstep + " s )");
-        System.out.println("avgAngularVelocity : " + meanAngularVelocity);
-        System.out.println("stdAngularVelocity : " + stdAngularVelocity);
-
-        return (" steps summary");
+        results += "Walking: " + totalwalkingtime + System.getProperty("line.separator");
+        results += "~Cadence: " + df2.format(avgCadence) + " ~Step: " + df2.format(avgstep) +
+                    System.getProperty("line.separator");
+        results += "~Angular V: " + df2.format(meanAngularVelocity) + " std dev: " + df2.format(stdAngularVelocity) + System.getProperty("line.separator");
+        return (results);
     }
 
     public double[] shiftArray(double[] aOld) {

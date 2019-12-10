@@ -192,7 +192,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mGyroData.setText("GyroScope data");
         Resources res = getResources();
         mH2tstatus = root.findViewById(R.id.h2tstatus);
-        mH2tstatus.setText("No steps detected");
+        mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
         counttime= root.findViewById(R.id.counttime);
         counttime.setText("Idle. Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
         mXAxisLabel = "time (ms)";
@@ -356,6 +356,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         //  Handle activity result here
         List<String[]> inertialMeasurements;
+        int sample = 0;
         double ms = 0;
 
         super.onActivityResult(requestCode, resultCode, intent);
@@ -372,14 +373,16 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }
             try {
                 for (String[] sArray : inertialMeasurements) {
+                    ms = sample*20;
                     double GyroscopeX_ds = Double.parseDouble(sArray[0]);
                     System.out.print("GyroscopeX_ds : " + GyroscopeX_ds);
                     double GyroscopeY_ds = Double.parseDouble(sArray[7]);
                     System.out.print(" GyroscopeY_ds : " + GyroscopeY_ds);
                     double GyroscopeZ_ds = Double.parseDouble(sArray[4]);
                     System.out.print(" GyroscopeZ_ds : " + GyroscopeZ_ds);
-                    zGyroArrayFilt = stepDetect.filter(ms*20, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds);
+                    zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds);
                     StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
+                    stepResults.timestamp = ms;
                     allStepResults.add(stepResults);
                     if (stepResults.goodstep) {
                         toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
@@ -389,15 +392,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                             e.printStackTrace();
                             return;
                         }
-                        stepResults.timestamp = ms;
                         goodstepResults.add(stepResults);
                     }
                     if (stepResults.badstep) {
-                        stepResults.timestamp = ms;
                         badstepResults.add(stepResults);
                     }
                     System.out.println();
-                    ms++;
+                    sample++;
+
                     if (false) {
                         try {
                             Thread.sleep(20);
@@ -412,7 +414,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 // print an error message
                 return;
             }
-            stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,(int) ms);
+            String results = stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,sample,50);
+            mH2tstatus.setText(results);
         }
     }
 

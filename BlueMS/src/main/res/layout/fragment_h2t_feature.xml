@@ -74,11 +74,12 @@
 
     <EditText
         android:id="@+id/threshold"
-        android:layout_width="202dp"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="285dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name" />
+        android:text="threshold default = -109" />
 
     <SeekBar
         android:id="@+id/seekBar2"

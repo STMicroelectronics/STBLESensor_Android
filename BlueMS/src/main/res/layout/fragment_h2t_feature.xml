@@ -42,44 +42,100 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.st.BlueMS.demos.H2TFeatureFragment">
-    <RelativeLayout
-        android:id="@+id/featureData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            app:srcCompat="@drawable/ic_play_arrow"
-            android:contentDescription="@string/startPlotButton"
-            android:id="@+id/startPlotButton"
-            android:padding="8dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
-
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
         <EditText
             android:id="@+id/editText"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Heel2toe detection" />
+            android:text="Heel2toe"
+            android:layout_weight=".30"/>
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            app:srcCompat="@drawable/ic_play_arrow"
+            android:contentDescription="Start"
+            android:id="@+id/startPlotButton"
+            android:padding="8dp"
+            android:layout_centerVertical="true"
+            android:layout_weight=".30"/>
+        <Button
+            android:id="@+id/processfileButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/startPlotButton"
+            android:text="File"
+            android:layout_weight=".30"/>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
+     <RadioButton
+         android:id="@+id/beepGoodStep"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="Beep"
+         android:layout_weight=".30"/>
+
+     <RadioButton
+         android:id="@+id/captureToFile"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="Capture"
+         android:layout_weight=".30"/>
+     <RadioButton
+         android:id="@+id/simulate"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="Simulate"
+         android:layout_weight=".30"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:text="threshold default = -109" />
+
+    <RelativeLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     </RelativeLayout>
 
-    <RadioButton
-        android:id="@+id/radioButton"
-        android:layout_width="191dp"
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Beep for good step" />
-
-    <EditText
-        android:id="@+id/threshold"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="285dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="threshold default = -109" />
+        android:weightSum="0.8" >
+        <TextView
+            android:id="@+id/maxtime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Max Time:0"
+            android:layout_weight=".40"/>
+        <TextView
+            android:id="@+id/counttime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="StopWatch: 0"
+            android:layout_weight=".40"/>
+    </LinearLayout>
 
     <SeekBar
         android:id="@+id/seekBar2"
@@ -98,12 +154,6 @@
         android:layout_height="wrap_content"
         android:text="@string/accEvent_tap" />
 
-    <TextView
-        android:id="@+id/counttime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -119,24 +169,12 @@
         android:layout_height="140dp"
         android:text="@string/name" />
 
-    <Button
-        android:id="@+id/processfileButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="process file" />
-
     <EditText
         android:id="@+id/editText3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="number" />
-
-    <RadioButton
-        android:id="@+id/simulate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="simulate wallking while processing file" />
 
 
 </LinearLayout>

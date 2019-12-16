@@ -52,7 +52,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.SeekBar;
 
 import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
@@ -87,7 +89,7 @@ import java.util.TimerTask;
                 FeatureMagnetometerNorm.class,
                 FeatureGyroscopeNorm.class
         })
-public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener {
+public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener  {
 
     private Context thiscontext;
     private ContentResolver contentResolver;
@@ -108,6 +110,15 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private int maxSessionSeconds = 10;
     private int maxSessionMilliSeconds = maxSessionSeconds*1000;
     private  int counter;
+
+    private RadioButton mBeepChecked;
+    private boolean isBeepChecked;
+    private RadioButton mCaptureToFileChecked;
+    private boolean isCaptureToFileChecked;
+    private RadioButton mSimulateChecked;
+    private boolean isSimulateChecked;
+
+    private SeekBar mThreshold;
 
     // step detection
     private StepDetect stepDetect;
@@ -168,6 +179,22 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }//onUpdate
     }
 
+    private class thresholdListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                                      boolean fromUser) {
+            int x;
+            x = 1;
+            // Log the progress
+            //yourTextView.setText(""+progress);
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    }
+
     // TED for H2t sampling
     List<Feature> h2tFeatures = null;
     private List<FeatureGyroscope> mH2TgyroFeature;
@@ -176,6 +203,18 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private List<FeatureAcceleration>  mH2TaccelFeature;
     private  Feature.FeatureListener mH2TaccelFeatureListener;
 
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.beepGoodStep:
+                if (checked)
+                    // Pirates are the best
+                    break;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -196,6 +235,52 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         counttime= root.findViewById(R.id.counttime);
         counttime.setText("Idle. Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
         mXAxisLabel = "time (ms)";
+
+        mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
+        isBeepChecked = false;
+        mBeepChecked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isBeepChecked) {
+                    mBeepChecked.setChecked(false);
+                    isBeepChecked = false;
+                } else {
+                    mBeepChecked.setChecked(true);
+                    isBeepChecked = true;
+                }
+            }
+        });
+        mCaptureToFileChecked = (RadioButton) root.findViewById(R.id.captureToFile);
+        isCaptureToFileChecked = false;
+        mCaptureToFileChecked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isCaptureToFileChecked) {
+                    mCaptureToFileChecked.setChecked(false);
+                    isCaptureToFileChecked = false;
+                } else {
+                    mCaptureToFileChecked.setChecked(true);
+                    isCaptureToFileChecked = true;
+                }
+            }
+        });
+        mSimulateChecked = (RadioButton) root.findViewById(R.id.simulate);
+        isSimulateChecked = false;
+        mSimulateChecked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSimulateChecked) {
+                    mSimulateChecked.setChecked(false);
+                    isSimulateChecked = false;
+                } else {
+                    mSimulateChecked.setChecked(true);
+                    isSimulateChecked = true;
+                }
+            }
+        });
+
+        mThreshold =(SeekBar) root.findViewById(R.id.thresholdBar);
+        mThreshold.setOnSeekBarChangeListener(new thresholdListener());
 
         processFileButton = root.findViewById(R.id.processfileButton);
         processFileButton.setOnClickListener(this);
@@ -223,7 +308,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     /**
      * start Heel2toe processing  for feature data and enable the feature
-     * @param f feature to plot
+     *
      */
     public void startH2tFeature() {
         Node node = getNode();
@@ -273,7 +358,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     /**
      * start Heel2toe processing  for feature data and enable the feature
-     * @param f feature to plot
+     *
      */
     public void stopH2tFeature() {
         Node node = getNode();
@@ -321,6 +406,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
      */
     @Override
     public void onClick(View v) {
+        RadioButton rbutton;
+        boolean checked;
+        int x;
+
         switch (v.getId()) {
             case R.id.startPlotButton:
                 if (mIsPlotting) {
@@ -418,6 +507,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             mH2tstatus.setText(results);
         }
     }
+
 
 
     /**

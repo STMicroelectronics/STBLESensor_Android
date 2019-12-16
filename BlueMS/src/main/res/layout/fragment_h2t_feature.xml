@@ -116,7 +116,7 @@
     </RelativeLayout>
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/thresholdBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <LinearLayout
@@ -138,7 +138,7 @@
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/seekBar2"
+        android:id="@+id/MaxTimeBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

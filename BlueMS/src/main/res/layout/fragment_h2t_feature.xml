@@ -102,7 +102,7 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/thresholdVal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -118,7 +118,8 @@
     <SeekBar
         android:id="@+id/thresholdBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="150" />
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -140,7 +141,8 @@
     <SeekBar
         android:id="@+id/MaxTimeBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="180" />
 
     <TextView
         android:id="@+id/accelData"

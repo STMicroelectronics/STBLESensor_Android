@@ -102,23 +102,31 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private TextView mAccelData;
     private TextView mGyroData;
     private TextView mH2tstatus;
-    private TextView counttime;
+
 
     // timers fo rH2t session
     private Timer timer;
     private CountDownTimer countdown;
     private int maxSessionSeconds = 10;
-    private int maxSessionMilliSeconds = maxSessionSeconds*1000;
+    private int standardSessionMilliSeconds = maxSessionSeconds*1000;
     private  int counter;
 
+    // UI management
     private RadioButton mBeepChecked;
     private boolean isBeepChecked;
     private RadioButton mCaptureToFileChecked;
     private boolean isCaptureToFileChecked;
     private RadioButton mSimulateChecked;
     private boolean isSimulateChecked;
-
     private SeekBar mThreshold;
+    private TextView mThresholdVal;
+    private int goodStepThreshold;
+    private Button processFileButton;
+
+    private SeekBar mMaxTimeBar;
+    private TextView mMaxtime;
+    private TextView mCcounttime;
+    private int stopwatch;
 
     // step detection
     private StepDetect stepDetect;
@@ -127,7 +135,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     List<StepResults> goodstepResults = new ArrayList<StepResults>();
     List<StepResults> badstepResults = new ArrayList<StepResults>();
 
-    private Button processFileButton;
+
 
     ToneGenerator toneGen1;
 
@@ -183,16 +191,22 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
         public void onProgressChanged(SeekBar seekBar, int progress,
                                       boolean fromUser) {
-            int x;
-            x = 1;
-            // Log the progress
-            //yourTextView.setText(""+progress);
+            goodStepThreshold = -progress;
+            mThresholdVal.setText("Threshold d/s: " + goodStepThreshold);
         }
-
         public void onStartTrackingTouch(SeekBar seekBar) {}
-
         public void onStopTrackingTouch(SeekBar seekBar) {}
+    }
 
+    private class maxTimeListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                                      boolean fromUser) {
+            maxSessionSeconds = progress;
+            mMaxtime.setText("Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
+        }
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+        public void onStopTrackingTouch(SeekBar seekBar) {}
     }
 
     // TED for H2t sampling
@@ -232,9 +246,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         Resources res = getResources();
         mH2tstatus = root.findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
-        counttime= root.findViewById(R.id.counttime);
-        counttime.setText("Idle. Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
-        mXAxisLabel = "time (ms)";
 
         mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
         isBeepChecked = false;
@@ -279,8 +290,21 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }
         });
 
+        goodStepThreshold = -109; // default value from matlab
+        mThresholdVal = root.findViewById(R.id.thresholdVal);
+        mThresholdVal.setText("Treshold d/s: " + goodStepThreshold);
         mThreshold =(SeekBar) root.findViewById(R.id.thresholdBar);
+        mThreshold.setProgress(-goodStepThreshold);
         mThreshold.setOnSeekBarChangeListener(new thresholdListener());
+
+        mCcounttime= root.findViewById(R.id.counttime);
+        mCcounttime.setText("0");
+        mMaxtime = root.findViewById(R.id.maxtime);
+        mMaxtime.setText("Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
+        mMaxTimeBar =(SeekBar) root.findViewById(R.id.MaxTimeBar);
+        mMaxTimeBar.setProgress(maxSessionSeconds);
+        mMaxTimeBar.setOnSeekBarChangeListener(new maxTimeListener());
+        mXAxisLabel = "time (ms)";
 
         processFileButton = root.findViewById(R.id.processfileButton);
         processFileButton.setOnClickListener(this);
@@ -340,18 +364,18 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mH2tstatus.setText("Step Detection in Progress");
 
         timer = new Timer();
-        timer.schedule(new RemindTask(), maxSessionMilliSeconds);
+        timer.schedule(new RemindTask(), maxSessionSeconds);
 
-        countdown = new CountDownTimer(maxSessionMilliSeconds,1000) {
+        countdown = new CountDownTimer(maxSessionSeconds,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                counttime.setText(String.valueOf(maxSessionSeconds-counter));
+                mCcounttime.setText(String.valueOf(maxSessionSeconds-counter));
                 counter++;
             }
             @Override
             public void onFinish() {
                 counter = 0;
-                counttime.setText("Finished");
+                mCcounttime.setText("Finished");
             }
         }.start();
     }
@@ -473,7 +497,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
                     stepResults.timestamp = ms;
                     allStepResults.add(stepResults);
-                    if (stepResults.goodstep) {
+                    if (stepResults.goodstep && isBeepChecked) {
                         toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
                         try {
                             Thread.sleep(20);
@@ -489,7 +513,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     System.out.println();
                     sample++;
 
-                    if (false) {
+                    // if simulate, then wait 20 ms to simulate real signal
+                    if (isSimulateChecked) {
                         try {
                             Thread.sleep(20);
                         } catch (Exception e) {

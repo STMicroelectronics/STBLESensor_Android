@@ -44,42 +44,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
-import com.st.BlueMS.demos.ActivityRecognition.ActivityRecognitionFragment;
-import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
-import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
+import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.Audio.SpeechToText.SpeechToTextFragment;
-import com.st.BlueMS.demos.AudioSceneClassificationFragment;
-import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
-import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
-import com.st.BlueMS.demos.Level.LevelDemoFragment;
-import com.st.BlueMS.demos.PredictiveMaintenance.PredictiveMaintenanceFragment;
-import com.st.BlueMS.demos.SDLog.SDLogFragment;
-import com.st.BlueMS.demos.aiDataLog.AIDataLogDemoFragment;
-import com.st.BlueMS.demos.fftAmpitude.FFTAmplitudeFragment;
-import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
-import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
-import com.st.BlueMS.demos.HeartRateFragment;
-import com.st.BlueMS.demos.MemsGestureRecognitionFragment;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
 import com.st.BlueMS.demos.MotionIntensityFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;
-import com.st.BlueMS.demos.ProximityGestureRecognitionFragment;
-import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.SwitchFragment;
+import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
+import com.st.BlueMS.physiobiometrics.H2TFeatureFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
-import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
-import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
-import com.st.STM32WB.fwUpgrade.feature.RebootOTAModeFeature;
-import com.st.STM32WB.p2pDemo.feature.FeatureControlLed;
-import com.st.STM32WB.p2pDemo.feature.FeatureSwitchStatus;
-
-import com.st.BlueMS.demos.H2TFeatureFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,16 +85,16 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
         return  getStartIntent(c,node, ConnectionOption.buildDefault());
     }//getStartIntent
 
-    @DemoDescriptionAnnotation(name="Firmware Upgrade",
-            requareAll = {RebootOTAModeFeature.class},
-            iconRes = com.st.BlueSTSDK.gui.R.drawable.ota_upload_fw )
+    //@DemoDescriptionAnnotation(name="Firmware Upgrade",
+    //        requareAll = {RebootOTAModeFeature.class},
+     //       iconRes = com.st.BlueSTSDK.gui.R.drawable.ota_upload_fw )
     public static class StartOtaRebootFragment extends com.st.STM32WB.fwUpgrade.statOtaConfig.StartOtaRebootFragment{
         //empty class redefined just to set the icon res in the annotation
     }
 
-    @DemoDescriptionAnnotation(name="Led Control",
-            requareAll = {FeatureSwitchStatus.class,FeatureControlLed.class},
-            iconRes = com.st.BlueSTSDK.gui.R.drawable.stm32wb_led_on)
+   // @DemoDescriptionAnnotation(name="Led Control",
+    //        requareAll = {FeatureSwitchStatus.class,FeatureControlLed.class},
+         //   iconRes = com.st.BlueSTSDK.gui.R.drawable.stm32wb_led_on)
     public static class LedButtonControlFragment extends com.st.STM32WB.p2pDemo.LedButtonControlFragment{
         //empty class redefined just to set the icon res in the annotation
     }

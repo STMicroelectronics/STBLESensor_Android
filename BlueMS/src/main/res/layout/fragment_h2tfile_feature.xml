@@ -1,0 +1,100 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.st.BlueMS.physiobiometrics.OfflineTestActivity">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Heel2toe"
+            android:layout_weight=".50"/>
+
+        <Button
+            android:id="@+id/processfileButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/startPlotButton"
+            android:layout_weight=".50"
+            android:text="Process File" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
+        <RadioButton
+            android:id="@+id/beepGoodStep"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Beep"
+            android:layout_weight=".30"/>
+
+        <RadioButton
+            android:id="@+id/captureToFile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Capture"
+            android:layout_weight=".30"/>
+        <RadioButton
+            android:id="@+id/simulate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Simulate"
+            android:layout_weight=".30"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/thresholdVal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:text="threshold default = -109" />
+
+    <RelativeLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </RelativeLayout>
+
+    <SeekBar
+        android:id="@+id/thresholdBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="150" />
+    <TextView
+        android:id="@+id/accelData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/accEvent_freefall" />
+
+    <TextView
+        android:id="@+id/gyroData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/accEvent_tap" />
+
+    <TextView
+        android:id="@+id/h2tstatus"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:text="@string/name" />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" />
+
+
+</LinearLayout>

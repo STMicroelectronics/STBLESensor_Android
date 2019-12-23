@@ -1,4 +1,4 @@
-package com.st.BlueMS;
+package com.st.BlueMS.physiobiometrics;
 
 import android.app.Activity;
 import android.content.Intent;

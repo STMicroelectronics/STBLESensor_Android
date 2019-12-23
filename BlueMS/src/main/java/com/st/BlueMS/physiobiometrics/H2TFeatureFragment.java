@@ -35,8 +35,9 @@
  * OF SUCH DAMAGE.
  */
 
-package com.st.BlueMS.demos;
+package com.st.BlueMS.physiobiometrics;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -53,13 +54,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
-import com.st.BlueMS.StepDetect;
-import com.st.BlueMS.StepResults;
+import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
@@ -71,8 +71,10 @@ import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -103,12 +105,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private TextView mGyroData;
     private TextView mH2tstatus;
 
-
     // timers fo rH2t session
     private Timer timer;
     private CountDownTimer countdown;
-    private int maxSessionSeconds = 10;
-    private int standardSessionMilliSeconds = maxSessionSeconds*1000;
+    protected int maxSessionSeconds = 10;
     private  int counter;
 
     // UI management
@@ -118,13 +118,13 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private boolean isCaptureToFileChecked;
     private RadioButton mSimulateChecked;
     private boolean isSimulateChecked;
-    private SeekBar mThreshold;
+    protected SeekBar mThreshold;
     private TextView mThresholdVal;
     private int goodStepThreshold;
     private Button processFileButton;
 
     private SeekBar mMaxTimeBar;
-    private TextView mMaxtime;
+    protected TextView mMaxtime;
     private TextView mCcounttime;
     private int stopwatch;
 
@@ -135,7 +135,15 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     List<StepResults> goodstepResults = new ArrayList<StepResults>();
     List<StepResults> badstepResults = new ArrayList<StepResults>();
 
+    // TED for H2t sampling
+    List<Feature> h2tFeatures = null;
+    private List<FeatureGyroscope> mH2TgyroFeature;
+    private  Feature.FeatureListener mH2TgyroFeatureListener;
 
+    private List<FeatureAcceleration>  mH2TaccelFeature;
+    private  Feature.FeatureListener mH2TaccelFeatureListener;
+
+    private static final int WRITE_REQUEST_CODE = 101;
 
     ToneGenerator toneGen1;
 
@@ -187,46 +195,87 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }//onUpdate
     }
 
-    private class thresholdListener implements SeekBar.OnSeekBarChangeListener {
+    private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
 
         public void onProgressChanged(SeekBar seekBar, int progress,
                                       boolean fromUser) {
             goodStepThreshold = -progress;
-            mThresholdVal.setText("Threshold d/s: " + goodStepThreshold);
+            mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
         }
         public void onStartTrackingTouch(SeekBar seekBar) {}
         public void onStopTrackingTouch(SeekBar seekBar) {}
     }
 
-    private class maxTimeListener implements SeekBar.OnSeekBarChangeListener {
+   private class MaxTimeListener implements SeekBar.OnSeekBarChangeListener {
 
         public void onProgressChanged(SeekBar seekBar, int progress,
                                       boolean fromUser) {
             maxSessionSeconds = progress;
-            mMaxtime.setText("Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
+            mMaxtime.setText("Max: "+ String.valueOf(maxSessionSeconds)+" s");
         }
         public void onStartTrackingTouch(SeekBar seekBar) {}
         public void onStopTrackingTouch(SeekBar seekBar) {}
     }
 
-    // TED for H2t sampling
-    List<Feature> h2tFeatures = null;
-    private List<FeatureGyroscope> mH2TgyroFeature;
-    private  Feature.FeatureListener mH2TgyroFeatureListener;
+    private class BeepCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isBeepChecked) {
+                mBeepChecked.setChecked(false);
+                isBeepChecked = false;
+            } else {
+                mBeepChecked.setChecked(true);
+                isBeepChecked = true;
+                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+            }
+        }
+    }
 
-    private List<FeatureAcceleration>  mH2TaccelFeature;
-    private  Feature.FeatureListener mH2TaccelFeatureListener;
+    private class CaptureCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isCaptureToFileChecked) {
+                mCaptureToFileChecked.setChecked(false);
+                isCaptureToFileChecked = false;
+            } else {
+                mCaptureToFileChecked.setChecked(true);
+                isCaptureToFileChecked = true;
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                // filter to only show openable items.
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                // Create a file with the requested Mime type
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TITLE, "Neonankiti.txt");
+                startActivityForResult(intent, WRITE_REQUEST_CODE);
+            }
+        }
+    }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
+    private class SimulateCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isSimulateChecked) {
+                mSimulateChecked.setChecked(false);
+                isSimulateChecked = false;
+            } else {
+                mSimulateChecked.setChecked(true);
+                isSimulateChecked = true;
+            }
+        }
+    }
 
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.beepGoodStep:
-                if (checked)
-                    // Pirates are the best
-                    break;
+    private class ProcessListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (mIsPlotting) {
+                stopH2tFeature();
+                setButtonStartStatus();
+                h2tSummary();
+            } else {
+                startH2tFeature(); // TED
+                setButtonStopStatus();
+            }//if-else
         }
     }
 
@@ -236,7 +285,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         View root = inflater.inflate(R.layout.fragment_h2t_feature, container, false);
 
         mStartPlotButton = root.findViewById(R.id.startPlotButton);
-        mStartPlotButton.setOnClickListener(this);
+        mStartPlotButton.setOnClickListener(new ProcessListener());
         mStartPlotButton.setEnabled(false);
 
         mAccelData = root.findViewById(R.id.accelData);
@@ -249,65 +298,27 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
         mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
         isBeepChecked = false;
-        mBeepChecked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isBeepChecked) {
-                    mBeepChecked.setChecked(false);
-                    isBeepChecked = false;
-                } else {
-                    mBeepChecked.setChecked(true);
-                    isBeepChecked = true;
-                }
-            }
-        });
+        mBeepChecked.setOnClickListener(new BeepCheckedListener());
+
         mCaptureToFileChecked = (RadioButton) root.findViewById(R.id.captureToFile);
         isCaptureToFileChecked = false;
-        mCaptureToFileChecked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isCaptureToFileChecked) {
-                    mCaptureToFileChecked.setChecked(false);
-                    isCaptureToFileChecked = false;
-                } else {
-                    mCaptureToFileChecked.setChecked(true);
-                    isCaptureToFileChecked = true;
-                }
-            }
-        });
-        mSimulateChecked = (RadioButton) root.findViewById(R.id.simulate);
-        isSimulateChecked = false;
-        mSimulateChecked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isSimulateChecked) {
-                    mSimulateChecked.setChecked(false);
-                    isSimulateChecked = false;
-                } else {
-                    mSimulateChecked.setChecked(true);
-                    isSimulateChecked = true;
-                }
-            }
-        });
+        mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());
 
         goodStepThreshold = -109; // default value from matlab
         mThresholdVal = root.findViewById(R.id.thresholdVal);
-        mThresholdVal.setText("Treshold d/s: " + goodStepThreshold);
+        mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
         mThreshold =(SeekBar) root.findViewById(R.id.thresholdBar);
         mThreshold.setProgress(-goodStepThreshold);
-        mThreshold.setOnSeekBarChangeListener(new thresholdListener());
+        mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
 
         mCcounttime= root.findViewById(R.id.counttime);
         mCcounttime.setText("0");
         mMaxtime = root.findViewById(R.id.maxtime);
-        mMaxtime.setText("Max session = "+ String.valueOf(maxSessionSeconds)+" seconds");
+        mMaxtime.setText("Max: "+ String.valueOf(maxSessionSeconds)+" s");
         mMaxTimeBar =(SeekBar) root.findViewById(R.id.MaxTimeBar);
         mMaxTimeBar.setProgress(maxSessionSeconds);
-        mMaxTimeBar.setOnSeekBarChangeListener(new maxTimeListener());
+        mMaxTimeBar.setOnSeekBarChangeListener(new MaxTimeListener());
         mXAxisLabel = "time (ms)";
-
-        processFileButton = root.findViewById(R.id.processfileButton);
-        processFileButton.setOnClickListener(this);
 
         // setup the step detector
         stepDetect = new StepDetect();
@@ -319,8 +330,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
         return root;
     }
-
-
     /*
      * free the element gui for permit to the gc to free it before recreate the fragment
      */
@@ -364,9 +373,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mH2tstatus.setText("Step Detection in Progress");
 
         timer = new Timer();
-        timer.schedule(new RemindTask(), maxSessionSeconds);
+        int maxSessionMilliSeconds = maxSessionSeconds * 1000;
+        timer.schedule(new RemindTask(), maxSessionMilliSeconds);
 
-        countdown = new CountDownTimer(maxSessionSeconds,1000) {
+        countdown = new CountDownTimer(maxSessionMilliSeconds,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mCcounttime.setText(String.valueOf(maxSessionSeconds-counter));
@@ -382,7 +392,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     /**
      * start Heel2toe processing  for feature data and enable the feature
-     *
      */
     public void stopH2tFeature() {
         Node node = getNode();
@@ -390,8 +399,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             return;
 
         if(mH2TgyroFeature != null && !mH2TgyroFeature.isEmpty()) {
-            //View.OnClickListener forceUpdate = new ForceUpdateFeature(mHumidity);
-            //mHumidityImage.setOnClickListener(forceUpdate);
             for (Feature f : mH2TgyroFeature) {
                 f.removeFeatureListener(mH2TgyroFeatureListener);
                 node.disableNotification(f);
@@ -399,8 +406,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }
 
         if(mH2TaccelFeature != null && !mH2TaccelFeature.isEmpty()) {
-            //View.OnClickListener forceUpdate = new ForceUpdateFeature(mHumidity);
-            //mHumidityImage.setOnClickListener(forceUpdate);
             for (Feature f : mH2TaccelFeature) {
                 f.removeFeatureListener(mH2TaccelFeatureListener);
                 node.disableNotification(f);
@@ -429,32 +434,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
      * @param v clicked item (not used)
      */
     @Override
-    public void onClick(View v) {
-        RadioButton rbutton;
-        boolean checked;
-        int x;
-
-        switch (v.getId()) {
-            case R.id.startPlotButton:
-                if (mIsPlotting) {
-                    stopH2tFeature();
-                    setButtonStartStatus();
-                    h2tSummary();
-                } else {
-                    startH2tFeature(); // TED
-                    setButtonStopStatus();
-                }//if-else
-                break;
-
-            case R.id.processfileButton:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("text/csv");
-                intent = Intent.createChooser(intent, "Choose a file");
-                startActivityForResult(intent, 1);
-                break;
-        }
-    }
+    public void onClick(View v) {}
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
@@ -471,69 +451,35 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         List<String[]> inertialMeasurements;
         int sample = 0;
         double ms = 0;
+        double GyroscopeX_ds =0;
+        double GyroscopeY_ds =0;
+        double GyroscopeZ_ds =0;
+
+        int WRITE_REQUEST_CODE = 101;
 
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (intent != null && intent.getData() != null) {
             Uri content_describer = intent.getData();
-            try {
-                InputStream inputStream = this.contentResolver.openInputStream(content_describer);
-                inertialMeasurements = stepDetect.readCSV(inputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-                // print an error message
-                return;
-            }
-            try {
-                for (String[] sArray : inertialMeasurements) {
-                    ms = sample*20;
-                    double GyroscopeX_ds = Double.parseDouble(sArray[0]);
-                    System.out.print("GyroscopeX_ds : " + GyroscopeX_ds);
-                    double GyroscopeY_ds = Double.parseDouble(sArray[7]);
-                    System.out.print(" GyroscopeY_ds : " + GyroscopeY_ds);
-                    double GyroscopeZ_ds = Double.parseDouble(sArray[4]);
-                    System.out.print(" GyroscopeZ_ds : " + GyroscopeZ_ds);
-                    zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds);
-                    StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
-                    stepResults.timestamp = ms;
-                    allStepResults.add(stepResults);
-                    if (stepResults.goodstep && isBeepChecked) {
-                        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+            if (requestCode == WRITE_REQUEST_CODE) {
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
                         try {
-                            Thread.sleep(20);
-                        } catch (Exception e) {
+                            OutputStream outputStream = contentResolver.openOutputStream(content_describer);
+                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
+                            bw.write("bison is bision");
+                            bw.flush();
+                            bw.close();
+                        } catch (IOException e) {
                             e.printStackTrace();
-                            return;
                         }
-                        goodstepResults.add(stepResults);
-                    }
-                    if (stepResults.badstep) {
-                        badstepResults.add(stepResults);
-                    }
-                    System.out.println();
-                    sample++;
-
-                    // if simulate, then wait 20 ms to simulate real signal
-                    if (isSimulateChecked) {
-                        try {
-                            Thread.sleep(20);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                    }
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
                 }
-            } catch (NullPointerException| NumberFormatException e) {
-                e.printStackTrace();
-                // print an error message
-                return;
             }
-            String results = stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,sample,50);
-            mH2tstatus.setText(results);
         }
     }
-
-
 
     /**
      * after a screen rotation the gui item are recreated so we have to restore the status

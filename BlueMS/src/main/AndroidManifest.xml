@@ -148,6 +148,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.st.BlueMS.MainActivity" />
         </activity>
+        <activity
+            android:name="com.st.BlueMS.physiobiometrics.OfflineTestActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.st.BlueMS.MainActivity" />
+        </activity>
         <!-- End: integrate the BlueSTSDK.gui activity in the app, setting the parent activity -->
         <activity android:name="com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity">
             <meta-data

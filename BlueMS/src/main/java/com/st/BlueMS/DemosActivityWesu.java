@@ -51,7 +51,7 @@ import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
-import com.st.BlueMS.demos.H2TFeatureFragment;
+import com.st.BlueMS.physiobiometrics.H2TFeatureFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;

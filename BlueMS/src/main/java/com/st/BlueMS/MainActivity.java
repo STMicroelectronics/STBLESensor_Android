@@ -40,6 +40,7 @@ package com.st.BlueMS;
 import android.content.Intent;
 import android.view.View;
 
+import com.st.BlueMS.physiobiometrics.OfflineTestActivity;
 import com.st.BlueSTSDK.gui.AboutActivity;
 import com.st.BlueSTSDK.gui.thirdPartyLibLicense.LibLicense;
 
@@ -75,6 +76,12 @@ public class MainActivity extends com.st.BlueSTSDK.gui.MainActivity {
     @Override
     public void startScanBleActivity(View view) {
         startActivity(new Intent(this, NodeListActivity.class));
+    }
+
+    @Override
+    public void startOfflineActivity(View view) {
+        Intent intent = new Intent(this, OfflineTestActivity.class);
+        startActivity(intent);
     }
 
     @Override

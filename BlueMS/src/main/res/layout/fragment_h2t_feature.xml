@@ -41,7 +41,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.st.BlueMS.demos.H2TFeatureFragment">
+    tools:context="com.st.BlueMS.physiobiometrics.H2TFeatureFragment">
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="Heel2toe"
-            android:layout_weight=".30"/>
+            android:layout_weight=".50"/>
         <ImageButton
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -63,15 +63,7 @@
             android:id="@+id/startPlotButton"
             android:padding="8dp"
             android:layout_centerVertical="true"
-            android:layout_weight=".30"/>
-        <Button
-            android:id="@+id/processfileButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/startPlotButton"
-            android:text="File"
-            android:layout_weight=".30"/>
-
+            android:layout_weight=".50"/>
 
 
     </LinearLayout>
@@ -84,20 +76,14 @@
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:text="Beep"
-         android:layout_weight=".30"/>
+         android:layout_weight=".50"/>
 
      <RadioButton
          android:id="@+id/captureToFile"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:text="Capture"
-         android:layout_weight=".30"/>
-     <RadioButton
-         android:id="@+id/simulate"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:text="Simulate"
-         android:layout_weight=".30"/>
+         android:layout_weight=".40"/>
     </LinearLayout>
 
 

@@ -115,6 +115,10 @@ public class OfflineTestActivity extends AppCompatActivity {
     List<StepResults> goodstepResults = new ArrayList<StepResults>();
     List<StepResults> badstepResults = new ArrayList<StepResults>();
 
+    OutputStream outputStream;
+    BufferedWriter bw;
+    boolean captureReady;
+
     // TED for H2t sampling
     List<Feature> h2tFeatures = null;
     private List<FeatureGyroscope> mH2TgyroFeature;
@@ -167,6 +171,9 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         //this.thiscontext = container.getContext();
         this.contentResolver = getContentResolver();
+        captureReady = false;
+        outputStream = null;
+        bw = null;
     }
 
     private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
@@ -198,8 +205,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if (isCaptureToFileChecked) {
-                mCaptureToFileChecked.setChecked(false);
-                isCaptureToFileChecked = false;
+                closeCaptureFile();
             } else {
                 mCaptureToFileChecked.setChecked(true);
                 isCaptureToFileChecked = true;
@@ -246,6 +252,27 @@ public class OfflineTestActivity extends AppCompatActivity {
         }
     }
 
+    private  void closeCaptureFile() {
+        if (captureReady) {
+            try {
+                if (bw != null) {
+                    bw.close();
+                    bw = null;
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                    outputStream = null;
+                }
+
+            } catch (IOException e) {
+                mH2tstatus.setText("Error closing file");
+            }
+        }
+        captureReady = false;
+        mCaptureToFileChecked.setChecked(false);
+        isCaptureToFileChecked = false;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         //  Handle activity result here
@@ -266,16 +293,17 @@ public class OfflineTestActivity extends AppCompatActivity {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         try {
-                            OutputStream outputStream = contentResolver.openOutputStream(content_describer);
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
-                            bw.write("bison is bision");
-                            bw.flush();
-                            bw.close();
+                            outputStream = contentResolver.openOutputStream(content_describer);
+                            bw = new BufferedWriter(new OutputStreamWriter(outputStream));
+                            captureReady = true;
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            mH2tstatus.setText("Error opening file");
+                            closeCaptureFile();
                         }
                         break;
                     case Activity.RESULT_CANCELED:
+                        mH2tstatus.setText("Canceled");
+                        closeCaptureFile();
                         break;
                 }
             } else {
@@ -335,8 +363,15 @@ public class OfflineTestActivity extends AppCompatActivity {
 
                 String results = stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,sample,50);
                 mH2tstatus.setText(results);
+                if (captureReady) {
+                    try {
+                        bw.write("Hello world");
+                    }  catch (IOException e) {
+                        mH2tstatus.setText("Error writing file");
+                    }
+                }
+                closeCaptureFile();
             }
         }
     }
-
 }

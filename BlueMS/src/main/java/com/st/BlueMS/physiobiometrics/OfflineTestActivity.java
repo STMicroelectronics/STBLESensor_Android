@@ -64,7 +64,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
@@ -81,8 +84,6 @@ public class OfflineTestActivity extends AppCompatActivity {
 
     /** domain axis label */
     private String mXAxisLabel;
-    private TextView mAccelData;
-    private TextView mGyroData;
     private TextView mH2tstatus;
 
     // timers fo rH2t session
@@ -102,6 +103,7 @@ public class OfflineTestActivity extends AppCompatActivity {
     private TextView mThresholdVal;
     private int goodStepThreshold;
     private Button processFileButton;
+    private Button folderButton;
 
     private SeekBar mMaxTimeBar;
     protected TextView mMaxtime;
@@ -111,13 +113,14 @@ public class OfflineTestActivity extends AppCompatActivity {
     // step detection
     private StepDetect stepDetect;
     private double[] zGyroArrayFilt;
-    List<StepResults> allStepResults = new ArrayList<StepResults>();
-    List<StepResults> goodstepResults = new ArrayList<StepResults>();
-    List<StepResults> badstepResults = new ArrayList<StepResults>();
+    private List<StepResults> allStepResults = new ArrayList<StepResults>();
+    private List<StepResults> goodstepResults = new ArrayList<StepResults>();
+    private List<StepResults> badstepResults = new ArrayList<StepResults>();
 
-    OutputStream outputStream;
-    BufferedWriter bw;
-    boolean captureReady;
+    private OutputStream outputStream;
+    private BufferedWriter bw;
+    private boolean captureReady;
+    private String dataFilename;
 
     // TED for H2t sampling
     List<Feature> h2tFeatures = null;
@@ -129,17 +132,19 @@ public class OfflineTestActivity extends AppCompatActivity {
 
     private static final int WRITE_REQUEST_CODE = 101;
 
+    private static final int SDCARD_PERMISSION = 1,
+            FOLDER_PICKER_CODE = 2,
+            FILE_PICKER_CODE = 3;
+
+    private TextView folder;
+    private boolean folderIsSet;
+
     ToneGenerator toneGen1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_h2tfile_feature);
-
-        mAccelData = findViewById(R.id.accelData);
-        mAccelData.setText("Aceleration data");
-        mGyroData = findViewById(R.id.gyroData);
-        mGyroData.setText("GyroScope data");
 
         mH2tstatus = findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
@@ -165,6 +170,10 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         processFileButton = findViewById(R.id.processfileButton);
         processFileButton.setOnClickListener(new ProcessFileListener());
+
+        folder = findViewById(R.id.folderLocation);
+        folder.setText("set folder location for capture");
+        folderIsSet = false;
 
         // setup the step detector
         stepDetect = new StepDetect();
@@ -201,11 +210,30 @@ public class OfflineTestActivity extends AppCompatActivity {
         }
     }
 
+    private class SimulateCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isSimulateChecked) {
+                mSimulateChecked.setChecked(false);
+                isSimulateChecked = false;
+                mH2tstatus.setText("simulation cleared. we will process as fast as possible");
+            } else {
+                mSimulateChecked.setChecked(true);
+                isSimulateChecked = true;
+                mBeepChecked.setChecked(true);
+                isBeepChecked = true;
+                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+                mH2tstatus.setText("warning! simulation takes a long time! 20 millisecond pause between each sample to simulate live data capture ");
+            }
+        }
+    }
+
     private class CaptureCheckedListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             if (isCaptureToFileChecked) {
-                closeCaptureFile();
+                closeCaptureStream();
             } else {
                 mCaptureToFileChecked.setChecked(true);
                 isCaptureToFileChecked = true;
@@ -213,21 +241,12 @@ public class OfflineTestActivity extends AppCompatActivity {
                 // filter to only show openable items.
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 // Create a file with the requested Mime type
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TITLE, "Neonankiti.txt");
+                intent.setType("text/csv");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                Date today = Calendar.getInstance().getTime();
+                dataFilename = dateFormat.format(today)+".csv";
+                intent.putExtra(Intent.EXTRA_TITLE, dataFilename);
                 startActivityForResult(intent, WRITE_REQUEST_CODE);
-            }
-        }
-    }
-    private class SimulateCheckedListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (isSimulateChecked) {
-                mSimulateChecked.setChecked(false);
-                isSimulateChecked = false;
-            } else {
-                mSimulateChecked.setChecked(true);
-                isSimulateChecked = true;
             }
         }
     }
@@ -243,6 +262,16 @@ public class OfflineTestActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    private class FolderListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+            startActivityForResult(intent, FOLDER_PICKER_CODE);
+        }
+    } */
+
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent,requestCode);
@@ -252,20 +281,16 @@ public class OfflineTestActivity extends AppCompatActivity {
         }
     }
 
-    private  void closeCaptureFile() {
+    private  void closeCaptureStream() {
         if (captureReady) {
             try {
-                if (bw != null) {
-                    bw.close();
-                    bw = null;
-                }
                 if (outputStream != null) {
                     outputStream.close();
                     outputStream = null;
                 }
 
             } catch (IOException e) {
-                mH2tstatus.setText("Error closing file");
+                mH2tstatus.setText("Error closing output stream");
             }
         }
         captureReady = false;
@@ -289,21 +314,29 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         if (intent != null && intent.getData() != null) {
             Uri content_describer = intent.getData();
-            if (requestCode == WRITE_REQUEST_CODE) {
+            if (requestCode == FOLDER_PICKER_CODE) {
+                if (resultCode == Activity.RESULT_OK) {
+                   // String folderLocation = "Selected Folder: "+ intent.getExtras().getString("data");
+                    folder.setText( intent.getData().getPath());
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    folder.setText("Cancelled");
+                }
+            } else if (requestCode == WRITE_REQUEST_CODE) {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         try {
                             outputStream = contentResolver.openOutputStream(content_describer);
-                            bw = new BufferedWriter(new OutputStreamWriter(outputStream));
                             captureReady = true;
                         } catch (IOException e) {
                             mH2tstatus.setText("Error opening file");
-                            closeCaptureFile();
+                            closeCaptureStream();
                         }
+                        folder.setText(dataFilename);
                         break;
                     case Activity.RESULT_CANCELED:
                         mH2tstatus.setText("Canceled");
-                        closeCaptureFile();
+                        folder.setText("");
+                        closeCaptureStream();
                         break;
                 }
             } else {
@@ -362,15 +395,39 @@ public class OfflineTestActivity extends AppCompatActivity {
                 }
 
                 String results = stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,sample,50);
+                results = dataFilename + System.getProperty("line.separator") + results;
                 mH2tstatus.setText(results);
                 if (captureReady) {
                     try {
-                        bw.write("Hello world");
+
+                        BufferedWriter rawData = new BufferedWriter(new OutputStreamWriter(outputStream));
+                        rawData.write(results);
+                        rawData.newLine();
+                        // we stay comaptible with the old matlab files
+                        rawData.write("GyroscopeX_ds,GyroscopeX_raw," +
+                                "AccelerometerZ_ms2,AccelerometerZ_raw," +
+                                "GyroscopeZ_ds,GyroscopeZ_raw," +
+                                "GyroscopeY_raw,GyroscopeY_ds," +
+                                "AccelerometerY_ms2,AccelerometerY_raw,AccelerometerX_ms2,AccelerometerX_raw," +
+                                "Timestamp,Timestamp_ms\n");
+                        rawData.newLine();
+                        for (String[] sArray : inertialMeasurements) {
+                            int i = 0;
+                            for (String s : sArray) {
+                                rawData.write(s);
+                                if (i++ < sArray.length) {
+                                    rawData.write(",");
+                                }
+                            }
+                            rawData.newLine();
+                        }
+                        rawData.close();
+
                     }  catch (IOException e) {
                         mH2tstatus.setText("Error writing file");
                     }
                 }
-                closeCaptureFile();
+                closeCaptureStream();
             }
         }
     }

@@ -16,15 +16,14 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="Heel2toe"
-            android:layout_weight=".50"/>
-
+            android:layout_weight=".3"/>
         <Button
             android:id="@+id/processfileButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/startPlotButton"
-            android:layout_weight=".50"
-            android:text="Process File" />
+            android:layout_weight=".6"
+            android:text="Process" />
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
@@ -53,6 +52,13 @@
 
 
     <TextView
+        android:id="@+id/folderLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+    <View style="@style/Divider"/>
+
+    <TextView
         android:id="@+id/thresholdVal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,22 +77,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="150" />
-    <TextView
-        android:id="@+id/accelData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/accEvent_freefall" />
-
-    <TextView
-        android:id="@+id/gyroData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/accEvent_tap" />
 
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="200dp"
         android:text="@string/name" />
 
     <EditText

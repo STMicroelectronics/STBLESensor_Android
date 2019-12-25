@@ -124,6 +124,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     protected TextView mMaxtime;
     private TextView mCcounttime;
 
+    private int deviceSampleCounter;
+
     /***************
      * inertial measurement XYZ orientation is dependent on the Hardware chip orientation
      * when laid flat:
@@ -234,11 +236,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         folder.setText("set folder location for capture");
         folderIsSet = false;
 
-        // setup the step detector
-        stepDetect = new StepDetect();
-
         captureReady = false;
         outputStream = null;
+
+        double[] zGyroArrayFilt;
 
         this.thiscontext = container.getContext();
         this.contentResolver = thiscontext.getContentResolver();
@@ -260,18 +261,36 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private class H2TgyroListener implements Feature.FeatureListener {
 
+        public H2TgyroListener () {
+            // setup the step detector
+        }
+
         @Override
         public void onUpdate(final Feature f,Feature.Sample sample) {
             long timestamp = sample.timestamp;
             final String dataString = f.toString();
+            try {
+                double tstamp = (double) sample.timestamp;
 
-            //zGyroArrayFilt = stepDetect.filter(sample.timestamp,
-            //        (double) sample.data[0], (double) sample.data[1], (double) sample.data[2]);
-            //StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
-
+                zGyroArrayFilt = stepDetect.filter(timestamp,
+                        sample.data[0].doubleValue(), sample.data[1].doubleValue(), (double) sample.data[2].doubleValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold);
+            allStepResults.add(stepResults);
+            if (stepResults.goodstep) {
+                if (isBeepChecked) {
+                    toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+                }
+                goodstepResults.add(stepResults);
+            } else if (stepResults.badstep) {
+                badstepResults.add(stepResults);
+            }
+            deviceSampleCounter++;
             updateGui(() -> {
                 try {
-                    mGyroData.setText(dataString);
+                    mGyroData.setText(sample.data[2].toString());
                 } catch (NullPointerException e) {
                     //this exception can happen when the task is run after the fragment is
                     // destroyed
@@ -435,12 +454,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         Node node = getNode();
         if(node==null)
             return;
-
+        allStepResults = new ArrayList<StepResults>();
+        goodstepResults = new ArrayList<StepResults>();
+        badstepResults = new ArrayList<StepResults>();
+        deviceSampleCounter = 0;
+        stepDetect = new StepDetect();
         mH2TgyroFeature = node.getFeatures(FeatureGyroscope.class);
         if(!mH2TgyroFeature.isEmpty()) {
-            //View.OnClickListener forceUpdate = new ForceUpdateFeature(mHumidity);
             mH2TgyroFeatureListener = new H2TgyroListener();
-            //mHumidityImage.setOnClickListener(forceUpdate);
             for (Feature f : mH2TgyroFeature) {
                 f.addFeatureListener(mH2TgyroFeatureListener);
                 node.enableNotification(f);
@@ -449,9 +470,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
         mH2TaccelFeature = node.getFeatures(FeatureAcceleration.class);
         if(!mH2TaccelFeature.isEmpty()) {
-            //View.OnClickListener forceUpdate = new ForceUpdateFeature(mHumidity);
             mH2TaccelFeatureListener = new H2TaccelListener();
-            //mHumidityImage.setOnClickListener(forceUpdate);
             for (Feature f : mH2TaccelFeature) {
                 f.addFeatureListener(mH2TaccelFeatureListener);
                 node.enableNotification(f);
@@ -500,6 +519,30 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }//for
         }
         mIsPlotting = false;
+        int[] xyz_gyro = {0, 7, 4};
+        String[] xyz = {"X", "Y", "Z"};
+        int xGyroIndex = xyz_gyro[Xcoord];
+        int yGyroIndex = xyz_gyro[Ycoord];
+        int zGyroIndex = xyz_gyro[Zcoord];
+        String results = stepDetect.stepResults(allStepResults, goodstepResults, badstepResults,
+                deviceSampleCounter, frequency);
+
+        results = dataFilename
+                + System.getProperty("line.separator") +
+                "Sampling frequency: "+ frequency + " Hertz" +
+                System.getProperty("line.separator") +
+                "Gyroscope XYZ X: " + xyz[Xcoord] + " Y: " + xyz[Ycoord] + " Z: " + xyz[Zcoord] +
+                System.getProperty("line.separator") +
+                "Threshold: " + goodStepThreshold + " d/s" +
+                System.getProperty("line.separator") +
+                results;
+        mH2tstatus.setText(results);
+        if (captureReady) {
+            FileProcess fileProcess = new FileProcess();
+            //if (!fileProcess.writeResults(results, outputStream, allStepResults)) {
+            //    mH2tstatus.setText(results + System.getProperty("line.separator") + "ERROR WRITING FILE");
+            }
+            closeCaptureStream();
     }
 
     private void setButtonStopStatus(){

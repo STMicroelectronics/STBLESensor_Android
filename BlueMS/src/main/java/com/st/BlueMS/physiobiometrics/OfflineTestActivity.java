@@ -155,8 +155,8 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         frequency = 50;
         spinnerFrequency  = (Spinner) findViewById(R.id.frequency);
-        spinnerZ.setSelection(0);
-        spinnerZ.setOnItemSelectedListener(new SpinnerFrequencyListener());
+        spinnerFrequency.setSelection(0);
+        spinnerFrequency.setOnItemSelectedListener(new SpinnerFrequencyListener());
 
         goodStepThreshold = -109.8; // default value from matlab
         mThresholdVal = findViewById(R.id.thresholdVal);
@@ -354,8 +354,6 @@ public class OfflineTestActivity extends AppCompatActivity {
         double GyroscopeZ_ds = 0;
         StepResults stepResults = new StepResults();
         FileProcess fileProcess = new FileProcess();
-
-
 
         int WRITE_REQUEST_CODE = 101;
 

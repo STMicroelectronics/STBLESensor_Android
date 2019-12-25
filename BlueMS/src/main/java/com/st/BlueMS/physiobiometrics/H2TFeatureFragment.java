@@ -51,13 +51,13 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
@@ -71,12 +71,13 @@ import com.st.BlueSTSDK.Features.FeatureMagnetometerNorm;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -96,11 +97,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private Context thiscontext;
     private ContentResolver contentResolver;
     private boolean mIsPlotting;
-    private XYPlot mChart;
     private ImageButton mStartPlotButton;
 
     /** domain axis label */
-    private String mXAxisLabel;
     private TextView mAccelData;
     private TextView mGyroData;
     private TextView mH2tstatus;
@@ -116,17 +115,40 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private boolean isBeepChecked;
     private RadioButton mCaptureToFileChecked;
     private boolean isCaptureToFileChecked;
-    private RadioButton mSimulateChecked;
     private boolean isSimulateChecked;
     protected SeekBar mThreshold;
     private TextView mThresholdVal;
     private int goodStepThreshold;
-    private Button processFileButton;
 
     private SeekBar mMaxTimeBar;
     protected TextView mMaxtime;
     private TextView mCcounttime;
-    private int stopwatch;
+
+    /***************
+     * inertial measurement XYZ orientation is dependent on the Hardware chip orientation
+     * when laid flat:
+     * Z is up/down
+     * Y is forward to backward
+     * X is left to right
+     * the heel2toe is oriented on the side, so X,Y,Z will interchange
+     * we will do this manually to start, and detect it later....
+     */
+    private Spinner spinnerX;
+    private Spinner spinnerY;
+    private Spinner spinnerZ;
+    private static final int X = 0;
+    private static final int Y = 1;
+    private static final int Z = 2;
+    private int Xcoord = X;
+    private int Ycoord = Y;
+    private int Zcoord = Z;
+
+    private int frequency;
+    private Spinner spinnerFrequency;
+
+    private OutputStream outputStream;
+    private boolean captureReady;
+    private String dataFilename;
 
     // step detection
     private StepDetect stepDetect;
@@ -144,8 +166,87 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private  Feature.FeatureListener mH2TaccelFeatureListener;
 
     private static final int WRITE_REQUEST_CODE = 101;
+    private static final int SDCARD_PERMISSION = 1,
+            FOLDER_PICKER_CODE = 2,
+            FILE_PICKER_CODE = 3;
+
+    private TextView folder;
+    private boolean folderIsSet;
 
     ToneGenerator toneGen1;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_h2t_feature, container, false);
+
+        mStartPlotButton = root.findViewById(R.id.startPlotButton);
+        mStartPlotButton.setOnClickListener(new ProcessListener());
+        mStartPlotButton.setEnabled(false);
+
+        mAccelData = root.findViewById(R.id.accelData);
+        mAccelData.setText("Aceleration data");
+        mGyroData = root.findViewById(R.id.gyroData);
+        mGyroData.setText("GyroScope data");
+        Resources res = getResources();
+        mH2tstatus = root.findViewById(R.id.h2tstatus);
+        mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
+
+        mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
+        isBeepChecked = false;
+        mBeepChecked.setOnClickListener(new BeepCheckedListener());
+
+        mCaptureToFileChecked = (RadioButton) root.findViewById(R.id.captureToFile);
+        isCaptureToFileChecked = false;
+        mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());
+
+        spinnerX  = (Spinner) root.findViewById(R.id.spinnerX);
+        spinnerX.setSelection(X);
+        spinnerX.setOnItemSelectedListener(new SpinnerXListener());
+        spinnerY  = (Spinner) root.findViewById(R.id.spinnerY);
+        spinnerY.setSelection(Y);
+        spinnerY.setOnItemSelectedListener(new SpinnerYListener());
+        spinnerZ  = (Spinner) root.findViewById(R.id.spinnerZ);
+        spinnerZ.setSelection(Z);
+        spinnerZ.setOnItemSelectedListener(new SpinnerZListener());
+
+        frequency = 50;
+        spinnerFrequency  = (Spinner) root.findViewById(R.id.frequency);
+        spinnerFrequency.setSelection(0);
+        spinnerFrequency.setOnItemSelectedListener(new SpinnerFrequencyListener());
+
+        goodStepThreshold = -109; // default value from matlab
+        mThresholdVal = root.findViewById(R.id.thresholdVal);
+        mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
+        mThreshold =(SeekBar) root.findViewById(R.id.thresholdBar);
+        mThreshold.setProgress(-goodStepThreshold);
+        mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
+
+        mCcounttime= root.findViewById(R.id.counttime);
+        mCcounttime.setText("0");
+        mMaxtime = root.findViewById(R.id.maxtime);
+        mMaxtime.setText("Max: "+ String.valueOf(maxSessionSeconds)+" s");
+        mMaxTimeBar =(SeekBar) root.findViewById(R.id.MaxTimeBar);
+        mMaxTimeBar.setProgress(maxSessionSeconds);
+        mMaxTimeBar.setOnSeekBarChangeListener(new MaxTimeListener());
+
+        folder = root.findViewById(R.id.folderLocation);
+        folder.setText("set folder location for capture");
+        folderIsSet = false;
+
+        // setup the step detector
+        stepDetect = new StepDetect();
+
+        captureReady = false;
+        outputStream = null;
+
+        this.thiscontext = container.getContext();
+        this.contentResolver = thiscontext.getContentResolver();
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+
+        return root;
+    }
 
     public class RemindTask extends TimerTask {
         public void run() {
@@ -195,6 +296,39 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }//onUpdate
     }
 
+    private class SpinnerXListener implements Spinner.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Xcoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+    private class SpinnerYListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Ycoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+    private class SpinnerZListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Zcoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+    private class SpinnerFrequencyListener implements Spinner.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            int[] freqs = {50,40,25};
+            frequency = freqs[position];
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+
+
     private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
 
         public void onProgressChanged(SeekBar seekBar, int progress,
@@ -236,8 +370,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         @Override
         public void onClick(View v) {
             if (isCaptureToFileChecked) {
-                mCaptureToFileChecked.setChecked(false);
-                isCaptureToFileChecked = false;
+                closeCaptureStream();
             } else {
                 mCaptureToFileChecked.setChecked(true);
                 isCaptureToFileChecked = true;
@@ -245,22 +378,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 // filter to only show openable items.
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 // Create a file with the requested Mime type
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TITLE, "Neonankiti.txt");
+                intent.setType("text/csv");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                Date today = Calendar.getInstance().getTime();
+                dataFilename = dateFormat.format(today)+".csv";
+                intent.putExtra(Intent.EXTRA_TITLE, dataFilename);
                 startActivityForResult(intent, WRITE_REQUEST_CODE);
-            }
-        }
-    }
-
-    private class SimulateCheckedListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (isSimulateChecked) {
-                mSimulateChecked.setChecked(false);
-                isSimulateChecked = false;
-            } else {
-                mSimulateChecked.setChecked(true);
-                isSimulateChecked = true;
             }
         }
     }
@@ -279,56 +402,21 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_h2t_feature, container, false);
+    private  void closeCaptureStream() {
+        if (captureReady) {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                    outputStream = null;
+                }
 
-        mStartPlotButton = root.findViewById(R.id.startPlotButton);
-        mStartPlotButton.setOnClickListener(new ProcessListener());
-        mStartPlotButton.setEnabled(false);
-
-        mAccelData = root.findViewById(R.id.accelData);
-        mAccelData.setText("Aceleration data");
-        mGyroData = root.findViewById(R.id.gyroData);
-        mGyroData.setText("GyroScope data");
-        Resources res = getResources();
-        mH2tstatus = root.findViewById(R.id.h2tstatus);
-        mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
-
-        mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
-        isBeepChecked = false;
-        mBeepChecked.setOnClickListener(new BeepCheckedListener());
-
-        mCaptureToFileChecked = (RadioButton) root.findViewById(R.id.captureToFile);
+            } catch (IOException e) {
+                mH2tstatus.setText("Error closing output stream");
+            }
+        }
+        captureReady = false;
+        mCaptureToFileChecked.setChecked(false);
         isCaptureToFileChecked = false;
-        mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());
-
-        goodStepThreshold = -109; // default value from matlab
-        mThresholdVal = root.findViewById(R.id.thresholdVal);
-        mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
-        mThreshold =(SeekBar) root.findViewById(R.id.thresholdBar);
-        mThreshold.setProgress(-goodStepThreshold);
-        mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
-
-        mCcounttime= root.findViewById(R.id.counttime);
-        mCcounttime.setText("0");
-        mMaxtime = root.findViewById(R.id.maxtime);
-        mMaxtime.setText("Max: "+ String.valueOf(maxSessionSeconds)+" s");
-        mMaxTimeBar =(SeekBar) root.findViewById(R.id.MaxTimeBar);
-        mMaxTimeBar.setProgress(maxSessionSeconds);
-        mMaxTimeBar.setOnSeekBarChangeListener(new MaxTimeListener());
-        mXAxisLabel = "time (ms)";
-
-        // setup the step detector
-        stepDetect = new StepDetect();
-
-        this.thiscontext = container.getContext();
-        this.contentResolver = thiscontext.getContentResolver();
-        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
-
-        return root;
     }
     /*
      * free the element gui for permit to the gc to free it before recreate the fragment
@@ -451,11 +539,24 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         List<String[]> inertialMeasurements;
         int sample = 0;
         double ms = 0;
-        double GyroscopeX_ds =0;
-        double GyroscopeY_ds =0;
-        double GyroscopeZ_ds =0;
 
-        int WRITE_REQUEST_CODE = 101;
+        /***********
+         * first setup X, Y , and Z lookup table based on GUI selections;
+         *  in the matlab file, Gyroscope XYZ coordinates are at 0, 7, 4 respectively
+         *   GyroscopeX_ds = Double.parseDouble(sArray[0]);
+         *   GyroscopeY_ds = Double.parseDouble(sArray[7]);
+         *   GyroscopeZ_ds = Double.parseDouble(sArray[4]);
+         *                   *
+         */
+        int[] xyz_gyro = {0, 7, 4};
+        String[] xyz = {"X", "Y", "Z"};
+        int xGyroIndex = xyz_gyro[Xcoord];
+        int yGyroIndex = xyz_gyro[Ycoord];
+        int zGyroIndex = xyz_gyro[Zcoord];
+        double GyroscopeX_ds = 0;
+        double GyroscopeY_ds = 0;
+        double GyroscopeZ_ds = 0;
+        StepResults stepResults = new StepResults();
 
         super.onActivityResult(requestCode, resultCode, intent);
 
@@ -465,16 +566,18 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         try {
-                            OutputStream outputStream = contentResolver.openOutputStream(content_describer);
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
-                            bw.write("bison is bision");
-                            bw.flush();
-                            bw.close();
+                            outputStream = contentResolver.openOutputStream(content_describer);
+                            captureReady = true;
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            mH2tstatus.setText("Error opening file");
+                            closeCaptureStream();
                         }
+                        folder.setText(dataFilename);
                         break;
                     case Activity.RESULT_CANCELED:
+                        mH2tstatus.setText("Canceled");
+                        folder.setText("");
+                        closeCaptureStream();
                         break;
                 }
             }

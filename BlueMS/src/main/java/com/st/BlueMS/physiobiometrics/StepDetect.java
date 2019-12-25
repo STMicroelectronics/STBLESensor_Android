@@ -1,16 +1,10 @@
 package com.st.BlueMS.physiobiometrics;
 
-import android.content.Context;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,7 +66,7 @@ public class StepDetect {
         return zGyroArrayFilt;
     }
 
-    public StepResults detectStep(double[] zGyroArrayFilt) {
+    public StepResults detectStep(double[] zGyroArrayFilt, double threshold) {
         StepResults stepResults = new StepResults();
 
         if (wait1 == 0 && wait2 == 0) {
@@ -91,13 +85,10 @@ public class StepDetect {
                         && zGyroArrayFilt[1] < zGyroArrayFilt[0]) {
                     toggleDetect = false;
                     wait2 = 20;
-                    if (zGyroArrayFilt[1] < classBoundary) {
+                    if (zGyroArrayFilt[1] < threshold ) { // classBoundary) {
                         toggleDetect = false;
                         stepResults.degreesPerSecond = zGyroArrayFilt[1];
                         stepResults.goodstep = true;
-                        if (soundToggle) {
-                            //soundPool.play(sound, 1.0f,1.0f, 0, 0, 1.0f);
-                        }
                     } else {
                         stepResults.degreesPerSecond = zGyroArrayFilt[1];
                         stepResults.badstep = true;
@@ -280,50 +271,4 @@ public class StepDetect {
             e.printStackTrace();
         }
     }
-
-    public List<String[]> readCSV(Context context, String fileName) {
-        List<String[]> rows = new ArrayList<>();
-        try {
-            InputStream is = context.getAssets().open(fileName);
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            String csvSplitBy = ",";
-
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                String[] row = line.split(csvSplitBy);
-                rows.add(row);
-            }
-            return rows;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public List<String[]> readCSV(InputStream is) {
-        List<String[]> rows = new ArrayList<>();
-        try {
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            String csvSplitBy = ",";
-
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                String[] row = line.split(csvSplitBy);
-                rows.add(row);
-            }
-            return rows;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }

@@ -22,7 +22,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".6"
-            android:text="Process" />
+            android:text="Process File" />
 
     </LinearLayout>
     <LinearLayout
@@ -57,13 +57,31 @@
         android:layout_height="wrap_content"
         android:text="TextView" />
     <View style="@style/Divider"/>
-
-    <TextView
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.6" >
+        <TextView
         android:id="@+id/thresholdVal"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:layout_weight=".30"
         tools:text="threshold default = -109" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Freq:"
+            android:layout_weight=".10"
+            android:layout_marginBottom="5dp"/>
+        <Spinner
+            android:id="@+id/frequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/frequency"
+            android:layout_weight=".20"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/buttons"
@@ -76,20 +94,58 @@
         android:id="@+id/thresholdBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="150" />
+        android:max="250" />
+    <View style="@style/Divider"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
 
+        <!-- Text Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X:"
+            android:layout_weight=".10"
+            android:layout_marginBottom="5dp"/>
+        <Spinner
+            android:id="@+id/spinnerX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/XYZ"
+            android:layout_weight=".10"
+            android:spinnerMode="dropdown" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Y:"
+            android:layout_weight=".10"
+            android:layout_marginBottom="5dp"/>
+        <Spinner
+            android:id="@+id/spinnerY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/XYZ"
+            android:layout_weight=".10"
+            android:spinnerMode="dropdown" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Z:"
+            android:layout_weight=".10"
+            android:layout_marginBottom="5dp"/>
+        <Spinner
+            android:id="@+id/spinnerZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/XYZ"
+            android:layout_weight=".10"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+    <View style="@style/Divider"/>
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="400dp"
         android:text="@string/name" />
-
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
-
-
 </LinearLayout>

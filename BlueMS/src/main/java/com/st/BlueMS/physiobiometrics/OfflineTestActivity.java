@@ -44,32 +44,25 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.androidplot.xy.XYPlot;
 import com.st.BlueMS.R;
-import com.st.BlueSTSDK.Feature;
-import com.st.BlueSTSDK.Features.FeatureAcceleration;
-import com.st.BlueSTSDK.Features.FeatureGyroscope;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 
 /**
  * Activity that display all the demo available for the node
@@ -78,19 +71,8 @@ public class OfflineTestActivity extends AppCompatActivity {
 
     //private Context thiscontext;
     private ContentResolver contentResolver;
-    private boolean mIsPlotting;
-    private XYPlot mChart;
-    private ImageButton mStartPlotButton;
 
-    /** domain axis label */
-    private String mXAxisLabel;
     private TextView mH2tstatus;
-
-    // timers fo rH2t session
-    private Timer timer;
-    private CountDownTimer countdown;
-    protected int maxSessionSeconds = 10;
-    private  int counter;
 
     // UI management
     private RadioButton mBeepChecked;
@@ -101,34 +83,34 @@ public class OfflineTestActivity extends AppCompatActivity {
     private boolean isSimulateChecked;
     protected SeekBar mThreshold;
     private TextView mThresholdVal;
-    private int goodStepThreshold;
+    private double goodStepThreshold;
     private Button processFileButton;
-    private Button folderButton;
 
-    private SeekBar mMaxTimeBar;
-    protected TextView mMaxtime;
-    private TextView mCcounttime;
-    private int stopwatch;
+    /***************
+     * inertial measurement XYZ orientation is dependent on the Hardware chip orientation
+     * when laid flat:
+     * Z is up/down
+     * Y is forward to backward
+     * X is left to right
+     * the heel2toe is oriented on the side, so X,Y,Z will interchange
+     * we will do this manually to start, and detect it later....
+     */
+    private Spinner spinnerX;
+    private Spinner spinnerY;
+    private Spinner spinnerZ;
+    private static final int X = 0;
+    private static final int Y = 1;
+    private static final int Z = 2;
+    private int Xcoord = X;
+    private int Ycoord = Y;
+    private int Zcoord = Z;
 
-    // step detection
-    private StepDetect stepDetect;
-    private double[] zGyroArrayFilt;
-    private List<StepResults> allStepResults = new ArrayList<StepResults>();
-    private List<StepResults> goodstepResults = new ArrayList<StepResults>();
-    private List<StepResults> badstepResults = new ArrayList<StepResults>();
+    private int frequency;
+    private Spinner spinnerFrequency;
 
     private OutputStream outputStream;
-    private BufferedWriter bw;
     private boolean captureReady;
     private String dataFilename;
-
-    // TED for H2t sampling
-    List<Feature> h2tFeatures = null;
-    private List<FeatureGyroscope> mH2TgyroFeature;
-    private  Feature.FeatureListener mH2TgyroFeatureListener;
-
-    private List<FeatureAcceleration>  mH2TaccelFeature;
-    private  Feature.FeatureListener mH2TaccelFeatureListener;
 
     private static final int WRITE_REQUEST_CODE = 101;
 
@@ -161,11 +143,26 @@ public class OfflineTestActivity extends AppCompatActivity {
         isSimulateChecked = false;
         mSimulateChecked.setOnClickListener(new SimulateCheckedListener());
 
-        goodStepThreshold = -109; // default value from matlab
+        spinnerX  = (Spinner) findViewById(R.id.spinnerX);
+        spinnerX.setSelection(X);
+        spinnerX.setOnItemSelectedListener(new SpinnerXListener());
+        spinnerY  = (Spinner) findViewById(R.id.spinnerY);
+        spinnerY.setSelection(Y);
+        spinnerY.setOnItemSelectedListener(new SpinnerYListener());
+        spinnerZ  = (Spinner) findViewById(R.id.spinnerZ);
+        spinnerZ.setSelection(Z);
+        spinnerZ.setOnItemSelectedListener(new SpinnerZListener());
+
+        frequency = 50;
+        spinnerFrequency  = (Spinner) findViewById(R.id.frequency);
+        spinnerZ.setSelection(0);
+        spinnerZ.setOnItemSelectedListener(new SpinnerFrequencyListener());
+
+        goodStepThreshold = -109.8; // default value from matlab
         mThresholdVal = findViewById(R.id.thresholdVal);
         mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
         mThreshold =(SeekBar) findViewById(R.id.thresholdBar);
-        mThreshold.setProgress(-goodStepThreshold);
+        mThreshold.setProgress((int) -goodStepThreshold);
         mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
 
         processFileButton = findViewById(R.id.processfileButton);
@@ -175,14 +172,42 @@ public class OfflineTestActivity extends AppCompatActivity {
         folder.setText("set folder location for capture");
         folderIsSet = false;
 
-        // setup the step detector
-        stepDetect = new StepDetect();
-
         //this.thiscontext = container.getContext();
         this.contentResolver = getContentResolver();
         captureReady = false;
         outputStream = null;
-        bw = null;
+    }
+
+    private class SpinnerXListener implements Spinner.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Xcoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+    private class SpinnerYListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Ycoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+    private class SpinnerZListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Zcoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+    private class SpinnerFrequencyListener implements Spinner.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            int[] freqs = {50,40,25};
+            frequency = freqs[position];
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
     }
 
     private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
@@ -254,6 +279,7 @@ public class OfflineTestActivity extends AppCompatActivity {
     private class ProcessFileListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("text/csv");
@@ -299,14 +325,37 @@ public class OfflineTestActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //  Handle activity result here
+        StepDetect stepDetect = new StepDetect();
+        double[] zGyroArrayFilt;
         List<String[]> inertialMeasurements;
+        List<StepResults> allStepResults = new ArrayList<StepResults>();
+        List<StepResults> goodstepResults = new ArrayList<StepResults>();
+        List<StepResults> badstepResults = new ArrayList<StepResults>();
         int sample = 0;
         double ms = 0;
-        double GyroscopeX_ds =0;
-        double GyroscopeY_ds =0;
-        double GyroscopeZ_ds =0;
+
+        /***********
+         * first setup X, Y , and Z lookup table based on GUI selections;
+         *  in the matlab file, Gyroscope XYZ coordinates are at 0, 7, 4 respectively
+         *   GyroscopeX_ds = Double.parseDouble(sArray[0]);
+         *   GyroscopeY_ds = Double.parseDouble(sArray[7]);
+         *   GyroscopeZ_ds = Double.parseDouble(sArray[4]);
+         *                   *
+         */
+        int[] xyz_gyro = {0, 7, 4};
+        String[] xyz = {"X", "Y", "Z"};
+        int xGyroIndex = xyz_gyro[Xcoord];
+        int yGyroIndex = xyz_gyro[Ycoord];
+        int zGyroIndex = xyz_gyro[Zcoord];
+        double GyroscopeX_ds = 0;
+        double GyroscopeY_ds = 0;
+        double GyroscopeZ_ds = 0;
+        StepResults stepResults = new StepResults();
+        FileProcess fileProcess = new FileProcess();
+
+
 
         int WRITE_REQUEST_CODE = 101;
 
@@ -316,8 +365,8 @@ public class OfflineTestActivity extends AppCompatActivity {
             Uri content_describer = intent.getData();
             if (requestCode == FOLDER_PICKER_CODE) {
                 if (resultCode == Activity.RESULT_OK) {
-                   // String folderLocation = "Selected Folder: "+ intent.getExtras().getString("data");
-                    folder.setText( intent.getData().getPath());
+                    // String folderLocation = "Selected Folder: "+ intent.getExtras().getString("data");
+                    folder.setText(intent.getData().getPath());
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     folder.setText("Cancelled");
                 }
@@ -342,19 +391,19 @@ public class OfflineTestActivity extends AppCompatActivity {
             } else {
                 try {
                     InputStream inputStream = this.contentResolver.openInputStream(content_describer);
-                    inertialMeasurements = stepDetect.readCSV(inputStream);
+                    inertialMeasurements = fileProcess.readCSV(inputStream);
                 } catch (IOException e) {
                     e.printStackTrace();
                     // print an error message
                     return;
                 }
                 for (String[] sArray : inertialMeasurements) {
-                    ms = sample*20;
+                    ms = sample * 20;
                     boolean numeric = true;
                     try {
-                        GyroscopeX_ds = Double.parseDouble(sArray[0]);
-                        GyroscopeY_ds = Double.parseDouble(sArray[7]);
-                        GyroscopeZ_ds = Double.parseDouble(sArray[4]);
+                        GyroscopeX_ds = Double.parseDouble(sArray[xGyroIndex]);
+                        GyroscopeY_ds = Double.parseDouble(sArray[yGyroIndex]);
+                        GyroscopeZ_ds = Double.parseDouble(sArray[zGyroIndex]);
                     } catch (NumberFormatException e) {
                         numeric = false;
                         System.out.println("header");
@@ -363,20 +412,15 @@ public class OfflineTestActivity extends AppCompatActivity {
                         System.out.print("GyroscopeX_ds : " + GyroscopeX_ds + " GyroscopeY_ds : " +
                                 GyroscopeY_ds + " GyroscopeZ_ds : " + GyroscopeZ_ds);
                         zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds);
-                        StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt);
+                        stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold);
                         stepResults.timestamp = ms;
                         allStepResults.add(stepResults);
-                        if (stepResults.goodstep && isBeepChecked) {
-                            toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
-                            try {
-                                Thread.sleep(20);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return;
+                        if (stepResults.goodstep) {
+                            if (isBeepChecked) {
+                                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
                             }
                             goodstepResults.add(stepResults);
-                        }
-                        if (stepResults.badstep) {
+                        } else if (stepResults.badstep) {
                             badstepResults.add(stepResults);
                         }
                         System.out.println();
@@ -394,40 +438,24 @@ public class OfflineTestActivity extends AppCompatActivity {
                     }
                 }
 
-                String results = stepDetect.stepResults(allStepResults,goodstepResults,badstepResults,sample,50);
-                results = dataFilename + System.getProperty("line.separator") + results;
+                String results = stepDetect.stepResults(allStepResults, goodstepResults, badstepResults, sample, 50);
+
+                results = dataFilename
+                        + System.getProperty("line.separator") +
+                        "Sampling frequency: "+ frequency + " Hertz" +
+                        System.getProperty("line.separator") +
+                        "Gyroscope XYZ X: " + xyz[Xcoord] + " Y: " + xyz[Ycoord] + " Z: " + xyz[Zcoord] +
+                        System.getProperty("line.separator") +
+                        "Threshold: " + goodStepThreshold + " d/s" +
+                        System.getProperty("line.separator") +
+                        results;
                 mH2tstatus.setText(results);
                 if (captureReady) {
-                    try {
-
-                        BufferedWriter rawData = new BufferedWriter(new OutputStreamWriter(outputStream));
-                        rawData.write(results);
-                        rawData.newLine();
-                        // we stay comaptible with the old matlab files
-                        rawData.write("GyroscopeX_ds,GyroscopeX_raw," +
-                                "AccelerometerZ_ms2,AccelerometerZ_raw," +
-                                "GyroscopeZ_ds,GyroscopeZ_raw," +
-                                "GyroscopeY_raw,GyroscopeY_ds," +
-                                "AccelerometerY_ms2,AccelerometerY_raw,AccelerometerX_ms2,AccelerometerX_raw," +
-                                "Timestamp,Timestamp_ms\n");
-                        rawData.newLine();
-                        for (String[] sArray : inertialMeasurements) {
-                            int i = 0;
-                            for (String s : sArray) {
-                                rawData.write(s);
-                                if (i++ < sArray.length) {
-                                    rawData.write(",");
-                                }
-                            }
-                            rawData.newLine();
-                        }
-                        rawData.close();
-
-                    }  catch (IOException e) {
-                        mH2tstatus.setText("Error writing file");
+                    if (!fileProcess.writeResults(results, outputStream, inertialMeasurements)) {
+                        mH2tstatus.setText(results + System.getProperty("line.separator") + "ERROR WRITING FILE");
                     }
+                    closeCaptureStream();
                 }
-                closeCaptureStream();
             }
         }
     }

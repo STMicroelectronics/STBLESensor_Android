@@ -92,4 +92,38 @@ public class FileProcess  {
         }
         return true;
     }
+
+    public boolean writeResults(String results, OutputStream outputStream, long  sampleCount,
+                                List<InertialMeasurement> gyroMeasurements,
+                                List<InertialMeasurement> accelMeasurements) {
+        try {
+            BufferedWriter rawData = new BufferedWriter(new OutputStreamWriter(outputStream));
+            rawData.write(results);
+            rawData.newLine();
+            // we stay comaptible with the old matlab files
+            rawData.write(
+                    "sample, timestamp,"+
+                    "GyroscopeX_ds,GyroscopeY_ds,GyroscopeZ_ds," +
+                    "AccelerometerX_ms2, AccelerometerY_ms2, AccelerometerZ_ms2\n");
+            rawData.newLine();
+            if (sampleCount != gyroMeasurements.size()) {
+                return false;
+            }
+            if (sampleCount != accelMeasurements.size()) {
+                return false;
+            }
+            int i = 0;
+            for (InertialMeasurement g : gyroMeasurements) {
+                InertialMeasurement a = accelMeasurements.get(i++);
+                rawData.write(g.sample+","+g.timestamp + ","+
+                        g.x+","+g.y+","+g.z+"," + a.x+","+a.y+","+a.z);
+                rawData.newLine();
+            }
+            rawData.close();
+
+        }  catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
 }

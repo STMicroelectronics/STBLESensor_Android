@@ -70,13 +70,14 @@
             android:text="Freq:"
             android:layout_weight=".10"
             android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/frequency"
+
+        <TextView
+            android:id="@+id/frequencyVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/frequency"
+            android:layout_marginBottom="5dp"
             android:layout_weight=".20"
-            android:spinnerMode="dropdown" />
+            android:text="unknown" />
     </LinearLayout>
 
     <SeekBar

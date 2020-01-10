@@ -67,10 +67,17 @@
         android:layout_height="match_parent"/>
 
     <com.st.BlueMS.demos.ActivityRecognition.HumanActivityRecognitionMLCView
-        android:id="@+id/activity_view_MLC"
+        android:id="@+id/activity_view_HAR_MLC"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <com.st.BlueMS.demos.ActivityRecognition.AdultPresenceDetectionMLCView
+        android:id="@+id/activity_view_APD_MLC"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 </FrameLayout>
 

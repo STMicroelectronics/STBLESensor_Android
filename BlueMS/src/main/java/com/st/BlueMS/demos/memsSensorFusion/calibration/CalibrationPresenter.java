@@ -37,6 +37,8 @@
 
 package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.st.BlueSTSDK.Feature;
@@ -63,10 +65,16 @@ public class CalibrationPresenter implements CalibrationContract.Presenter,
         mView = v;
         mFeature = feature;
         feature.addFeatureListener(this);
-        if(!mFeature.isConfigured()) {
-            mFeature.startAutoConfiguration();
-        }else
-            mView.setCalibrationButtonState(true);
+        Boolean isConfigured = mFeature.isConfigured();
+        if(isConfigured == null){
+            mView.setCalibrationButtonState(false);
+        }else{
+            if(isConfigured) {
+                mView.setCalibrationButtonState(true);
+            }else {
+                mFeature.startAutoConfiguration();
+            }
+        }//if-else
     }
 
     @Override
@@ -105,20 +113,27 @@ public class CalibrationPresenter implements CalibrationContract.Presenter,
 
     ///// FeatureAutoConfigurationListener//////
 
+    private boolean isCalibrating = false;
     @Override
     public void onAutoConfigurationStarting(FeatureAutoConfigurable f) {
+        isCalibrating = true;
         setUnCalibratedState();
     }
 
     @Override
     public void onConfigurationFinished(FeatureAutoConfigurable f, int status) {
+        isCalibrating = false;
         setCalibratedState();
     }
 
     @Override
     public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) {
-        if(status == 0 ){ // uncalibrated
-            setUnCalibratedState();
+        if(status == 0){ // uncalibrated
+            if(isCalibrating) {
+                setUnCalibratedState();
+            }else{
+                startCalibration();
+            }
         }else if (status == 100){ //fully calibrated
             setCalibratedState();
         }

@@ -106,6 +106,10 @@ internal class MultiNNConsole(private val console: Debug){
 
             private val onTimerFired = Runnable{ notifyResult(null) }
 
+            init {
+                timerThread.postDelayed(onTimerFired, COMMAND_TIMEOUT_MS)
+            }
+
             private fun notifyResult(index:Int?){
                 console.removeDebugOutputListener(this)
                 timerThread.removeCallbacks(onTimerFired)
@@ -122,9 +126,7 @@ internal class MultiNNConsole(private val console: Debug){
 
             override fun onStdErrReceived(debug: Debug, message: String) {}
 
-            override fun onStdInSent(debug: Debug, message: String, writeResult: Boolean) {
-                timerThread.postDelayed(onTimerFired, COMMAND_TIMEOUT_MS)
-            }
+            override fun onStdInSent(debug: Debug, message: String, writeResult: Boolean) {}
 
         }
 
@@ -135,6 +137,10 @@ internal class MultiNNConsole(private val console: Debug){
 
             private val onTimerFired = Runnable{ notifyResult(null) }
             private val receivedData = StringBuilder()
+
+            init {
+                timerThread.postDelayed(onTimerFired, COMMAND_TIMEOUT_MS)
+            }
 
             private fun resetTimer(){
                 timerThread.removeCallbacks(onTimerFired)
@@ -179,9 +185,7 @@ internal class MultiNNConsole(private val console: Debug){
 
             override fun onStdErrReceived(debug: Debug, message: String) {}
 
-            override fun onStdInSent(debug: Debug, message: String, writeResult: Boolean) {
-                timerThread.postDelayed(onTimerFired, COMMAND_TIMEOUT_MS)
-            }
+            override fun onStdInSent(debug: Debug, message: String, writeResult: Boolean) {}
 
         }
 

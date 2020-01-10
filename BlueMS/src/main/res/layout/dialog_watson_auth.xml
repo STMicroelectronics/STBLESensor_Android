@@ -22,26 +22,26 @@
         android:layout_height="match_parent"
         android:layout_margin="8dp"
         android:layout_marginBottom="0dp"
-        android:layout_marginTop="0dp">
-        <EditText
+        android:layout_marginTop="0dp"
+        android:hint="@string/dialog_watson_apiKeyHint">
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/dialog_watson_apiKeyValue"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/dialog_watson_apiKeyHint" />
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
+        android:hint="@string/dialog_watson_endpointHint"
         android:layout_marginBottom="0dp"
         android:layout_marginTop="0dp">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/dialog_watson_endpointValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dialog_watson_endpointHint"
             android:inputType="textUri" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

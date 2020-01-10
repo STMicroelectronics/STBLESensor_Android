@@ -45,6 +45,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -64,10 +66,19 @@ public class WatsonASRAuthDialog extends DialogFragmentDismissCallback {
     private EditText mApiKeyField;
     private EditText mEndpointField;
 
-    private View buildView(Context c,@Nullable WatsonARSKey key){
+    private View buildView(Context c, @Nullable WatsonARSKey key){
         View root = loadView(c,R.layout.dialog_watson_auth);
-        mApiKeyField = root.findViewById(R.id.dialog_watson_apiKeyValue);
-        mEndpointField = root.findViewById(R.id.dialog_watson_endpointValue);
+        EditText apiKeyField = root.findViewById(R.id.dialog_watson_apiKeyValue);
+        if(mApiKeyField!=null){
+            apiKeyField.setText(mApiKeyField.getText().toString());
+        }
+        mApiKeyField = apiKeyField;
+
+        EditText endpointField = root.findViewById(R.id.dialog_watson_endpointValue);
+        if(mEndpointField !=null){
+            endpointField.setText(mEndpointField.getText().toString());
+        }
+        mEndpointField = endpointField;
         if(key!=null) {
             mApiKeyField.setText(key.apiKey);
             mEndpointField.setText(key.endpoint);
@@ -78,7 +89,7 @@ public class WatsonASRAuthDialog extends DialogFragmentDismissCallback {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final Context context = getActivity();
+        final Context context = requireContext();
         final View rootView = getActivity().findViewById(android.R.id.content);
         WatsonARSKey currentKey = WatsonARSKey.loadKey(context);
 

@@ -67,7 +67,6 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
     private static final String FFT_LOG_FILE_EXTRA = FFTAmplitudeFragment.class.getCanonicalName()+".FFT_LOG_FILE_EXTRA";
     private FFTDataViewModel FFTViewModel;
 
-
     public FFTAmplitudeFragment() {
         // Required empty public constructor
     }
@@ -96,6 +95,7 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
         });
 
     }
+
 
     private void logFFTData(List<float[]> fftData, Float frequencyStep) {
         LogFeatureActivity activity = (LogFeatureActivity)requireActivity();
@@ -160,8 +160,13 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fft_amplitude,menu);
+        MenuItem FFTSettingsItem = menu.findItem(R.id.menu_fft_amplitude_settings);
+        Node node = getNode();
+        if(node!=null && node.getType() == Node.Type.SENSOR_TILE_BOX){
+            FFTSettingsItem.setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -87,7 +87,7 @@ public class BlueVoiceFragment extends BaseDemoFragment {
 
     private int audioSamplingFreq;
     private short audioChannels;
-    private Boolean audioEnabled;
+    //private Boolean audioEnabled;
 
     private static final @FeatureBeamforming.Direction int DEFAULT_BEAM_FORMING_DIRECTION = FeatureBeamforming.Direction.RIGHT;
 
@@ -161,9 +161,11 @@ public class BlueVoiceFragment extends BaseDemoFragment {
             audioChannels = mAudioCodecManager.getChannels();
         }
 
-        if(audioEnabled == null || audioEnabled != mAudioCodecManager.isAudioEnabled()) {
+        /*if(audioEnabled == null || audioEnabled != mAudioCodecManager.isAudioEnabled()) {
             audioEnabled = mAudioCodecManager.isAudioEnabled();
-            if (audioEnabled)
+            if (audioEnabled)*/
+        if(mAudioCodecManager.isAudioEnabled() != null) {
+            if (mAudioCodecManager.isAudioEnabled())
                 startAudioStreaming(f.getParentNode());
             else
                 stopAudioStreaming();
@@ -317,10 +319,10 @@ public class BlueVoiceFragment extends BaseDemoFragment {
 
         if(mAudioSync!=null) {
 
-            mAudioCodecManager = mAudioSync.instantiateManager();
+            mAudioCodecManager = mAudioSync.instantiateManager(true,false);
             audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
             audioChannels = mAudioCodecManager.getChannels();
-            audioEnabled = mAudioCodecManager.isAudioEnabled();
+            //audioEnabled = mAudioCodecManager.isAudioEnabled();
 
             mAudioSync.addFeatureListener(mAudioSyncListener);
             node.enableNotification(mAudioSync);

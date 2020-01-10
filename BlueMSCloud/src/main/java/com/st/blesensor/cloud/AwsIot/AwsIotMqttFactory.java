@@ -40,6 +40,8 @@ package com.st.blesensor.cloud.AwsIot;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.amazonaws.AmazonClientException;
@@ -110,7 +112,7 @@ class AwsIotMqttFactory implements CloudIotClientConnectionFactory {
 
 
     @Override
-    public CloutIotClient createClient(Context ctx) {
+    public CloutIotClient createClient(@NonNull Context ctx) {
 
         AWSIotMqttManager manager = new AWSIotMqttManager(mClientId,mEndpoint);
         manager.setAutoReconnect(false);
@@ -118,7 +120,7 @@ class AwsIotMqttFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public boolean connect(Context ctx, CloutIotClient client, final ConnectionListener connectionListener) throws Exception {
+    public boolean connect(@NonNull Context ctx, @NonNull CloutIotClient client, @NonNull final ConnectionListener connectionListener) throws Exception {
 
         if(client instanceof AwsConnection) {
             new LoadKeyStoreAndConnect(ctx, (AwsConnection)client,
@@ -130,7 +132,7 @@ class AwsIotMqttFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public void disconnect(CloutIotClient client) throws Exception {
+    public void disconnect(@NonNull CloutIotClient client) throws Exception {
         if(client instanceof AwsConnection) {
             AwsConnection connection = (AwsConnection)client;
             connection.connection.disconnect();
@@ -235,16 +237,16 @@ class AwsIotMqttFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public void destroy(CloutIotClient client) {  }
+    public void destroy(@NonNull CloutIotClient client) {  }
 
     @Override
-    public boolean isConnected(CloutIotClient client) {
+    public boolean isConnected(@NonNull CloutIotClient client) {
         AwsConnection connection = extractConnection(client);
         return connection != null && connection.isConnected;
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient client,long minUpdateIntervalMs) {
+    public Feature.FeatureListener getFeatureListener(@NonNull CloutIotClient client, long minUpdateIntervalMs) {
         AwsConnection connection = extractConnection(client);
         if(connection!=null)
             return new AwsMqttFeatureListener(mClientId,connection, minUpdateIntervalMs);
@@ -258,12 +260,12 @@ class AwsIotMqttFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public boolean supportFeature(Feature f) {
+    public boolean supportFeature(@NonNull Feature f) {
         return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, CloutIotClient cloudConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(@NonNull Node node, @NonNull CloutIotClient cloudConnection, @NonNull FwUpgradeAvailableCallback callback) {
         return false;
     }
 
@@ -290,7 +292,7 @@ class AwsIotMqttFactory implements CloudIotClientConnectionFactory {
 
 
         @Override
-        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             if(!mConnection.isConnected)
                 return;
 

@@ -38,6 +38,8 @@ package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.IBMWatson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.net.MalformedURLException;
@@ -65,12 +67,13 @@ class WatsonARSKey {
         }
     }
 
-    private static @Nullable String sanitizeLoginString(@Nullable String str){
+    private static @NonNull
+    String sanitizeLoginString(@Nullable String str){
         if(str==null)
-            return null;
+            throw new IllegalArgumentException("Missing Api Key");
         String temp = str.trim();
         if(temp.isEmpty())
-            return null;
+            throw new IllegalArgumentException("Invalid empty Api Key");
         else
             return temp;
     }

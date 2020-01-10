@@ -37,6 +37,8 @@
 
 package com.st.blesensor.cloud.util;
 
+import androidx.annotation.NonNull;
+
 import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -74,7 +76,7 @@ public abstract class MqttClientConnectionFactory implements CloudIotClientConne
     }
 
     @Override
-    public void disconnect(CloutIotClient client) throws Exception {
+    public void disconnect(@NonNull CloutIotClient client) throws Exception {
         MqttAndroidClient mqttClient = extractMqttClient(client);
         if (mqttClient != null) {
             mqttClient.disconnect();
@@ -82,7 +84,7 @@ public abstract class MqttClientConnectionFactory implements CloudIotClientConne
     }
 
     @Override
-    public void destroy(CloutIotClient client) {
+    public void destroy(@NonNull CloutIotClient client) {
         MqttAndroidClient mqttClient = extractMqttClient(client);
         if (mqttClient != null) {
             mqttClient.close();
@@ -91,7 +93,7 @@ public abstract class MqttClientConnectionFactory implements CloudIotClientConne
     }
 
     @Override
-    public boolean isConnected(CloutIotClient client) {
+    public boolean isConnected(@NonNull CloutIotClient client) {
         MqttAndroidClient mqttClient = extractMqttClient(client);
         try {
             return (mqttClient != null && mqttClient.isConnected());

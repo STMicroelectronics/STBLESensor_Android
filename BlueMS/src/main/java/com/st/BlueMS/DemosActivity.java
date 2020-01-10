@@ -41,12 +41,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.ActivityRecognition.ActivityRecognitionFragment;
 import com.st.BlueMS.demos.Audio.Beamforming.BeamformingFragment;
 import com.st.BlueMS.demos.Audio.BlueVoice.BlueVoiceFragment;
+import com.st.BlueMS.demos.Audio.BlueVoice.fullBand.BlueVoiceFullBandFragment;
 import com.st.BlueMS.demos.Audio.SpeechToText.SpeechToTextFragment;
 import com.st.BlueMS.demos.AudioClassification.AudioClassificationFragment;
 import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
@@ -58,6 +61,8 @@ import com.st.BlueMS.demos.SDLog.SDLogFragment;
 import com.st.BlueMS.demos.aiDataLog.AIDataLogDemoFragment;
 import com.st.BlueMS.demos.fftAmpitude.FFTAmplitudeFragment;
 import com.st.BlueMS.demos.fitnessActivity.FitnessActivityFragment;
+import com.st.BlueMS.demos.machineLearningCore.FiniteStateMachineFragment;
+import com.st.BlueMS.demos.machineLearningCore.MachineLearningCoreFragment;
 import com.st.BlueMS.demos.memsSensorFusion.CompassFragment;
 import com.st.BlueMS.demos.EnvironmentalSensorsFragment;
 import com.st.BlueMS.demos.HeartRateFragment;
@@ -73,7 +78,11 @@ import com.st.BlueMS.demos.motionAlgorithm.MotionAlgorithmFragment;
 import com.st.BlueMS.demos.multiNN.MultiNeuralNetworkFragment;
 import com.st.BlueMS.demos.plot.PlotFeatureFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
+import com.st.BlueSTSDK.Debug;
+import com.st.BlueSTSDK.ExportedFeature;
+import com.st.BlueSTSDK.Features.Audio.Opus.ExportedFeatureAudioOpus;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.NodeServer;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
@@ -84,6 +93,11 @@ import com.st.STM32WB.p2pDemo.feature.FeatureSwitchStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Activity that display all the demo available for the node
@@ -133,6 +147,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             FFTAmplitudeFragment.class,
             PlotFeatureFragment.class,
             SDLogFragment.class,
+            MultiNeuralNetworkFragment.class,
             ActivityRecognitionFragment.class,
             CarryPositionFragment.class,
             ProximityGestureRecognitionFragment.class,
@@ -153,11 +168,12 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             LedButtonControlFragment.class,
             StartOtaRebootFragment.class,
             AIDataLogDemoFragment.class,
-            MultiNeuralNetworkFragment.class,
             CloudLogFragment.class,
             PredictiveMaintenanceFragment.class,
             MotionAlgorithmFragment.class,
             FitnessActivityFragment.class,
+            MachineLearningCoreFragment.class,
+            FiniteStateMachineFragment.class,
             NodeStatusFragment.class,
             //FeatureDebugFragment.class
     };
@@ -165,14 +181,37 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     @SuppressWarnings("unchecked")
     @Override
     protected Class<? extends DemoFragment>[] getAllDemos() {
-        return ALL_DEMOS;
+        ArrayList<Class<? extends DemoFragment>> demoList = new ArrayList<>(Arrays.asList(ALL_DEMOS));
+        if(getNode().getType() == Node.Type.STEVAL_BCN002V1){
+            demoList.remove(SpeechToTextFragment.class);
+        }
+
+        List<Class<? extends DemoFragment>> serverDemos = getServerSizeDemos();
+        if(!serverDemos.isEmpty()) {
+            demoList.addAll(0,serverDemos);
+        }
+        return demoList.toArray(new Class[0]);
+    }
+
+    private List<Class<? extends DemoFragment>> getServerSizeDemos(){
+        NodeServer server = getNode().getNodeServer();
+        if(server == null){
+            return Collections.emptyList();
+        }
+        ArrayList<Class<? extends DemoFragment>> demos = new ArrayList<>();
+
+        ExportedFeature opusAudio = server.getExportedFeature(ExportedFeatureAudioOpus.class);
+        if(opusAudio!=null && opusAudio.isNotificationEnabled()){
+            demos.add(BlueVoiceFullBandFragment.class);
+        }
+
+        return demos;
     }
 
     @Override
     protected boolean enableFwUploading() {
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -187,4 +226,48 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onStart() {
+        enableServerSideDemo();
+        super.onStart();
+    }
+
+    private ExportedFeature.ExportedFeatureCallback mRefreshDemoList = new ExportedFeature.ExportedFeatureCallback() {
+        @Override
+        public void onNotificationDisabled(@NonNull ExportedFeature onFeature) {
+            Log.d("DEmoActivity","reload demos");
+            reloadDemoList();
+        }
+
+        @Override
+        public void onNotificationEnabled(@NonNull ExportedFeature onFeature) {
+            Log.d("DEmoActivity","reload demos");
+            reloadDemoList();
+        }
+    };
+
+    private void enableServerSideDemo() {
+        NodeServer server = getNode().getNodeServer();
+        if(server == null)
+            return;
+        ExportedFeature f = server.getExportedFeature(ExportedFeatureAudioOpus.class);
+        if(f!=null)
+            f.addListener(mRefreshDemoList);
+    }
+
+    @Override
+    protected void onStop() {
+        disableServerSideDemo();
+        super.onStop();
+    }
+
+    private void disableServerSideDemo() {
+        NodeServer server = getNode().getNodeServer();
+        if(server == null)
+            return;
+        ExportedFeature f = server.getExportedFeature(ExportedFeatureAudioOpus.class);
+        if(f!=null)
+            f.removeListener(mRefreshDemoList);
+    }
 }

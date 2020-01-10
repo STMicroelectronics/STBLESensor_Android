@@ -47,6 +47,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 import com.st.BlueSTSDK.Features.FeatureEulerAngle;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationContract;
@@ -117,32 +118,35 @@ public class CompassFragment extends BaseDemoFragment {
     protected void enableNeededNotification(@NonNull Node node) {
         mCompassFeature = node.getFeature(FeatureCompass.class);
         if(mCompassFeature!=null) {
-            mCompassFeature.addFeatureListener(mCompassUpdate);
-            CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
-            mCalibPresenter.manage(calibView, mCompassFeature);
-            mCompassFeature.enableNotification();
+            startDemoWith(mCompassFeature,mCompassUpdate);
         }else {
             mEulerAngle = node.getFeature(FeatureEulerAngle.class);
             if(mEulerAngle != null) {
-                CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
-                mCalibPresenter.manage(calibView, mEulerAngle);
-                mEulerAngle.addFeatureListener(mEulerUpdate);
-                mEulerAngle.enableNotification();
+                startDemoWith(mEulerAngle,mEulerUpdate);
             }
         }
+    }
+
+    private void startDemoWith(FeatureAutoConfigurable feature, Feature.FeatureListener listener){
+        feature.addFeatureListener(listener);
+        CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
+        mCalibPresenter.manage(calibView,feature);
+        feature.enableNotification();
     }
 
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
         if(mCompassFeature!=null) {
-            mCompassFeature.removeFeatureListener(mCompassUpdate);
-            mCalibPresenter.unManageFeature();
-            node.disableNotification(mCompassFeature);
+            stopDemoWith(mCompassFeature,mCompassUpdate);
         }else if(mEulerAngle != null){
-            mEulerAngle.disableNotification();
-            mEulerAngle.removeFeatureListener(mEulerUpdate);
+            stopDemoWith(mEulerAngle,mEulerUpdate);
         }
+    }
 
+    private void stopDemoWith(FeatureAutoConfigurable feature, Feature.FeatureListener listener){
+        feature.removeFeatureListener(listener);
+        mCalibPresenter.unManageFeature();
+        feature.disableNotification();
     }
 
 

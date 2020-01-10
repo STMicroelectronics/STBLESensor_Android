@@ -134,6 +134,7 @@ public class FFTAmplitudePlotFragment extends Fragment {
         chart.getAxisRight().setEnabled(false);
         //move x axis on the bottom
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+
         //hide plot description
         chart.getDescription().setEnabled(false);
         chart.setNoDataText(ctx.getString(R.string.fftAmpl_noDataText));

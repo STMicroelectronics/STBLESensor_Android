@@ -33,3 +33,8 @@ proguard/
 
 #mac file
 .DS_Store
+
+#hprof file
+*.hprof
+
+!gradle.properties

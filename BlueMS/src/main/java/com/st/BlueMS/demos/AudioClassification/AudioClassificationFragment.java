@@ -79,6 +79,7 @@ public class AudioClassificationFragment extends BaseDemoFragment {
     private AudioClass mCurrentAudioClass = AudioClass.UNKNOWN;
 
     private AudioView getViewFromAlgoId(int algorithmId){
+        Log.d("PIPPO", "AlgorithmID = " + algorithmId);
         switch (algorithmId){
             case 0:
                 return  mSceneClassificationView;
@@ -154,6 +155,7 @@ public class AudioClassificationFragment extends BaseDemoFragment {
         if (mAudioRecognition != null) {
             mAudioRecognition.addFeatureListener(mAudioRecognitionListener);
             node.enableNotification(mAudioRecognition);
+            node.readFeature(mAudioRecognition);
         }
     }
 

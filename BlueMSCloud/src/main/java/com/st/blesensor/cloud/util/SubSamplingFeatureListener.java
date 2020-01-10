@@ -70,7 +70,7 @@ public abstract class SubSamplingFeatureListener implements Feature.FeatureListe
         onNewDataUpdate(f,sample);
     }
 
-    private boolean featureNeedCloudUpdate(Feature f, long notificationTime) {
+    private boolean featureNeedCloudUpdate( Feature f, long notificationTime) {
         Long lastNotification = mLastCloudUpdate.get(f);
         //first notification or old value
         if(lastNotification==null ||
@@ -81,5 +81,5 @@ public abstract class SubSamplingFeatureListener implements Feature.FeatureListe
         return false;
     }
 
-    public abstract void onNewDataUpdate(Feature f,Feature.Sample sample);
+    public abstract void onNewDataUpdate(@NonNull Feature f,@NonNull Feature.Sample sample);
 }

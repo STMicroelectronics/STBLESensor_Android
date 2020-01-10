@@ -83,6 +83,8 @@ internal class MultiNNViewModel(node: Node) : ViewModel() {
     private fun enableAIFeature(){
         audioNN?.enableNotification()
         activityNN?.enableNotification()
+        audioNN?.read()
+        activityNN?.read()
     }
 
     private fun disableAIFeature(){

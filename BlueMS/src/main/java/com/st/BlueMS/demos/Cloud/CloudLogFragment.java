@@ -101,7 +101,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private static final String UPDATE_INTERVAL_DIALOG_TAG = CONF_PREFIX_KEY +".UPDATE_INTERVAL_DIALOG_TAG";
 
 
-    public static final String SELECTED_CLOUD_KEY = CONF_PREFIX_KEY +".SELECTED_CLOUD_KEY";
+    private static final String SELECTED_CLOUD_KEY = CONF_PREFIX_KEY +".SELECTED_CLOUD_KEY";
     private static final String UPDATE_INTERVAL_KEY = CONF_PREFIX_KEY +".UPDATE_INTERVAL_KEY";
     private static final int DEFAULT_UPDATE_INTERVAL_MS = 5000;
 
@@ -234,7 +234,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_cloud_log_demo,menu);
     }
@@ -390,7 +390,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
                 mCloudConfig.removeAllViews();
                 CloudIotClientConfigurationFactory selectedFactory =
                         (CloudIotClientConfigurationFactory) adapterView.getItemAtPosition(i);
-                selectedFactory.attachParameterConfiguration(getActivity(), mCloudConfig);
+                selectedFactory.attachParameterConfiguration(requireContext(), mCloudConfig);
                 selectedFactory.loadDefaultParameters(node);
             }
 
@@ -418,7 +418,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * @return true if the connection with the cloud service is open, false otherwise
      */
     private boolean isCloudConnected() {
-        return mCloudConnectionFactory != null && mCloudConnectionFactory.isConnected(mMqttClient);
+        return mCloudConnectionFactory != null && mMqttClient!=null &&
+                mCloudConnectionFactory.isConnected(mMqttClient);
     }
 
 
@@ -470,7 +471,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             return;
         }
 
-        if(mCloudConnectionFactory!=null){
+        if(mCloudConnectionFactory!=null && mMqttClient!=null){
             mCloudConnectionFactory.destroy(mMqttClient);
         }
 
@@ -483,14 +484,14 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         }
 
         try {
-            mMqttClient = mCloudConnectionFactory.createClient(getActivity());
-            mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient,getUpdateInterval());
+            mMqttClient = mCloudConnectionFactory.createClient(requireActivity());
             Context ctx = requireContext();
             final Context appContext = ctx.getApplicationContext();
             showConnectingView();
             mCloudConnectionFactory.connect(ctx, mMqttClient, new CloudIotClientConnectionFactory.ConnectionListener() {
                 @Override
                 public void onSuccess() {
+                    mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient,getUpdateInterval());
                     mCloudConnectionFactory.enableCloudFwUpgrade(mNode, mMqttClient, fwUrl -> {
                         Uri firmwareRemoteLocation = Uri.parse(fwUrl);
                         DownloadFwFileService.displayAvailableFwNotification(appContext,firmwareRemoteLocation);
@@ -528,7 +529,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mCloudConnectionFactory!=null)
+        if(mCloudConnectionFactory!=null && mMqttClient!=null)
             mCloudConnectionFactory.destroy(mMqttClient);
     }
 
@@ -552,7 +553,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * close the cloud connection
      */
     private void closeCloudConnection() {
-        if (isCloudConnected()) {
+        if (isCloudConnected()) { //cloudConnected check that mMqttClient is not null
             mCloudLogListener = null;
             Context ctx = getActivity();
             if(ctx!=null) // can be null if called after the d
@@ -570,7 +571,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * function called when the connection button is pressed
      * @param v button pressed
      */
-    public void onStartStopCloudLogClick(View v) {
+    private void onStartStopCloudLogClick(View v) {
         if (!isCloudConnected()) {
             startCloudConnection();
         } else {
@@ -665,14 +666,14 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
     }
 
-    void storeUpdateInterval(int updateInterval){
+    private void storeUpdateInterval(int updateInterval){
         requireActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE).edit()
                     .putInt(UPDATE_INTERVAL_KEY,updateInterval)
                     .apply();
 
     }
 
-    int getUpdateInterval(){
+    private int getUpdateInterval(){
         return requireActivity().getSharedPreferences(CONF_PREFIX_KEY,Context.MODE_PRIVATE)
                 .getInt(UPDATE_INTERVAL_KEY,DEFAULT_UPDATE_INTERVAL_MS);
     }

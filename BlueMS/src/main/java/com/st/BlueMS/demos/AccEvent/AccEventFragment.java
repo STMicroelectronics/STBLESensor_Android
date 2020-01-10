@@ -86,7 +86,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
             DetectableEvent.WAKE_UP
     };
 
-    private static final DetectableEvent SENSORTILE101_SUPPORTED_EVENT[] = {
+    private static final DetectableEvent SENSORTILEBOX_SUPPORTED_EVENT[] = {
             DetectableEvent.NONE,
             DetectableEvent.ORIENTATION,
             DetectableEvent.DOUBLE_TAP,
@@ -132,7 +132,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
             case NUCLEO:
                 return NUCLEO_SUPPORTED_EVENT;
             case SENSOR_TILE_BOX:
-                return SENSORTILE101_SUPPORTED_EVENT;
+                return SENSORTILEBOX_SUPPORTED_EVENT;
             default:
                 return new DetectableEvent[0];
         }

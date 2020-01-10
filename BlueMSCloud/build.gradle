@@ -42,8 +42,8 @@ dependencies {
     implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '17.1.1'
 
     //necessary to cloud demo, for mqtt connection
-    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
-    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.1.1'
+    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: "$rootProject.cloud_pahoVersion"
+    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: "$rootProject.cloud_pahoServiceVersion"
 
     //amazon aws iot
     implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: "$rootProject.amazonSDKVersion"

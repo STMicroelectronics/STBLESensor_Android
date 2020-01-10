@@ -39,28 +39,53 @@ package com.st.BlueMS.demos.multiNN
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Log
 import com.st.BlueMS.R
 import com.st.BlueSTSDK.Feature
 import com.st.BlueSTSDK.Features.FeatureActivity
+import com.st.BlueSTSDK.Features.FeatureActivity.ActivityType
 import com.st.BlueSTSDK.Node
 
 internal class ActivityRecognitionViewModel : ViewModel(){
 
-    private var listener = Feature.FeatureListener { _, sample ->
-        val activityType = FeatureActivity.getActivityStatus(sample)
-        _currentState.postValue(activityType)
-        if(activityType!= FeatureActivity.ActivityType.NO_ACTIVITY){
+    private fun showDefaultActivity(activityType: ActivityType){
+        _currentState.postValue(activityType.imageResource)
+        _currentDescriptionStrId.postValue(activityType.stringResource)
+        if(activityType != ActivityType.NO_ACTIVITY){
             _viewIsVisible.postValue(true)
         }
     }
 
-    private val _currentState= MutableLiveData<FeatureActivity.ActivityType>()
-    val currentState: LiveData<FeatureActivity.ActivityType>
+    private fun showAdultPresenceActivity(activityType: ActivityType){
+        _viewIsVisible.postValue(true)
+        if(activityType == ActivityType.ADULT_IN_CAR){
+            _currentState.postValue(activityType.imageResource)
+            _currentDescriptionStrId.postValue(activityType.stringResource)
+        }else{
+            _currentState.postValue(R.drawable.activity_adult_not_in_car)
+            _currentDescriptionStrId.postValue(R.string.activityRecognition_adultNotInCar)
+        }
+    }
+
+    private var listener = Feature.FeatureListener { _, sample ->
+        val activityType = FeatureActivity.getActivityStatus(sample)
+        val algo = FeatureActivity.getAlgorithmType(sample)
+
+        when(algo){
+            4.toShort() -> showAdultPresenceActivity(activityType)
+            else -> showDefaultActivity(activityType)
+        }
+    }
+
+    private val _currentState= MutableLiveData<Int>()
+    val currentState: LiveData<Int>
         get() = _currentState
 
+    private val _currentDescriptionStrId=MutableLiveData<Int>()
+    val currentDescriptionStrId:LiveData<Int>
+        get() = _currentDescriptionStrId
+
     private val _viewIsVisible= MutableLiveData<Boolean>()
-    val viewIsVisible: MutableLiveData<Boolean>
+    val viewIsVisible: LiveData<Boolean>
         get() = _viewIsVisible
 
 
@@ -77,32 +102,34 @@ internal class ActivityRecognitionViewModel : ViewModel(){
     }
 }
 
-internal val FeatureActivity.ActivityType.imageResource: Int
+internal val ActivityType.imageResource: Int
     get() {
         return when(this){
-            FeatureActivity.ActivityType.NO_ACTIVITY -> R.drawable.activity_unkown
-            FeatureActivity.ActivityType.STATIONARY -> R.drawable.activity_stationary
-            FeatureActivity.ActivityType.WALKING -> R.drawable.activity_walking
-            FeatureActivity.ActivityType.FASTWALKING -> R.drawable.activity_fastwalking
-            FeatureActivity.ActivityType.JOGGING -> R.drawable.activity_jogging
-            FeatureActivity.ActivityType.BIKING -> R.drawable.activity_biking
-            FeatureActivity.ActivityType.DRIVING -> R.drawable.activity_driving
-            FeatureActivity.ActivityType.STAIRS -> R.drawable.activity_stairs
-            FeatureActivity.ActivityType.ERROR -> R.drawable.activity_unkown
+            ActivityType.NO_ACTIVITY -> R.drawable.activity_unkown
+            ActivityType.STATIONARY -> R.drawable.activity_stationary
+            ActivityType.WALKING -> R.drawable.activity_walking
+            ActivityType.FASTWALKING -> R.drawable.activity_fastwalking
+            ActivityType.JOGGING -> R.drawable.activity_jogging
+            ActivityType.BIKING -> R.drawable.activity_biking
+            ActivityType.DRIVING -> R.drawable.activity_driving
+            ActivityType.STAIRS -> R.drawable.activity_stairs
+            ActivityType.ADULT_IN_CAR -> R.drawable.activity_adult_in_car
+            ActivityType.ERROR -> R.drawable.activity_unkown
         }
     }
 
-internal val FeatureActivity.ActivityType.stringResource: Int
+internal val ActivityType.stringResource: Int
     get() {
         return when(this){
-            FeatureActivity.ActivityType.NO_ACTIVITY -> R.string.activityRecognition_unknownImageDesc
-            FeatureActivity.ActivityType.STATIONARY -> R.string.activityRecognition_stationaryImageDesc
-            FeatureActivity.ActivityType.WALKING -> R.string.activityRecognition_walkingImageDesc
-            FeatureActivity.ActivityType.FASTWALKING -> R.string.activityRecognition_fastWalkingImageDesc
-            FeatureActivity.ActivityType.JOGGING -> R.string.activityRecognition_joggingImageDesc
-            FeatureActivity.ActivityType.BIKING -> R.string.activityRecognition_bikingImageDesc
-            FeatureActivity.ActivityType.DRIVING -> R.string.activityRecognition_drivingImageDesc
-            FeatureActivity.ActivityType.STAIRS -> R.string.activityRecognition_stairsImageDesc
-            FeatureActivity.ActivityType.ERROR -> R.string.activityRecognition_unknownImageDesc
+            ActivityType.NO_ACTIVITY -> R.string.activityRecognition_unknownImageDesc
+            ActivityType.STATIONARY -> R.string.activityRecognition_stationaryImageDesc
+            ActivityType.WALKING -> R.string.activityRecognition_walkingImageDesc
+            ActivityType.FASTWALKING -> R.string.activityRecognition_fastWalkingImageDesc
+            ActivityType.JOGGING -> R.string.activityRecognition_joggingImageDesc
+            ActivityType.BIKING -> R.string.activityRecognition_bikingImageDesc
+            ActivityType.DRIVING -> R.string.activityRecognition_drivingImageDesc
+            ActivityType.STAIRS -> R.string.activityRecognition_stairsImageDesc
+            ActivityType.ADULT_IN_CAR -> R.string.activityRecognition_adultInCar
+            ActivityType.ERROR -> R.string.activityRecognition_unknownImageDesc
         }
     }

@@ -46,6 +46,8 @@
     <string name="activityRecognition_bikingImageDesc">Biking</string>
     <string name="activityRecognition_drivingImageDesc">Driving</string>
     <string name="activityRecognition_stairsImageDesc">Stairs</string>
+    <string name="activityRecognition_adultNotInCar">Adult is not in the Car</string>
+    <string name="activityRecognition_adultInCar">Adult is in the Car</string>
 
     <string name="activityRecognition_started">Activity recognition started</string>
     <string name="activityRecognition_waitingData">Waiting data…</string>

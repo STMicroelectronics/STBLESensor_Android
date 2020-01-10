@@ -39,6 +39,8 @@ package com.st.blesensor.cloud.IBMWatson;
 
 import android.content.Context;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
@@ -103,8 +105,8 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean connect(Context ctx, CloutIotClient connection,
-                           ConnectionListener connectionListener)
+    public boolean connect(@NonNull Context ctx, @NonNull CloutIotClient connection,
+                           @NonNull ConnectionListener connectionListener)
             throws Exception {
 
         IMqttAsyncClient client = extractMqttClient(connection);
@@ -119,7 +121,7 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public CloutIotClient createClient(Context ctx) {
+    public CloutIotClient createClient(@NonNull Context ctx) {
         return new MqttClient(
                 new MqttAndroidClient(ctx, String.format(BLUEMX_URL,mOrganization),
                 getDeviceId(mOrganization,mDeviceType,mDeviceId))
@@ -127,7 +129,7 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs){
+    public Feature.FeatureListener getFeatureListener(@NonNull CloutIotClient broker, long minUpdateIntervalMs){
         return new IBMWatsonMqttFeatureListener(extractMqttClient(broker), minUpdateIntervalMs);
     }
 
@@ -137,12 +139,12 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean supportFeature(Feature f) {
+    public boolean supportFeature(@NonNull Feature f) {
         return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, CloutIotClient iotConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(@NonNull Node node, @NonNull CloutIotClient iotConnection, @NonNull FwUpgradeAvailableCallback callback) {
         return false;
     }
 
@@ -168,7 +170,7 @@ public class IBMWatsonFactory extends MqttClientConnectionFactory {
         }
 
         @Override
-        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             try {
                 JSONObject obj = JSONSampleSerializer.serialize(sample);
                 JSONObject quikStartObj = new JSONObject();

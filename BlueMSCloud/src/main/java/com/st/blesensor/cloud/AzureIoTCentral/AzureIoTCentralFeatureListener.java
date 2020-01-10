@@ -36,6 +36,7 @@
  */
 package com.st.blesensor.cloud.AzureIoTCentral;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
@@ -136,7 +137,7 @@ public class AzureIoTCentralFeatureListener extends SubSamplingFeatureListener {
     }
 
     @Override
-    public void onNewDataUpdate(Feature f, Feature.Sample sample) {
+    public void onNewDataUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
         try {
             JSONObject obj = createContosoJson(f,sample);
             if(obj!=null && mClient.isConnected()){

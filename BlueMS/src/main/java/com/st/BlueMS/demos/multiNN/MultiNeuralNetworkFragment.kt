@@ -73,12 +73,17 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
     private lateinit var mAudioSceneImage:ImageView
     private lateinit var mAudioSceneDesc:TextView
 
+    private lateinit var mComboView:View
+    private lateinit var mComboImage:ImageView
+    private lateinit var mComboDesc:TextView
+
     private lateinit var mAlgoSelectorGroup:View
     private lateinit var mAlgoSelector:Spinner
 
     private var mHumanActivityViewModel:ActivityRecognitionViewModel? = null
     private var mAudioSceneViewModel:AudioSceneViewModel? = null
     private var mMultiNNViewModel:MultiNNViewModel? = null
+    private var mComboViewModel:ComboViewModel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -95,6 +100,10 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
         mAudioSceneView = view.findViewById(R.id.multiNN_audioSceneCardView)
         mAudioSceneDesc = view.findViewById(R.id.multiNN_audioSceneImageDesc)
 
+        mComboView = view.findViewById(R.id.multiNN_comboCardView)
+        mComboImage = view.findViewById(R.id.multiNN_comboImage)
+        mComboDesc = view.findViewById(R.id.multiNN_comboDesc)
+
         mAlgoSelectorGroup = view.findViewById(R.id.multiNN_algoSelectGroup)
         mAlgoSelector = view.findViewById(R.id.multiNN_algoSelectSpinner)
 
@@ -106,6 +115,7 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
 
         mHumanActivityViewModel = ViewModelProviders.of(this).get(ActivityRecognitionViewModel::class.java)
         mAudioSceneViewModel = ViewModelProviders.of(this).get(AudioSceneViewModel::class.java)
+        mComboViewModel = ViewModelProviders.of(this).get(ComboViewModel::class.java)
         node?.let { node ->
             val factory = MultiNNViewModelFactory(node)
             mMultiNNViewModel = ViewModelProviders.of(this,factory).get(MultiNNViewModel::class.java)
@@ -114,6 +124,7 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
         mMultiNNViewModel?.let { attachMultiNNViewModel(it) }
         mAudioSceneViewModel?.let { attachAudioSceneViewModel(it) }
         mHumanActivityViewModel?.let { attachHumanActivityViewModel(it) }
+        mComboViewModel?.let { attachComboViewModel(it) }
 
     }
 
@@ -128,12 +139,16 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
                     }
         })
 
-        vm.currentState.observe(viewLifecycleOwner, Observer { newScene ->
-            if(newScene == null)
+        vm.currentImageId.observe(viewLifecycleOwner, Observer { newImage ->
+            if(newImage == null)
                 return@Observer
-            mAudioSceneImage.setImageResource(newScene.imageResource)
+            mAudioSceneImage.setImageResource(newImage)
+
+        })
+
+        vm.currentDescriptionStrId.observe(viewLifecycleOwner, Observer { newDescription ->
             val deteString = DATE_FORMAT.format(Date())
-            val sceneString = getString(newScene.stringResource)
+            val sceneString = getString(newDescription)
             mAudioSceneDesc.text=String.format("%s: %s",deteString,sceneString)
         })
 
@@ -150,13 +165,42 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
                     }
         })
 
-        vm.currentState.observe(viewLifecycleOwner, Observer { newActivity ->
-            if(newActivity == null)
+        vm.currentState.observe(viewLifecycleOwner, Observer { newImage ->
+            if(newImage == null)
                 return@Observer
-            mHumanActivityImage.setImageResource(newActivity.imageResource)
+            mHumanActivityImage.setImageResource(newImage)
+
+        })
+
+        vm.currentDescriptionStrId.observe(viewLifecycleOwner, Observer { newDescription ->
             val deteString = DATE_FORMAT.format(Date())
-            val activityString = getString(newActivity.stringResource)
+            val activityString = getString(newDescription)
             mHumanActivityDesc.text=String.format("%s: %s",deteString,activityString)
+        })
+    }
+
+    private fun attachComboViewModel(vm: ComboViewModel) {
+
+        vm.viewIsVisible.observe(viewLifecycleOwner, Observer { viewIsVisible ->
+            mComboView.visibility =
+                    if(viewIsVisible == true){
+                        View.VISIBLE
+                    }else{
+                        View.GONE
+                    }
+        })
+
+        vm.currentState.observe(viewLifecycleOwner, Observer { newImage ->
+            if(newImage == null)
+                return@Observer
+            mComboImage.setImageResource(newImage)
+
+        })
+
+        vm.currentDescriptionStrId.observe(viewLifecycleOwner, Observer { newDescription ->
+            val deteString = DATE_FORMAT.format(Date())
+            val activityString = getString(newDescription)
+            mComboDesc.text=String.format("%s: %s",deteString,activityString)
         })
     }
 
@@ -171,13 +215,11 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
                     android.R.layout.simple_spinner_item,names).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
-            Log.d("MultiNN","SetAdapter")
             mAlgoSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) { }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     val selected = algorithms[position]
-                    Log.d("MultiNN","select ${selected}")
                     vm.selectAlgorithm(selected)
                 }
 
@@ -189,7 +231,6 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
                 return@Observer
             val selectedIndex = vm.availableAlgorithm.value?.indexOf(running)
             if(selectedIndex != null){
-                Log.d("MultiNN","setSelection ${selectedIndex}")
                 mAlgoSelector.setSelection(selectedIndex)
             }
         })
@@ -208,6 +249,7 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
         node?.let{
             mHumanActivityViewModel?.registerListener(it)
             mAudioSceneViewModel?.registerListener(it)
+            mComboViewModel?.registerListener(it)
         }
     }
 
@@ -215,6 +257,7 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
         node?.let{
             mHumanActivityViewModel?.removeListener(it)
             mAudioSceneViewModel?.removeListener(it)
+            mComboViewModel?.removeListener(it)
         }
     }
 
@@ -226,7 +269,6 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
     override fun disableNeedNotification(node: Node) {
         mMultiNNViewModel?.stopMultiNeuralNetwork()
         removeListener()
-
     }
 
 }

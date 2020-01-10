@@ -38,6 +38,8 @@
 package com.st.blesensor.cloud;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 
@@ -53,7 +55,7 @@ public interface CloudIotClientConfigurationFactory {
      * @param c context to use for load the view
      * @param root container where add the view
      */
-    void attachParameterConfiguration(Context c, ViewGroup root);
+    void attachParameterConfiguration(@NonNull Context c,@NonNull ViewGroup root);
 
     /**
      * set the default data for the configuration

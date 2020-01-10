@@ -86,6 +86,10 @@ public class HumanActivityRecognitionMLCView extends ActivityView {
      */
     private ImageView mBikingImage;
 
+    /**
+     * image to select for the driving activity
+     */
+    private ImageView mDrivingImage;
 
     @Nullable
     ImageView getSelectedImage(@NonNull FeatureActivity.ActivityType status){
@@ -98,6 +102,8 @@ public class HumanActivityRecognitionMLCView extends ActivityView {
                 return mJoggingImage;
             case BIKING:
                 return mBikingImage;
+            case DRIVING:
+                return mDrivingImage;
             default:
                 return null;
         }//switch
@@ -111,6 +117,7 @@ public class HumanActivityRecognitionMLCView extends ActivityView {
         mWalkingImage =  findViewById(R.id.activity_mlc_walkingImage);
         mJoggingImage =  findViewById(R.id.activity_mlc_joggingImage);
         mBikingImage =  findViewById(R.id.activity_mlc_bikingImage);
+        mDrivingImage =  findViewById(R.id.activity_mlc_drivingImage);
 
         deselectAllImages();
     }

@@ -38,6 +38,8 @@ package com.st.blesensor.cloud.AzureIoTCentral;
 
 import android.content.Context;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
@@ -62,12 +64,12 @@ public class AzureIotCentralFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public CloutIotClient createClient(Context ctx) {
+    public CloutIotClient createClient(@NonNull Context ctx) {
         return new IoTCentralClient(mScopeId,mDeviceId,mMasterKey);
     }
 
     @Override
-    public boolean connect(Context ctx, CloutIotClient client, ConnectionListener connectionListener) {
+    public boolean connect(@NonNull Context ctx, @NonNull CloutIotClient client, @NonNull ConnectionListener connectionListener) {
 
         if(! isCorrectClient(client))
             return false;
@@ -78,14 +80,14 @@ public class AzureIotCentralFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient client, long minUpdateIntervalMs) {
+    public Feature.FeatureListener getFeatureListener(@NonNull CloutIotClient client, long minUpdateIntervalMs) {
         if(! isCorrectClient(client))
             return null;
         return new AzureIoTCentralFeatureListener((IoTCentralClient) client,minUpdateIntervalMs);
     }
 
     @Override
-    public void disconnect(CloutIotClient client) throws Exception {
+    public void disconnect(@NonNull CloutIotClient client) throws Exception {
         if(! isCorrectClient(client))
             return;
 
@@ -93,14 +95,14 @@ public class AzureIotCentralFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public void destroy(CloutIotClient client) {
+    public void destroy(@NonNull CloutIotClient client) {
         if(! isCorrectClient(client))
             return;
         ((IoTCentralClient) client).destroy();
     }
 
     @Override
-    public boolean isConnected(CloutIotClient client) {
+    public boolean isConnected(@NonNull CloutIotClient client) {
 
         if(! isCorrectClient(client))
             return false;
@@ -115,12 +117,12 @@ public class AzureIotCentralFactory implements CloudIotClientConnectionFactory {
     }
 
     @Override
-    public boolean supportFeature(Feature f) {
+    public boolean supportFeature(@NonNull Feature f) {
         return AzureIoTCentralFeatureListener.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, CloutIotClient cloudConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(@NonNull Node node, @NonNull CloutIotClient cloudConnection, @NonNull FwUpgradeAvailableCallback callback) {
         if(!isCorrectClient(cloudConnection))
             return false;
 

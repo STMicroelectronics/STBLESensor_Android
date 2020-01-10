@@ -39,6 +39,8 @@ package com.st.blesensor.cloud.GenericMqtt;
 
 import android.content.Context;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
@@ -93,15 +95,15 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
 
 
     @Override
-    public CloutIotClient createClient(Context ctx) {
+    public CloutIotClient createClient(@NonNull Context ctx) {
         return new MqttClient(
              new MqttAndroidClient(ctx, mBroker,mClientId)
         );
     }
 
     @Override
-    public boolean connect(Context ctx, CloutIotClient connection,
-                           ConnectionListener connectionListener)
+    public boolean connect(@NonNull Context ctx, @NonNull CloutIotClient connection,
+                           @NonNull ConnectionListener connectionListener)
             throws Exception {
 
         IMqttAsyncClient client = extractMqttClient(connection);
@@ -127,7 +129,7 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs) {
+    public Feature.FeatureListener getFeatureListener(@NonNull CloutIotClient broker, long minUpdateIntervalMs) {
         return new GenericMqttFeatureListener(mClientId,extractMqttClient(broker), minUpdateIntervalMs);
     }
 
@@ -138,12 +140,12 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean supportFeature(Feature f) {
+    public boolean supportFeature(@NonNull Feature f) {
         return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, CloutIotClient mqttConnection, FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(@NonNull Node node, @NonNull CloutIotClient mqttConnection, @NonNull FwUpgradeAvailableCallback callback) {
         return false;
     }
 
@@ -171,7 +173,7 @@ class GenericMqttFactory extends MqttClientConnectionFactory {
 
 
         @Override
-        public void onNewDataUpdate(Feature f, Feature.Sample sample) {
+        public void onNewDataUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             Field fields[] = sample.dataDesc;
             Number data[] = sample.data;
             try {

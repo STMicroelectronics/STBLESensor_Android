@@ -45,6 +45,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.DialogFragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -177,9 +179,10 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
      * listener for the audioSync feature, it will update the synchronism values
      */
     private final Feature.FeatureListener mAudioSyncListener = (f, sample) -> {
-        if (mAudioCodecManager != null) {
-            mAudioCodecManager.updateParams(sample);
+        if(mAudioCodecManager == null) {
+            return;
         }
+        mAudioCodecManager.updateParams(sample);
 
         if(audioSamplingFreq != mAudioCodecManager.getSamplingFreq() || audioChannels!= mAudioCodecManager.getChannels())
         {
@@ -187,8 +190,8 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
             audioChannels = mAudioCodecManager.getChannels();
         }
 
-        boolean newAudioStatus =  mAudioCodecManager.isAudioEnabled();
-        if(audioEnabled == null || audioEnabled != newAudioStatus) {
+        Boolean newAudioStatus =  mAudioCodecManager.isAudioEnabled();
+        if((audioEnabled == null || audioEnabled != newAudioStatus) && newAudioStatus!=null) {
             audioEnabled = newAudioStatus;
             if (audioEnabled) {
                 startAudioStreaming();
@@ -497,10 +500,11 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
      * if the engine need it this function show the dialog to request the key to the user
      */
     private void showSetEngineKeyDialog(){
-        if(mAsrEngine!=null && mAsrEngine.needAuthKey()){
+        if(mAsrEngine!=null && mAsrEngine.needAuthKey()) {
             DialogFragment dialog = mAsrEngine.getAuthKeyDialog();
-            if(dialog!=null)
-                dialog.show(getChildFragmentManager(),ASR_KEY_DIALOG_TAG);
+            if (dialog != null) {
+                dialog.show(getChildFragmentManager(), ASR_KEY_DIALOG_TAG);
+            }
         }
     }
 
@@ -518,7 +522,7 @@ public class SpeechToTextFragment extends DemoWithNetFragment implements ASRRequ
     private void startConfStreaming(@NonNull Node node){
         mAudioSync = node.getFeature(FeatureAudioConf.class);
         if(mAudioSync!=null) {
-            mAudioCodecManager = mAudioSync.instantiateManager();
+            mAudioCodecManager = mAudioSync.instantiateManager(true,false);
             audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
             audioChannels = mAudioCodecManager.getChannels();
             audioEnabled = mAudioCodecManager.isAudioEnabled();

@@ -39,6 +39,8 @@ package com.st.blesensor.cloud;
 
 import android.content.Context;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.st.BlueSTSDK.Feature;
@@ -93,7 +95,7 @@ public interface CloudIotClientConnectionFactory {
      * @param ctx context to use for crete the mqtt
      * @return object to use for open the connection
      */
-    CloutIotClient createClient(Context ctx);
+    @Nullable CloutIotClient createClient(@NonNull Context ctx);
 
     /**
      * Open the mqtt connection
@@ -103,8 +105,8 @@ public interface CloudIotClientConnectionFactory {
      * @return operation id
      * @throws Exception if some error happen during the connection handshake
      */
-    boolean connect(Context ctx, CloutIotClient client,
-                    ConnectionListener connectionListener) throws Exception;
+    boolean connect(@NonNull Context ctx, @NonNull CloutIotClient client,
+                    @NonNull ConnectionListener connectionListener) throws Exception;
 
     /**
      * listener that will send the data to the cloud service
@@ -112,27 +114,27 @@ public interface CloudIotClientConnectionFactory {
      * @param minUpdateIntervalMs send a cloud update only after minUpdateIntervalMs milliseconds
      * @return listener to use in a feature for load the data to the cloud
      */
-    FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs);
+    @Nullable FeatureListener getFeatureListener(@NonNull CloutIotClient broker,long minUpdateIntervalMs);
 
     /**
      * close the connection with the cloud
      * @param client connection to close
      * @throws Exception error happen during the connection
      */
-    void disconnect(CloutIotClient client) throws Exception;
+    void disconnect(@NonNull CloutIotClient client) throws Exception;
 
     /**
      * free the connection resources
      * @param client client to free
      */
-    void destroy(CloutIotClient client);
+    void destroy(@NonNull CloutIotClient client);
 
     /**
      * tell if the client is connected
      * @param client connection to check
      * @return true if the client is connected with the cloud
      */
-    boolean isConnected(CloutIotClient client);
+    boolean isConnected(@NonNull CloutIotClient client);
 
     /**
      * return the url page where see the uploaded data
@@ -146,7 +148,7 @@ public interface CloudIotClientConnectionFactory {
      * @param f feature to test
      * @return true if the service support the data upload from the feature, false otherwise
      */
-    boolean supportFeature(Feature f);
+    boolean supportFeature(@NonNull Feature f);
 
     /**
      * set up the connection to accept a fw upgrade message
@@ -155,7 +157,7 @@ public interface CloudIotClientConnectionFactory {
      * @param callback function to call when a new fw is available
      * @return true if the function is supported, false otherwise
      */
-    boolean enableCloudFwUpgrade(Node node, CloutIotClient cloudConnection, FwUpgradeAvailableCallback callback);
+    boolean enableCloudFwUpgrade(@NonNull Node node,@NonNull CloutIotClient cloudConnection, @NonNull FwUpgradeAvailableCallback callback);
 
 
 

@@ -382,7 +382,7 @@ public class BeamformingFragment extends BaseDemoFragment {
         mAudioSync = node.getFeature(FeatureAudioConf.class);
         mAudioBeamforming = node.getFeature(FeatureBeamforming.class);
         if(mAudio!=null && mAudioSync!=null && mAudioBeamforming!=null) {
-            mBVAudioSyncManager = mAudioSync.instantiateManager();
+            mBVAudioSyncManager = mAudioSync.instantiateManager(true,false);
             initializeAudioDump(mAudio);
             mAudio.addFeatureListener(mAudioListener);
             mAudio.addFeatureListener(mUpdatePlot);

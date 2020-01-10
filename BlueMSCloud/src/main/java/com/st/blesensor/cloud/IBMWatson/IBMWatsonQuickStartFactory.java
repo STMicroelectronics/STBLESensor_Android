@@ -39,6 +39,8 @@ package com.st.blesensor.cloud.IBMWatson;
 
 import android.content.Context;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.st.blesensor.cloud.R;
@@ -89,8 +91,8 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean connect(Context ctx, CloutIotClient connection,
-                           ConnectionListener connectionListener)
+    public boolean connect(@NonNull Context ctx, @NonNull CloutIotClient connection,
+                           @NonNull ConnectionListener connectionListener)
             throws Exception {
 
         IMqttAsyncClient client = extractMqttClient(connection);
@@ -106,7 +108,7 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public CloutIotClient createClient(Context ctx) {
+    public CloutIotClient createClient(@NonNull Context ctx) {
         return new MqttClient(
             new MqttAndroidClient(ctx, QUICKSTART_URL,
                     getDeviceId(mDeviceType, mDeviceName))
@@ -115,7 +117,7 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
 
 
     @Override
-    public Feature.FeatureListener getFeatureListener(CloutIotClient broker,long minUpdateIntervalMs){
+    public Feature.FeatureListener getFeatureListener(@NonNull CloutIotClient broker, long minUpdateIntervalMs){
         return new IBMWatsonFactory.IBMWatsonMqttFeatureListener(extractMqttClient(broker),
                 minUpdateIntervalMs);
     }
@@ -126,13 +128,13 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
     }
 
     @Override
-    public boolean supportFeature(Feature f) {
+    public boolean supportFeature(@NonNull Feature f) {
         return MqttClientUtil.isSupportedFeature(f);
     }
 
     @Override
-    public boolean enableCloudFwUpgrade(Node node, CloutIotClient mqttConnection,
-                                        FwUpgradeAvailableCallback callback) {
+    public boolean enableCloudFwUpgrade(@NonNull Node node, @NonNull CloutIotClient mqttConnection,
+                                        @NonNull FwUpgradeAvailableCallback callback) {
         return false;
     }
 

@@ -118,15 +118,15 @@ public class FFTDataViewModel extends ViewModel {
         mFftData.removeObserver(mUpdateMaxValues);
     }
 
-    public LiveData<List<float[]>> getFftData(){
+    LiveData<List<float[]>> getFftData(){
         return mFftData;
     }
 
-    public LiveData<Byte> getLoadingStatus(){
+    LiveData<Byte> getLoadingStatus(){
         return mLoadingStatus;
     }
 
-    public LiveData<Float> getFrequencyStep(){
+    LiveData<Float> getFrequencyStep(){
         return mFrequencyStep;
     }
 

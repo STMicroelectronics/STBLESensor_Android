@@ -47,21 +47,45 @@ import com.st.BlueSTSDK.Node
 
 class AudioSceneViewModel : ViewModel(){
 
-    private var listener = Feature.FeatureListener { _, sample ->
-        val scene = FeatureAudioClassification.getAudioClass(sample)
-        _currentState.postValue(scene)
-
+    private fun showDefaultAudioClassificationStatus(scene:AudioClass){
+        _currentImageId.postValue(scene.imageResource)
+        _currentDescriptionStrId.postValue(scene.stringResource)
         if(scene != AudioClass.UNKNOWN){
             _viewIsVisible.postValue(true)
         }
     }
 
-    private val _currentState=MutableLiveData<AudioClass>()
-    val currentState:LiveData<AudioClass>
-        get() = _currentState
+    private fun showBabyCryingAudioClassification(scene: AudioClass){
+        _viewIsVisible.postValue(true)
+        if(scene == AudioClass.BABY_IS_CRYING){
+            _currentImageId.postValue(scene.imageResource)
+            _currentDescriptionStrId.postValue(scene.stringResource)
+        }else{
+            _currentImageId.postValue(R.drawable.audio_scene_babynotcrying)
+            _currentDescriptionStrId.postValue(R.string.audio_baby_not_crying)
+        }
+    }
+
+    private var listener = Feature.FeatureListener { _, sample ->
+        val scene = FeatureAudioClassification.getAudioClass(sample)
+        val algo = FeatureAudioClassification.getAlgorithmType(sample)
+
+        when(algo){
+            1.toShort() -> showBabyCryingAudioClassification(scene)
+            else -> showDefaultAudioClassificationStatus(scene)
+        }
+    }
+
+    private val _currentImageId=MutableLiveData<Int>()
+    val currentImageId:LiveData<Int>
+        get() = _currentImageId
+
+    private val _currentDescriptionStrId=MutableLiveData<Int>()
+    val currentDescriptionStrId:LiveData<Int>
+        get() = _currentDescriptionStrId
 
     private val _viewIsVisible=MutableLiveData<Boolean>()
-    val viewIsVisible:MutableLiveData<Boolean>
+    val viewIsVisible:LiveData<Boolean>
         get() = _viewIsVisible
 
     fun registerListener(node: Node){

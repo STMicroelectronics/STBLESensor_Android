@@ -70,7 +70,8 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
     private ActivityView mMotionARView;
     private ActivityView mGMPView;
     private ActivityView mIGNView;
-    private ActivityView mMLCView;
+    private ActivityView mHAR_MLCView;
+    private ActivityView mAPD_MLCView;
 
     private ActivityView mAllView[];
 
@@ -86,7 +87,9 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
             case 2:
                 return mIGNView;
             case 3:
-                return mMLCView;
+                return mHAR_MLCView;
+            case 4:
+                return mAPD_MLCView;
         }
         return null;
     }
@@ -133,9 +136,10 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
         mMotionARView = root.findViewById(R.id.activity_view_motionAR);
         mGMPView = root.findViewById(R.id.activity_view_GMP);
         mIGNView = root.findViewById(R.id.activity_view_IGN);
-        mMLCView = root.findViewById(R.id.activity_view_MLC);
+        mHAR_MLCView = root.findViewById(R.id.activity_view_HAR_MLC);
+        mAPD_MLCView = root.findViewById(R.id.activity_view_APD_MLC);
 
-        mAllView = new ActivityView[]{mMotionARView,mGMPView,mIGNView,mMLCView};
+        mAllView = new ActivityView[]{mMotionARView,mGMPView,mIGNView,mHAR_MLCView,mAPD_MLCView};
 
         if (savedInstanceState != null &&
                 savedInstanceState.containsKey(CURRENT_ALGORITHM)&&

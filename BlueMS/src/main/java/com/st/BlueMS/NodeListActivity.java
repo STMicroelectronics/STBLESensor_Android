@@ -37,12 +37,14 @@
 
 package com.st.BlueMS;
 
+
 import androidx.annotation.NonNull;
 
 import com.st.BlueNRG.fwUpgrade.BlueNRGAdvertiseFilter;
 import com.st.BlueNRG.fwUpgrade.feature.BlueNRGOTASupport;
 import com.st.BlueSTSDK.Features.standardCharacteristics.StdCharToFeatureMap;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.Utils.BLENodeDefines;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.Utils.advertise.AdvertiseFilter;
 import com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity;
@@ -84,6 +86,8 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
         }
 
         ConnectionOption options = optionsBuilder.build();
+
+        n.enableNodeServer(BLENodeDefines.FeatureCharacteristics.getDefaultExportedFeature());
 
         if(n.getAdvertiseInfo() instanceof BlueNRGAdvertiseFilter.BlueNRGAdvertiseInfo)
             startActivity(FwUpgradeActivity.getStartIntent(this, n,false,options));

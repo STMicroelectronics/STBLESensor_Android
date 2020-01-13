@@ -57,5 +57,9 @@
         <item>40 Hz</item>
         <item>25 Hz</item>
     </string-array>
+    <string-array name="fileformat">
+        <item>MatLab file format</item>
+        <item>Heel2toe file format</item>
+    </string-array>
 
 </resources>

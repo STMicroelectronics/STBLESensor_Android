@@ -62,6 +62,43 @@ public class FileProcess  {
         }
     }
 
+    public List<String[]> readAndroidFileFormat(InputStream is) {
+        List<String[]> rows = new ArrayList<>();
+        try {
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            String csvSplitBy = ",";
+
+            br.readLine();
+
+            boolean header = true;
+            while ((line = br.readLine()) != null && header) {
+                String[] row = line.split(csvSplitBy);
+                for (String s : row) {
+                    if (s.trim().compareTo("AccelerometerZ_ms2") == 0) {
+                        header = false;
+                    }
+                }
+            }
+            br.readLine();
+
+            if (header) {
+                return null;
+            }
+
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(csvSplitBy);
+                rows.add(row);
+            }
+            return rows;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public boolean writeResults(String results, OutputStream outputStream, List<String[]> inertialMeasurements) {
         try {
             BufferedWriter rawData = new BufferedWriter(new OutputStreamWriter(outputStream));

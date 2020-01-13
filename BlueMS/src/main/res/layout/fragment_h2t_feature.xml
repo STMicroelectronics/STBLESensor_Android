@@ -57,13 +57,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.6" >
+
+        <TextView
+            android:id="@+id/thresholdLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".20"
+            android:text="Threshold:"
+            tools:text="Threshold:" />
         <TextView
             android:id="@+id/thresholdVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight=".10"
             android:text="TextView"
-            android:layout_weight=".30"
-            tools:text="threshold default = -109" />
+            tools:text="-109" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +92,7 @@
         android:id="@+id/thresholdBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="150" />
+        android:max="3000" />
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -136,17 +144,29 @@
         android:layout_height="wrap_content"
         android:weightSum="0.8" >
         <TextView
-            android:id="@+id/maxtime"
-            android:layout_width="fill_parent"
+            android:id="@+id/maxtimeLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Max Time:0"
-            android:layout_weight=".40"/>
+            android:text="Max Time:"
+            android:layout_weight=".20"/>
+        <TextView
+            android:id="@+id/maxtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:layout_weight=".20"/>
+        <TextView
+            android:id="@+id/counttimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="StopWatch:"
+            android:layout_weight=".20"/>
         <TextView
             android:id="@+id/counttime"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="StopWatch: 0"
-            android:layout_weight=".40"/>
+            android:text="0"
+            android:layout_weight=".20"/>
     </LinearLayout>
 
     <SeekBar
@@ -159,13 +179,13 @@
         android:id="@+id/accelData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="live acceleration data" />
+        android:text="" />
 
     <TextView
         android:id="@+id/gyroData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="live Gyroscope data" />
+        android:text="" />
 
 
     <TextView

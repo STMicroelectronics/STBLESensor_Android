@@ -37,13 +37,14 @@
 
 package com.st.BlueMS.physiobiometrics;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,10 +59,7 @@ import com.st.BlueMS.R;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,11 +67,20 @@ import java.util.List;
  */
 public class OfflineTestActivity extends AppCompatActivity {
 
+    private static final int matlabFormat = 0;
+    private static final int androidFormat = 1;
+    private static final int X = 0;
+    private static final int Y = 1;
+    private static final int Z = 2;
+    private static final int WRITE_REQUEST_CODE = 101;
+    private static final int SDCARD_PERMISSION = 1,
+            FOLDER_PICKER_CODE = 2,
+            FILE_PICKER_CODE = 3;
+    protected SeekBar mThreshold;
+    ToneGenerator toneGen1;
     //private Context thiscontext;
     private ContentResolver contentResolver;
-
     private TextView mH2tstatus;
-
     // UI management
     private RadioButton mBeepChecked;
     private boolean isBeepChecked;
@@ -81,11 +88,12 @@ public class OfflineTestActivity extends AppCompatActivity {
     private boolean isCaptureToFileChecked;
     private RadioButton mSimulateChecked;
     private boolean isSimulateChecked;
-    protected SeekBar mThreshold;
     private TextView mThresholdVal;
     private double goodStepThreshold;
     private Button processFileButton;
-
+    private Spinner spinnerFileFormat;
+    private int fileformat;
+    private TextView mFolderLocation;
     /***************
      * inertial measurement XYZ orientation is dependent on the Hardware chip orientation
      * when laid flat:
@@ -98,30 +106,16 @@ public class OfflineTestActivity extends AppCompatActivity {
     private Spinner spinnerX;
     private Spinner spinnerY;
     private Spinner spinnerZ;
-    private static final int X = 0;
-    private static final int Y = 1;
-    private static final int Z = 2;
     private int Xcoord = X;
     private int Ycoord = Y;
     private int Zcoord = Z;
-
     private int frequency;
     private Spinner spinnerFrequency;
-
     private OutputStream outputStream;
     private boolean captureReady;
     private String dataFilename;
-
-    private static final int WRITE_REQUEST_CODE = 101;
-
-    private static final int SDCARD_PERMISSION = 1,
-            FOLDER_PICKER_CODE = 2,
-            FILE_PICKER_CODE = 3;
-
     private TextView folder;
     private boolean folderIsSet;
-
-    ToneGenerator toneGen1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,19 +123,24 @@ public class OfflineTestActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_h2tfile_feature);
 
         mH2tstatus = findViewById(R.id.h2tstatus);
-        mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
+        mH2tstatus.setText("Ready for Walk-Well file analysis. Select the proper file format and then chosee a file (Process File) ");
 
         mBeepChecked = (RadioButton) findViewById(R.id.beepGoodStep);
         isBeepChecked = false;
         mBeepChecked.setOnClickListener(new BeepCheckedListener());
 
-        mCaptureToFileChecked = (RadioButton) findViewById(R.id.captureToFile);
+/*        mCaptureToFileChecked = (RadioButton) findViewById(R.id.captureToFile);
         isCaptureToFileChecked = false;
-        mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());
+        mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());*/
 
         mSimulateChecked = (RadioButton) findViewById(R.id.simulate);
         isSimulateChecked = false;
         mSimulateChecked.setOnClickListener(new SimulateCheckedListener());
+
+        spinnerFileFormat  = (Spinner) findViewById(R.id.fileformat);
+        spinnerFileFormat.setSelection(matlabFormat);
+        spinnerFileFormat.setOnItemSelectedListener(new SpinnerFileFormatListener());
+        fileformat = matlabFormat;
 
         spinnerX  = (Spinner) findViewById(R.id.spinnerX);
         spinnerX.setSelection(X);
@@ -165,138 +164,19 @@ public class OfflineTestActivity extends AppCompatActivity {
         mThreshold.setProgress((int) -goodStepThreshold);
         mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
 
+        mFolderLocation = findViewById(R.id.folderLocation);
+        dataFilename = "unknown format";
+        mFolderLocation.setText("choose a file to process (matlab or Heel2Toe) ...");
+        folderIsSet = false;
+
         processFileButton = findViewById(R.id.processfileButton);
         processFileButton.setOnClickListener(new ProcessFileListener());
-
-        folder = findViewById(R.id.folderLocation);
-        folder.setText("set folder location for capture");
-        folderIsSet = false;
 
         //this.thiscontext = container.getContext();
         this.contentResolver = getContentResolver();
         captureReady = false;
         outputStream = null;
     }
-
-    private class SpinnerXListener implements Spinner.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            Xcoord = position;
-        }
-        public void onNothingSelected(AdapterView<?> parentView) {
-        }
-    }
-    private class SpinnerYListener implements Spinner.OnItemSelectedListener {
-
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            Ycoord = position;
-        }
-        public void onNothingSelected(AdapterView<?> parentView) {
-        }
-    }
-    private class SpinnerZListener implements Spinner.OnItemSelectedListener {
-
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            Zcoord = position;
-        }
-        public void onNothingSelected(AdapterView<?> parentView) {
-        }
-    }
-    private class SpinnerFrequencyListener implements Spinner.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            int[] freqs = {50,40,25};
-            frequency = freqs[position];
-        }
-        public void onNothingSelected(AdapterView<?> parentView) {
-        }
-    }
-
-    private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
-
-        public void onProgressChanged(SeekBar seekBar, int progress,
-                                      boolean fromUser) {
-            goodStepThreshold = -progress;
-            mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
-        }
-        public void onStartTrackingTouch(SeekBar seekBar) {}
-        public void onStopTrackingTouch(SeekBar seekBar) {}
-    }
-    private class BeepCheckedListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (isBeepChecked) {
-                mBeepChecked.setChecked(false);
-                isBeepChecked = false;
-            } else {
-                mBeepChecked.setChecked(true);
-                isBeepChecked = true;
-                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
-            }
-        }
-    }
-
-    private class SimulateCheckedListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (isSimulateChecked) {
-                mSimulateChecked.setChecked(false);
-                isSimulateChecked = false;
-                mH2tstatus.setText("simulation cleared. we will process as fast as possible");
-            } else {
-                mSimulateChecked.setChecked(true);
-                isSimulateChecked = true;
-                mBeepChecked.setChecked(true);
-                isBeepChecked = true;
-                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
-                mH2tstatus.setText("warning! simulation takes a long time! 20 millisecond pause between each sample to simulate live data capture ");
-            }
-        }
-    }
-
-    private class CaptureCheckedListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (isCaptureToFileChecked) {
-                closeCaptureStream();
-            } else {
-                mCaptureToFileChecked.setChecked(true);
-                isCaptureToFileChecked = true;
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                // filter to only show openable items.
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                // Create a file with the requested Mime type
-                intent.setType("text/csv");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-                Date today = Calendar.getInstance().getTime();
-                dataFilename = dateFormat.format(today)+".csv";
-                intent.putExtra(Intent.EXTRA_TITLE, dataFilename);
-                startActivityForResult(intent, WRITE_REQUEST_CODE);
-            }
-        }
-    }
-
-    private class ProcessFileListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("text/csv");
-            intent = Intent.createChooser(intent, "Choose a file");
-            startActivityForResult(intent, 1);
-        }
-    }
-
-    /*
-    private class FolderListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-            startActivityForResult(intent, FOLDER_PICKER_CODE);
-        }
-    } */
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
@@ -305,23 +185,6 @@ public class OfflineTestActivity extends AppCompatActivity {
         if (intent != null && intent.getData() != null) {
             csvFile =  intent.getData().getPath();
         }
-    }
-
-    private  void closeCaptureStream() {
-        if (captureReady) {
-            try {
-                if (outputStream != null) {
-                    outputStream.close();
-                    outputStream = null;
-                }
-
-            } catch (IOException e) {
-                mH2tstatus.setText("Error closing output stream");
-            }
-        }
-        captureReady = false;
-        mCaptureToFileChecked.setChecked(false);
-        isCaptureToFileChecked = false;
     }
 
     @Override
@@ -354,6 +217,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         double GyroscopeZ_ds = 0;
         StepResults stepResults = new StepResults();
         FileProcess fileProcess = new FileProcess();
+        String errorMsg = "";
 
         int WRITE_REQUEST_CODE = 101;
 
@@ -361,6 +225,7 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         if (intent != null && intent.getData() != null) {
             Uri content_describer = intent.getData();
+            /*
             if (requestCode == FOLDER_PICKER_CODE) {
                 if (resultCode == Activity.RESULT_OK) {
                     // String folderLocation = "Selected Folder: "+ intent.getExtras().getString("data");
@@ -387,14 +252,33 @@ public class OfflineTestActivity extends AppCompatActivity {
                         break;
                 }
             } else {
-                try {
-                    InputStream inputStream = this.contentResolver.openInputStream(content_describer);
+
+             */
+            try {
+                InputStream inputStream = this.contentResolver.openInputStream(content_describer);
+                dataFilename = queryName(this.contentResolver, content_describer);
+                if (fileformat == matlabFormat) {
                     inertialMeasurements = fileProcess.readCSV(inputStream);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    // print an error message
-                    return;
+                    if (inertialMeasurements.isEmpty()) {
+                        errorMsg = "Error. Input file is not shimmer matlab format";
+                    }
+                } else if (fileformat == androidFormat) {
+                    inertialMeasurements = fileProcess.readAndroidFileFormat(inputStream);
+                    if (inertialMeasurements.isEmpty()) {
+                        errorMsg = "Error. Input file was not produced by this app";
+                    }
+                } else {
+                    inertialMeasurements = null;
+                    errorMsg = "Error. unknown inut file format";
                 }
+            } catch (IOException e) {
+                inertialMeasurements = null;
+                errorMsg = "Error processing input file";
+                e.printStackTrace();
+                // print an error message
+                return;
+            }
+            if (!inertialMeasurements.isEmpty()) {
                 for (String[] sArray : inertialMeasurements) {
                     ms = sample * 20;
                     boolean numeric = true;
@@ -438,9 +322,7 @@ public class OfflineTestActivity extends AppCompatActivity {
 
                 String results = stepDetect.stepResults(allStepResults, goodstepResults, badstepResults, sample, 50);
 
-                results = dataFilename
-                        + System.getProperty("line.separator") +
-                        "Sampling frequency: "+ frequency + " Hertz" +
+                results = "Sampling frequency: " + frequency + " Hertz" +
                         System.getProperty("line.separator") +
                         "Gyroscope XYZ X: " + xyz[Xcoord] + " Y: " + xyz[Ycoord] + " Z: " + xyz[Zcoord] +
                         System.getProperty("line.separator") +
@@ -448,13 +330,182 @@ public class OfflineTestActivity extends AppCompatActivity {
                         System.getProperty("line.separator") +
                         results;
                 mH2tstatus.setText(results);
-                if (captureReady) {
-                    if (!fileProcess.writeResults(results, outputStream, inertialMeasurements)) {
-                        mH2tstatus.setText(results + System.getProperty("line.separator") + "ERROR WRITING FILE");
-                    }
-                    closeCaptureStream();
-                }
+/*                    if (captureReady) {
+                        if (!fileProcess.writeResults(results, outputStream, inertialMeasurements)) {
+                            mH2tstatus.setText(results + System.getProperty("line.separator") + "ERROR WRITING FILE");
+                        }
+                        closeCaptureStream();
+                    }*/
+            } else {
+                mH2tstatus.setText(errorMsg);
             }
+            mFolderLocation.setText(dataFilename);
+        }
+    }
+
+    private class SpinnerXListener implements Spinner.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Xcoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+
+    private class SpinnerYListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Ycoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+
+    private class SpinnerZListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            Zcoord = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+
+    private class SpinnerFrequencyListener implements Spinner.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            int[] freqs = {50,40,25};
+            frequency = freqs[position];
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+
+    private class SpinnerFileFormatListener implements Spinner.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            fileformat = position;
+        }
+        public void onNothingSelected(AdapterView<?> parentView) {
+        }
+    }
+
+    private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                                      boolean fromUser) {
+            goodStepThreshold = -progress;
+            mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
+        }
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+    }
+
+    /*
+    private class CaptureCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isCaptureToFileChecked) {
+                closeCaptureStream();
+            } else {
+                mCaptureToFileChecked.setChecked(true);
+                isCaptureToFileChecked = true;
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                // filter to only show openable items.
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                // Create a file with the requested Mime type
+                intent.setType("text/csv");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                Date today = Calendar.getInstance().getTime();
+                dataFilename = dateFormat.format(today)+".csv";
+                intent.putExtra(Intent.EXTRA_TITLE, dataFilename);
+                startActivityForResult(intent, WRITE_REQUEST_CODE);
+            }
+        }
+    }
+
+     */
+
+    private class BeepCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isBeepChecked) {
+                mBeepChecked.setChecked(false);
+                isBeepChecked = false;
+            } else {
+                mBeepChecked.setChecked(true);
+                isBeepChecked = true;
+                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+            }
+        }
+    }
+
+    /*
+    private class FolderListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+            startActivityForResult(intent, FOLDER_PICKER_CODE);
+        }
+    } */
+
+    private class SimulateCheckedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isSimulateChecked) {
+                mSimulateChecked.setChecked(false);
+                isSimulateChecked = false;
+                mH2tstatus.setText("simulation cleared. we will process as fast as possible");
+            } else {
+                mSimulateChecked.setChecked(true);
+                isSimulateChecked = true;
+                mBeepChecked.setChecked(true);
+                isBeepChecked = true;
+                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+                mH2tstatus.setText("warning! simulation takes a long time! 20 millisecond pause between each sample to simulate live data capture ");
+            }
+        }
+    }
+
+    /*
+    private  void closeCaptureStream() {
+        if (captureReady) {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                    outputStream = null;
+                }
+
+            } catch (IOException e) {
+                mH2tstatus.setText("Error closing output stream");
+            }
+        }
+        captureReady = false;
+        mCaptureToFileChecked.setChecked(false);
+        isCaptureToFileChecked = false;
+    }
+    */
+
+    private String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
+    }
+
+    private class ProcessFileListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/csv");
+            intent = Intent.createChooser(intent, "Choose a file");
+            startActivityForResult(intent, 1);
         }
     }
 }

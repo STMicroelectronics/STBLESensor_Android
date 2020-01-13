@@ -21,7 +21,12 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +67,9 @@ import java.util.TimerTask;
                 FeatureMagnetometer.class,
         })
 public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener {
+
+    private double accel_fullscale = 0.000244;  // 8gs = 0.244 mg/LSB
+    private double gyro_fullscale = 0.35;   // 1000 dps = 35 mdps/LSB (but already divided by 1o in gyro feature)
 
     private Context thiscontext;
     private ContentResolver contentResolver;
@@ -130,6 +138,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private long samplingFrequency;
     private int SAMPLES_TO_DETECT_FREQUENCY = 10;
     private long samplingFirstTimestamp;
+    private int DEFAULT_THRESHOLD = -109;
 
 
     // step detection
@@ -156,6 +165,18 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private boolean folderIsSet;
 
     ToneGenerator toneGen1;
+
+    Handler handler = new Handler(Looper.getMainLooper()) {
+        /*
+         * handleMessage() defines the operations to perform when
+         * the Handler receives a new Message to process.
+         */
+        @Override
+        public void handleMessage(Message inputMessage) {
+            // Gets the image task from the incoming Message object.
+            mH2tstatus.setText("Looper message ");
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -203,9 +224,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mFrequency.setText("50 Hz");
         samplingFrequency = 50; // default
 
-        goodStepThreshold = -109; // default value from matlab
+        goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
         mThresholdVal = root.findViewById(R.id.thresholdVal);
         mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
+        //mThresholdVal.addTextChangedListener(new ThresholdWatcher());
+
         mThreshold = (SeekBar) root.findViewById(R.id.thresholdBar);
         mThreshold.setProgress(-goodStepThreshold);
         mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
@@ -214,6 +237,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mCcounttime.setText("0");
         mMaxtime = root.findViewById(R.id.maxtime);
         mMaxtime.setText("Max: " + String.valueOf(maxSessionSeconds) + " s");
+        //mMaxtime.addTextChangedListener(new MaxTimeWatcher());
+
         mMaxTimeBar = (SeekBar) root.findViewById(R.id.MaxTimeBar);
         mMaxTimeBar.setProgress(maxSessionSeconds);
         mMaxTimeBar.setOnSeekBarChangeListener(new MaxTimeListener());
@@ -276,12 +301,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             double Zval = 0;
             if (mIsLiveSession) {
                 try {
-                    Xval = sample.data[Xcoord].doubleValue();
-                    Yval = sample.data[Ycoord].doubleValue();
-                    Zval = sample.data[Zcoord].doubleValue();
+                    Xval = sample.data[Xcoord].doubleValue()* gyro_fullscale;
+                    Yval = sample.data[Ycoord].doubleValue()* gyro_fullscale;
+                    Zval = sample.data[Zcoord].doubleValue()* gyro_fullscale;
                 } catch (Exception e) {
                     mIsLiveSession = false;
-                    mH2tstatus.setText("Error reading sample data. Session stopped");
+                    mH2tstatus.setText("Error reading sample data. Session stopped. error = "+ e.toString());
                     e.printStackTrace();
                 }
                 gyroSampleCounter++;
@@ -316,16 +341,17 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         e.printStackTrace();
                     }
                 }
-
-                updateGui(() -> {
-                    try {
-                        mGyroData.setText(sample.data[2].toString());
-                    } catch (NullPointerException e) {
-                        //this exception can happen when the task is run after the fragment is
-                        // destroyed
-                        e.printStackTrace();
-                    }
-                });
+                if (gyroSampleCounter % 10 == 0)  {
+                    updateGui(() -> {
+                        try {
+                            mGyroData.setText(sample.data[2].toString());
+                        } catch (NullPointerException e) {
+                            //this exception can happen when the task is run after the fragment is
+                            // destroyed
+                            e.printStackTrace();
+                        }
+                    });
+                }
             }
 
         }//onUpdate
@@ -345,12 +371,22 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
              * @exception Exception TODO H2TaccelListener onUpdate error. 
              * @see IOException
              */
+            double Xval = 0;
+            double Yval = 0;
+            double Zval = 0;
             if (mIsLiveSession) {
-                double Xval = sample.data[Xcoord].doubleValue();
-                double Yval = sample.data[Ycoord].doubleValue();
-                double Zval = sample.data[Zcoord].doubleValue();
-                accelSample.add(new InertialMeasurement(++accelSampleCounter, sample.timestamp, Xval, Yval, Zval));
-                final String dataString = f.toString();
+                try {
+                    Xval = sample.data[Xcoord].doubleValue()* accel_fullscale;
+                    Yval = sample.data[Ycoord].doubleValue()* accel_fullscale;
+                    Zval = sample.data[Zcoord].doubleValue()* accel_fullscale;
+                    accelSample.add(new InertialMeasurement(++accelSampleCounter, sample.timestamp, Xval, Yval, Zval));
+                    //final String dataString = f.toString();
+                } catch (Exception e) {
+                    mIsLiveSession = false;
+                    mH2tstatus.setText("Error reading sample data. Session stopped. error = "+ e.toString());
+                    e.printStackTrace();
+                }
+                /*
                 updateGui(() -> {
                     try {
                         mAccelData.setText(dataString);
@@ -359,10 +395,61 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         // destroyed
                     }
                 });
+                */
             }
         }//onUpdate
     }
 
+    private class ThresholdWatcher implements TextWatcher {
+        int value;
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            try {
+                value = Integer.parseInt(s.toString());
+                if (value < 0) {
+                    value = -value;
+                    mH2tstatus.setText("warning. threshold is always negative");
+                }
+                mThresholdVal.setText(String.valueOf(value));
+                mThreshold.setProgress(value);
+            } catch (NumberFormatException e) {
+                mH2tstatus.setText("Error. Threshold must be a number");
+                mThreshold.setProgress(DEFAULT_THRESHOLD);
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
+
+    private class MaxTimeWatcher implements TextWatcher {
+        int value;
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            try {
+                value = Integer.parseInt(s.toString());
+                if (value < 0) {
+                    value = -value;
+                    mH2tstatus.setText("warning. max time is always positive");
+                }
+                mMaxtime.setText(String.valueOf(value));
+                mMaxTimeBar.setProgress(value);
+            } catch (NumberFormatException e) {
+                mH2tstatus.setText("Error. max time must be a number");
+                mMaxtime.setText(String.valueOf(maxSessionSeconds));
+                mMaxTimeBar.setProgress(maxSessionSeconds);
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
     private class SpinnerXListener implements Spinner.OnItemSelectedListener {
         /**
          * This class listens for X coordinate spinner changes
@@ -410,7 +497,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         public void onProgressChanged(SeekBar seekBar, int progress,
                                       boolean fromUser) {
             goodStepThreshold = -progress;
-            mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
+             mThresholdVal.setText(String.valueOf(goodStepThreshold));
         }
 
         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -517,7 +604,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }
         }
         captureReady = false;
-        mCaptureToFileChecked.setChecked(false);
+        //mCaptureToFileChecked.setChecked(false);
         isCaptureToFileChecked = false;
     }
 
@@ -567,6 +654,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }//for
         }
         mIsLiveSession = true;
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneGen1.startTone(ToneGenerator.TONE_DTMF_6, 500);
         mH2tstatus.setText("Step Detection in Progress");
 
         timer = new Timer();
@@ -593,6 +682,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
          * stop Heel2toe processing  for feature data and enable the feature
          */
         mIsLiveSession = false;
+        counter = 0;
+        countdown.cancel();
+        //mCcounttime.setText("0"); todo move to main thread
+
         //mFrequency.setText(samplingFrequency + " Hz");
         Node node = getNode();
         if (node == null)
@@ -632,6 +725,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }
         }
         closeCaptureStream();
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneGen1.startTone(ToneGenerator.TONE_DTMF_1, 200);
+        toneGen1.startTone(ToneGenerator.TONE_DTMF_2, 200);
+        toneGen1.startTone(ToneGenerator.TONE_DTMF_3, 200);
+        //mCaptureToFileChecked.setChecked(false);
     }
 
     private void setButtonStopStatus() {

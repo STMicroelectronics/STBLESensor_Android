@@ -42,6 +42,7 @@ import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
+import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 import com.st.BlueSTSDK.Features.FeatureGyroscope;
 import com.st.BlueSTSDK.Features.FeatureMagnetometer;
 import com.st.BlueSTSDK.Node;
@@ -66,7 +67,8 @@ import java.util.TimerTask;
                 FeatureGyroscope.class,
                 FeatureMagnetometer.class,
         })
-public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener {
+public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener,
+        FeatureAutoConfigurable.FeatureAutoConfigurationListener{
 
     private double accel_fullscale = 0.000244;  // 8gs = 0.244 mg/LSB
     private double gyro_fullscale = 0.35;   // 1000 dps = 35 mdps/LSB (but already divided by 1o in gyro feature)
@@ -84,7 +86,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private TextView mH2tstatus;
 
     // timers fo rH2t session
-    private Timer timer;
+    //private Timer timer;
+    private Reminder reminder;
     private CountDownTimer countdown;
     protected int maxSessionSeconds = 10;
     private int counter;
@@ -140,6 +143,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private long samplingFirstTimestamp;
     private int DEFAULT_THRESHOLD = -109;
 
+
+    private FeatureAutoConfigurable mFeature;
 
     // step detection
     private StepDetect stepDetect;
@@ -258,18 +263,55 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         return root;
     }
 
-    public class RemindTask extends TimerTask {
-        /**
-         * This class is used to start and stop a timer for the maximum length of a
-         * walking measurement session
-         * ToDo play a new sound when timed out
-         */
-        public void run() {
-            mH2tstatus.setText("Timeout. Processing data");
-            timer.cancel(); //Terminate the timer thread
-            mIsLiveSession = false;
-            stopH2tFeature();
-            setButtonStartStatus();
+//    public class RemindTask extends TimerTask {
+//        /**
+//         * This class is used to start and stop a timer for the maximum length of a
+//         * walking measurement session
+//         * ToDo play a new sound when timed out
+//         */
+//        public void run() {
+//            mH2tstatus.setText("Timeout. Processing data");
+//            timer.cancel(); //Terminate the timer thread
+//            mIsLiveSession = false;
+//            stopH2tFeature();
+//            setButtonStartStatus();
+//            getResults();
+//            folder.setText("");
+//            //h2tSummary();
+//            mCaptureToFileChecked.setChecked(false);
+//
+//        }
+//    }
+
+
+    public class Reminder {
+        Timer timer;
+        RemindTask remindTask;
+
+        public Reminder(int seconds) {
+            timer = new Timer();
+            remindTask = new RemindTask();
+            timer.schedule(remindTask, seconds * 1000);
+        }
+        public void cancel() {
+            remindTask.cancel();
+            timer.cancel();
+            mH2tstatus.setText("Cancelled. Processing data");
+        }
+
+        class RemindTask extends TimerTask {
+            public void run() {
+                System.out.println("Time's up!");
+                mH2tstatus.setText("Timeout. Processing data");
+                timer.cancel(); //Terminate the timer thread
+                mIsLiveSession = false;
+                stopH2tFeature();
+                setButtonStartStatus();
+                getResults();
+                folder.setText("");
+                //h2tSummary();
+                mCaptureToFileChecked.setChecked(false);
+            }
         }
     }
 
@@ -578,9 +620,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         @Override
         public void onClick(View v) {
             if (mIsLiveSession) {
-                stopH2tFeature();
-                setButtonStartStatus();
-                h2tSummary();
+                countdown.cancel();
+                mCcounttime.setText("Stopped");
+                onH2tFinished("Stopped. Processing steps");
             } else {
                 startH2tFeature(); // TED
                 setButtonStopStatus();
@@ -615,6 +657,18 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     public void onDestroyView() {
         mStartPlotButton = null;
         super.onDestroyView();
+    }
+
+    private void onH2tFinished(String status) {
+        System.out.println("Time's up! "+ status);
+        counter = 0;
+        mH2tstatus.setText("status");
+        mIsLiveSession = false;
+        stopH2tFeature();
+        setButtonStartStatus();
+        getResults();
+        folder.setText("");
+        mCaptureToFileChecked.setChecked(false);
     }
 
     public void startH2tFeature() {
@@ -658,9 +712,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         toneGen1.startTone(ToneGenerator.TONE_DTMF_6, 500);
         mH2tstatus.setText("Step Detection in Progress");
 
-        timer = new Timer();
+        //timer = new Timer();
         int maxSessionMilliSeconds = maxSessionSeconds * 1000;
-        timer.schedule(new RemindTask(), maxSessionMilliSeconds);
+        //reminder = new Reminder(maxSessionMilliSeconds);
+        //timer.schedule(new RemindTask(), maxSessionMilliSeconds);
 
         countdown = new CountDownTimer(maxSessionMilliSeconds, 1000) {
             @Override
@@ -673,6 +728,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             public void onFinish() {
                 counter = 0;
                 mCcounttime.setText("Finished");
+                onH2tFinished("Timeout. Processing steps");
             }
         }.start();
     }
@@ -681,11 +737,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         /**
          * stop Heel2toe processing  for feature data and enable the feature
          */
-        mIsLiveSession = false;
-        counter = 0;
-        countdown.cancel();
-        //mCcounttime.setText("0"); todo move to main thread
-
         //mFrequency.setText(samplingFrequency + " Hz");
         Node node = getNode();
         if (node == null)
@@ -704,6 +755,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 node.disableNotification(f);
             }//for
         }
+    }
+
+    public void getResults() {
         String[] xyz = {"X", "Y", "Z"};
         String results = stepDetect.stepResults(allStepResults, goodstepResults, badstepResults,
                 deviceSampleCounter, (int) samplingFrequency);
@@ -850,6 +904,44 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
-
     }
+
+    ///// FeatureAutoConfigurationListener//////
+
+    /**
+     * move the view in a calibrate state
+     */
+    private void startDataStream(){
+       // if(mFeature!=null)
+       //     mFeature.startAutoConfiguration();
+    }
+
+    /**
+     * move the view in a uncalibrate state
+     */
+    private void stopDataStream(){
+        //if(mFeature!=null)
+        //    mFeature.stopAutoConfiguration();
+    }
+
+    @Override
+    public void onAutoConfigurationStarting(FeatureAutoConfigurable f) {
+        stopDataStream();
+    }
+
+    @Override
+    public void onConfigurationFinished(FeatureAutoConfigurable f, int status) {
+        startDataStream();
+    }
+
+    @Override
+    public void onAutoConfigurationStatusChanged(FeatureAutoConfigurable f, int status) {
+        if(status == 0 ){ // uncalibrated
+            stopDataStream();
+        }else if (status == 100){ //fully calibrated
+            startDataStream();
+        }
+    }
+    @Override
+    public void onUpdate(Feature f, Feature.Sample sample) { }
 }

@@ -257,8 +257,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
         this.thiscontext = container.getContext();
         this.contentResolver = thiscontext.getContentResolver();
-        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
+        toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
 
         return root;
     }
@@ -373,7 +373,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         allStepResults.add(stepResults);
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
-                                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+                                toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
                             }
                             goodstepResults.add(stepResults);
                         } else if (stepResults.badstep) {
@@ -579,8 +579,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             } else {
                 mBeepChecked.setChecked(true);
                 isBeepChecked = true;
-                toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+                toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
             }
         }
     }

@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
@@ -70,6 +71,8 @@ import java.util.TimerTask;
 public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClickListener,
         FeatureAutoConfigurable.FeatureAutoConfigurationListener{
 
+    private FeatureAutoConfigurable mConfig;
+
     private double accel_fullscale = 0.000244;  // 8gs = 0.244 mg/LSB
     private double gyro_fullscale = 0.35;   // 1000 dps = 35 mdps/LSB (but already divided by 1o in gyro feature)
 
@@ -78,10 +81,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private boolean mIsLiveSession;
     private ImageButton mStartPlotButton;
 
+    private Button m25hz, m50hz, mCalibrate;
+
     /**
      * domain axis label
      */
-    private TextView mAccelData;
+    //private TextView mAccelData;
     private TextView mGyroData;
     private TextView mH2tstatus;
 
@@ -171,6 +176,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     ToneGenerator toneGen1;
 
+    /**
+     * value used for start the configuration procedure
+     */
+    protected final byte FEATURE_SET_HZ_SLOW = 0x2;
+    protected final byte FEATURE_SET_HZ_FAST = 0x5;
+    protected final byte FEATURE_CALIBRATE = 0x1;
+
+
     Handler handler = new Handler(Looper.getMainLooper()) {
         /*
          * handleMessage() defines the operations to perform when
@@ -182,6 +195,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             mH2tstatus.setText("Looper message ");
         }
     };
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -199,10 +213,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mStartPlotButton.setOnClickListener(new ProcessListener());
         mStartPlotButton.setEnabled(false);
 
-        mAccelData = root.findViewById(R.id.accelData);
-        mAccelData.setText("Aceleration data");
+        //mAccelData = root.findViewById(R.id.accelData);
+        //mAccelData.setText("Aceleration data");
         mGyroData = root.findViewById(R.id.gyroData);
-        mGyroData.setText("GyroScope data");
+        mGyroData.setText("");
         Resources res = getResources();
         mH2tstatus = root.findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
@@ -215,6 +229,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         isCaptureToFileChecked = false;
         mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());
 
+        m25hz = (Button) root.findViewById(R.id.H2T25hz);
+        m25hz.setOnClickListener(new H2T25_ButtonListener());
+        m50hz = (Button) root.findViewById(R.id.H2T50Hz);
+        m50hz.setOnClickListener(new H2T50_ButtonListener());
+        mCalibrate = (Button) root.findViewById(R.id.H2Tcalibrate);
+        mCalibrate.setOnClickListener(new H2Tcalibrate_ButtonListener());
+
+        /*
         spinnerX = (Spinner) root.findViewById(R.id.spinnerX);
         spinnerX.setSelection(X);
         spinnerX.setOnItemSelectedListener(new SpinnerXListener());
@@ -224,10 +246,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         spinnerZ = (Spinner) root.findViewById(R.id.spinnerZ);
         spinnerZ.setSelection(Z);
         spinnerZ.setOnItemSelectedListener(new SpinnerZListener());
+        */
 
         mFrequency = root.findViewById(R.id.frequencyVal);
-        mFrequency.setText("50 Hz");
-        samplingFrequency = 50; // default
+        mFrequency.setText("25 Hz");
+        samplingFrequency = 25; // default
 
         goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
         mThresholdVal = root.findViewById(R.id.thresholdVal);
@@ -261,6 +284,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
 
         return root;
+    }
+
+    public void sendH2TCommand(byte command) {
+        byte[] data = {8};
+        Node node = getNode();
+        mH2TgyroFeature = node.getFeatures(FeatureGyroscope.class);
+        Feature f = mH2TgyroFeature.get(0);
+        f.sendCommand( command , data);
     }
 
 //    public class RemindTask extends TimerTask {
@@ -492,6 +523,33 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         public void afterTextChanged(Editable s) {
         }
     };
+
+    private class H2T25_ButtonListener implements Button.OnClickListener {
+            public void onClick(View v) {
+                sendH2TCommand(FEATURE_SET_HZ_SLOW);
+                mH2tstatus.setText("Data collection now 25 samples per second");
+                mFrequency.setText("25 Hz");
+                samplingFrequency = 25; // default
+            }
+    }
+
+    private class H2T50_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            sendH2TCommand(FEATURE_SET_HZ_FAST);
+            mH2tstatus.setText("Data collection now 50 samples per second");
+            mFrequency.setText("50 Hz");
+            samplingFrequency = 50; // default
+        }
+    }
+
+    private class H2Tcalibrate_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            sendH2TCommand(FEATURE_CALIBRATE);
+            mH2tstatus.setText("calibrating... Finished when you hear 3 beeps " +
+                    "from the Heel2toe device");
+        }
+    }
+
     private class SpinnerXListener implements Spinner.OnItemSelectedListener {
         /**
          * This class listens for X coordinate spinner changes
@@ -773,9 +831,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mH2tstatus.setText(results);
         if (captureReady) {
             FileProcess fileProcess = new FileProcess();
-            if (!fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample)) {
-                mH2tstatus.setText(results + System.getProperty("line.separator") + "ERROR WRITING FILE");
-            }
+            FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
+            mH2tstatus.setText(results + System.getProperty("line.separator") + fs.reason);
         }
         closeCaptureStream();
         toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);

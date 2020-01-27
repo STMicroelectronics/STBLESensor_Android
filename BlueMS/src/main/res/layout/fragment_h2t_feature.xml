@@ -32,25 +32,50 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.9" >
-     <RadioButton
-         android:id="@+id/beepGoodStep"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:text="Beep"
-         android:layout_weight=".50"/>
+        <RadioButton
+            android:id="@+id/beepGoodStep"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Beep"
+            android:layout_weight=".50"/>
 
-     <RadioButton
-         android:id="@+id/captureToFile"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:text="Capture"
-         android:layout_weight=".40"/>
+        <RadioButton
+            android:id="@+id/captureToFile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Capture"
+            android:layout_weight=".40"/>
     </LinearLayout>
     <TextView
         android:id="@+id/folderLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
+        <Button
+            android:id="@+id/H2T25hz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25 Hz"
+            android:layout_weight=".30"/>
+        <Button
+            android:id="@+id/H2T50Hz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50 Hz"
+            android:layout_weight=".30"/>
+
+        <Button
+            android:id="@+id/H2Tcalibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="calibrate"
+            android:layout_weight=".30"/>
+    </LinearLayout>
+
     <View style="@style/Divider"/>
 
     <LinearLayout
@@ -93,12 +118,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="3000" />
-    <LinearLayout
+   <!-- <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.9" >
 
-        <!-- Text Label -->
+        &lt;!&ndash; Text Label &ndash;&gt;
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,7 +163,7 @@
             android:entries="@array/XYZ"
             android:layout_weight=".10"
             android:spinnerMode="dropdown" />
-    </LinearLayout>
+    </LinearLayout>-->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -176,22 +201,15 @@
         android:max="180" />
 
     <TextView
-        android:id="@+id/accelData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="" />
-
-    <TextView
         android:id="@+id/gyroData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="" />
 
-
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:text="results" />
 
 </LinearLayout>

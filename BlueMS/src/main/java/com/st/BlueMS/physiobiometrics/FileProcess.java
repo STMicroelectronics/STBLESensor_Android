@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * This is {@link android.app.Activity} for folder creation.
  */
+
 public class FileProcess  {
 
     public List<String[]> readCSV(Context context, String fileName) {
@@ -130,9 +131,10 @@ public class FileProcess  {
         return true;
     }
 
-    public boolean writeResults(String results, OutputStream outputStream, long  sampleCount,
+    public FileStatus writeResults(String results, OutputStream outputStream, long  sampleCount,
                                 List<InertialMeasurement> gyroMeasurements,
                                 List<InertialMeasurement> accelMeasurements) {
+        FileStatus fs = new FileStatus(true,"file write success");
         try {
             BufferedWriter rawData = new BufferedWriter(new OutputStreamWriter(outputStream));
             rawData.write(results);
@@ -143,14 +145,11 @@ public class FileProcess  {
                     "GyroscopeX_ds,GyroscopeY_ds,GyroscopeZ_ds," +
                     "AccelerometerX_ms2, AccelerometerY_ms2, AccelerometerZ_ms2\n");
             rawData.newLine();
-            if (sampleCount != gyroMeasurements.size()) {
-                return false;
-            }
-            if (sampleCount != accelMeasurements.size()) {
-                return false;
-            }
+
             int i = 0;
-            for (InertialMeasurement g : gyroMeasurements) {
+
+            while (i < accelMeasurements.size() && i < gyroMeasurements.size()) {
+                InertialMeasurement g = gyroMeasurements.get(i);
                 InertialMeasurement a = accelMeasurements.get(i++);
                 rawData.write(g.sample+","+g.timestamp + ","+
                         g.x+","+g.y+","+g.z+"," + a.x+","+a.y+","+a.z);
@@ -158,9 +157,10 @@ public class FileProcess  {
             }
             rawData.close();
 
-        }  catch (IOException e) {
-            return false;
+        }  catch (Exception e) {
+            fs.reason = e.getMessage();
+            fs.success = false;
         }
-        return true;
+        return fs;
     }
 }

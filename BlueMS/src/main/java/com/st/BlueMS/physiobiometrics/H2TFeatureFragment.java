@@ -216,7 +216,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         //mAccelData = root.findViewById(R.id.accelData);
         //mAccelData.setText("Aceleration data");
         mGyroData = root.findViewById(R.id.gyroData);
-        mGyroData.setText("");
+        mGyroData.setText(" ");
         Resources res = getResources();
         mH2tstatus = root.findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");

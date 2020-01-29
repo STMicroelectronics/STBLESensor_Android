@@ -16,6 +16,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
@@ -82,6 +83,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private ImageButton mStartPlotButton;
 
     private Button m25hz, m50hz, mCalibrate;
+    private boolean filter;
 
     /**
      * domain axis label
@@ -144,6 +146,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private TextView mFrequency;
     private long samplingFrequency;
+    private int samplingRate;
     private int SAMPLES_TO_DETECT_FREQUENCY = 10;
     private long samplingFirstTimestamp;
     private int DEFAULT_THRESHOLD = -109;
@@ -283,6 +286,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
         toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
 
+        set25HZ();
+        mCalibrate.setBackgroundColor(Color.YELLOW);
+
         return root;
     }
 
@@ -398,9 +404,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     }
                 } else {
                     try {
-                        zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval);
+                        zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval, filter);
 
-                        StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold);
+                        StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,samplingRate);
                         allStepResults.add(stepResults);
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
@@ -524,12 +530,20 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }
     };
 
+    private void set25HZ() {
+        sendH2TCommand(FEATURE_SET_HZ_SLOW);
+        mH2tstatus.setText("Data collection now 25 samples per second");
+        mFrequency.setText("25 Hz");
+        samplingFrequency = 25; // default
+        samplingRate = 40;
+        m25hz.setBackgroundColor(Color.GRAY);
+        m50hz.setBackgroundColor(Color.LTGRAY);
+        filter = false;
+    }
+
     private class H2T25_ButtonListener implements Button.OnClickListener {
             public void onClick(View v) {
-                sendH2TCommand(FEATURE_SET_HZ_SLOW);
-                mH2tstatus.setText("Data collection now 25 samples per second");
-                mFrequency.setText("25 Hz");
-                samplingFrequency = 25; // default
+                set25HZ();
             }
     }
 
@@ -539,6 +553,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             mH2tstatus.setText("Data collection now 50 samples per second");
             mFrequency.setText("50 Hz");
             samplingFrequency = 50; // default
+            samplingRate = 20;
+            m50hz.setBackgroundColor(Color.GRAY);
+            m25hz.setBackgroundColor(Color.LTGRAY);
+            filter = true;
         }
     }
 

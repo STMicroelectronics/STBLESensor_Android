@@ -293,8 +293,8 @@ public class OfflineTestActivity extends AppCompatActivity {
                     if (numeric) {
                         System.out.print("GyroscopeX_ds : " + GyroscopeX_ds + " GyroscopeY_ds : " +
                                 GyroscopeY_ds + " GyroscopeZ_ds : " + GyroscopeZ_ds);
-                        zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds);
-                        stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold);
+                        zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds,true);
+                        stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,20);
                         stepResults.timestamp = ms;
                         allStepResults.add(stepResults);
                         if (stepResults.goodstep) {

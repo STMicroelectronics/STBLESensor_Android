@@ -41,7 +41,16 @@ public class StepDetect {
         zGyroArrayFilt = new double[] {0,0,0,0};
     }
 
-    public double[] filter(double timestamp, double xGyroValue,double yGyroValue, double zGyroValue) {
+    public double[] filter(double timestamp, double xGyroValue,double yGyroValue, double zGyroValue, boolean filter) {
+
+        if (!filter) {
+            zGyroArray = shiftArray(zGyroArray);
+            zGyroArrayFilt = shiftArray(zGyroArrayFilt);
+            zGyroArray[0] = zGyroValue;
+            zGyroArrayFilt[0] = zGyroValue;
+            return zGyroArray;
+        }
+
 
         double[][] gyroArray = {{xGyroValue},{yGyroValue},{zGyroValue}};
 
@@ -66,8 +75,28 @@ public class StepDetect {
         return zGyroArrayFilt;
     }
 
-    public StepResults detectStep(double[] zGyroArrayFilt, double threshold) {
+    public StepResults detectStep(double[] zGyroArrayFilt, double threshold, int sampling_rate) {
         StepResults stepResults = new StepResults();
+        int wait1_set;
+        int wait2_set;
+        double window;
+        switch (sampling_rate) {
+            case 20:
+                wait1_set = 7;
+                wait2_set = 20;
+                window = 0.78;
+                break;
+
+            case 40:
+                wait1_set = 4;
+                wait2_set = 10;
+                window = 0.78;
+                break;
+
+            default:
+                System.out.println("unknown sampling rate" + sampling_rate);
+                return null;
+        }
 
         if (wait1 == 0 && wait2 == 0) {
             if (toggleDetect == false) {
@@ -75,7 +104,7 @@ public class StepDetect {
                         && zGyroArrayFilt[1] > zGyroArrayFilt[0]
                         && zGyroArrayFilt[1] >= divisionThreshold) {
                     toggleDetect = true;
-                    wait1 = 7;
+                    wait1 = wait1_set;
                     phaseTime = latestTimeFreeze;
 
                 }
@@ -84,7 +113,7 @@ public class StepDetect {
                         && zGyroArrayFilt[1] < zGyroArrayFilt[2]
                         && zGyroArrayFilt[1] < zGyroArrayFilt[0]) {
                     toggleDetect = false;
-                    wait2 = 20;
+                    wait2 = wait2_set;
                     if (zGyroArrayFilt[1] < threshold ) { // classBoundary) {
                         toggleDetect = false;
                         stepResults.degreesPerSecond = zGyroArrayFilt[1];
@@ -93,7 +122,7 @@ public class StepDetect {
                         stepResults.degreesPerSecond = zGyroArrayFilt[1];
                         stepResults.badstep = true;
                     }
-                } else if (latestTimeFreeze - phaseTime > 0.78) {
+                } else if (latestTimeFreeze - phaseTime > window) {
                     toggleDetect = false;
                 }
             }

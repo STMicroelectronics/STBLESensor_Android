@@ -352,6 +352,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             double Xval = 0;
             double Yval = 0;
             double Zval = 0;
+            int step = 0;
             if (mIsLiveSession) {
                 try {
                     Xval = sample.data[Xcoord].doubleValue()* gyro_fullscale;
@@ -363,7 +364,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     e.printStackTrace();
                 }
                 gyroSampleCounter++;
-                gyroSample.add(new InertialMeasurement(gyroSampleCounter, sample.timestamp, Xval, Yval, Zval));
                 // first 10 samples used to calculate sampling frequency
                 if (gyroSampleCounter <= SAMPLES_TO_DETECT_FREQUENCY+1) {
                     if (gyroSampleCounter == 1) {
@@ -384,10 +384,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         allStepResults.add(stepResults);
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
+                                step = goodStepThreshold;
                                 soundMgr.playSound(beepSound);
                             }
                             goodstepResults.add(stepResults);
                         } else if (stepResults.badstep) {
+                            step = -goodStepThreshold;
                             badstepResults.add(stepResults);
                         }
                     } catch (Exception e) {
@@ -405,8 +407,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         }
                     });
                 }
+                gyroSample.add(new InertialMeasurement(gyroSampleCounter, sample.timestamp, Xval, Yval, Zval, step));
             }
-
         }//onUpdate
     }
 
@@ -432,7 +434,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     Xval = sample.data[Xcoord].doubleValue()* accel_fullscale;
                     Yval = sample.data[Ycoord].doubleValue()* accel_fullscale;
                     Zval = sample.data[Zcoord].doubleValue()* accel_fullscale;
-                    accelSample.add(new InertialMeasurement(++accelSampleCounter, sample.timestamp, Xval, Yval, Zval));
+                    accelSample.add(new InertialMeasurement(++accelSampleCounter, sample.timestamp, Xval, Yval, Zval,0));
                     //final String dataString = f.toString();
                 } catch (Exception e) {
                     mIsLiveSession = false;

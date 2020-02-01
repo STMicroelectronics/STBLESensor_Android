@@ -143,7 +143,7 @@ public class FileProcess  {
             rawData.write(
                     "sample, timestamp,"+
                     "GyroscopeX_ds,GyroscopeY_ds,GyroscopeZ_ds," +
-                    "AccelerometerX_ms2, AccelerometerY_ms2, AccelerometerZ_ms2\n");
+                    "AccelerometerX_ms2, AccelerometerY_ms2, AccelerometerZ_ms2, step\n");
             rawData.newLine();
 
             int i = 0;
@@ -152,7 +152,7 @@ public class FileProcess  {
                 InertialMeasurement g = gyroMeasurements.get(i);
                 InertialMeasurement a = accelMeasurements.get(i++);
                 rawData.write(g.sample+","+g.timestamp + ","+
-                        g.x+","+g.y+","+g.z+"," + a.x+","+a.y+","+a.z);
+                        g.x+","+g.y+","+g.z+"," + a.x+","+a.y+","+a.z+","+g.step);
                 rawData.newLine();
             }
             rawData.close();

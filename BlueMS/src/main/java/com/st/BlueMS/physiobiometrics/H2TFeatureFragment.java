@@ -24,12 +24,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
@@ -239,18 +236,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         m50hz.setOnClickListener(new H2T50_ButtonListener());
         mCalibrate = (Button) root.findViewById(R.id.H2Tcalibrate);
         mCalibrate.setOnClickListener(new H2Tcalibrate_ButtonListener());
-
-        /*
-        spinnerX = (Spinner) root.findViewById(R.id.spinnerX);
-        spinnerX.setSelection(X);
-        spinnerX.setOnItemSelectedListener(new SpinnerXListener());
-        spinnerY = (Spinner) root.findViewById(R.id.spinnerY);
-        spinnerY.setSelection(Y);
-        spinnerY.setOnItemSelectedListener(new SpinnerYListener());
-        spinnerZ = (Spinner) root.findViewById(R.id.spinnerZ);
-        spinnerZ.setSelection(Z);
-        spinnerZ.setOnItemSelectedListener(new SpinnerZListener());
-        */
 
         mFrequency = root.findViewById(R.id.frequencyVal);
         mFrequency.setText("25 Hz");
@@ -468,56 +453,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }//onUpdate
     }
 
-    private class ThresholdWatcher implements TextWatcher {
-        int value;
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            try {
-                value = Integer.parseInt(s.toString());
-                if (value < 0) {
-                    value = -value;
-                    mH2tstatus.setText("warning. threshold is always negative");
-                }
-                mThresholdVal.setText(String.valueOf(value));
-                mThreshold.setProgress(value);
-            } catch (NumberFormatException e) {
-                mH2tstatus.setText("Error. Threshold must be a number");
-                mThreshold.setProgress(DEFAULT_THRESHOLD);
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
 
-    private class MaxTimeWatcher implements TextWatcher {
-        int value;
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            try {
-                value = Integer.parseInt(s.toString());
-                if (value < 0) {
-                    value = -value;
-                    mH2tstatus.setText("warning. max time is always positive");
-                }
-                mMaxtime.setText(String.valueOf(value));
-                mMaxTimeBar.setProgress(value);
-            } catch (NumberFormatException e) {
-                mH2tstatus.setText("Error. max time must be a number");
-                mMaxtime.setText(String.valueOf(maxSessionSeconds));
-                mMaxTimeBar.setProgress(maxSessionSeconds);
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
 
     private void set25HZ() {
         sendH2TCommand(FEATURE_SET_HZ_SLOW);
@@ -558,45 +494,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             sendH2TCommand(FEATURE_CALIBRATE);
             mH2tstatus.setText("calibrating... Finished when you hear 3 beeps " +
                     "from the Heel2toe device");
-        }
-    }
-
-    private class SpinnerXListener implements Spinner.OnItemSelectedListener {
-        /**
-         * This class listens for X coordinate spinner changes
-         * The orientation of the H2T device is not XYZ standard.
-         * as such, the XYZ is changed.
-         * TODO automatically detect orientation (Z up/down will have most energy. X left, rigth will have least).
-         */
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            Xcoord = position;
-        }
-
-        public void onNothingSelected(AdapterView<?> parentView) {
-        }
-    }
-
-    private class SpinnerYListener implements Spinner.OnItemSelectedListener {
-        /**
-         * This class listens for Y coordinate spinner changes
-         */
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            Ycoord = position;
-        }
-
-        public void onNothingSelected(AdapterView<?> parentView) {
-        }
-    }
-
-    private class SpinnerZListener implements Spinner.OnItemSelectedListener {
-        /**
-         * This class listens for Z coordinate spinner changes
-         */
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            Zcoord = position;
-        }
-
-        public void onNothingSelected(AdapterView<?> parentView) {
         }
     }
 

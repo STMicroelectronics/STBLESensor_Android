@@ -17,8 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -115,6 +113,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private int deviceSampleCounter;
 
+    Sound soundMgr;
+    int beepSound;
+    int startMeasureSound;
+    int stopMeasureSound;
+
     /***************
      * inertial measurement XYZ orientation is dependent on the Hardware chip orientation
      * when laid flat:
@@ -176,8 +179,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private TextView folder;
     private boolean folderIsSet;
-
-    ToneGenerator toneGen1;
 
     /**
      * value used for start the configuration procedure
@@ -283,10 +284,13 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
         this.thiscontext = container.getContext();
         this.contentResolver = thiscontext.getContentResolver();
-        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
-        toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
 
-        set25HZ();
+        Sound soundMgr = new Sound();
+        soundMgr.createNewSoundPool();
+        startMeasureSound = soundMgr.loadSoundID(thiscontext, R.raw.startsoundbeep1);
+        stopMeasureSound = soundMgr.loadSoundID(thiscontext, R.raw.alarmclock1);
+        beepSound = soundMgr.loadSoundID(thiscontext, R.raw.shimmerbeep1);
+        set50HZ();
         mCalibrate.setBackgroundColor(Color.YELLOW);
 
         return root;
@@ -295,31 +299,16 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     public void sendH2TCommand(byte command) {
         byte[] data = {8};
         Node node = getNode();
-        mH2TgyroFeature = node.getFeatures(FeatureGyroscope.class);
-        Feature f = mH2TgyroFeature.get(0);
-        f.sendCommand( command , data);
+        try {
+            mH2TgyroFeature = node.getFeatures(FeatureGyroscope.class);
+            Feature f = mH2TgyroFeature.get(0);
+            f.sendCommand(command, data);
+        } catch (Exception e) {
+            // This will catch any exception, because they are all descended from Exception
+            System.out.println("Bluetooth com error " + e.getMessage());
+            mH2tstatus.setText("Bluetooth com error");
+        }
     }
-
-//    public class RemindTask extends TimerTask {
-//        /**
-//         * This class is used to start and stop a timer for the maximum length of a
-//         * walking measurement session
-//         * ToDo play a new sound when timed out
-//         */
-//        public void run() {
-//            mH2tstatus.setText("Timeout. Processing data");
-//            timer.cancel(); //Terminate the timer thread
-//            mIsLiveSession = false;
-//            stopH2tFeature();
-//            setButtonStartStatus();
-//            getResults();
-//            folder.setText("");
-//            //h2tSummary();
-//            mCaptureToFileChecked.setChecked(false);
-//
-//        }
-//    }
-
 
     public class Reminder {
         Timer timer;
@@ -410,7 +399,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         allStepResults.add(stepResults);
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
-                                toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
+                                soundMgr.playSound(beepSound);
                             }
                             goodstepResults.add(stepResults);
                         } else if (stepResults.badstep) {
@@ -541,6 +530,17 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         filter = false;
     }
 
+    private void set50HZ() {
+        sendH2TCommand(FEATURE_SET_HZ_FAST);
+        mH2tstatus.setText("Data collection now 50 samples per second");
+        mFrequency.setText("50 Hz");
+        samplingFrequency = 50; // default
+        samplingRate = 20;
+        m25hz.setBackgroundColor(Color.LTGRAY);
+        m50hz.setBackgroundColor(Color.GRAY);
+        filter = true;
+    }
+
     private class H2T25_ButtonListener implements Button.OnClickListener {
             public void onClick(View v) {
                 set25HZ();
@@ -549,14 +549,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private class H2T50_ButtonListener implements Button.OnClickListener {
         public void onClick(View v) {
-            sendH2TCommand(FEATURE_SET_HZ_FAST);
-            mH2tstatus.setText("Data collection now 50 samples per second");
-            mFrequency.setText("50 Hz");
-            samplingFrequency = 50; // default
-            samplingRate = 20;
-            m50hz.setBackgroundColor(Color.GRAY);
-            m25hz.setBackgroundColor(Color.LTGRAY);
-            filter = true;
+            set50HZ();
         }
     }
 
@@ -652,10 +645,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             if (isBeepChecked) {
                 mBeepChecked.setChecked(false);
                 isBeepChecked = false;
+                //soundMgr.playSound(seeTheLight);
             } else {
                 mBeepChecked.setChecked(true);
                 isBeepChecked = true;
-                toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 500);
+                soundMgr.playSound(beepSound);
             }
         }
     }
@@ -783,14 +777,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }//for
         }
         mIsLiveSession = true;
-        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-        toneGen1.startTone(ToneGenerator.TONE_DTMF_6, 500);
+        soundMgr.playSound(startMeasureSound);
         mH2tstatus.setText("Step Detection in Progress");
 
-        //timer = new Timer();
         int maxSessionMilliSeconds = maxSessionSeconds * 1000;
-        //reminder = new Reminder(maxSessionMilliSeconds);
-        //timer.schedule(new RemindTask(), maxSessionMilliSeconds);
 
         countdown = new CountDownTimer(maxSessionMilliSeconds, 1000) {
             @Override
@@ -853,10 +843,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             mH2tstatus.setText(results + System.getProperty("line.separator") + fs.reason);
         }
         closeCaptureStream();
-        toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-        toneGen1.startTone(ToneGenerator.TONE_DTMF_1, 200);
-        toneGen1.startTone(ToneGenerator.TONE_DTMF_2, 200);
-        toneGen1.startTone(ToneGenerator.TONE_DTMF_3, 200);
+        soundMgr.playSound(stopMeasureSound);
         //mCaptureToFileChecked.setChecked(false);
     }
 

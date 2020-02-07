@@ -16,6 +16,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +33,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
-import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.st.BlueMS.R;
@@ -108,6 +110,15 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     protected TextView mMaxtime;
     private TextView mCcounttime;
 
+    private Button mSession_testTime;
+    private Button mSession_midTime;
+    private Button mSession_highTime;
+    private Button mSession_lowThreshold;
+    private Button mSession_midThreshold;
+    private Button mSession_highThreshold;
+
+    private TableLayout mResultsTable;
+
     private int deviceSampleCounter;
 
     Sound soundMgr;
@@ -124,9 +135,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
      * the heel2toe is oriented on the side, so X,Y,Z will interchange
      * we will do this manually to start, and detect it later....
      */
-    private Spinner spinnerX;
-    private Spinner spinnerY;
-    private Spinner spinnerZ;
+    //private Spinner spinnerX;
+    //private Spinner spinnerY;
+    //private Spinner spinnerZ;
     private static final int X = 0;
     private static final int Y = 1;
     private static final int Z = 2;
@@ -150,6 +161,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private int SAMPLES_TO_DETECT_FREQUENCY = 10;
     private long samplingFirstTimestamp;
     private int DEFAULT_THRESHOLD = -109;
+    private int MID_THRESHOLD = -200;
+    private int HIGH_THRESHOLD = -250;
 
 
     private FeatureAutoConfigurable mFeature;
@@ -237,32 +250,40 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mCalibrate = (Button) root.findViewById(R.id.H2Tcalibrate);
         mCalibrate.setOnClickListener(new H2Tcalibrate_ButtonListener());
 
-        mFrequency = root.findViewById(R.id.frequencyVal);
-        mFrequency.setText("25 Hz");
-        samplingFrequency = 25; // default
-
-        goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
-        mThresholdVal = root.findViewById(R.id.thresholdVal);
-        mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
+        //goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
+        //mThresholdVal = root.findViewById(R.id.thresholdVal);
+        //mThresholdVal.setText(goodStepThreshold + " d/s");
         //mThresholdVal.addTextChangedListener(new ThresholdWatcher());
 
-        mThreshold = (SeekBar) root.findViewById(R.id.thresholdBar);
-        mThreshold.setProgress(-goodStepThreshold);
-        mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
+        //mThreshold = (SeekBar) root.findViewById(R.id.thresholdBar);
+        //mThreshold.setProgress(-goodStepThreshold);
+        //mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
+
+        mSession_testTime = (Button) root.findViewById(R.id.testTime);
+        mSession_testTime.setOnClickListener(new TestTime_ButtonListener());
+        mSession_midTime = (Button) root.findViewById(R.id.midTime);
+        mSession_midTime.setOnClickListener(new MidTime_ButtonListener());
+        mSession_highTime = (Button) root.findViewById(R.id.highTime);
+        mSession_highTime.setOnClickListener(new HighTime_ButtonListener());
+        setMidTime();
+
+        mSession_lowThreshold = (Button) root.findViewById(R.id.lowThreshold);
+        mSession_lowThreshold.setOnClickListener(new LowThreshold_ButtonListener());
+        mSession_midThreshold = (Button) root.findViewById(R.id.midThreshold);
+        mSession_midThreshold.setOnClickListener(new MidThreshold_ButtonListener());
+        mSession_highThreshold = (Button) root.findViewById(R.id.highThreshold);
+        mSession_highThreshold.setOnClickListener(new HighThreshold_ButtonListener());
+        setLowThreshold();
+
+        mResultsTable = (TableLayout)  root.findViewById(R.id.resulttable);
 
         mCcounttime = root.findViewById(R.id.counttime);
         mCcounttime.setText("0");
-        mMaxtime = root.findViewById(R.id.maxtime);
-        mMaxtime.setText("Max: " + String.valueOf(maxSessionSeconds) + " s");
-        //mMaxtime.addTextChangedListener(new MaxTimeWatcher());
 
-        mMaxTimeBar = (SeekBar) root.findViewById(R.id.MaxTimeBar);
-        mMaxTimeBar.setProgress(maxSessionSeconds);
-        mMaxTimeBar.setOnSeekBarChangeListener(new MaxTimeListener());
-
-        folder = root.findViewById(R.id.folderLocation);
-        folder.setText("set folder location for capture");
-        folderIsSet = false;
+        //folder = root.findViewById(R.id.folderLocation);
+        //folder.setText("set folder location for capture");
+        //folderIsSet = false;
+        dataFilename = "no capture";
 
         captureReady = false;
         outputStream = null;
@@ -319,7 +340,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 stopH2tFeature();
                 setButtonStartStatus();
                 getResults();
-                folder.setText("");
+                //folder.setText("");
                 //h2tSummary();
                 mCaptureToFileChecked.setChecked(false);
             }
@@ -381,16 +402,17 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval, filter);
 
                         StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,samplingRate);
-                        allStepResults.add(stepResults);
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
                                 step = goodStepThreshold;
                                 soundMgr.playSound(beepSound);
                             }
                             goodstepResults.add(stepResults);
+                            allStepResults.add(stepResults);
                         } else if (stepResults.badstep) {
                             step = -goodStepThreshold;
                             badstepResults.add(stepResults);
+                            allStepResults.add(stepResults);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -460,7 +482,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private void set25HZ() {
         sendH2TCommand(FEATURE_SET_HZ_SLOW);
         mH2tstatus.setText("Data collection now 25 samples per second");
-        mFrequency.setText("25 Hz");
+        //mFrequency.setText("25 Hz");
         samplingFrequency = 25; // default
         samplingRate = 40;
         m25hz.setBackgroundColor(Color.GRAY);
@@ -471,13 +493,78 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private void set50HZ() {
         sendH2TCommand(FEATURE_SET_HZ_FAST);
         mH2tstatus.setText("Data collection now 50 samples per second");
-        mFrequency.setText("50 Hz");
+        //mFrequency.setText("50 Hz");
         samplingFrequency = 50; // default
         samplingRate = 20;
         m25hz.setBackgroundColor(Color.LTGRAY);
         m50hz.setBackgroundColor(Color.GRAY);
         filter = true;
     }
+
+    private void setTestTime() {
+        mH2tstatus.setText("Session set to 30 seconds");
+        maxSessionSeconds = 30;
+        mSession_testTime.setBackgroundResource(R.drawable.button_blue_selected);
+        mSession_midTime.setBackgroundResource(R.drawable.button_blue_unselected);
+        mSession_highTime.setBackgroundResource(R.drawable.button_blue_unselected);
+        mSession_testTime.setTextColor(Color.WHITE);
+        mSession_midTime.setTextColor(Color.BLACK);
+        mSession_highTime.setTextColor(Color.BLACK);
+    }
+    private void setMidTime() {
+        mH2tstatus.setText("Session set to 5 minutes");
+        maxSessionSeconds = 300;
+        mSession_testTime.setBackgroundResource(R.drawable.button_blue_unselected);
+        mSession_midTime.setBackgroundResource(R.drawable.button_blue_selected);
+        mSession_highTime.setBackgroundResource(R.drawable.button_blue_unselected);
+        mSession_testTime.setTextColor(Color.BLACK);
+        mSession_midTime.setTextColor(Color.WHITE);
+        mSession_highTime.setTextColor(Color.BLACK);
+    }
+    private void setHighTime() {
+        mH2tstatus.setText("Session set to 10 minutes");
+        maxSessionSeconds = 600;
+        mSession_testTime.setBackgroundResource(R.drawable.button_blue_unselected);
+        mSession_midTime.setBackgroundResource(R.drawable.button_blue_unselected);
+        mSession_highTime.setBackgroundResource(R.drawable.button_blue_selected);
+        mSession_testTime.setTextColor(Color.BLACK);
+        mSession_midTime.setTextColor(Color.BLACK);
+        mSession_highTime.setTextColor(Color.WHITE);
+    }
+
+    private void setLowThreshold() {
+        mH2tstatus.setText("Good step threshold set to "+ DEFAULT_THRESHOLD + " d/s");
+        goodStepThreshold = DEFAULT_THRESHOLD;
+        mSession_lowThreshold.setBackgroundResource(R.drawable.button_green_selected);
+        mSession_midThreshold.setBackgroundResource(R.drawable.button_green_unselected);
+        mSession_highThreshold.setBackgroundResource(R.drawable.button_green_unselected);
+        mSession_lowThreshold.setTextColor(Color.WHITE);
+        mSession_midThreshold.setTextColor(Color.BLACK);
+        mSession_highThreshold.setTextColor(Color.BLACK);
+    }
+
+    private void setMidThreshold() {
+        mH2tstatus.setText("Good step threshold set to "+ MID_THRESHOLD + " d/s");
+        goodStepThreshold = MID_THRESHOLD;
+        mSession_lowThreshold.setBackgroundResource(R.drawable.button_green_unselected);
+        mSession_midThreshold.setBackgroundResource(R.drawable.button_green_selected);
+        mSession_highThreshold.setBackgroundResource(R.drawable.button_green_unselected);
+        mSession_lowThreshold.setTextColor(Color.BLACK);
+        mSession_midThreshold.setTextColor(Color.WHITE);
+        mSession_highThreshold.setTextColor(Color.BLACK);
+    }
+
+    private void setHighThreshold() {
+        mH2tstatus.setText("Good step threshold set to "+ HIGH_THRESHOLD + " d/s");
+        goodStepThreshold = HIGH_THRESHOLD;
+        mSession_lowThreshold.setBackgroundResource(R.drawable.button_green_unselected);
+        mSession_midThreshold.setBackgroundResource(R.drawable.button_green_unselected);
+        mSession_highThreshold.setBackgroundResource(R.drawable.button_green_selected);
+        mSession_lowThreshold.setTextColor(Color.BLACK);
+        mSession_midThreshold.setTextColor(Color.BLACK);
+        mSession_highThreshold.setTextColor(Color.WHITE);
+    }
+
 
     private class H2T25_ButtonListener implements Button.OnClickListener {
             public void onClick(View v) {
@@ -499,6 +586,38 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }
     }
 
+    private class TestTime_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            setTestTime();
+        }
+    }
+    private class MidTime_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            setMidTime();
+        }
+    }
+    private class HighTime_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            setHighTime();
+        }
+    }
+
+    private class LowThreshold_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            setLowThreshold();
+        }
+    }
+    private class MidThreshold_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            setMidThreshold();
+        }
+    }
+    private class HighThreshold_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+            setHighThreshold();
+        }
+    }
+
     private class ThresholdListener implements SeekBar.OnSeekBarChangeListener {
         /**
          * This class listens for good step threshold (gyro Z degrees / second)  seekbar changes
@@ -508,24 +627,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                                       boolean fromUser) {
             goodStepThreshold = -progress;
              mThresholdVal.setText(String.valueOf(goodStepThreshold));
-        }
-
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
-
-        public void onStopTrackingTouch(SeekBar seekBar) {
-        }
-    }
-
-    private class MaxTimeListener implements SeekBar.OnSeekBarChangeListener {
-        /**
-         * This class listens for maximum session time seekbar changes
-         * mMaxtime is used by RemindTask to stop the session.
-         */
-        public void onProgressChanged(SeekBar seekBar, int progress,
-                                      boolean fromUser) {
-            maxSessionSeconds = progress;
-            mMaxtime.setText("Max: " + String.valueOf(maxSessionSeconds) + " s");
         }
 
         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -635,7 +736,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         stopH2tFeature();
         setButtonStartStatus();
         getResults();
-        folder.setText("");
+        //folder.setText("");
         mCaptureToFileChecked.setChecked(false);
     }
 
@@ -723,27 +824,29 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     public void getResults() {
         String[] xyz = {"X", "Y", "Z"};
-        String results = stepDetect.stepResults(allStepResults, goodstepResults, badstepResults,
-                deviceSampleCounter, (int) samplingFrequency);
 
-        results = dataFilename
-                + System.getProperty("line.separator") +
-                "Sampling frequency: " + samplingFrequency + " Hertz" +
-                System.getProperty("line.separator") +
-                "Gyroscope XYZ X: " + xyz[Xcoord] + " Y: " + xyz[Ycoord] + " Z: " + xyz[Zcoord] +
-                System.getProperty("line.separator") +
-                "Threshold: " + goodStepThreshold + " d/s" +
-                System.getProperty("line.separator") +
-                results;
-        mH2tstatus.setText(results);
+        StepAnalytics stepAnalytics = new StepAnalytics();
+        StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
+                goodstepResults, badstepResults,
+                deviceSampleCounter, (int) samplingFrequency);
+        StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
+        stepAnalyticsDisplay.results(thiscontext, mResultsTable, stepCalculations,
+                goodStepThreshold, maxSessionSeconds, dataFilename);
+
         if (captureReady) {
             FileProcess fileProcess = new FileProcess();
+            String results = stepAnalyticsDisplay.results(stepCalculations,
+                    goodStepThreshold, maxSessionSeconds, dataFilename);
             FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
-            mH2tstatus.setText(results + System.getProperty("line.separator") + fs.reason);
+            mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
+        } else {
+            mH2tstatus.setText("no file saved. click capture button");
         }
         closeCaptureStream();
         soundMgr.playSound(stopMeasureSound);
         //mCaptureToFileChecked.setChecked(false);
+        dataFilename = "no capture";
+        //folder.setText(dataFilename);
     }
 
     private void setButtonStopStatus() {
@@ -775,8 +878,30 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         super.startActivityForResult(intent, requestCode);
         String csvFile = null;
         if (intent != null && intent.getData() != null) {
-            csvFile = intent.getData().getPath();
+            dataFilename = intent.getData().getPath();
+        } else {
+            dataFilename = "no capture";
         }
+        //folder.setText(dataFilename);
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        /*
+         * Get the file's content URI from the incoming Intent,
+         * then query the server app to get the file's display name
+         * and size.
+         */
+        Cursor returnCursor =
+                getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        /*
+         * Get the column indexes of the data in the Cursor,
+         * move to the first row in the Cursor, get the data,
+         * and display it.
+         */
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        String fileDetails = returnCursor.getString(nameIndex);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        return fileDetails + "size: "+ returnCursor.getLong(sizeIndex);
     }
 
     @Override
@@ -813,16 +938,17 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     case Activity.RESULT_OK:
                         try {
                             outputStream = contentResolver.openOutputStream(content_describer);
+                            dataFilename = "successfully set. todo get name "; //getRealPathFromURI(content_describer);
                             captureReady = true;
                         } catch (IOException e) {
                             mH2tstatus.setText("Error opening file");
                             closeCaptureStream();
                         }
-                        folder.setText(dataFilename);
+                        //folder.setText(dataFilename);
                         break;
                     case Activity.RESULT_CANCELED:
                         mH2tstatus.setText("Canceled");
-                        folder.setText("");
+                        //folder.setText("");
                         closeCaptureStream();
                         break;
                 }

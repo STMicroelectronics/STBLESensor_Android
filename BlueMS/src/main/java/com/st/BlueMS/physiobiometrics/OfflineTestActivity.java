@@ -38,6 +38,7 @@
 package com.st.BlueMS.physiobiometrics;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -52,6 +53,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.st.BlueMS.R;
@@ -94,6 +96,9 @@ public class OfflineTestActivity extends AppCompatActivity {
     private Spinner spinnerFileFormat;
     private int fileformat;
     private TextView mFolderLocation;
+
+    private Context thiscontext;
+    private TableLayout mResultsTable;
     /***************
      * inertial measurement XYZ orientation is dependent on the Hardware chip orientation
      * when laid flat:
@@ -142,6 +147,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         spinnerFileFormat.setOnItemSelectedListener(new SpinnerFileFormatListener());
         fileformat = matlabFormat;
 
+        /*
         spinnerX  = (Spinner) findViewById(R.id.spinnerX);
         spinnerX.setSelection(X);
         spinnerX.setOnItemSelectedListener(new SpinnerXListener());
@@ -151,6 +157,8 @@ public class OfflineTestActivity extends AppCompatActivity {
         spinnerZ  = (Spinner) findViewById(R.id.spinnerZ);
         spinnerZ.setSelection(Z);
         spinnerZ.setOnItemSelectedListener(new SpinnerZListener());
+
+         */
 
         frequency = 50;
         spinnerFrequency  = (Spinner) findViewById(R.id.frequency);
@@ -176,6 +184,9 @@ public class OfflineTestActivity extends AppCompatActivity {
         this.contentResolver = getContentResolver();
         captureReady = false;
         outputStream = null;
+
+        mResultsTable = (TableLayout)  findViewById(R.id.resulttable);
+
     }
 
     @Override
@@ -296,13 +307,14 @@ public class OfflineTestActivity extends AppCompatActivity {
                         zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds,true);
                         stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,20);
                         stepResults.timestamp = ms;
-                        allStepResults.add(stepResults);
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
                                 toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
                             }
+                            allStepResults.add(stepResults);
                             goodstepResults.add(stepResults);
                         } else if (stepResults.badstep) {
+                            allStepResults.add(stepResults);
                             badstepResults.add(stepResults);
                         }
                         System.out.println();
@@ -320,22 +332,15 @@ public class OfflineTestActivity extends AppCompatActivity {
                     }
                 }
 
-                String results = stepDetect.stepResults(allStepResults, goodstepResults, badstepResults, sample, 50);
+                StepAnalytics stepAnalytics = new StepAnalytics();
+                StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
+                        goodstepResults, badstepResults,
+                        sample, 50);
+                StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
+                stepAnalyticsDisplay.results(this, mResultsTable, stepCalculations,
+                        goodStepThreshold, 60000, dataFilename);
+                mH2tstatus.setText("");
 
-                results = "Sampling frequency: " + frequency + " Hertz" +
-                        System.getProperty("line.separator") +
-                        "Gyroscope XYZ X: " + xyz[Xcoord] + " Y: " + xyz[Ycoord] + " Z: " + xyz[Zcoord] +
-                        System.getProperty("line.separator") +
-                        "Threshold: " + goodStepThreshold + " d/s" +
-                        System.getProperty("line.separator") +
-                        results;
-                mH2tstatus.setText(results);
-/*                    if (captureReady) {
-                        if (!fileProcess.writeResults(results, outputStream, inertialMeasurements)) {
-                            mH2tstatus.setText(results + System.getProperty("line.separator") + "ERROR WRITING FILE");
-                        }
-                        closeCaptureStream();
-                    }*/
             } else {
                 mH2tstatus.setText(errorMsg);
             }

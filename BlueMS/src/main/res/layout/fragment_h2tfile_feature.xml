@@ -89,56 +89,24 @@
         android:layout_height="wrap_content"
         android:max="3000" />
     <View style="@style/Divider"/>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="0.9" >
 
-        <!-- Text Label -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X:"
-            android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerX"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/XYZ"
-            android:layout_weight=".10"
-            android:spinnerMode="dropdown" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Y:"
-            android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerY"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/XYZ"
-            android:layout_weight=".10"
-            android:spinnerMode="dropdown" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Z:"
-            android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/XYZ"
-            android:layout_weight=".10"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
-    <View style="@style/Divider"/>
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="20dp"
         android:text="@string/name" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="none"
+        android:layout_weight="1">
+        <TableLayout
+            android:id="@+id/resulttable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="220dp" />
+        </TableLayout>
+    </ScrollView>
 </LinearLayout>

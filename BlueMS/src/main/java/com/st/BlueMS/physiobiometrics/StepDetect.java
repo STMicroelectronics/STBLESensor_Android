@@ -4,9 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.List;
 
 public class StepDetect {
     public double[] filter_b = { 0.0096, 0.0287, 0.0287, 0.0096 };
@@ -130,7 +128,6 @@ public class StepDetect {
             if (wait1 != 0) {
                 wait1 = wait1 - 1;
             }
-
             if (wait2 != 0) {
                 wait2 = wait2 - 1;
             }
@@ -142,61 +139,6 @@ public class StepDetect {
         return stepResults;
     }
 
-    public String stepResults (List<StepResults> allStepResults,
-                               List<StepResults> goodstepResults, List<StepResults> badstepResults, int samples,  int frequency) {
-        String results = null;
-        DecimalFormat df2 = new DecimalFormat("#.##");
-        double rate = 1/ (double)frequency;
-        double rateMilliseconds = rate * 1000;
-
-        int goodsteps = goodstepResults.size();
-        int badsteps = badstepResults.size();
-        int nSteps = goodsteps + badsteps;
-        double totalTime = (double) samples * rate;
-        double goodpercent =  (double) goodsteps/ (double) nSteps * 100;
-        double badpercent =  (double) badsteps/(double) nSteps * 100;
-
-        results =  "Total steps: " + nSteps +     " Total time: " + totalTime + System.getProperty("line.separator");
-        results += "Good steps: " + goodsteps + " (" + df2.format(goodpercent) + "%)" + System.getProperty("line.separator");
-        results += "Bad steps: " + badsteps +  " (" + df2.format(badpercent) + "%)"+ System.getProperty("line.separator");
-
-        double stepwalkingtime = 0;
-        double totalwalkingtime = 0;
-        double startWalking = 0;
-        double totalAngularVelocity = 0;
-        int index = 0;
-        while (index <  allStepResults.size()) {
-            StepResults step =  allStepResults.get(index);
-            if (index > 0) {
-                stepwalkingtime = step.timestamp - startWalking;
-            }
-            startWalking = step.timestamp;
-            totalwalkingtime += stepwalkingtime;
-
-            //TODO calculate from raw data not filtered!
-            totalAngularVelocity += step.degreesPerSecond;
-            index++;
-        }
-        totalwalkingtime = totalwalkingtime / 1000;
-        double avgstep = totalwalkingtime / (double) nSteps;
-        double avgCadence = 120 / avgstep;
-
-        double meanAngularVelocity = totalAngularVelocity / (double) nSteps;
-        double stdAngularVelocity = 0;
-        index = 0;
-        while (index <  allStepResults.size()) {
-            StepResults step =  allStepResults.get(index);
-            stdAngularVelocity += Math.pow(step.degreesPerSecond - meanAngularVelocity, 2);
-            index++;
-        }
-
-        stdAngularVelocity = Math.sqrt(stdAngularVelocity/(double) nSteps);
-        results += "Walking: " + totalwalkingtime + System.getProperty("line.separator");
-        results += "~Cadence: " + df2.format(avgCadence) + " ~Step: " + df2.format(avgstep) +
-                    System.getProperty("line.separator");
-        results += "~Angular V: " + df2.format(meanAngularVelocity) + " std dev: " + df2.format(stdAngularVelocity) + System.getProperty("line.separator");
-        return (results);
-    }
 
     public double[] shiftArray(double[] aOld) {
         double[] aNew = new double[aOld.length];

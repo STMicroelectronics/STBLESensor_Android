@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Heel2toe"
+            android:text="Heel2toe Step Detect"
             android:layout_weight=".50"/>
         <ImageButton
             android:layout_width="fill_parent"
@@ -46,14 +46,15 @@
             android:text="Capture"
             android:layout_weight=".40"/>
     </LinearLayout>
-    <TextView
+<!--    <TextView
         android:id="@+id/folderLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView" />-->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="1dp"
         android:weightSum="0.9" >
         <Button
             android:id="@+id/H2T25hz"
@@ -77,8 +78,78 @@
     </LinearLayout>
 
     <View style="@style/Divider"/>
-
     <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:weightSum="0.9" >
+        <Button
+            android:id="@+id/testTime"
+            android:background="@drawable/button_blue_unselected"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30 seconds"
+            android:layout_margin="2dp"
+            android:layout_weight=".30"/>
+        <Button
+            android:id="@+id/midTime"
+            android:background="@drawable/button_blue_selected"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="5 minutes"
+            android:layout_weight=".30"/>
+
+        <Button
+            android:id="@+id/highTime"
+            android:background="@drawable/button_blue_unselected"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="10 minutes"
+            android:layout_weight=".30"/>
+    </LinearLayout>
+    <View style="@style/Divider"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:weightSum="0.9" >
+        <Button
+            android:id="@+id/lowThreshold"
+            android:background="@drawable/button_green_selected"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="normal"
+            android:layout_weight=".30"/>
+        <Button
+            android:id="@+id/midThreshold"
+            android:background="@drawable/button_green_unselected"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="active"
+            android:layout_weight=".30"/>
+
+        <Button
+            android:id="@+id/highThreshold"
+            android:background="@drawable/button_green_unselected"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="athletic"
+            android:layout_weight=".30"/>
+    </LinearLayout>
+
+
+ <!--   <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.6" >
@@ -111,105 +182,66 @@
             android:layout_marginBottom="5dp"
             android:layout_weight=".20"
             android:text="unknown" />
-    </LinearLayout>
+    </LinearLayout>-->
 
-    <SeekBar
+ <!--   <SeekBar
         android:id="@+id/thresholdBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="3000" />
-   <!-- <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="0.9" >
-
-        &lt;!&ndash; Text Label &ndash;&gt;
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X:"
-            android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerX"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/XYZ"
-            android:layout_weight=".10"
-            android:spinnerMode="dropdown" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Y:"
-            android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerY"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/XYZ"
-            android:layout_weight=".10"
-            android:spinnerMode="dropdown" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Z:"
-            android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/XYZ"
-            android:layout_weight=".10"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>-->
+        android:max="500"
+        android:progress="10" /> -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.8" >
         <TextView
-            android:id="@+id/maxtimeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Max Time:"
-            android:layout_weight=".20"/>
-        <TextView
-            android:id="@+id/maxtime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:layout_weight=".20"/>
-        <TextView
             android:id="@+id/counttimeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="StopWatch:"
-            android:layout_weight=".20"/>
+            android:layout_weight=".30"/>
         <TextView
             android:id="@+id/counttime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
             android:layout_weight=".20"/>
+        <TextView
+            android:id="@+id/gyroData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_weight=".30"/>
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/MaxTimeBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="180" />
+    <!--   <SeekBar
+           android:id="@+id/MaxTimeBar"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:max="360"
+           android:progress="10" />-->
 
-    <TextView
-        android:id="@+id/gyroData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="" />
+
 
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="42dp"
         android:text="results" />
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="none"
+        android:layout_weight="1">
+        <TableLayout
+            android:id="@+id/resulttable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="220dp" />
+        </TableLayout>
+    </ScrollView>
 </LinearLayout>

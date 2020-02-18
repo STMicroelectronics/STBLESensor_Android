@@ -1,4 +1,4 @@
-package com.st.BlueMS.physiobiometrics;
+package com.st.BlueMS.physiobiometrics.shimmer;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -20,8 +20,14 @@ public class StepAnalytics {
         sc.badsteps = badstepResults.size();
         sc.nSteps = sc.goodsteps + sc.badsteps;
         sc.totalTime = (double) samples * sc.rate;
-        sc.goodpercent = (double) sc.goodsteps / (double) sc.nSteps * 100;
-        sc.badpercent = (double) sc.badsteps / (double) sc.nSteps * 100;
+        if (sc.nSteps > 0) {
+            sc.goodpercent = (double) sc.goodsteps / (double) sc.nSteps * 100;
+            sc.badpercent = (double) sc.badsteps / (double) sc.nSteps * 100;
+        } else {
+            sc.goodpercent = 0;
+            sc.badpercent = 0;
+        }
+
         sc.stepwalkingtime = 0;
         sc.totalwalkingtime = 0;
         sc.startWalking = 0;

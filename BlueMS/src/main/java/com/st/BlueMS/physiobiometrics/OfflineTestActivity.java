@@ -57,6 +57,11 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.st.BlueMS.R;
+import com.st.BlueMS.physiobiometrics.shimmer.StepAnalytics;
+import com.st.BlueMS.physiobiometrics.shimmer.StepAnalyticsDisplay;
+import com.st.BlueMS.physiobiometrics.shimmer.StepCalculations;
+import com.st.BlueMS.physiobiometrics.shimmer.StepDetect;
+import com.st.BlueMS.physiobiometrics.shimmer.StepResults;
 
 import java.io.IOException;
 import java.io.InputStream;

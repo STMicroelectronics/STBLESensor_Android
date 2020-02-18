@@ -1,4 +1,4 @@
-package com.st.BlueMS.physiobiometrics;
+package com.st.BlueMS.physiobiometrics.shimmer;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -18,7 +18,7 @@ public class StepAnalyticsDisplay {
     TableRow.LayoutParams unitsColumn;
     DecimalFormat df2;
 
-    StepAnalyticsDisplay() {
+    public StepAnalyticsDisplay() {
         labelColumn = new TableRow.LayoutParams(0,TableRow.LayoutParams.WRAP_CONTENT,1f);
         //labelColumn.setMargins(5,5,5,5);
         labelColumn.weight = 13;
@@ -41,19 +41,19 @@ public class StepAnalyticsDisplay {
         TextView labelName = new TextView(context);
         labelName.setText("Analysis");
         labelName.setTextColor(Color.WHITE);
-        labelName.setPadding(5, 5, 5, 5);
+        labelName.setPadding(1, 1, 1, 1);
         tr_head.addView(labelName,labelColumn);// add the column to the table row here
 
         TextView value = new TextView(context);
         value.setText("Value"); // set the text for the header
         value.setTextColor(Color.WHITE); // set the color
-        value.setPadding(5, 5, 5, 5); // set the padding (if required)
+        value.setPadding(1, 1, 1, 1); // set the padding (if required)
         tr_head.addView(value,dataColumn); // add the column to the table row here
 
         TextView units = new TextView(context);
         units.setText("Units"); // set the text for the header
         units.setTextColor(Color.WHITE); // set the color
-        units.setPadding(5, 5, 5, 5); // set the padding (if required)
+        units.setPadding(1, 1, 1, 1);// set the padding (if required)
         tr_head.addView(units,unitsColumn); // add the column to the table row here
         return tr_head;
     }
@@ -66,19 +66,22 @@ public class StepAnalyticsDisplay {
         TextView labelName = new TextView(context);
         labelName.setText(label);
         labelName.setTextColor(Color.BLACK);
-        labelName.setPadding(5, 5, 5, 5);
+        labelName.setTextSize(10);
+        labelName.setPadding(1, 1, 1, 1);
         tr_data.addView(labelName,labelColumn);// add the column to the table row here
 
         TextView value = new TextView(context);
         value.setText(val); // set the text for the header
+        value.setTextSize(10);
         value.setTextColor(Color.BLACK); // set the color
-        value.setPadding(5, 5, 5, 5); // set the padding (if required)
+        value.setPadding(1, 1, 1, 1); // set the padding (if required)
         tr_data.addView(value,dataColumn); // add the column to the table row here
 
         TextView units = new TextView(context);
         units.setText(u); // set the text for the header
+        units.setTextSize(10);
         units.setTextColor(Color.BLACK); // set the color
-        units.setPadding(5, 5, 5, 5); // set the padding (if required)
+        units.setPadding(1, 1, 1, 1); // set the padding (if required)
         tr_data.addView(units,unitsColumn); // add the column to the table row here
         return tr_data;
     }
@@ -91,6 +94,7 @@ public class StepAnalyticsDisplay {
                 TableRow.LayoutParams.WRAP_CONTENT));
         TextView labelName = new TextView(context);
         labelName.setText(val);
+        labelName.setTextSize(10);
         labelName.setTextColor(Color.BLACK);
         labelName.setPadding(5, 5, 5, 5);
         tr_data.addView(labelName);// add the column to the table row here
@@ -105,10 +109,10 @@ public class StepAnalyticsDisplay {
         tl.setShrinkAllColumns(true);
         tl.setStretchAllColumns(true);
 
-        tl.addView(this.tableSingleRow(context, today.toString())); //+ " file: " + filename));
+        tl.addView(this.tableSingleRow(context, today.toString()));
+        tl.addView(this.tableSingleRow(context, "file: " + filename));
         tl.addView(this.tableHeader(context));
         tl.addView(this.tableData(context,"sampling rate",String.valueOf(sc.frequency), "Hz"));
-        //tl.addView(this.tableData(context,"file name",df2.format(sessionLength),"s"));
         tl.addView(this.tableData(context,"Session length",df2.format(sessionLength),"s"));
         tl.addView(this.tableData(context,"Threshold",df2.format(threshold),"d/s"));
         tl.addView(this.tableData(context,"Walking time",df2.format(sc.totalwalkingtime),"s"));

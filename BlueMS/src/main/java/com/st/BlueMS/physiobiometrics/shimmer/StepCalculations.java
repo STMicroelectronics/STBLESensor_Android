@@ -1,4 +1,4 @@
-package com.st.BlueMS.physiobiometrics;
+package com.st.BlueMS.physiobiometrics.shimmer;
 
 public class StepCalculations {
     int frequency;

@@ -26,12 +26,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -39,6 +42,11 @@ import android.widget.TextView;
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
+import com.st.BlueMS.physiobiometrics.shimmer.StepAnalytics;
+import com.st.BlueMS.physiobiometrics.shimmer.StepAnalyticsDisplay;
+import com.st.BlueMS.physiobiometrics.shimmer.StepCalculations;
+import com.st.BlueMS.physiobiometrics.shimmer.StepDetect;
+import com.st.BlueMS.physiobiometrics.shimmer.StepResults;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
@@ -118,6 +126,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private Button mSession_highThreshold;
 
     private TableLayout mResultsTable;
+    private ScrollView scrollView;
 
     private int deviceSampleCounter;
 
@@ -276,6 +285,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         setLowThreshold();
 
         mResultsTable = (TableLayout)  root.findViewById(R.id.resulttable);
+        scrollView = (ScrollView) root.findViewById(R.id.resultscroll);
 
         mCcounttime = root.findViewById(R.id.counttime);
         mCcounttime.setText("0");
@@ -485,8 +495,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         //mFrequency.setText("25 Hz");
         samplingFrequency = 25; // default
         samplingRate = 40;
-        m25hz.setBackgroundColor(Color.GRAY);
-        m50hz.setBackgroundColor(Color.LTGRAY);
+        m25hz.setBackgroundResource(R.drawable.button_grey_selected);
+        m50hz.setBackgroundResource(R.drawable.button_grey_unselected);
+        m25hz.setTextColor(Color.WHITE);
+        m50hz.setTextColor(Color.BLACK);
         filter = false;
     }
 
@@ -496,8 +508,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         //mFrequency.setText("50 Hz");
         samplingFrequency = 50; // default
         samplingRate = 20;
-        m25hz.setBackgroundColor(Color.LTGRAY);
-        m50hz.setBackgroundColor(Color.GRAY);
+        m50hz.setBackgroundResource(R.drawable.button_grey_selected);
+        m25hz.setBackgroundResource(R.drawable.button_grey_unselected);
+        m50hz.setTextColor(Color.WHITE);
+        m25hz.setTextColor(Color.BLACK);
         filter = true;
     }
 
@@ -832,6 +846,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
         stepAnalyticsDisplay.results(thiscontext, mResultsTable, stepCalculations,
                 goodStepThreshold, maxSessionSeconds, dataFilename);
+        mResultsTable.setFocusedByDefault(true);
 
         if (captureReady) {
             FileProcess fileProcess = new FileProcess();
@@ -843,6 +858,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             mH2tstatus.setText("no file saved. click capture button");
         }
         closeCaptureStream();
+        scrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        },500);
         soundMgr.playSound(stopMeasureSound);
         //mCaptureToFileChecked.setChecked(false);
         dataFilename = "no capture";
@@ -940,6 +961,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                             outputStream = contentResolver.openOutputStream(content_describer);
                             dataFilename = "successfully set. todo get name "; //getRealPathFromURI(content_describer);
                             captureReady = true;
+                            DocumentFile d = DocumentFile.fromSingleUri(thiscontext, content_describer);
+                            if (d != null) {
+                                dataFilename = d.getName();
+                                Log.d("TAG", "file name: " + d.getName());
+                                Log.d("TAG", "file path: " + d.getUri().getPath());
+                            }
                         } catch (IOException e) {
                             mH2tstatus.setText("Error opening file");
                             closeCaptureStream();

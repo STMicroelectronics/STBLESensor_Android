@@ -1,4 +1,4 @@
-package com.st.BlueMS.physiobiometrics;
+package com.st.BlueMS.physiobiometrics.shimmer;
 
 import java.io.BufferedWriter;
 import java.io.File;

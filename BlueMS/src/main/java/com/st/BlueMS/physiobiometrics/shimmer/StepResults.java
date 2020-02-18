@@ -1,4 +1,4 @@
-package com.st.BlueMS.physiobiometrics;
+package com.st.BlueMS.physiobiometrics.shimmer;
 
 
 public class StepResults {
@@ -9,7 +9,7 @@ public class StepResults {
     public boolean goodstep;
     public boolean badstep;
 
-    StepResults () {
+    public StepResults () {
         timestamp = 0;
         toggleDetect = false;
         latestTimeFreeze = 0;

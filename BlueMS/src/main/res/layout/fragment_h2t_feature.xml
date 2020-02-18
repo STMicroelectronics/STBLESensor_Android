@@ -13,9 +13,9 @@
             android:id="@+id/editText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="9"
             android:inputType="textPersonName"
-            android:text="Heel2toe Step Detect"
+            android:text="Step Detect"
             android:layout_weight=".50"/>
         <ImageButton
             android:layout_width="fill_parent"
@@ -24,7 +24,7 @@
             app:srcCompat="@drawable/ic_play_arrow"
             android:contentDescription="Start"
             android:id="@+id/startPlotButton"
-            android:padding="8dp"
+            android:padding="1dp"
             android:layout_centerVertical="true"
             android:layout_weight=".50"/>
     </LinearLayout>
@@ -58,22 +58,31 @@
         android:weightSum="0.9" >
         <Button
             android:id="@+id/H2T25hz"
+            android:background="@drawable/button_grey_unselected"
+            android:textColor="#000000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="25 Hz"
+            android:layout_margin="2dp"
             android:layout_weight=".30"/>
         <Button
             android:id="@+id/H2T50Hz"
+            android:background="@drawable/button_grey_selected"
+            android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="50 Hz"
+            android:layout_margin="2dp"
             android:layout_weight=".30"/>
 
         <Button
             android:id="@+id/H2Tcalibrate"
+            android:background="@drawable/button_yellow_selected"
+            android:textColor="#000000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="calibrate"
+            android:layout_margin="2dp"
             android:layout_weight=".30"/>
     </LinearLayout>
 
@@ -223,16 +232,18 @@
            android:progress="10" />-->
 
 
-
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:text="results" />
-
+        android:layout_height="30dp"
+        android:text="results"
+        android:textSize="12dp" />
+    <View style="@style/Divider"/>
     <ScrollView
+        android:id="@+id/resultscroll"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="#e6faff"
         android:scrollbars="none"
         android:layout_weight="1">
         <TableLayout

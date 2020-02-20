@@ -47,6 +47,7 @@ import com.st.BlueMS.physiobiometrics.shimmer.StepAnalyticsDisplay;
 import com.st.BlueMS.physiobiometrics.shimmer.StepCalculations;
 import com.st.BlueMS.physiobiometrics.shimmer.StepDetect;
 import com.st.BlueMS.physiobiometrics.shimmer.StepResults;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreSignalDetector;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
@@ -78,6 +79,13 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         FeatureAutoConfigurable.FeatureAutoConfigurationListener{
 
     private FeatureAutoConfigurable mConfig;
+
+    private boolean newZScoreStepDetector = true;
+    private int    zScorelag = 5;
+    private double zScoreThreshold = 3;
+    private double zScoreInfluence = 0.1;
+    private double zScoreHeelStrike = 100.0;
+    private double zScoreaH2T = -100.0;
 
     private double accel_fullscale = 0.000244;  // 8gs = 0.244 mg/LSB
     private double gyro_fullscale = 0.35;   // 1000 dps = 35 mdps/LSB (but already divided by 1o in gyro feature)
@@ -358,6 +366,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     }
 
     private class H2TgyroListener implements Feature.FeatureListener {
+        private boolean isNewStepDetector;
+        private ZscoreSignalDetector zscoreSignalDetector;
+        private ZscoreSignalDetector.StepState thisStepState;
+        private int i;
         /**
          * This class follows the STM32 BlueSTSDK pattern FeatureListener
          * Gyro sample events are processed
@@ -365,7 +377,19 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         long androidTimestamp;
 
         public H2TgyroListener() {
+            isNewStepDetector = false;
             // setup the step detector
+        }
+
+        public H2TgyroListener(boolean newStepDetector) {
+            isNewStepDetector = newStepDetector;
+            i =0;
+            // setup the step detector
+            if (newStepDetector) {
+                this.zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
+                        zScoreInfluence, 0, zScoreHeelStrike,zScoreaH2T,soundMgr,beepSound);
+                thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
+            }
         }
 
         @Override
@@ -411,18 +435,24 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     try {
                         zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval, filter);
 
-                        StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,samplingRate);
-                        if (stepResults.goodstep) {
-                            if (isBeepChecked) {
-                                step = goodStepThreshold;
-                                soundMgr.playSound(beepSound);
+                        if (isNewStepDetector) {
+                            int signal = this.zscoreSignalDetector.doSignal(Zval, i);
+                            thisStepState = this.zscoreSignalDetector.doStepDetect(Zval, i, signal, thisStepState);
+                            i++;
+                        } else {
+                            StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,samplingRate);
+                            if (stepResults.goodstep) {
+                                if (isBeepChecked) {
+                                    step = goodStepThreshold;
+                                    soundMgr.playSound(beepSound);
+                                }
+                                goodstepResults.add(stepResults);
+                                allStepResults.add(stepResults);
+                            } else if (stepResults.badstep) {
+                                step = -goodStepThreshold;
+                                badstepResults.add(stepResults);
+                                allStepResults.add(stepResults);
                             }
-                            goodstepResults.add(stepResults);
-                            allStepResults.add(stepResults);
-                        } else if (stepResults.badstep) {
-                            step = -goodStepThreshold;
-                            badstepResults.add(stepResults);
-                            allStepResults.add(stepResults);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

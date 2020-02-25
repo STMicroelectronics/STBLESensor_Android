@@ -377,7 +377,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         long androidTimestamp;
 
         public H2TgyroListener() {
-            isNewStepDetector = false;
+            isNewStepDetector = true;
             // setup the step detector
         }
 
@@ -433,13 +433,12 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     }
                 } else {
                     try {
-                        zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval, filter);
-
                         if (isNewStepDetector) {
                             int signal = this.zscoreSignalDetector.doSignal(Zval, i);
                             thisStepState = this.zscoreSignalDetector.doStepDetect(Zval, i, signal, thisStepState);
                             i++;
                         } else {
+                            zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval, filter);
                             StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,samplingRate);
                             if (stepResults.goodstep) {
                                 if (isBeepChecked) {

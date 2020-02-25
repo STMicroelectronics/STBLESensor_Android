@@ -62,11 +62,16 @@ import com.st.BlueMS.physiobiometrics.shimmer.StepAnalyticsDisplay;
 import com.st.BlueMS.physiobiometrics.shimmer.StepCalculations;
 import com.st.BlueMS.physiobiometrics.shimmer.StepDetect;
 import com.st.BlueMS.physiobiometrics.shimmer.StepResults;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreSignalDetector;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreStepAnalytics;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreStepAnalyticsDisplay;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreStepCalculations;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -127,6 +132,22 @@ public class OfflineTestActivity extends AppCompatActivity {
     private TextView folder;
     private boolean folderIsSet;
 
+    // zscore
+    private boolean isNewStepDetector = true;
+    private int zScorelag = 5;
+    private double zScoreThreshold = 3;
+    private double zScoreInfluence = 0.1;
+    private double zScoreHeelStrike = 100.0;
+    private double zScoreaH2T = -100.0;
+    private ZscoreSignalDetector zscoreSignalDetector;
+    private ZscoreSignalDetector.StepState thisStepState;
+    private ArrayList<Double> dataH2t;
+
+    Sound soundMgr;
+    int beepSound;
+    int startMeasureSound;
+    int stopMeasureSound;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +168,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         isSimulateChecked = false;
         mSimulateChecked.setOnClickListener(new SimulateCheckedListener());
 
-        spinnerFileFormat  = (Spinner) findViewById(R.id.fileformat);
+        spinnerFileFormat = (Spinner) findViewById(R.id.fileformat);
         spinnerFileFormat.setSelection(matlabFormat);
         spinnerFileFormat.setOnItemSelectedListener(new SpinnerFileFormatListener());
         fileformat = matlabFormat;
@@ -166,14 +187,14 @@ public class OfflineTestActivity extends AppCompatActivity {
          */
 
         frequency = 50;
-        spinnerFrequency  = (Spinner) findViewById(R.id.frequency);
+        spinnerFrequency = (Spinner) findViewById(R.id.frequency);
         spinnerFrequency.setSelection(0);
         spinnerFrequency.setOnItemSelectedListener(new SpinnerFrequencyListener());
 
         goodStepThreshold = -109.8; // default value from matlab
         mThresholdVal = findViewById(R.id.thresholdVal);
         mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
-        mThreshold =(SeekBar) findViewById(R.id.thresholdBar);
+        mThreshold = (SeekBar) findViewById(R.id.thresholdBar);
         mThreshold.setProgress((int) -goodStepThreshold);
         mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
 
@@ -190,16 +211,26 @@ public class OfflineTestActivity extends AppCompatActivity {
         captureReady = false;
         outputStream = null;
 
-        mResultsTable = (TableLayout)  findViewById(R.id.resulttable);
+        mResultsTable = (TableLayout) findViewById(R.id.resulttable);
 
+        Sound soundMgr = new Sound();
+        soundMgr.createNewSoundPool();
+        startMeasureSound = soundMgr.loadSoundID(this, R.raw.startsoundbeep1);
+        stopMeasureSound = soundMgr.loadSoundID(this, R.raw.alarmclock1);
+        beepSound = soundMgr.loadSoundID(this, R.raw.shimmerbeep1);
     }
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent,requestCode);
+
+        this.zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
+                zScoreInfluence, 50000, zScoreHeelStrike, zScoreaH2T, soundMgr, -1);//beepSound);
+        thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
+
+        super.startActivityForResult(intent, requestCode);
         String csvFile = null;
         if (intent != null && intent.getData() != null) {
-            csvFile =  intent.getData().getPath();
+            csvFile = intent.getData().getPath();
         }
     }
 
@@ -212,8 +243,9 @@ public class OfflineTestActivity extends AppCompatActivity {
         List<StepResults> allStepResults = new ArrayList<StepResults>();
         List<StepResults> goodstepResults = new ArrayList<StepResults>();
         List<StepResults> badstepResults = new ArrayList<StepResults>();
-        int sample = 0;
+        int sample = zScorelag;
         double ms = 0;
+        dataH2t = new ArrayList<Double>();
 
         /***********
          * first setup X, Y , and Z lookup table based on GUI selections;
@@ -241,35 +273,6 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         if (intent != null && intent.getData() != null) {
             Uri content_describer = intent.getData();
-            /*
-            if (requestCode == FOLDER_PICKER_CODE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    // String folderLocation = "Selected Folder: "+ intent.getExtras().getString("data");
-                    folder.setText(intent.getData().getPath());
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    folder.setText("Cancelled");
-                }
-            } else if (requestCode == WRITE_REQUEST_CODE) {
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        try {
-                            outputStream = contentResolver.openOutputStream(content_describer);
-                            captureReady = true;
-                        } catch (IOException e) {
-                            mH2tstatus.setText("Error opening file");
-                            closeCaptureStream();
-                        }
-                        folder.setText(dataFilename);
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        mH2tstatus.setText("Canceled");
-                        folder.setText("");
-                        closeCaptureStream();
-                        break;
-                }
-            } else {
-
-             */
             try {
                 InputStream inputStream = this.contentResolver.openInputStream(content_describer);
                 dataFilename = queryName(this.contentResolver, content_describer);
@@ -294,23 +297,32 @@ public class OfflineTestActivity extends AppCompatActivity {
                 // print an error message
                 return;
             }
+
+            // get all values so reading file does not affect realtime measurments
             if (!inertialMeasurements.isEmpty()) {
+                ArrayList<Double> zvals = new ArrayList<Double>();
                 for (String[] sArray : inertialMeasurements) {
-                    ms = sample * 20;
-                    boolean numeric = true;
                     try {
-                        GyroscopeX_ds = Double.parseDouble(sArray[xGyroIndex]);
-                        GyroscopeY_ds = Double.parseDouble(sArray[yGyroIndex]);
                         GyroscopeZ_ds = Double.parseDouble(sArray[zGyroIndex]);
+                        zvals.add(GyroscopeZ_ds);
                     } catch (NumberFormatException e) {
-                        numeric = false;
-                        System.out.println("header");
+                        System.out.println("error. not mumeric");
                     }
-                    if (numeric) {
-                        System.out.print("GyroscopeX_ds : " + GyroscopeX_ds + " GyroscopeY_ds : " +
-                                GyroscopeY_ds + " GyroscopeZ_ds : " + GyroscopeZ_ds);
-                        zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, GyroscopeZ_ds,true);
-                        stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,20);
+                }
+                // process zvals
+                long timeNow = System.currentTimeMillis();
+                for (Double zval : zvals) {
+                    ms = sample * 20;
+                    //System.out.print("GyroscopeX_ds : " + GyroscopeX_ds + " GyroscopeY_ds : " +
+                    //        GyroscopeY_ds + " GyroscopeZ_ds : " + GyroscopeZ_ds);
+
+                    if (isNewStepDetector) {
+                        int signal = this.zscoreSignalDetector.doSignal(zval, sample);
+                        thisStepState = this.zscoreSignalDetector.doStepDetect(zval, sample, signal, thisStepState);
+                        dataH2t.add(zval);
+                    } else {
+                        zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, zval, true);
+                        stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold, 20);
                         stepResults.timestamp = ms;
                         if (stepResults.goodstep) {
                             if (isBeepChecked) {
@@ -322,28 +334,50 @@ public class OfflineTestActivity extends AppCompatActivity {
                             allStepResults.add(stepResults);
                             badstepResults.add(stepResults);
                         }
-                        System.out.println();
-                        sample++;
-
-                        // if simulate, then wait 20 ms to simulate real signal
-                        if (isSimulateChecked) {
-                            try {
-                                Thread.sleep(20);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return;
-                            }
-                        }
+                        //System.out.println();
                     }
+                    sample++;
+                    // if simulate, then wait 20 ms to simulate real signal
+                   /* if (isSimulateChecked) {
+                        try {
+                            Thread.sleep(20);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                    } */
                 }
+                long totalTime = System.currentTimeMillis() - timeNow;
+                System.out.println("time: " + totalTime);
 
-                StepAnalytics stepAnalytics = new StepAnalytics();
-                StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
-                        goodstepResults, badstepResults,
-                        sample, 50);
-                StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
-                stepAnalyticsDisplay.results(this, mResultsTable, stepCalculations,
-                        goodStepThreshold, 60000, dataFilename);
+                HashMap<String, List> resultsMap = this.zscoreSignalDetector.getDataForH2T();
+                List<Integer> signalsList = resultsMap.get("signals");
+                List<Double> filteredDataList = resultsMap.get("filteredData");
+                List<Double> avgFilterList = resultsMap.get("avgFilter");
+                List<Double> stdFilterList = resultsMap.get("stdFilter");
+                List<Double> goodStepFilterList = resultsMap.get("goodStepFilter");
+                List<Double> stepFilterList = resultsMap.get("stepFilter");
+                List<Double> heelPeakList = resultsMap.get("heelPeak");
+                List<Double> toePeakList = resultsMap.get("toePeak");
+                List<Double> beepList = resultsMap.get("beep");
+
+                if (isNewStepDetector) {
+                    ZscoreStepAnalytics zscoreStepAnalytics = new ZscoreStepAnalytics();
+                    ZscoreStepCalculations zscoreStepCalculations = zscoreStepAnalytics.signalAnalytics(dataH2t, signalsList,
+                            stepFilterList, heelPeakList, goodStepFilterList, toePeakList,
+                            20, 50, zScorelag, -109.0);
+                    ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
+                    zscoreStepAnalyticsDisplay.results(this, mResultsTable, zscoreStepCalculations,
+                            goodStepThreshold, 60000, dataFilename);
+                } else{
+                    StepAnalytics stepAnalytics = new StepAnalytics();
+                    StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
+                            goodstepResults, badstepResults,
+                            sample, 50);
+                    StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
+                    stepAnalyticsDisplay.results(this, mResultsTable, stepCalculations,
+                            goodStepThreshold, 60000, dataFilename);
+                }
                 mH2tstatus.setText("");
 
             } else {
@@ -357,6 +391,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             Xcoord = position;
         }
+
         public void onNothingSelected(AdapterView<?> parentView) {
         }
     }
@@ -366,6 +401,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             Ycoord = position;
         }
+
         public void onNothingSelected(AdapterView<?> parentView) {
         }
     }
@@ -375,15 +411,17 @@ public class OfflineTestActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             Zcoord = position;
         }
+
         public void onNothingSelected(AdapterView<?> parentView) {
         }
     }
 
     private class SpinnerFrequencyListener implements Spinner.OnItemSelectedListener {
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            int[] freqs = {50,40,25};
+            int[] freqs = {50, 40, 25};
             frequency = freqs[position];
         }
+
         public void onNothingSelected(AdapterView<?> parentView) {
         }
     }
@@ -393,6 +431,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             fileformat = position;
         }
+
         public void onNothingSelected(AdapterView<?> parentView) {
         }
     }
@@ -404,34 +443,14 @@ public class OfflineTestActivity extends AppCompatActivity {
             goodStepThreshold = -progress;
             mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
         }
-        public void onStartTrackingTouch(SeekBar seekBar) {}
-        public void onStopTrackingTouch(SeekBar seekBar) {}
-    }
 
-    /*
-    private class CaptureCheckedListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (isCaptureToFileChecked) {
-                closeCaptureStream();
-            } else {
-                mCaptureToFileChecked.setChecked(true);
-                isCaptureToFileChecked = true;
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                // filter to only show openable items.
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                // Create a file with the requested Mime type
-                intent.setType("text/csv");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-                Date today = Calendar.getInstance().getTime();
-                dataFilename = dateFormat.format(today)+".csv";
-                intent.putExtra(Intent.EXTRA_TITLE, dataFilename);
-                startActivityForResult(intent, WRITE_REQUEST_CODE);
-            }
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        public void onStopTrackingTouch(SeekBar seekBar) {
         }
     }
 
-     */
 
     private class BeepCheckedListener implements View.OnClickListener {
         @Override
@@ -443,20 +462,10 @@ public class OfflineTestActivity extends AppCompatActivity {
                 mBeepChecked.setChecked(true);
                 isBeepChecked = true;
                 toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
             }
         }
     }
-
-    /*
-    private class FolderListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-            startActivityForResult(intent, FOLDER_PICKER_CODE);
-        }
-    } */
 
     private class SimulateCheckedListener implements View.OnClickListener {
         @Override
@@ -471,30 +480,12 @@ public class OfflineTestActivity extends AppCompatActivity {
                 mBeepChecked.setChecked(true);
                 isBeepChecked = true;
                 toneGen1 = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
                 mH2tstatus.setText("warning! simulation takes a long time! 20 millisecond pause between each sample to simulate live data capture ");
             }
         }
     }
 
-    /*
-    private  void closeCaptureStream() {
-        if (captureReady) {
-            try {
-                if (outputStream != null) {
-                    outputStream.close();
-                    outputStream = null;
-                }
-
-            } catch (IOException e) {
-                mH2tstatus.setText("Error closing output stream");
-            }
-        }
-        captureReady = false;
-        mCaptureToFileChecked.setChecked(false);
-        isCaptureToFileChecked = false;
-    }
-    */
 
     private String queryName(ContentResolver resolver, Uri uri) {
         Cursor returnCursor =

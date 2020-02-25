@@ -187,7 +187,8 @@ public class ZscoreSignalDetector {
         		stepState = StepState.FLAT_FOOT;
         		if (point < toeThreshold) {
         		    beep.set(i,point);
-        		    soundMgr.playSound(beepSound);
+        		    if (beepSound > 0)
+        		        soundMgr.playSound(beepSound);
                 }
     		}		
     		break;
@@ -249,7 +250,25 @@ public class ZscoreSignalDetector {
         
         return signals.get(i);
     }
-    
+
+    public HashMap<String, List> getDataForH2T() {
+
+        HashMap<String, List> returnMap = new HashMap<String, List>();
+        returnMap.put("signals", signals);
+        returnMap.put("filteredData", filteredData);
+        returnMap.put("avgFilter", avgFilter);
+        returnMap.put("stdFilter", stdFilter);
+        returnMap.put("goodStepFilter", goodStepFilter);
+        returnMap.put("stepFilter", stepFilter);
+        returnMap.put("heelPeak", heelPeak);
+        returnMap.put("toePeak", toePeak);
+        returnMap.put("beep", beep);
+
+        return returnMap;
+
+    } // end
+
+
     public HashMap<String, List> analyzeDataForH2T(List<Double> data) {
     	
         // loop input starting at end of rolling window

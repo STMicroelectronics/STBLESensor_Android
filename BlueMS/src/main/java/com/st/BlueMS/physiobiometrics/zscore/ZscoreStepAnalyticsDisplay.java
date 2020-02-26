@@ -127,9 +127,6 @@ public class ZscoreStepAnalyticsDisplay {
         tl.addView(this.tableData(context,"Heel Strike Angular Velocity (AV)",df2.format(sc.meanHSAngularVelocity),"d/s"));
         tl.addView(this.tableData(context,"HS AV Standard deviation",df2.format(sc.stdHSAngularVelocity),"d/s"));
         tl.addView(this.tableData(context,"HS Coefficient of variation",df2.format(sc.HScoefVariation),"CV"));
-        tl.addView(this.tableData(context,"Heel2Toe Angular Velocity (AV)",df2.format(sc.meanH2TAngularVelocity),"d/s"));
-        tl.addView(this.tableData(context,"H2T AV Standard deviation",df2.format(sc.stdH2TAngularVelocity),"d/s"));
-        tl.addView(this.tableData(context,"H2T Coefficient of variation",df2.format(sc.H2TcoefVariation),"CV"));
     }
 
     public String results(ZscoreStepCalculations sc, double threshold, int sessionLength, String filename) {
@@ -151,9 +148,6 @@ public class ZscoreStepAnalyticsDisplay {
         results += "Heel Strike Angular Velocity (AV),"+df2.format(sc.meanHSAngularVelocity)+",d/s"+ System.getProperty("line.separator");
         results += "HS AV Standard deviation,"+df2.format(sc.stdHSAngularVelocity)+",d/s"+ System.getProperty("line.separator");
         results += "HS Coefficient of variation,"+df2.format(sc.HScoefVariation)+",CV"+ System.getProperty("line.separator");
-        results += "Heel2Toe Angular Velocity (AV),"+df2.format(sc.meanH2TAngularVelocity)+",d/s"+ System.getProperty("line.separator");
-        results += "H2T AV Standard deviation,"+df2.format(sc.stdH2TAngularVelocity)+",d/s"+ System.getProperty("line.separator");
-        results += "H2T Coefficient of variation,"+df2.format(sc.H2TcoefVariation)+",CV"+ System.getProperty("line.separator");
         return results;
     }
 }

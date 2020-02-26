@@ -137,7 +137,7 @@ public class OfflineTestActivity extends AppCompatActivity {
     private int zScorelag = 5;
     private double zScoreThreshold = 3;
     private double zScoreInfluence = 0.1;
-    private double zScoreHeelStrike = 100.0;
+    private double zScoreHeelStrike = 150.0;
     private double zScoreaH2T = -100.0;
     private ZscoreSignalDetector zscoreSignalDetector;
     private ZscoreSignalDetector.StepState thisStepState;

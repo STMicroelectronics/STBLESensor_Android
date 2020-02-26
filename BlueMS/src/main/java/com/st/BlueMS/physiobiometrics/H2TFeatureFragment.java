@@ -48,6 +48,9 @@ import com.st.BlueMS.physiobiometrics.shimmer.StepCalculations;
 import com.st.BlueMS.physiobiometrics.shimmer.StepDetect;
 import com.st.BlueMS.physiobiometrics.shimmer.StepResults;
 import com.st.BlueMS.physiobiometrics.zscore.ZscoreSignalDetector;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreStepAnalytics;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreStepAnalyticsDisplay;
+import com.st.BlueMS.physiobiometrics.zscore.ZscoreStepCalculations;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAcceleration;
 import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
@@ -63,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -80,12 +84,15 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private FeatureAutoConfigurable mConfig;
 
-    private boolean newZScoreStepDetector = true;
+    private boolean isNewStepDetector = true;
     private int    zScorelag = 5;
     private double zScoreThreshold = 3;
     private double zScoreInfluence = 0.1;
-    private double zScoreHeelStrike = 100.0;
+    private double zScoreHeelStrike = 150.0;
     private double zScoreaH2T = -100.0;
+    private ZscoreSignalDetector zscoreSignalDetector;
+    private ZscoreSignalDetector.StepState thisStepState;
+    private ArrayList<Double> dataH2t;
 
     private double accel_fullscale = 0.000244;  // 8gs = 0.244 mg/LSB
     private double gyro_fullscale = 0.35;   // 1000 dps = 35 mdps/LSB (but already divided by 1o in gyro feature)
@@ -366,9 +373,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     }
 
     private class H2TgyroListener implements Feature.FeatureListener {
-        private boolean isNewStepDetector;
-        private ZscoreSignalDetector zscoreSignalDetector;
-        private ZscoreSignalDetector.StepState thisStepState;
         private int i;
         /**
          * This class follows the STM32 BlueSTSDK pattern FeatureListener
@@ -377,19 +381,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         long androidTimestamp;
 
         public H2TgyroListener() {
-            isNewStepDetector = true;
+            i = zScorelag;
             // setup the step detector
         }
 
         public H2TgyroListener(boolean newStepDetector) {
             isNewStepDetector = newStepDetector;
-            i =0;
+            i = zScorelag;
             // setup the step detector
-            if (newStepDetector) {
-                this.zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
-                        zScoreInfluence, 0, zScoreHeelStrike,zScoreaH2T,soundMgr,beepSound);
-                thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
-            }
         }
 
         @Override
@@ -434,9 +433,11 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 } else {
                     try {
                         if (isNewStepDetector) {
-                            int signal = this.zscoreSignalDetector.doSignal(Zval, i);
-                            thisStepState = this.zscoreSignalDetector.doStepDetect(Zval, i, signal, thisStepState);
-                            i++;
+                            int signal = zscoreSignalDetector.doSignal(Zval, i);
+                            thisStepState = zscoreSignalDetector.doStepDetect(Zval, i, signal, thisStepState);
+                            //TODO get step. and add it to the file
+                            //
+                            dataH2t.add(Zval);
                         } else {
                             zGyroArrayFilt = stepDetect.filter(sample.timestamp, Xval, Yval, Zval, filter);
                             StepResults stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold,samplingRate);
@@ -456,6 +457,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    i++;
                 }
                 if (gyroSampleCounter % 10 == 0)  {
                     updateGui(() -> {
@@ -515,8 +517,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }
         }//onUpdate
     }
-
-
 
     private void set25HZ() {
         sendH2TCommand(FEATURE_SET_HZ_SLOW);
@@ -791,9 +791,18 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         Node node = getNode();
         if (node == null)
             return;
-        allStepResults = new ArrayList<StepResults>();
-        goodstepResults = new ArrayList<StepResults>();
-        badstepResults = new ArrayList<StepResults>();
+        if (isNewStepDetector) {
+            zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
+                    zScoreInfluence, 50000, zScoreHeelStrike,zScoreaH2T,soundMgr,beepSound);
+            thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
+            dataH2t = new ArrayList<Double>();
+        } else {
+            allStepResults = new ArrayList<StepResults>();
+            goodstepResults = new ArrayList<StepResults>();
+            badstepResults = new ArrayList<StepResults>();
+            stepDetect = new StepDetect();
+        }
+
         deviceSampleCounter = 0;
 
         gyroSample = new ArrayList<InertialMeasurement>();
@@ -801,10 +810,10 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         gyroSampleCounter = 0;
         accelSampleCounter = 0;
 
-        stepDetect = new StepDetect();
+
         mH2TgyroFeature = node.getFeatures(FeatureGyroscope.class);
         if (!mH2TgyroFeature.isEmpty()) {
-            mH2TgyroFeatureListener = new H2TgyroListener();
+            mH2TgyroFeatureListener = new H2TgyroListener(isNewStepDetector);
             for (Feature f : mH2TgyroFeature) {
                 f.addFeatureListener(mH2TgyroFeatureListener);
                 node.enableNotification(f);
@@ -868,24 +877,55 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     public void getResults() {
         String[] xyz = {"X", "Y", "Z"};
 
-        StepAnalytics stepAnalytics = new StepAnalytics();
-        StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
-                goodstepResults, badstepResults,
-                deviceSampleCounter, (int) samplingFrequency);
-        StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
-        stepAnalyticsDisplay.results(thiscontext, mResultsTable, stepCalculations,
-                goodStepThreshold, maxSessionSeconds, dataFilename);
+        if (isNewStepDetector) {
+            HashMap<String, List> resultsMap = zscoreSignalDetector.getDataForH2T();
+            List<Integer> signalsList = resultsMap.get("signals");
+            List<Double> filteredDataList = resultsMap.get("filteredData");
+            List<Double> avgFilterList = resultsMap.get("avgFilter");
+            List<Double> stdFilterList = resultsMap.get("stdFilter");
+            List<Double> goodStepFilterList = resultsMap.get("goodStepFilter");
+            List<Double> stepFilterList = resultsMap.get("stepFilter");
+            List<Double> heelPeakList = resultsMap.get("heelPeak");
+            List<Double> toePeakList = resultsMap.get("toePeak");
+            List<Double> beepList = resultsMap.get("beep");
+            ZscoreStepAnalytics zscoreStepAnalytics = new ZscoreStepAnalytics();
+            ZscoreStepCalculations zscoreStepCalculations = zscoreStepAnalytics.signalAnalytics(dataH2t, signalsList,
+                    stepFilterList, heelPeakList, goodStepFilterList, toePeakList,
+                    20, 50, zScorelag, -109.0);
+            ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
+            zscoreStepAnalyticsDisplay.results(thiscontext, mResultsTable, zscoreStepCalculations,
+                    goodStepThreshold, 60000, dataFilename);
+            if (captureReady) {
+                FileProcess fileProcess = new FileProcess();
+                String results = zscoreStepAnalyticsDisplay.results(zscoreStepCalculations,
+                        goodStepThreshold, maxSessionSeconds, dataFilename);
+                FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
+                mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
+            } else {
+                mH2tstatus.setText("no file saved. click capture button");
+            }
+        } else {
+            StepAnalytics stepAnalytics = new StepAnalytics();
+            StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
+                    goodstepResults, badstepResults,
+                    deviceSampleCounter, (int) samplingFrequency);
+            StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
+            stepAnalyticsDisplay.results(thiscontext, mResultsTable, stepCalculations,
+                    goodStepThreshold, maxSessionSeconds, dataFilename);
+            if (captureReady) {
+                FileProcess fileProcess = new FileProcess();
+                String results = stepAnalyticsDisplay.results(stepCalculations,
+                        goodStepThreshold, maxSessionSeconds, dataFilename);
+                FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
+                mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
+            } else {
+                mH2tstatus.setText("no file saved. click capture button");
+            }
+        }
+
         mResultsTable.setFocusedByDefault(true);
 
-        if (captureReady) {
-            FileProcess fileProcess = new FileProcess();
-            String results = stepAnalyticsDisplay.results(stepCalculations,
-                    goodStepThreshold, maxSessionSeconds, dataFilename);
-            FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
-            mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
-        } else {
-            mH2tstatus.setText("no file saved. click capture button");
-        }
+
         closeCaptureStream();
         scrollView.postDelayed(new Runnable() {
             @Override

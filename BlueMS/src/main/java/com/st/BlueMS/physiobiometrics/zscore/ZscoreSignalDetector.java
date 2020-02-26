@@ -45,6 +45,8 @@ public class ZscoreSignalDetector {
     boolean inStep;
     Sound soundMgr;
     int beepSound;
+    boolean firstBelow;
+    int stateCount;
     
     public enum StepState {
     	LOOKING_FOR_STEP,
@@ -80,6 +82,7 @@ public class ZscoreSignalDetector {
 		this.beepSound = beepSound;
 		lastSignal = 0;
         this.flatFootValleyIndicator = -100.0;
+        this.firstBelow = true;
 		
 		myStats = new ZscoreStatistics(lag);
         // the results (peaks, 1 or -1) of our algorithm
@@ -166,6 +169,7 @@ public class ZscoreSignalDetector {
     	
     	switch (stepState) {
     	case LOOKING_FOR_STEP:
+            this.firstBelow = true;
     		if (signal > 0 && point > stepThreshold) {
     			stepFilter.set(i, stepThreshold);
     			maxStep = point;
@@ -185,10 +189,11 @@ public class ZscoreSignalDetector {
         		minToe = point;
         		goodStepFilter.set(i, flatFootValleyIndicator);
         		stepState = StepState.FLAT_FOOT;
-        		if (point < toeThreshold) {
+        		if (point < toeThreshold && this.firstBelow) {
         		    beep.set(i,point);
         		    if (beepSound > 0)
         		        soundMgr.playSound(beepSound);
+                    this.firstBelow = false;
                 }
     		}		
     		break;
@@ -199,22 +204,34 @@ public class ZscoreSignalDetector {
     				goodStepFilter.set(i, flatFootValleyIndicator);
     				minToe = point;
                  }
-                if (point < toeThreshold) {
+                if (point < toeThreshold && this.firstBelow) {
                     beep.set(i,point);
-                    soundMgr.playSound(beepSound);
+                    if (beepSound > 0)
+                        soundMgr.playSound(beepSound);
+                    this.firstBelow = false;
                 }
     		// no. then go back and look for a step
     		// TODO transition the reset of gait
     		} else {
     			toePeak.set(i, minToe);
     			minToe = 0.0;
-        		stepState = StepState.LOOKING_FOR_STEP;
+        		stepState = StepState.HEEL_OFF;
+                stateCount = 15;
     		}		
     		break;
-    	case HEEL_OFF:
-    		break;
-    	case SWING_PHASE:
-    		break;
+            case HEEL_OFF:
+                stateCount--;
+                if (stateCount == 0) {
+                    stepState = StepState.SWING_PHASE;
+                    stateCount = 5;
+                }
+                break;
+            case SWING_PHASE:
+                stateCount--;
+                if (stateCount == 0) {
+                    stepState = StepState.LOOKING_FOR_STEP;
+                }
+                break;
     	}
     	
     	return stepState;

@@ -47,18 +47,24 @@ public class ZscoreSignalDetector {
     int beepSound;
     boolean firstBelow;
     int stateCount;
-    
-    public enum StepState {
-    	LOOKING_FOR_STEP,
-    	HEEL_STRIKE,
-    	FLAT_FOOT,
-    	HEEL_OFF,
-    	SWING_PHASE,  	
+
+    public  enum StepState {
+        LOOKING_FOR_STEP,
+        HEEL_STRIKE,
+        POTENTIAL_FLAT_FOOT,
+        FLAT_FOOT,
+        HEEL_OFF,
+        SWING_PHASE,
     }
-    
+
     StepState thisStepState;
-    
+
+    // CONSTANTS
     static 	int MAX_TIME = 100;
+    static  int MIN_NUM_PEAKS_FOR_FLAT_FOOT = 3;
+    static 	int SKIP_HEEL_OFF_SAMPLES = 15;
+    static 	int SKIP_SWING_PHASE_SAMPLES = 5;
+    static  double MIN_DEGREES_SEC_FOR_PEAK = 25.0;
     int inStepTimeout; 
     
     /*
@@ -127,24 +133,25 @@ public class ZscoreSignalDetector {
 
         // loop input starting at end of rolling window
         for (int i = lag; i < data.size(); i++) {
-
+            double z_i = data.get(i);
             // if the distance between the current value and average is enough standard deviations (threshold) away
-            if (Math.abs((data.get(i) - avgFilter.get(i - 1))) > threshold * stdFilter.get(i - 1)) {
+            if (Math.abs(z_i) > MIN_DEGREES_SEC_FOR_PEAK &&
+                    Math.abs((z_i - avgFilter.get(i - 1))) > threshold * stdFilter.get(i - 1)) {
 
                 // this is a signal (i.e. peak), determine if it is a positive or negative signal
-                if (data.get(i) > avgFilter.get(i - 1)) {
+                if (z_i > avgFilter.get(i - 1)) {
                     signals.set(i, 1);
                 } else {
                     signals.set(i, -1);
                 }
 
                 // filter this signal out using influence
-                filteredData.set(i, (influence * data.get(i)) + ((1 - influence) * filteredData.get(i - 1)));
+                filteredData.set(i, (influence * z_i) + ((1 - influence) * filteredData.get(i - 1)));
             } else {
                 // ensure this signal remains a zero
                 signals.set(i, 0);
                 // ensure this value is not filtered
-                filteredData.set(i, data.get(i));
+                filteredData.set(i, z_i);
             }
 
             // update rolling average and deviation
@@ -166,64 +173,82 @@ public class ZscoreSignalDetector {
     } // end
     
     public StepState doStepDetect (Double point, int i, int signal, StepState stepState)   {
-    	
-    	switch (stepState) {
-    	case LOOKING_FOR_STEP:
-            this.firstBelow = true;
-    		if (signal > 0 && point > stepThreshold) {
-    			stepFilter.set(i, stepThreshold);
-    			maxStep = point;
-    			stepState = StepState.HEEL_STRIKE;
-    		}
-    		break;
-    	case HEEL_STRIKE:
-    		// do we still have a PEAK?
-    		if (signal >= 0 ) {
-    			if (point > maxStep) {
-                 	maxStep = point;
-                 }
-    		// no. then we calculate max and transition to FLAT-FOOT	
-    		} else {
-    			heelPeak.set(i, maxStep);
-        		maxStep = 0.0;
-        		minToe = point;
-        		goodStepFilter.set(i, flatFootValleyIndicator);
-        		stepState = StepState.FLAT_FOOT;
-        		if (point < toeThreshold && this.firstBelow) {
-        		    beep.set(i,point);
-        		    if (beepSound > 0)
-        		        soundMgr.playSound(beepSound);
-                    this.firstBelow = false;
+
+        switch (stepState) {
+            case LOOKING_FOR_STEP:
+                this.firstBelow = true;
+                if (signal > 0 && point > stepThreshold) {
+                    stepFilter.set(i, stepThreshold);
+                    maxStep = point;
+                    stepState = StepState.HEEL_STRIKE;
                 }
-    		}		
-    		break;
-    	case FLAT_FOOT:
-    		// do we still have a FLAT FOOT?
-    		if (signal < 0 ) {
-    			if (point < minToe) {
-    				goodStepFilter.set(i, flatFootValleyIndicator);
-    				minToe = point;
-                 }
-                if (point < toeThreshold && this.firstBelow) {
-                    beep.set(i,point);
-                    if (beepSound > 0)
-                        soundMgr.playSound(beepSound);
-                    this.firstBelow = false;
+                break;
+            case HEEL_STRIKE:
+                // do we still have a PEAK?
+                if (signal >= 0 ) {
+                    if (point > maxStep) {
+                        maxStep = point;
+                    }
+                    // Potential Peak.  we may have a FLAT-FOOT
+                    // if signal negative for at least MIN_NUM_PEAKS_FOR_FLAT_FOOT
+                    // if data is positive
+                } else {
+                    if (point > 0) {
+                        stateCount = MIN_NUM_PEAKS_FOR_FLAT_FOOT;
+                    } else {
+                        stateCount = 1; // point has gone negative. definitely a heel_strike.
+                    }
+                    stepState = StepState.POTENTIAL_FLAT_FOOT;
                 }
-    		// no. then go back and look for a step
-    		// TODO transition the reset of gait
-    		} else {
-    			toePeak.set(i, minToe);
-    			minToe = 0.0;
-        		stepState = StepState.HEEL_OFF;
-                stateCount = 15;
-    		}		
-    		break;
+                break;
+            // is this real or a false peak?
+            case POTENTIAL_FLAT_FOOT:
+                // if false peak, return to HEEL_STRIKE
+                if (signal >= 0 ) {
+                    stepState = StepState.HEEL_STRIKE;
+                }
+                stateCount--;
+                if (stateCount == 0) {
+                    heelPeak.set(i, maxStep);
+                    maxStep = 0.0;
+                    minToe = point;
+                    goodStepFilter.set(i, flatFootValleyIndicator);
+                    stepState = StepState.FLAT_FOOT;
+                    if (point  < toeThreshold && this.firstBelow) {
+                        if (beepSound > 0)
+                            soundMgr.playSound(beepSound);
+                        beep.set(i,-600.0);
+                        this.firstBelow = false;
+                    }
+                }
+                break;
+            case FLAT_FOOT:
+                // do we still have a FLAT FOOT?
+                if (signal < 0 ) {
+                    if (point < minToe) {
+                        goodStepFilter.set(i, flatFootValleyIndicator);
+                        minToe = point;
+                    }
+                    if (point < toeThreshold && this.firstBelow) {
+                        if (beepSound > 0)
+                            soundMgr.playSound(beepSound);
+                        beep.set(i,point);
+                        this.firstBelow = false;
+                    }
+                    // no. then go back and look for a step
+                    // TODO transition the reset of gait
+                } else {
+                    toePeak.set(i, minToe);
+                    minToe = 0.0;
+                    stepState = StepState.HEEL_OFF;
+                    stateCount = SKIP_HEEL_OFF_SAMPLES;
+                }
+                break;
             case HEEL_OFF:
                 stateCount--;
                 if (stateCount == 0) {
                     stepState = StepState.SWING_PHASE;
-                    stateCount = 5;
+                    stateCount = SKIP_SWING_PHASE_SAMPLES;
                 }
                 break;
             case SWING_PHASE:
@@ -232,7 +257,7 @@ public class ZscoreSignalDetector {
                     stepState = StepState.LOOKING_FOR_STEP;
                 }
                 break;
-    	}
+        }
     	
     	return stepState;
     }
@@ -241,7 +266,8 @@ public class ZscoreSignalDetector {
     // TODO  in-step timeout - is it needed? there will always be signal transitions.
     public int doSignal (Double point, int i)   {
     	 // if the distance between the current value and average is enough standard deviations (threshold) away
-        if (Math.abs((point - avgFilter.get(i - 1))) > threshold * stdFilter.get(i - 1)) {
+        if (Math.abs(point) > MIN_DEGREES_SEC_FOR_PEAK &&
+                Math.abs((point - avgFilter.get(i - 1))) > threshold * stdFilter.get(i - 1)) {
 
             // this is a signal (i.e. peak), determine if it is a positive or negative signal
             if (point > avgFilter.get(i - 1)) {

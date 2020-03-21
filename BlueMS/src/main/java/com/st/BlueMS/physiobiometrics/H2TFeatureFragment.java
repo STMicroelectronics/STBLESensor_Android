@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019  PhysioBiometrics – All rights reserved
+ * Copyright (c) 2020  PhysioBiometrics – All rights reserved
  *
  *  This fragment implements the HeeltoToe algorithm
  * Gyroscope data is streamed over Bluetooth from the Heel2toe device
@@ -74,7 +74,7 @@ import java.util.TimerTask;
 /**
  * Fragment implements the HeeltoToe algorithm
  */
-@DemoDescriptionAnnotation(name = "Heel2toe detector", iconRes = R.drawable.demo_charts,
+@DemoDescriptionAnnotation(name = "Heel2toe Step Detector", iconRes = R.drawable.demo_charts,
         requareOneOf = {FeatureAcceleration.class,
                 FeatureGyroscope.class,
                 FeatureMagnetometer.class,
@@ -89,7 +89,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private double zScoreThreshold = 3;
     private double zScoreInfluence = 0.1;
     private double zScoreHeelStrike = 150.0;
-    private double zScoreaH2T = -100.0;
+    //private double zScoreaH2T = -100.0;
     private ZscoreSignalDetector zscoreSignalDetector;
     private ZscoreSignalDetector.StepState thisStepState;
     private ArrayList<Double> dataH2t;
@@ -275,7 +275,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mCalibrate = (Button) root.findViewById(R.id.H2Tcalibrate);
         mCalibrate.setOnClickListener(new H2Tcalibrate_ButtonListener());
 
-        //goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
+        goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
         mThresholdVal = root.findViewById(R.id.thresholdVal);
         mThresholdVal.setText(goodStepThreshold + " d/s");
         //mThresholdVal.addTextChangedListener(new ThresholdWatcher());
@@ -827,7 +827,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             return;
         if (isNewStepDetector) {
             zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
-                    zScoreInfluence, 50000, zScoreHeelStrike,zScoreaH2T,soundMgr,beepSound);
+                    zScoreInfluence, 50000, zScoreHeelStrike,(double) goodStepThreshold,soundMgr,beepSound);
             thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
             dataH2t = new ArrayList<Double>();
         } else {

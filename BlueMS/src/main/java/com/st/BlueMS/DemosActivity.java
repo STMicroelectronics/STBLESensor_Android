@@ -46,13 +46,11 @@ import android.view.MenuItem;
 import com.st.BlueMS.demos.AccEvent.AccEventFragment;
 import com.st.BlueMS.demos.Audio.DirOfArrival.SourceLocFragment;
 import com.st.BlueMS.demos.Audio.SpeechToText.SpeechToTextFragment;
-import com.st.BlueMS.demos.Cloud.CloudLogFragment;
 import com.st.BlueMS.demos.MotionIntensityFragment;
 import com.st.BlueMS.demos.NodeStatus.NodeStatusFragment;
 import com.st.BlueMS.demos.PedometerFragment;
 import com.st.BlueMS.demos.PlotFeatureFragment;
 import com.st.BlueMS.demos.SwitchFragment;
-import com.st.BlueMS.demos.memsSensorFusion.MemsSensorFusionFragment;
 import com.st.BlueMS.physiobiometrics.H2TFeatureFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
 import com.st.BlueSTSDK.Node;
@@ -107,7 +105,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     private final static Class<? extends DemoFragment> ALL_DEMOS[] = new Class[]{
             //EnvironmentalSensorsFragment.class,
             H2TFeatureFragment.class,
-            MemsSensorFusionFragment.class,
+            //MemsSensorFusionFragment.class,
             //FFTAmplitudeFragment.class,
             PlotFeatureFragment.class,
             //SDLogFragment.class,
@@ -131,7 +129,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             LedButtonControlFragment.class,
             //StartOtaRebootFragment.class,
             //AIDataLogDemoFragment.class,
-            CloudLogFragment.class,
+            //CloudLogFragment.class,
             //PredictiveMaintenanceFragment.class,
             NodeStatusFragment.class
             //FeatureDebugFragment.class

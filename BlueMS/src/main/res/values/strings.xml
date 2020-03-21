@@ -37,7 +37,7 @@
 
 <resources>
 
-    <string name="app_name" translatable="false">WalkWell Heel-2-Toe</string>
+    <string name="app_name" translatable="false">PhysioBioMetrics Inc. Heel2Toe Step Detector</string>
 
     <string name="title_activity_debug_console">Debug Console</string>
 

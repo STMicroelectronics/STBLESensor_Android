@@ -122,7 +122,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     // UI management
     private RadioButton mBeepChecked;
     private boolean isBeepChecked;
-    private RadioButton mCaptureToFileChecked;
+    private Button mCaptureToFile;
     private boolean isCaptureToFileChecked;
     private boolean isSimulateChecked;
     protected SeekBar mThreshold;
@@ -184,9 +184,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private int samplingRate;
     private int SAMPLES_TO_DETECT_FREQUENCY = 10;
     private long samplingFirstTimestamp;
-    private int DEFAULT_THRESHOLD = -109;
+    private int DEFAULT_THRESHOLD = -100;
     private int MID_THRESHOLD = -200;
-    private int HIGH_THRESHOLD = -250;
+    private int HIGH_THRESHOLD = -300;
 
 
     private FeatureAutoConfigurable mFeature;
@@ -259,29 +259,30 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         mH2tstatus = root.findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
 
-        mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
-        isBeepChecked = false;
-        mBeepChecked.setOnClickListener(new BeepCheckedListener());
+        //mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
+        isBeepChecked = true;
+        //mBeepChecked.setOnClickListener(new BeepCheckedListener());
 
-        mCaptureToFileChecked = (RadioButton) root.findViewById(R.id.captureToFile);
+        mCaptureToFile = (Button)  root.findViewById(R.id.captureToFile);
+        //mCaptureToFileChecked = (RadioButton) root.findViewById(R.id.captureToFile);
         isCaptureToFileChecked = false;
-        mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());
+        mCaptureToFile.setOnClickListener(new setFile_ButtonListener());
 
-        m25hz = (Button) root.findViewById(R.id.H2T25hz);
-        m25hz.setOnClickListener(new H2T25_ButtonListener());
-        m50hz = (Button) root.findViewById(R.id.H2T50Hz);
-        m50hz.setOnClickListener(new H2T50_ButtonListener());
+        //m25hz = (Button) root.findViewById(R.id.H2T25hz);
+        //m25hz.setOnClickListener(new H2T25_ButtonListener());
+        //m50hz = (Button) root.findViewById(R.id.H2T50Hz);
+        //m50hz.setOnClickListener(new H2T50_ButtonListener());
         mCalibrate = (Button) root.findViewById(R.id.H2Tcalibrate);
         mCalibrate.setOnClickListener(new H2Tcalibrate_ButtonListener());
 
         //goodStepThreshold = DEFAULT_THRESHOLD; // default value from matlab
-        //mThresholdVal = root.findViewById(R.id.thresholdVal);
-        //mThresholdVal.setText(goodStepThreshold + " d/s");
+        mThresholdVal = root.findViewById(R.id.thresholdVal);
+        mThresholdVal.setText(goodStepThreshold + " d/s");
         //mThresholdVal.addTextChangedListener(new ThresholdWatcher());
 
-        //mThreshold = (SeekBar) root.findViewById(R.id.thresholdBar);
-        //mThreshold.setProgress(-goodStepThreshold);
-        //mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
+        mThreshold = (SeekBar) root.findViewById(R.id.thresholdBar);
+        mThreshold.setProgress(-goodStepThreshold);
+        mThreshold.setOnSeekBarChangeListener(new ThresholdListener());
 
         mSession_testTime = (Button) root.findViewById(R.id.testTime);
         mSession_testTime.setOnClickListener(new TestTime_ButtonListener());
@@ -367,7 +368,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 getResults();
                 //folder.setText("");
                 //h2tSummary();
-                mCaptureToFileChecked.setChecked(false);
+                //mCaptureToFileChecked.setChecked(false);
             }
         }
     }
@@ -533,14 +534,14 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private void set50HZ() {
         sendH2TCommand(FEATURE_SET_HZ_FAST);
-        mH2tstatus.setText("Data collection now 50 samples per second");
+        mH2tstatus.setText("Data collection rate: 50 samples per second");
         //mFrequency.setText("50 Hz");
         samplingFrequency = 50; // default
         samplingRate = 20;
-        m50hz.setBackgroundResource(R.drawable.button_grey_selected);
-        m25hz.setBackgroundResource(R.drawable.button_grey_unselected);
-        m50hz.setTextColor(Color.WHITE);
-        m25hz.setTextColor(Color.BLACK);
+        //m50hz.setBackgroundResource(R.drawable.button_grey_selected);
+        //m25hz.setBackgroundResource(R.drawable.button_grey_unselected);
+        //m50hz.setTextColor(Color.WHITE);
+        //m25hz.setTextColor(Color.BLACK);
         filter = true;
     }
 
@@ -576,8 +577,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     }
 
     private void setLowThreshold() {
-        mH2tstatus.setText("Good step threshold set to "+ DEFAULT_THRESHOLD + " d/s");
-        goodStepThreshold = DEFAULT_THRESHOLD;
         mSession_lowThreshold.setBackgroundResource(R.drawable.button_green_selected);
         mSession_midThreshold.setBackgroundResource(R.drawable.button_green_unselected);
         mSession_highThreshold.setBackgroundResource(R.drawable.button_green_unselected);
@@ -587,8 +586,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     }
 
     private void setMidThreshold() {
-        mH2tstatus.setText("Good step threshold set to "+ MID_THRESHOLD + " d/s");
-        goodStepThreshold = MID_THRESHOLD;
         mSession_lowThreshold.setBackgroundResource(R.drawable.button_green_unselected);
         mSession_midThreshold.setBackgroundResource(R.drawable.button_green_selected);
         mSession_highThreshold.setBackgroundResource(R.drawable.button_green_unselected);
@@ -598,8 +595,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     }
 
     private void setHighThreshold() {
-        mH2tstatus.setText("Good step threshold set to "+ HIGH_THRESHOLD + " d/s");
-        goodStepThreshold = HIGH_THRESHOLD;
         mSession_lowThreshold.setBackgroundResource(R.drawable.button_green_unselected);
         mSession_midThreshold.setBackgroundResource(R.drawable.button_green_unselected);
         mSession_highThreshold.setBackgroundResource(R.drawable.button_green_selected);
@@ -618,6 +613,25 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     private class H2T50_ButtonListener implements Button.OnClickListener {
         public void onClick(View v) {
             set50HZ();
+        }
+    }
+
+    private class setFile_ButtonListener implements Button.OnClickListener {
+        public void onClick(View v) {
+                isCaptureToFileChecked = true;
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                // filter to only show openable items.
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                // Create a file with the requested Mime type
+                intent.setType("text/csv");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                Date today = Calendar.getInstance().getTime();
+                dataFilename = dateFormat.format(today) + ".csv";
+                intent.putExtra(Intent.EXTRA_TITLE, dataFilename);
+                startActivityForResult(intent, WRITE_REQUEST_CODE);
+                mCaptureToFile.setText("LOG SET");
+                mCaptureToFile.setBackgroundResource(R.drawable.button_purple_selected);
+                mH2tstatus.setText("Log file has been set");
         }
     }
 
@@ -647,17 +661,26 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private class LowThreshold_ButtonListener implements Button.OnClickListener {
         public void onClick(View v) {
+            goodStepThreshold = DEFAULT_THRESHOLD;
+            mH2tstatus.setText("Good step threshold set to "+ goodStepThreshold + " d/s");
             setLowThreshold();
+            mThreshold.setProgress(-goodStepThreshold);
         }
     }
     private class MidThreshold_ButtonListener implements Button.OnClickListener {
         public void onClick(View v) {
+            goodStepThreshold = MID_THRESHOLD;
+            mH2tstatus.setText("Good step threshold set to "+ goodStepThreshold + " d/s");
             setMidThreshold();
+            mThreshold.setProgress(-goodStepThreshold);
         }
     }
     private class HighThreshold_ButtonListener implements Button.OnClickListener {
         public void onClick(View v) {
+            goodStepThreshold = HIGH_THRESHOLD;
+            mH2tstatus.setText("Good step threshold set to "+ goodStepThreshold + " d/s");
             setHighThreshold();
+            mThreshold.setProgress(-goodStepThreshold);
         }
     }
 
@@ -669,13 +692,21 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         public void onProgressChanged(SeekBar seekBar, int progress,
                                       boolean fromUser) {
             goodStepThreshold = -progress;
-             mThresholdVal.setText(String.valueOf(goodStepThreshold));
+            mThresholdVal.setText(String.valueOf(goodStepThreshold));
         }
 
         public void onStartTrackingTouch(SeekBar seekBar) {
         }
 
         public void onStopTrackingTouch(SeekBar seekBar) {
+            mH2tstatus.setText("Good step threshold set to "+ goodStepThreshold + " d/s");
+            if (goodStepThreshold > MID_THRESHOLD) {
+                setLowThreshold();
+            } else if (goodStepThreshold > HIGH_THRESHOLD) {
+                setMidThreshold();
+            } else {
+                setHighThreshold();
+            }
         }
     }
 
@@ -697,19 +728,19 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         }
     }
 
-    private class CaptureCheckedListener implements View.OnClickListener {
-        /**
+/*    private class CaptureCheckedListener implements View.OnClickListener {
+        *//**
          * This class sets implements ACTION_CREATE_DOCUMENT Intent
          * to chose where samples should be captured
          * The filename is  set to the current datetime
          * ToDo add some unique ID to identify the android device and/or H2T device
-         */
+         *//*
         @Override
         public void onClick(View v) {
             if (isCaptureToFileChecked) {
                 closeCaptureStream();
             } else {
-                mCaptureToFileChecked.setChecked(true);
+                //mCaptureToFileChecked.setChecked(true);
                 isCaptureToFileChecked = true;
                 Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
                 // filter to only show openable items.
@@ -723,7 +754,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 startActivityForResult(intent, WRITE_REQUEST_CODE);
             }
         }
-    }
+    }*/
 
     private class ProcessListener implements View.OnClickListener {
         /**
@@ -760,6 +791,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         captureReady = false;
         //mCaptureToFileChecked.setChecked(false);
         isCaptureToFileChecked = false;
+        mCaptureToFile.setText("SET LOG FILE");
+        mCaptureToFile.setBackgroundResource(R.drawable.button_purple_unselected);
+
     }
 
     /*
@@ -780,7 +814,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         setButtonStartStatus();
         getResults();
         //folder.setText("");
-        mCaptureToFileChecked.setChecked(false);
+        //mCaptureToFileChecked.setChecked(false);
     }
 
     public void startH2tFeature() {
@@ -891,7 +925,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             ZscoreStepAnalytics zscoreStepAnalytics = new ZscoreStepAnalytics();
             ZscoreStepCalculations zscoreStepCalculations = zscoreStepAnalytics.signalAnalytics(dataH2t, signalsList,
                     stepFilterList, heelPeakList, goodStepFilterList, toePeakList,
-                    20, 50, zScorelag, -109.0);
+                    20, 50, zScorelag, (double) goodStepThreshold);
             ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
             zscoreStepAnalyticsDisplay.results(thiscontext, mResultsTable, zscoreStepCalculations,
                     goodStepThreshold, 60000, dataFilename);
@@ -902,7 +936,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
                 mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
             } else {
-                mH2tstatus.setText("no file saved. click capture button");
+                mH2tstatus.setText("no file saved. click SET FILE button");
             }
         } else {
             StepAnalytics stepAnalytics = new StepAnalytics();
@@ -919,7 +953,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
                 mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
             } else {
-                mH2tstatus.setText("no file saved. click capture button");
+                mH2tstatus.setText("no file saved. Set File");
             }
         }
 

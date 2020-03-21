@@ -9,16 +9,23 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.9" >
-        <EditText
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".20"
+            android:src="@drawable/feet_icon_20" />
+        <TextView
             android:id="@+id/editText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:ems="9"
-            android:inputType="textPersonName"
-            android:text="Step Detect"
-            android:layout_weight=".50"/>
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight=".60"
+            android:text="PhysioBiometrics Inc.\nHeel2toe Step Detector"
+            android:textColor="#000000"
+            android:textSize="15sp" />
         <ImageButton
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             app:srcCompat="@drawable/ic_play_arrow"
@@ -26,32 +33,46 @@
             android:id="@+id/startPlotButton"
             android:padding="1dp"
             android:layout_centerVertical="true"
-            android:layout_weight=".50"/>
+            android:layout_weight=".10"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="0.9" >
-        <RadioButton
+        android:weightSum="0.6" >
+<!--        <RadioButton
             android:id="@+id/beepGoodStep"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/design_default_color_primary_dark"
+            app:buttonTint="@color/design_default_color_primary_dark"
             android:text="Beep"
-            android:layout_weight=".50"/>
-
-        <RadioButton
+            android:layout_weight=".30"/>-->
+        <Button
             android:id="@+id/captureToFile"
-            android:layout_width="fill_parent"
+            android:background="@drawable/button_purple_unselected"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Capture"
-            android:layout_weight=".40"/>
+            android:text="SET LOG FILE"
+            android:layout_margin="2dp"
+            android:layout_weight=".3"/>
+        <Button
+            android:id="@+id/H2Tcalibrate"
+            android:background="@drawable/button_yellow_selected"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="calibrate"
+            android:layout_margin="2dp"
+            android:layout_weight=".3"/>
     </LinearLayout>
 <!--    <TextView
         android:id="@+id/folderLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />-->
-    <LinearLayout
+<!--    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
@@ -74,7 +95,6 @@
             android:text="50 Hz"
             android:layout_margin="2dp"
             android:layout_weight=".30"/>
-
         <Button
             android:id="@+id/H2Tcalibrate"
             android:background="@drawable/button_yellow_selected"
@@ -84,7 +104,7 @@
             android:text="calibrate"
             android:layout_margin="2dp"
             android:layout_weight=".30"/>
-    </LinearLayout>
+    </LinearLayout>-->
 
     <View style="@style/Divider"/>
     <LinearLayout
@@ -119,6 +139,35 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:text="10 minutes"
+            android:layout_weight=".30"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.8" >
+        <TextView
+            android:id="@+id/counttimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/design_default_color_primary_dark"
+            android:text="StopWatch:"
+            android:layout_weight=".30"/>
+        <TextView
+            android:id="@+id/counttime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/design_default_color_primary_dark"
+            android:text="0"
+            android:layout_weight=".20"/>
+        <TextView
+            android:id="@+id/gyroData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/design_default_color_primary_dark"
+            android:text=""
             android:layout_weight=".30"/>
     </LinearLayout>
     <View style="@style/Divider"/>
@@ -158,71 +207,70 @@
     </LinearLayout>
 
 
- <!--   <LinearLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="0.6" >
+        android:weightSum="0.5" >
 
         <TextView
             android:id="@+id/thresholdLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".20"
-            android:text="Threshold:"
-            tools:text="Threshold:" />
+            android:layout_weight=".30"
+            android:textSize="20sp"
+            android:textColor="#008000"
+            android:text="Step Threshold:"
+            tools:text="Step Threshold:" />
         <TextView
             android:id="@+id/thresholdVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:text="TextView"
-            tools:text="-109" />
-        <TextView
+            android:layout_weight=".20"
+            android:textSize="20sp"
+            android:textColor="#008000"
+            android:text="-100"
+            tools:text="-100" />
+<!--        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Freq:"
+            android:textSize="20sp"
+            android:textColor="#008000"
+            android:text="d/s  Freq: 50 Hz"
             android:layout_weight=".10"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp"/>-->
 
-        <TextView
+<!--        <TextView
             android:id="@+id/frequencyVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:max="200"
+            android:progress="70"
             android:layout_weight=".20"
-            android:text="unknown" />
-    </LinearLayout>-->
-
- <!--   <SeekBar
-        android:id="@+id/thresholdBar"
+            android:text="unknown" />-->
+    </LinearLayout>
+<!--        android:id="@+id/thresholdBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
         android:max="500"
-        android:progress="10" /> -->
-    <LinearLayout
-        android:layout_width="fill_parent"
+        android:progress="10">-->
+    <SeekBar
+        android:id="@+id/thresholdBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="0.8" >
-        <TextView
-            android:id="@+id/counttimeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="StopWatch:"
-            android:layout_weight=".30"/>
-        <TextView
-            android:id="@+id/counttime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:layout_weight=".20"/>
-        <TextView
-            android:id="@+id/gyroData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_weight=".30"/>
-    </LinearLayout>
+        android:layout_marginTop="8dp"
+        android:min="50"
+        android:max="500"
+        android:progress="3"
+        android:splitTrack="false"
+        android:progressDrawable="@drawable/seekbar_drawable"
+        android:thumb="@drawable/seekbar_drawable_thumb">
+
+    </SeekBar>
 
     <!--   <SeekBar
            android:id="@+id/MaxTimeBar"
@@ -235,15 +283,18 @@
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="51dp"
+        android:background="#000000"
         android:text="results"
-        android:textSize="12dp" />
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="20dp" />
     <View style="@style/Divider"/>
     <ScrollView
         android:id="@+id/resultscroll"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#e6faff"
+        android:background="#e6e6e6"
         android:scrollbars="none"
         android:layout_weight="1">
         <TableLayout

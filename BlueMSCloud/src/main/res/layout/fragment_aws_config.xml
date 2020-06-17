@@ -43,6 +43,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/aws_endpointWrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/aws_clientIdWrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -94,10 +96,10 @@
 
     <Button
         android:id="@+id/aws_certificate_button"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="11dp"
+        android:layout_marginStart="8dp"
         android:text="@string/cloudLog_aws_select_file"
         android:textAlignment="textStart"
         app:layout_constraintLeft_toRightOf="@+id/asw_certificate_label"
@@ -106,10 +108,10 @@
 
     <Button
         android:id="@+id/aws_privatekey_button"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/cloudLog_aws_select_file"
         android:textAlignment="viewStart"

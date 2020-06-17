@@ -38,8 +38,11 @@ package com.st.BlueMS.demos.machineLearningCore.common
 
 import android.util.SparseArray
 
+/**
+ * class containing the mapping between the register index and its name,
+ * and the value index and its label
+ */
 internal class ValueLabelMapper() {
-
 
     private val registerName : SparseArray<String> = SparseArray()
     private val labelValue : SparseArray<SparseArray<String>> = SparseArray()

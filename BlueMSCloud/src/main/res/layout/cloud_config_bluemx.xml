@@ -42,6 +42,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/blueMx_organizationWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,6 +57,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/blueMx_authTokenWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +72,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/blueMx_deviceTypeWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,6 +87,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/blueMx_deviceIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

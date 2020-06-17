@@ -42,16 +42,34 @@ import androidx.lifecycle.ViewModel
 import com.st.BlueSTSDK.Feature
 import com.st.BlueSTSDK.Node
 
+/**
+ * FSM and MLC has a very similar output, this class
+ */
 internal abstract class RegisterStatusViewModel()  : ViewModel(){
 
+    /**
+     * command to send to have back the labels associate with the register
+     */
     abstract val labelCommand:String
+
+    /**
+     * feature to enable
+     */
     abstract val featureType:Class<out Feature>
+
+    /**
+     * extract the registers values from a feature sample
+     */
     abstract fun extractRegisterStatus(sample:Feature.Sample):ShortArray
 
     private val mRegisterStatus = MutableLiveData<List<RegisterStatus>>()
     val registerStatus: LiveData<List<RegisterStatus>>
         get() = mRegisterStatus
 
+    /**
+     * object used to map the raw register value with a label,
+     * when set update the view adding the labels to the registers
+     */
     private var valueMapper : ValueLabelMapper? = null
     set(value) {
         updateCurrentRegisterStatus(value)
@@ -70,6 +88,9 @@ internal abstract class RegisterStatusViewModel()  : ViewModel(){
         }
     }
 
+    /**
+     * object used to retrieve the register labels
+     */
     private var valueMapperConsole : ValueLabelConsole? = null
 
     private val featureListener = Feature.FeatureListener { _, sample ->

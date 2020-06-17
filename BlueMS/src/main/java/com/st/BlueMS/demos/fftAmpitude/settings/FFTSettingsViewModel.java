@@ -52,7 +52,15 @@ public class FFTSettingsViewModel extends ViewModel {
     static final int MIN_TIME_ACQUISITION_MS = 500;
     static final int MAX_TIME_ACQUISITION_MS = 60000;
 
+    /**
+     * struct with all the settings
+     */
+    //todo: not used?
     private MutableLiveData<FFTSettings> mSettings = new MutableLiveData<>();
+
+    /**
+     * single value
+     */
     private MutableLiveData<FFTSettings.WindowType> mWindowType = new MutableLiveData<>();
     private MutableLiveData<Short> mOdr = new MutableLiveData<>();
     private MutableLiveData<Short> mSize = new MutableLiveData<>();
@@ -60,10 +68,18 @@ public class FFTSettingsViewModel extends ViewModel {
     private MutableLiveData<Byte> mSubRange = new MutableLiveData<>();
     private MutableLiveData<Byte> mOverlap = new MutableLiveData<>();
     private MutableLiveData<Integer> mTimeAcquisition = new MutableLiveData<>();
+
+    /**
+     * true if settings are applied correctly
+     */
     private MutableLiveData<Boolean> mUpdateParamCorrectly = new MutableLiveData<>();
 
     private FFTSettingsConsole mConsole;
 
+    /**
+     * load the current settings from the node
+     * @param node node to read
+     */
     void readSettingsFrom(Node node) {
         Debug console = node.getDebug();
         if(console!=null) {
@@ -156,6 +172,10 @@ public class FFTSettingsViewModel extends ViewModel {
         return mTimeAcquisition;
     }
 
+    /**
+     * store the current settings to the node
+     * @param node node where store the settings
+     */
     void writeSettingsTo(Node node) {
         Debug console = node.getDebug();
         FFTSettings newSettings = null;
@@ -173,6 +193,7 @@ public class FFTSettingsViewModel extends ViewModel {
             mUpdateParamCorrectly.postValue(false);
             return;
         }
+        //newSettings if != null here, if NPE happen we return
         if(console!=null) {
             mConsole = new FFTSettingsConsole(console);
             mConsole.write(newSettings,

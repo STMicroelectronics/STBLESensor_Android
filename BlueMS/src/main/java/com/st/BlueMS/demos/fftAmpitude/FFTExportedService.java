@@ -50,7 +50,11 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-
+/**
+ * the normal way to log ble data isn't useful for the FFT data since the value are split in multiple
+ * notification
+ * this service is writing the data to a file in a useful format and when a full fft is received
+ */
 public class FFTExportedService extends IntentService {
     private static final String ACTION_EXPORT_DATA = FFTExportedService.class.getCanonicalName()+".ACTION_EXPORT_DATA";
 
@@ -63,6 +67,14 @@ public class FFTExportedService extends IntentService {
         super("FFTExportedService");
     }
 
+    /**
+     * start the service to export the data
+     * @param context context used to start the service
+     * @param fileName file where write the the data
+     * @param nodeName name of the node that generate the data
+     * @param fftData fft points
+     * @param freqStep frequency between 2 points
+     */
     public static void startExport(Context context, String fileName,String nodeName, List<float[]> fftData, float freqStep) {
         Intent intent = new Intent(context, FFTExportedService.class);
         intent.setAction(ACTION_EXPORT_DATA);
@@ -115,9 +127,10 @@ public class FFTExportedService extends IntentService {
         Formatter formatter = new Formatter(new FileOutputStream(f,true));
         int nSample = data.get(0).length;
         for(int i = 0 ; i<nSample ; i++){
-            formatter.format("%f,",i*deltaFreq);
+            //force uk to have the . as decimal separator
+            formatter.format(Locale.UK,"%f,",i*deltaFreq);
             for(float[] component: data){
-                formatter.format("%f,",component[i]);
+                formatter.format(Locale.UK,"%f,",component[i]);
             }
             formatter.format("\n");
         }

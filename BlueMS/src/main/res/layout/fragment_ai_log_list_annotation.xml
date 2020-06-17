@@ -37,9 +37,9 @@
         app:layout_constraintVertical_chainStyle="spread"
         tools:listitem="@layout/ai_log_annotation_item" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:id="@+id/aiLog_annotation_addLabelButton"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -52,9 +52,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aiLog_annotation_list" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/aiLog_annotation_startButton"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

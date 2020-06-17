@@ -36,7 +36,7 @@
  */
 package com.st.BlueMS.demos.Cloud;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -48,7 +48,11 @@ import com.st.BlueMS.R;
 
 import java.util.Arrays;
 
-
+/**
+ * Dialog where the user can select the cloud frequency update
+ * this dialog must be insert in an activity or a fragment that implements the CloudLogSelectIntervalDialogCallback
+ * interface
+ */
 public class CloudLogSelectIntervalDialogFragment extends DialogFragment {
 
     private static final String CURRENT_INTERVAL_INDEX = CloudLogSelectIntervalDialogFragment.class.getName()+".CURRENT_INTERVAL_INDEX";

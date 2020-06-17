@@ -60,7 +60,7 @@ import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
 import com.st.BlueMS.R;
 
-@DemoDescriptionAnnotation(name="Compass", requareOneOf = {FeatureCompass.class,FeatureEulerAngle.class},
+@DemoDescriptionAnnotation(name="Compass", requareOneOf = {FeatureCompass.class},
         iconRes = R.drawable.compass_demo_icon)
 public class CompassFragment extends BaseDemoFragment {
 
@@ -105,11 +105,6 @@ public class CompassFragment extends BaseDemoFragment {
         updateCompassAngle(angle);
     };
 
-    private Feature.FeatureListener mEulerUpdate = (f, sample) -> {
-        final float angle = FeatureEulerAngle.getYaw(sample);
-        updateCompassAngle(angle);
-    };
-
     public CompassFragment() {
         // Required empty public constructor
     }
@@ -119,16 +114,12 @@ public class CompassFragment extends BaseDemoFragment {
         mCompassFeature = node.getFeature(FeatureCompass.class);
         if(mCompassFeature!=null) {
             startDemoWith(mCompassFeature,mCompassUpdate);
-        }else {
-            mEulerAngle = node.getFeature(FeatureEulerAngle.class);
-            if(mEulerAngle != null) {
-                startDemoWith(mEulerAngle,mEulerUpdate);
-            }
         }
     }
 
     private void startDemoWith(FeatureAutoConfigurable feature, Feature.FeatureListener listener){
         feature.addFeatureListener(listener);
+        //todo: use getChildFragmentManager()
         CalibrationContract.View calibView = new CalibrationView(getFragmentManager(), mCalibButton);
         mCalibPresenter.manage(calibView,feature);
         feature.enableNotification();
@@ -138,8 +129,6 @@ public class CompassFragment extends BaseDemoFragment {
     protected void disableNeedNotification(@NonNull Node node) {
         if(mCompassFeature!=null) {
             stopDemoWith(mCompassFeature,mCompassUpdate);
-        }else if(mEulerAngle != null){
-            stopDemoWith(mEulerAngle,mEulerUpdate);
         }
     }
 

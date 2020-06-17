@@ -45,7 +45,7 @@
     inkscape:export-filename="C:\Users\giovanni visentini\Documents\W2ST\thermometer_15.png"
     inkscape:export-xdpi="43.77" inkscape:export-ydpi="43.77">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -71,11 +71,11 @@
        id="linearGradient3912">
       <stop
          id="stop3914"
-         style="stop-color:#ffffff;stop-opacity:1"
+         style="stop-color:#FFFFFF;stop-opacity:1"
          offset="0" />
       <stop
          id="stop3916"
-         style="stop-color:#ffffff;stop-opacity:0"
+         style="stop-color:#FFFFFF;stop-opacity:0"
          offset="1" />
     </linearGradient>
     <linearGradient
@@ -86,7 +86,7 @@
          offset="0" />
       <stop
          offset="1"
-         style="stop-color:#ff0000;stop-opacity:1;"
+         style="stop-color:#FF0000;stop-opacity:1;"
          id="stop3877" />
     </linearGradient>
     <inkscape:path-effect
@@ -167,7 +167,7 @@
          offset="0" />
       <stop
          offset="1"
-         style="stop-color:#ff0000;stop-opacity:1;"
+         style="stop-color:#FF0000;stop-opacity:1;"
          id="stop3877-8" />
     </linearGradient>
     <radialGradient
@@ -184,11 +184,11 @@
        id="linearGradient3912-4">
       <stop
          id="stop3914-5"
-         style="stop-color:#ffffff;stop-opacity:1"
+         style="stop-color:#FFFFFF;stop-opacity:1"
          offset="0" />
       <stop
          id="stop3916-5"
-         style="stop-color:#ffffff;stop-opacity:0"
+         style="stop-color:#FFFFFF;stop-opacity:0"
          offset="1" />
     </linearGradient>
     <radialGradient
@@ -219,7 +219,7 @@
          offset="0" />
       <stop
          offset="1"
-         style="stop-color:#ff0000;stop-opacity:1;"
+         style="stop-color:#FF0000;stop-opacity:1;"
          id="stop3877-8-1" />
     </linearGradient>
     <radialGradient
@@ -237,11 +237,11 @@
        id="linearGradient3912-4-2">
       <stop
          id="stop3914-5-7"
-         style="stop-color:#ffffff;stop-opacity:1"
+         style="stop-color:#FFFFFF;stop-opacity:1"
          offset="0" />
       <stop
          id="stop3916-5-6"
-         style="stop-color:#ffffff;stop-opacity:0"
+         style="stop-color:#FFFFFF;stop-opacity:0"
          offset="1" />
     </linearGradient>
     <radialGradient
@@ -345,7 +345,7 @@
          inkscape:connector-curvature="0"
          id="path4089"
          d="M 52.637871,63.889901 C 53.927115,48.061479 57.89936,38.944303 67.941643,28.764385 79.267437,17.283364 92.185919,12.357714 108.22935,13.403202 c 12.85531,0.83773 22.99402,5.592136 32.82821,15.394327 9.73505,9.703362 14.76882,21.895451 14.76882,35.770939 l 0,6.325974 -3.39614,0 c -2.45277,0 -3.39614,-0.353765 -3.39614,-1.273553 0,-1.116177 -5.61307,-1.273553 -45.42339,-1.273553 -39.810317,0 -45.423383,0.157376 -45.423383,1.273553 0,0.896471 -0.906023,1.273553 -3.059992,1.273553 l -3.059992,0 0.570528,-7.004541 z"
-         style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         style="fill:#FFFFFF;fill-opacity:1;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          ry="4.0718832"
          y="71.461441"
@@ -353,7 +353,7 @@
          height="234.65956"
          width="104.832"
          id="rect4091"
-         style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:4.33199024;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         style="fill:#FFFFFF;fill-opacity:1;stroke:#FFFFFF;stroke-width:4.33199024;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          inkscape:connector-curvature="0"
          style="fill:none;stroke:#000000;stroke-width:10;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- add a fake layout to be able to set the margin inside the dialog-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dialog_startPadding"
+    android:paddingEnd="@dimen/dialog_endPadding"
+    android:paddingTop="@dimen/dialog_topPadding"
+    android:paddingBottom="@dimen/dialog_bottomPadding">
+    <EditText
+        android:id="@+id/tagLog_changeLabel_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="20"
+        />
+</FrameLayout>

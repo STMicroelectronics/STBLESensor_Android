@@ -69,7 +69,7 @@ class MachineLearningCoreFragment : BaseDemoFragment() {
         val registerAdapter = RegisterStatusViewAdapter(R.string.mlc_registerIdWithName_format,R.string.mlc_registerId_format)
         registerView.adapter = registerAdapter
         mlcViewModel.registerStatus.observe(viewLifecycleOwner, Observer { newStatus ->
-            registerAdapter.updateRegisterStatus(newStatus)
+            registerAdapter.submitList(newStatus)
         })
 
     }

@@ -41,7 +41,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -105,8 +109,8 @@ public class AzureIoTCentralConfigFactory implements CloudIotClientConfiguration
     }
 
     @Override
-    public void attachParameterConfiguration(Context c, ViewGroup root) {
-        LayoutInflater inflater = LayoutInflater.from(c);
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+        LayoutInflater inflater = LayoutInflater.from(root.getContext());
         View v = inflater.inflate(R.layout.cloud_config_azure_iotcentral,root);
 
         TextInputLayout scopeIdLayout = v.findViewById(R.id.azure_iotCentral_scopeIdWrapper);
@@ -125,14 +129,19 @@ public class AzureIoTCentralConfigFactory implements CloudIotClientConfiguration
                 new CheckNotEmpty(deviceIdTextLayout,R.string.azure_iotCentral_deviceIdEmptyError));
 
         v.findViewById(R.id.azure_iotCentral_createAppButton).setOnClickListener(
-                view -> openIoTCentralSite(c)
+                view -> openIoTCentralSite(root.getContext())
         );
 
-        loadFromPreferences(getShearedPreference(c));
+        loadFromPreferences(getShearedPreference(root.getContext()));
     }
 
     @Override
-    public void loadDefaultParameters(@Nullable Node n) {
+    public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+        root.removeAllViews();
+    }
+
+    @Override
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
 
     }
 
@@ -142,7 +151,7 @@ public class AzureIoTCentralConfigFactory implements CloudIotClientConfiguration
     }
 
     @Override
-    public CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
         storeToPreference(getShearedPreference(mDeviceIdText.getContext()));
         return new AzureIotCentralFactory(mScopeIdText.getText().toString(),
                 mDeviceIdText.getText().toString(),

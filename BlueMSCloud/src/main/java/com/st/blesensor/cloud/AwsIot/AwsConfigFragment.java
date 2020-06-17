@@ -39,7 +39,6 @@ package com.st.blesensor.cloud.AwsIot;
 
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,7 +46,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +75,8 @@ public class AwsConfigFragment extends Fragment {
     private static final String CONF_PREFERENCE = AwsConfigFragment.class.getCanonicalName();
     private static final String ENDPOINT_KEY = CONF_PREFERENCE+".ENDPOINT";
     private static final String CLIENT_ID_KEY = CONF_PREFERENCE+".DEVICE_ID";
+    private static final String PRIVATE_KEY_URI_KEY = CONF_PREFERENCE+".PRIVATE_KEY_URI";
+    private static final String CERTIFICATE_URI_KEY = CONF_PREFERENCE+".CERTIFICATE_URI";
     private static final int SELECT_PRIVATEKEY_FILE = 2;
     private static final int SELECT_CERTIFICATE_FILE = 1;
     private static final Pattern ENPOINT_MATCHER =
@@ -104,6 +109,7 @@ public class AwsConfigFragment extends Fragment {
         mClientId = pref.getString(CLIENT_ID_KEY,null);
         if(mClientId!=null)
             mClientIdText.setText(mClientId);
+
     }
 
     /**
@@ -115,7 +121,6 @@ public class AwsConfigFragment extends Fragment {
 
         editor.putString(ENDPOINT_KEY, mEndpointText.getText().toString());
         editor.putString(CLIENT_ID_KEY, mClientIdText.getText().toString());
-
         editor.apply();
     }
 
@@ -150,21 +155,51 @@ public class AwsConfigFragment extends Fragment {
         mSelectPrivateKey = root.findViewById(R.id.aws_privatekey_button);
         mSelectPrivateKey.setOnClickListener(view ->
                 startActivityForResult(getFileSelectIntent(), SELECT_PRIVATEKEY_FILE));
-
+        if(savedInstanceState!=null){
+            restoreFileState(savedInstanceState);
+        }
+        if(mCertificateFile!=null){
+            setCertificateFileUri(mCertificateFile);
+        }
+        if(mPrivateKeyFile!=null){
+            setPrivateKeyFileUri(mPrivateKeyFile);
+        }
         return root;
     }
 
+    private void restoreFileState(@NonNull Bundle savedState){
+        Uri privateKeyFile = savedState.getParcelable(PRIVATE_KEY_URI_KEY);
+        if(privateKeyFile!=null){
+            setPrivateKeyFileUri(privateKeyFile);
+        }
+
+        Uri certificateKeyFile = savedState.getParcelable(CERTIFICATE_URI_KEY);
+        if(certificateKeyFile!=null){
+            setCertificateFileUri(certificateKeyFile);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mPrivateKeyFile!=null){
+            outState.putParcelable(PRIVATE_KEY_URI_KEY,mPrivateKeyFile);
+        }
+        if(mCertificateFile!=null){
+            outState.putParcelable(CERTIFICATE_URI_KEY,mCertificateFile);
+        }
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        loadFromPreferences(getActivity().getSharedPreferences(CONF_PREFERENCE, Context.MODE_PRIVATE));
+        loadFromPreferences(requireContext().getSharedPreferences(CONF_PREFERENCE, Context.MODE_PRIVATE));
     }
 
     /*get the file name from an uri
     * or null if the uri shame is unknown*/
     private @Nullable String getFileName(Uri uri) {
-        Context c = getActivity();
+        Context c = requireContext();
         String scheme = uri.getScheme();
         if (scheme.equals("file")) {
             return uri.getLastPathSegment();
@@ -190,23 +225,32 @@ public class AwsConfigFragment extends Fragment {
         if (file==null)
             return;
 
-        String fileName = getFileName(file);
-
-        if(requestCode==SELECT_CERTIFICATE_FILE){
-            mCertificateFile = file;
-            if(fileName!=null)
-                mSelectCertificate.setText(fileName);
-            else
-                mSelectCertificate.setText(R.string.cloudLog_aws_select_file);
-
-        }else if(requestCode == SELECT_PRIVATEKEY_FILE){
-            mPrivateKeyFile = file;
-            if(fileName!=null)
-                mSelectPrivateKey.setText(fileName);
-            else
-                mSelectPrivateKey.setText(R.string.cloudLog_aws_select_file);
+        switch (requestCode){
+            case SELECT_CERTIFICATE_FILE:
+                setCertificateFileUri(file);
+                break;
+            case SELECT_PRIVATEKEY_FILE:
+                setPrivateKeyFileUri(file);
+                break;
         }
+    }
 
+    private void setCertificateFileUri(Uri fileUri){
+        String fileName = getFileName(fileUri);
+        mCertificateFile = fileUri;
+        if(fileName!=null)
+            mSelectCertificate.setText(fileName);
+        else
+            mSelectCertificate.setText(R.string.cloudLog_aws_select_file);
+    }
+
+    private void setPrivateKeyFileUri(Uri fileUri){
+        String fileName = getFileName(fileUri);
+        mPrivateKeyFile = fileUri;
+        if(fileName!=null)
+            mSelectPrivateKey.setText(fileName);
+        else
+            mSelectPrivateKey.setText(R.string.cloudLog_aws_select_file);
     }
 
     @Override

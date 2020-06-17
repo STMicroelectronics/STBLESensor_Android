@@ -38,7 +38,7 @@
 package com.st.BlueMS.demos.NodeStatus;
 
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;

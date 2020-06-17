@@ -20,7 +20,7 @@
      id="defs5022" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
@@ -55,7 +55,7 @@
      id="layer1"
      transform="translate(0,-712.36216)">
     <g
-       style="fill:#3fabe2;fill-opacity:1"
+       style="fill:#3CB4E6;fill-opacity:1"
        id="g4999"
        transform="matrix(0.96771571,-0.25204425,0.25204425,0.96771571,160.74106,-1710.3431)">
       <path
@@ -63,7 +63,7 @@
          inkscape:connector-curvature="0"
          id="path4451"
          d="m -357.76153,1943.6862 44,0 -22,-120 z"
-         style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+         style="fill:#FF0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       <g
          id="g4996">
         <path
@@ -71,10 +71,10 @@
            inkscape:connector-curvature="0"
            id="path4993"
            d="m -357.76153,1943.6862 44,0 -22,120 z"
-           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+           style="fill:#FFFFFF;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       </g>
       <g
-         style="fill:#3fabe2;fill-opacity:1"
+         style="fill:#3CB4E6;fill-opacity:1"
          id="g4999-8"
          transform="matrix(0.96753613,0.25273273,-0.25273273,0.96753613,172.27077,715.78699)">
         <path
@@ -82,7 +82,7 @@
            inkscape:connector-curvature="0"
            id="path4451-8"
            d="m -357.76153,1943.6862 44,0 -22,-120 z"
-           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+           style="fill:#FF0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
         <g
            id="g4996-4"
            style="stroke:none;stroke-opacity:1;fill:#000000;fill-opacity:1">

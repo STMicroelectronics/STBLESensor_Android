@@ -1,6 +1,8 @@
 #! /bin/bash
 
-export PATH=~/Library/Android/sdk/build-tools/28.0.3/:$PATH
+#export PATH=~/Library/Android/sdk/build-tools/29.0.3/:$PATH
+export PATH=~/Android/Sdk/build-tools/29.0.3/:$PATH
+
 versionName=$1
 
 cd BlueSTSDK
@@ -19,6 +21,11 @@ git push --tags origin
 cd ..
 
 cd trilobytelib
+git tag $versionName
+git push --tags origin
+cd ..
+
+cd STWINBoard_GUI_Android
 git tag $versionName
 git push --tags origin
 cd ..

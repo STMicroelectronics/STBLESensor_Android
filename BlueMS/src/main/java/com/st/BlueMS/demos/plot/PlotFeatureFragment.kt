@@ -38,7 +38,7 @@ package com.st.BlueMS.demos.plot
 
 import android.os.Bundle
 import android.view.*
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.st.BlueMS.R
 import com.st.BlueMS.demos.util.BaseDemoFragment
 import com.st.BlueSTSDK.Features.*
@@ -89,7 +89,7 @@ class PlotFeatureFragment : BaseDemoFragment(){
     @ExperimentalTime
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ViewModelProviders.of(requireActivity(),PlotSettingsViewModelFactory(node!!))
+        ViewModelProvider(requireActivity(),PlotSettingsViewModelFactory(node!!))
                 .get(PlotSettingsViewModel::class.java)
     }
 

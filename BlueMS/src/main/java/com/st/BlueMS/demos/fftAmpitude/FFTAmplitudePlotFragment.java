@@ -61,10 +61,12 @@ import com.st.BlueSTSDK.gui.util.FragmentUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * show the fft plot
+ */
 public class FFTAmplitudePlotFragment extends Fragment {
 
     private static final String DETAILS_DIALOG_TAG = "DETAILS_DIALOG";
-
 
     private static LineDataSet buildDataSet(FFTComponentsConfig.LineConf conf, float[] yData , float deltaX){
         List<Entry> data = new ArrayList<>(yData.length);
@@ -107,6 +109,7 @@ public class FFTAmplitudePlotFragment extends Fragment {
     private ProgressBar mRefreshProgress;
 
     private FFTDataViewModel mFFTViewModel;
+    //todo can be removed?
     private TimeDomainDataViewModel mTimeDomainViewModel;
 
     @Nullable

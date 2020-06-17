@@ -49,12 +49,24 @@ import android.widget.TextView;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Features.FeatureMotorTimeParameter;
 
+/**
+ * dialog showing the fft statistics
+ */
 public class FFTAmplitudeDataStatsFragment extends DialogFragment {
 
+    /**
+     * view model containing the fft data to show
+     * this fragment is shared with the plot fragment
+     */
     private FFTDataViewModel mFFTViewModel;
+
+    /**
+     * view model containing the time domain data
+     * this fragment is shared with the plot fragment
+     */
     private TimeDomainDataViewModel mTimeDomainViewModel;
 
-    private TextView mFreqStats[] = new TextView[3];
+    private TextView[] mFreqStats = new TextView[3];
     private TextView mTimeStatsX;
     private TextView mTimeStatsY;
     private TextView mTimeStatsZ;

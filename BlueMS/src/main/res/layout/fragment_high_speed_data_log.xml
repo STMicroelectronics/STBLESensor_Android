@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toos="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/hsdl_cpuValueLayout"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/hsdl_boardId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/hsdl_cpuUsage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/hsdl_cpuUsageImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cpu_usage"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/hsdl_boardName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/hsdl_boardId"
+        app:layout_constraintEnd_toStartOf="@+id/hsdl_batteryValueLayout"
+        app:layout_constraintStart_toEndOf="@+id/hsdl_cpuValueLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        toos:name="STWIN_001" />
+
+    <TextView
+        android:id="@+id/hsdl_boardId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toTopOf="@+id/hsdl_fragmentContent"
+        app:layout_constraintEnd_toStartOf="@+id/hsdl_batteryValueLayout"
+        app:layout_constraintStart_toEndOf="@+id/hsdl_cpuValueLayout"
+        app:layout_constraintTop_toBottomOf="@+id/hsdl_boardName"
+        toos:name="XXX-XXX-YYY-YYY" />
+
+    <LinearLayout
+        android:id="@+id/hsdl_batteryValueLayout"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/hsdl_boardId"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/hsdl_batteryLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/hsdl_batteryLevelImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/battery_100c" />
+    </LinearLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/hsdl_fragmentContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/hsdl_bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hsdl_boardId" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/hsdl_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hsdl_fragmentContent"
+        app:menu="@menu/menu_high_speed_data_log" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

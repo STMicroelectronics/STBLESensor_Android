@@ -37,7 +37,7 @@
 package com.st.BlueMS.demos.multiNN
 
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -113,12 +113,12 @@ class MultiNeuralNetworkFragment : BaseDemoFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mHumanActivityViewModel = ViewModelProviders.of(this).get(ActivityRecognitionViewModel::class.java)
-        mAudioSceneViewModel = ViewModelProviders.of(this).get(AudioSceneViewModel::class.java)
-        mComboViewModel = ViewModelProviders.of(this).get(ComboViewModel::class.java)
+        mHumanActivityViewModel = ViewModelProvider(this).get(ActivityRecognitionViewModel::class.java)
+        mAudioSceneViewModel = ViewModelProvider(this).get(AudioSceneViewModel::class.java)
+        mComboViewModel = ViewModelProvider(this).get(ComboViewModel::class.java)
         node?.let { node ->
             val factory = MultiNNViewModelFactory(node)
-            mMultiNNViewModel = ViewModelProviders.of(this,factory).get(MultiNNViewModel::class.java)
+            mMultiNNViewModel = ViewModelProvider(this,factory).get(MultiNNViewModel::class.java)
         }
 
         mMultiNNViewModel?.let { attachMultiNNViewModel(it) }

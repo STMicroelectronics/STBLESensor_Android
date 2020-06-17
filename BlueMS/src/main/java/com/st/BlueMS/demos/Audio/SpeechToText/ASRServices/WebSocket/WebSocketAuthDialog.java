@@ -1,6 +1,6 @@
 package com.st.BlueMS.demos.Audio.SpeechToText.ASRServices.WebSocket;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;

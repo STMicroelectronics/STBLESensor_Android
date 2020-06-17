@@ -36,8 +36,9 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 static def getDate() {
     def date = new Date()
@@ -63,8 +64,8 @@ android {
 
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 40
-        versionName '4.6.1'
+        versionCode 46
+        versionName '4.7.0'
         applicationId "com.st.bluems"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -113,7 +114,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     packagingOptions {
@@ -122,7 +123,7 @@ android {
 }
 
 ext {
-    leakcanaryVersion = '1.6.3'
+    leakcanaryVersion = '2.3'
 }
 
 repositories {
@@ -153,6 +154,7 @@ dependencies {
     implementation project(':BlueSTSDK')
     implementation project(':BlueSTSDK_Gui_Android')
     implementation project(':BlueMSCloud')
+    implementation project(path: ':STWINBoard_GUI_Android')
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
@@ -183,18 +185,13 @@ dependencies {
         exclude group: 'com.google.code.findbugs', module: 'annotations'
     }
 
-    //use the v 3.11 to avoid chrash with ibm
+    //use the v 3.11 to avoid crash with ibm
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.11.0'
 
-    // crashlytics
-    implementation group: 'com.crashlytics.sdk.android', name: 'crashlytics', version: '2.10.1'
-    //keep the 16.x to avoid android x to avoid new support library that will break the plot
-    implementation group: 'com.google.firebase', name: 'firebase-core', version: '17.2.1'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     //memory leak detector
     debugImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: "$leakcanaryVersion"
-    releaseImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: "$leakcanaryVersion"
-    testImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android-no-op', version: "$leakcanaryVersion"
 
     testImplementation group: 'org.json', name: 'json', version: '20140107'
     //since the json lib is inside the android sdk

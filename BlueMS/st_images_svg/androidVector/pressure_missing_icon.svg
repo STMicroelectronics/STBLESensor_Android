@@ -41,7 +41,7 @@
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" id="svg4237" viewBox="0 0 60.000002 59.999999"
     height="48pt" width="48pt" inkscape:version="0.91 r13725" sodipodi:docname="pressure_missing_icon.svg">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -85,43 +85,43 @@
   <g
      transform="translate(0,-992.36222)"
      id="layer1"
-     style="fill:#8b8b8b;fill-opacity:1">
+     style="fill:#74757c;fill-opacity:1">
     <g
        id="g4253"
        transform="matrix(0.67512649,0,0,-0.67512649,1.2938891,1050.929)"
-       style="fill:#8b8b8b;fill-opacity:1">
+       style="fill:#74757c;fill-opacity:1">
       <g
          id="g4255"
-         style="fill:#8b8b8b;fill-opacity:1">
+         style="fill:#74757c;fill-opacity:1">
         <g
            id="g4257"
            clip-path="url(#clipPath4259)"
-           style="fill:#8b8b8b;fill-opacity:1">
+           style="fill:#74757c;fill-opacity:1">
           <g
              id="g4263"
              transform="translate(42.7871,19.04)"
-             style="fill:#8b8b8b;fill-opacity:1">
+             style="fill:#74757c;fill-opacity:1">
             <path
                d="m 0,0 -0.404,0 c -12.604,0 -24.418,5.65 -33.268,14.647 -1.418,1.444 -1.398,4.03 0.045,5.447 1.441,1.421 3.762,0.532 5.18,-0.909 7.476,-7.603 17.457,-12.773 28.103,-12.863 10.651,-0.078 20.698,5.015 28.301,12.49 1.441,1.419 3.762,2.417 5.18,0.974 1.42,-1.443 1.4,-4.285 -0.043,-5.703 C 24.193,5.329 12.453,0 0,0"
-               style="fill:#8b8b8b;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#74757c;fill-opacity:1;fill-rule:nonzero;stroke:none"
                id="path4265" />
           </g>
           <g
              id="g4267"
              transform="translate(36.7305,49.7764)"
-             style="fill:#8b8b8b;fill-opacity:1">
+             style="fill:#74757c;fill-opacity:1">
             <path
                d="M 0,0 0.021,29.567 12.109,29.559 12.088,-0.008 18.439,-0.013 5.777,-17.478 -6.861,0.005 0,0 Z"
-               style="fill:#8b8b8b;fill-opacity:1;fill-rule:evenodd;stroke:none"
+               style="fill:#74757c;fill-opacity:1;fill-rule:evenodd;stroke:none"
                id="path4269" />
           </g>
           <g
              id="g4271"
              transform="translate(42.7988,5.2832)"
-             style="fill:#8b8b8b;fill-opacity:1">
+             style="fill:#74757c;fill-opacity:1">
             <path
                d="m 0,0 c -0.141,0 -0.279,0.001 -0.42,0.002 -13.141,0.095 -25.453,4.612 -34.676,12.721 -1.42,1.248 -1.4,3.253 0.043,4.48 1.442,1.227 3.762,1.209 5.182,-0.038 7.85,-6.902 18.33,-10.747 29.512,-10.828 11.129,-0.077 21.734,3.612 29.716,10.4 1.442,1.227 3.764,1.21 5.18,-0.037 1.42,-1.249 1.401,-3.253 -0.041,-4.479 C 25.219,4.332 12.98,0 0,0"
-               style="fill:#8b8b8b;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#74757c;fill-opacity:1;fill-rule:nonzero;stroke:none"
                id="path4273" />
           </g>
         </g>

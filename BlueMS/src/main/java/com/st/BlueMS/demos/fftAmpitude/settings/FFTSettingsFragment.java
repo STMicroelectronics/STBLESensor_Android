@@ -61,10 +61,19 @@ import com.st.BlueSTSDK.Manager;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.util.InputChecker.CheckNumberRange;
 
+/**
+ * fragment used to set the fft settings
+ */
 public class FFTSettingsFragment extends Fragment {
 
-    private static final String ARG_NODE_TAG = FFTAmplitudePlotFragment.class.getName()+".ARG_NODE_TAG";
+    private static final String ARG_NODE_TAG = FFTSettingsFragment.class.getName()+".ARG_NODE_TAG";
 
+    /**
+     * build an instance of this fragment
+     * @param node node where the settings will be sent, note: the node must be already connected
+     *             and must export the Debug service
+     * @return framgent to change the fft settings
+     */
     public static Fragment newInstance(@NonNull Node node) {
         FFTSettingsFragment fragment = new FFTSettingsFragment();
         Bundle args = new Bundle();
@@ -83,6 +92,7 @@ public class FFTSettingsFragment extends Fragment {
             return null;
         return Manager.getSharedInstance().getNodeWithTag(nodeTag);
     }
+
     private FFTSettingsViewModel mSettingsViewModel;
 
     private Spinner mWindowSelector;

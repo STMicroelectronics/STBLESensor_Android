@@ -16,7 +16,7 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="motion_algo_pose_lying_down.svg">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -88,28 +88,28 @@
           <g
              id="g11537"
              transform="translate(31.2479,72.0079)"
-             style="fill:#39a9dc;fill-opacity:1">
+             style="fill:#3CB4E6;fill-opacity:1">
             <path
                d="m 0,0 c -0.075,2.343 -0.982,4.309 -2.721,5.897 -1.739,1.588 -3.78,2.343 -6.123,2.268 -2.345,-0.076 -4.348,-0.945 -6.01,-2.608 -1.663,-1.663 -2.457,-3.667 -2.382,-6.01 0.076,-2.344 0.983,-4.31 2.722,-5.897 1.739,-1.588 3.779,-2.382 6.123,-2.382 2.344,0 4.347,0.87 6.01,2.61 C -0.717,-4.384 0.075,-2.343 0,0"
-               style="fill:#39a9dc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#3CB4E6;fill-opacity:1;fill-rule:nonzero;stroke:none"
                id="path11539" />
           </g>
           <g
              id="g11541"
              transform="translate(35.25,73.125)"
-             style="stroke:none;stroke-opacity:1;fill:#39a9dc;fill-opacity:1">
+             style="stroke:none;stroke-opacity:1;fill:#3CB4E6;fill-opacity:1">
             <path
                d="m 0,0 c -1.25,-1.125 -1.25,-3.904 -1.25,-3.904 0,-1.77 0.143,-3.909 1.675,-4.797 3.564,-2.066 12.006,-3.202 16.121,-3.424 18.489,-0.997 74.064,0 74.064,0 2.25,0 4.14,2.416 4.14,4.667 v 1.193 c 0,2.248 -1.555,4.072 -3.803,4.075 L 50.75,-2.14 c 0,0 -7.119,6.118 -26.375,6.14 C 17.75,4.007 3.51,3.159 0,0"
-               style="fill:#39a9dc;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+               style="fill:#3CB4E6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
                id="path11543" />
           </g>
           <g
              id="g11545"
              transform="translate(14.0069,54.5)"
-             style="fill:none;fill-opacity:1;stroke:#d4007a;stroke-opacity:1">
+             style="fill:none;fill-opacity:1;stroke:#E6007E;stroke-opacity:1">
             <path
                d="M 0,0 H 115.993"
-               style="fill:none;stroke:#d4007a;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+               style="fill:none;stroke:#E6007E;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
                id="path11547" />
           </g>
         </g>

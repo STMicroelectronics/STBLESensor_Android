@@ -7,14 +7,14 @@
       android:pathData="m49.858,40.257l20.284,0l0,16.851l-20.284,0zM79.348,40.257c-12.899,0 -25.797,0 -38.696,0l9.674,-15.128 9.674,-15.128 9.674,15.128z"
       android:strokeAlpha="0.75879397"
       android:strokeWidth="10"
-      android:fillColor="#39a9dc"
+      android:fillColor="#3CB4E6"
       android:fillAlpha="1"
       android:strokeColor="#00000000"/>
   <path
       android:pathData="m49.858,79.743l20.284,-0l0,-16.851l-20.284,-0zM79.348,79.743c-12.899,-0 -25.797,-0 -38.696,-0l9.674,15.128 9.674,15.128 9.674,-15.128z"
       android:strokeAlpha="0.75879397"
       android:strokeWidth="10"
-      android:fillColor="#39a9dc"
+      android:fillColor="#3CB4E6"
       android:fillAlpha="1"
       android:strokeColor="#00000000"/>
 </vector>

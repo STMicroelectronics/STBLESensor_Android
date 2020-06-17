@@ -15,7 +15,7 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="motion_algo_vertical_updown.svg">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -51,27 +51,27 @@
   <g
      transform="translate(0,-177)"
      id="layer1"
-     style="fill:#39a9dc;fill-opacity:1">
+     style="fill:#3CB4E6;fill-opacity:1">
     <g
-       style="fill:#39a9dc;fill-opacity:1"
+       style="fill:#3CB4E6;fill-opacity:1"
        transform="matrix(2.3351357,0,0,2.3351357,-176.99779,-104.62087)"
        id="g5154">
       <g
-         style="fill:#39a9dc;fill-opacity:1"
+         style="fill:#3CB4E6;fill-opacity:1"
          id="g5121"
          transform="translate(-3.5079126,0.10022607)">
         <path
            id="rect5117"
-           style="fill:#39a9dc;fill-opacity:1;stroke:none;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.75879397"
+           style="fill:#3CB4E6;fill-opacity:1;stroke:none;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.75879397"
            d="m 100.65687,137.74077 h 8.68626 v 7.21628 h -8.68626 z m 12.62868,0 c -5.5237,0 -11.0474,0 -16.571103,0 l 4.142773,-6.47854 4.14278,-6.47855 4.14278,6.47855 z" />
       </g>
       <g
-         style="fill:#39a9dc;fill-opacity:1"
+         style="fill:#3CB4E6;fill-opacity:1"
          id="g5121-8"
          transform="matrix(1,0,0,-1,-3.5079126,292.49165)">
         <path
            id="rect5117-6"
-           style="fill:#39a9dc;fill-opacity:1;stroke:none;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.75879397"
+           style="fill:#3CB4E6;fill-opacity:1;stroke:none;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.75879397"
            d="m 100.65687,137.74077 h 8.68626 v 7.21628 h -8.68626 z m 12.62868,0 c -5.5237,0 -11.0474,0 -16.571103,0 l 4.142773,-6.47854 4.14278,-6.47855 4.14278,6.47855 z" />
       </g>
     </g>

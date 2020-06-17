@@ -44,7 +44,7 @@
     android:viewportHeight="192">
 
     <path
-        android:strokeColor="#d4007a"
+        android:strokeColor="#E6007E"
         android:strokeWidth="15"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
@@ -53,7 +53,7 @@ C169.167,136.409,136.409,169.167,96,169.167
 C55.5911,169.167,22.8332,136.409,22.8332,96
 C22.8332,55.5911,55.5911,22.8331,96,22.8331 Z"/>
     <path
-        android:strokeColor="#d4007a"
+        android:strokeColor="#E6007E"
         android:strokeWidth="15"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"

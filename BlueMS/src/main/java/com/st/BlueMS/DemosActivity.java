@@ -55,6 +55,7 @@ import com.st.BlueMS.demos.AudioClassification.AudioClassificationFragment;
 import com.st.BlueMS.demos.COSensor.COSensorDemoFragment;
 import com.st.BlueMS.demos.CarryPositionFragment;
 import com.st.BlueMS.demos.Cloud.CloudLogFragment;
+import com.st.BlueMS.demos.HighSpeedDataLog.HighSpeedDataLogFragment;
 import com.st.BlueMS.demos.Level.LevelDemoFragment;
 import com.st.BlueMS.demos.PredictiveMaintenance.PredictiveMaintenanceFragment;
 import com.st.BlueMS.demos.SDLog.SDLogFragment;
@@ -78,7 +79,6 @@ import com.st.BlueMS.demos.motionAlgorithm.MotionAlgorithmFragment;
 import com.st.BlueMS.demos.multiNN.MultiNeuralNetworkFragment;
 import com.st.BlueMS.demos.plot.PlotFeatureFragment;
 import com.st.BlueMS.preference.nucleo.SettingsWithNucleoConfiguration;
-import com.st.BlueSTSDK.Debug;
 import com.st.BlueSTSDK.ExportedFeature;
 import com.st.BlueSTSDK.Features.Audio.Opus.ExportedFeatureAudioOpus;
 import com.st.BlueSTSDK.Node;
@@ -142,6 +142,7 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
      */
     @SuppressWarnings("unchecked")
     private final static Class<? extends DemoFragment>[] ALL_DEMOS = new Class[]{
+            HighSpeedDataLogFragment.class,
             EnvironmentalSensorsFragment.class,
             MemsSensorFusionFragment.class,
             FFTAmplitudeFragment.class,
@@ -237,18 +238,22 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
         @Override
         public void onNotificationDisabled(@NonNull ExportedFeature onFeature) {
             Log.d("DEmoActivity","reload demos");
-            reloadDemoList();
+            runOnUiThread(()->{reloadDemoList();});
+
         }
 
         @Override
         public void onNotificationEnabled(@NonNull ExportedFeature onFeature) {
             Log.d("DEmoActivity","reload demos");
-            reloadDemoList();
+            runOnUiThread(()->{reloadDemoList();});
         }
     };
 
     private void enableServerSideDemo() {
-        NodeServer server = getNode().getNodeServer();
+        Node node = getNode();
+        if(node == null)
+            return;
+        NodeServer server = node.getNodeServer();
         if(server == null)
             return;
         ExportedFeature f = server.getExportedFeature(ExportedFeatureAudioOpus.class);
@@ -263,7 +268,10 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
     }
 
     private void disableServerSideDemo() {
-        NodeServer server = getNode().getNodeServer();
+        Node node = getNode();
+        if(node == null)
+            return;
+        NodeServer server = node.getNodeServer();
         if(server == null)
             return;
         ExportedFeature f = server.getExportedFeature(ExportedFeatureAudioOpus.class);

@@ -42,13 +42,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.st.BlueMS.R
 
-internal class RegisterStatusViewAdapter(private @StringRes val registerWithNameFormat:Int,private val registerWithoutNameFormat:Int )
-    : RecyclerView.Adapter<RegisterStatusViewAdapter.ViewHolder>(){
+internal class RegisterStatusViewAdapter(@StringRes private val registerWithNameFormat:Int,
+                                         @StringRes private val registerWithoutNameFormat:Int )
+    : ListAdapter<RegisterStatus,RegisterStatusViewAdapter.ViewHolder>(RegisterStatusDiffCallback()){
 
-    private var mCurrentStatus:List<RegisterStatus> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -56,26 +57,16 @@ internal class RegisterStatusViewAdapter(private @StringRes val registerWithName
         return ViewHolder(registerWithNameFormat,registerWithoutNameFormat,view)
     }
 
-    override fun getItemCount(): Int {
-        return mCurrentStatus.size
-    }
-
-    internal fun updateRegisterStatus(newStatus:List<RegisterStatus>){
-        val diffResult = DiffUtil.calculateDiff(RegisterStatusDiffCallback(mCurrentStatus, newStatus))
-        diffResult.dispatchUpdatesTo(this)
-        mCurrentStatus = newStatus
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.displayValue(mCurrentStatus[position])
+        holder.displayValue(getItem(position))
     }
 
 
-    class ViewHolder(private @StringRes val registerWithNameFormat:Int,
-                     private val registerWithoutNameFormat:Int,
+    class ViewHolder(@StringRes private val registerWithNameFormat:Int,
+                     @StringRes private val registerWithoutNameFormat:Int,
                      item: View) : RecyclerView.ViewHolder(item) {
-        protected val registerLabel = item.findViewById<TextView>(R.id.mlc_registerId)
-        protected val registerValue = item.findViewById<TextView>(R.id.mlc_registerValue)
+        private val registerLabel = item.findViewById<TextView>(R.id.mlc_registerId)
+        private val registerValue = item.findViewById<TextView>(R.id.mlc_registerValue)
 
         fun displayValue(status: RegisterStatus) {
             val context = itemView.context
@@ -98,22 +89,14 @@ internal class RegisterStatusViewAdapter(private @StringRes val registerWithName
 
 }
 
-private class RegisterStatusDiffCallback(private val oldList: List<RegisterStatus>, private val newList: List<RegisterStatus>) : DiffUtil.Callback() {
+internal class RegisterStatusDiffCallback() : DiffUtil.ItemCallback<RegisterStatus>() {
 
-    override fun getOldListSize(): Int {
-        return oldList.size
+    override fun areItemsTheSame(oldItem: RegisterStatus, newItem: RegisterStatus): Boolean {
+        return oldItem.registerId == newItem.registerId
     }
 
-    override fun getNewListSize(): Int {
-        return newList.size
-    }
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].registerId == newList[newItemPosition].registerId
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(oldItem: RegisterStatus, newItem: RegisterStatus): Boolean {
+        return oldItem == newItem
     }
 
 }

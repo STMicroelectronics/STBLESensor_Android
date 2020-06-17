@@ -46,12 +46,23 @@ import android.widget.EditText;
 
 import com.st.BlueMS.R;
 
+/**
+ * show a dialog to insert the label for a new label
+ */
 public class InsertLabelFragmentDialog extends DialogFragment {
 
+    /**
+     * callback called when the user press the positive button
+     */
     public interface OnLabelInsertedCallback{
         void onLabelInserted(String str);
     }
 
+    /**
+     * instantiate the dialog and register the callback
+     * @param callback function called when the user close the dialog
+     * @return dialog that the user can use to insert a new label
+     */
     public static DialogFragment instantiate(OnLabelInsertedCallback callback){
         InsertLabelFragmentDialog dialog = new InsertLabelFragmentDialog();
         dialog.setLabelInsertedListener(callback);

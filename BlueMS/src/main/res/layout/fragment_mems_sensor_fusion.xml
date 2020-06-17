@@ -56,9 +56,9 @@
           android:layout_alignParentTop="true" android:layout_alignParentEnd="true" />
 
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:id="@+id/memsSensorfusion_resetButton"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/CalibImgH"
         android:layout_alignParentBottom="true"

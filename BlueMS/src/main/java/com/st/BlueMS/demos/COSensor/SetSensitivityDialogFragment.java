@@ -36,7 +36,7 @@
  */
 package com.st.BlueMS.demos.COSensor;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -48,7 +48,13 @@ import android.widget.EditText;
 
 import com.st.BlueMS.R;
 
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * Dialog to change the sensor sensitivity
+ * the activity or fragment that are using this fragment must implement the
+ * SetSensitivityDialogFragmentCallback interface to receive the new value set by the user
+ */
 public class SetSensitivityDialogFragment extends DialogFragment {
 
     public interface SetSensitivityDialogFragmentCallback{
@@ -58,6 +64,11 @@ public class SetSensitivityDialogFragment extends DialogFragment {
     private static final String DEFAULT_SENSITIVITY_KEY = SetSensitivityDialogFragment.class
             .getCanonicalName()+".DEFAULT_SENSITIVITY_KEY";
 
+    /**
+     * build a dialog to change the sensitivity value
+     * @param defaultSensitivity value to display at the start up
+     * @return dialog to set a float
+     */
     public static DialogFragment newInstance(float defaultSensitivity){
 
         DialogFragment dialog = new SetSensitivityDialogFragment();
@@ -78,7 +89,7 @@ public class SetSensitivityDialogFragment extends DialogFragment {
 
 
     @Override
-    public void onAttach(Context ctx) {
+    public void onAttach(@NotNull Context ctx) {
         super.onAttach(ctx);
         if(ctx instanceof SetSensitivityDialogFragmentCallback){
             mListener = (SetSensitivityDialogFragmentCallback) ctx;

@@ -134,7 +134,7 @@ class PlotFragment : Fragment(){
     }
 
     private fun buildLineDataSet(name:String, color:Int) : LineDataSet{
-        return LineDataSet(LinkedList<Entry>(),name).apply {
+        return LineDataSet(LinkedList(),name).apply {
             axisDependency = YAxis.AxisDependency.LEFT
             setDrawCircles(false)
             setDrawValues(false)
@@ -200,6 +200,11 @@ class PlotFragment : Fragment(){
     @ExperimentalTime
     private fun attachDataViewModel(){
         dataViewModel.lastPlotData.observe(viewLifecycleOwner, Observer { lastData ->
+            //if we have a number of data different from the number of legends
+            //rebuild the plot
+            if(lastData?.y?.size != settingsViewModel.legendItems.value?.size){
+                settingsViewModel.startPlotSelectedFeature()
+            }
             mPlot.data?.let {lineData ->
                 lastData?.y?.forEachIndexed { index, value ->
                     lineData.addEntry(Entry(lastData.x.toFloat(),value),index)
@@ -215,7 +220,6 @@ class PlotFragment : Fragment(){
         })
         dataViewModel.isPlotting.observe(viewLifecycleOwner, Observer { isPlotting ->
             if(isPlotting){
-
                 mStartPlotButton.setIconResource(R.drawable.ic_stop)
             }else{
                 mStartPlotButton.setIconResource(R.drawable.ic_play_arrow)

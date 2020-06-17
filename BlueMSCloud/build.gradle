@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
 
     defaultConfig {
@@ -39,7 +39,7 @@ dependencies {
 
 
     //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
-    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '17.1.1'
+    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '17.3.0'
 
     //necessary to cloud demo, for mqtt connection
     api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: "$rootProject.cloud_pahoVersion"

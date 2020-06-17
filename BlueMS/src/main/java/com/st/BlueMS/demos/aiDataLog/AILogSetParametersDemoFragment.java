@@ -61,11 +61,18 @@ import com.st.BlueMS.demos.aiDataLog.viewModel.LogParametersViewModel;
 import com.st.BlueSTSDK.Manager;
 import com.st.BlueSTSDK.Node;
 
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * fragment that show the possible settings for the AISensig1 data log
+ */
 public class AILogSetParametersDemoFragment extends Fragment {
 
     private static final String ARG_NODE_TAG = AIDataLogDemoFragment.class.getName()+".ARG_NODE_TAG";
 
+    /**
+     * interface to notify when the user completes the configuration
+     */
     interface OnDataSelectedListener {
         void onDataSelectedEnded();
     }
@@ -96,7 +103,10 @@ public class AILogSetParametersDemoFragment extends Fragment {
     private LogParametersViewModel mParametersViewModel;
     private OnDataSelectedListener mListener;
 
-
+    /**
+     * check if we have a listener in one of our parent
+     * @param context context where the fragment is attached
+     */
     private void extractListener(Context context) {
         if (context instanceof OnDataSelectedListener) {
             mListener = (OnDataSelectedListener) context;
@@ -112,7 +122,7 @@ public class AILogSetParametersDemoFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
 
         extractListener(context);
@@ -143,7 +153,7 @@ public class AILogSetParametersDemoFragment extends Fragment {
         mListener = null;
     }
 
-    private void setUpEnvironmentalFequencySelector(View rootView){
+    private void setUpEnvironmentalFrequencySelector(View rootView){
         Spinner environmentalFrequencySelector = rootView.findViewById(R.id.iaLog_selectData_environmentalSelector);
 
         RangeSpinnerAdapter adapter = new RangeSpinnerAdapter(requireContext(),
@@ -188,7 +198,7 @@ public class AILogSetParametersDemoFragment extends Fragment {
 
         setUpInertialFrequencySelector(view);
 
-        setUpEnvironmentalFequencySelector(view);
+        setUpEnvironmentalFrequencySelector(view);
         setUpLogView(view);
         setUpAudioVolumeSelector(view);
 
@@ -235,7 +245,7 @@ public class AILogSetParametersDemoFragment extends Fragment {
 
 
     private void showLoggingView(@Nullable Boolean isLogging){
-        if( isLogging == null || !isLogging){ // unknow or not logging
+        if( isLogging == null || !isLogging){ // unknown or not logging
             mIsLoggingView.setVisibility(View.GONE);
             mSetParametersView.setVisibility(View.VISIBLE);
         }else{ // isLogging = true

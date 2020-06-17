@@ -58,11 +58,11 @@
       <stop
          id="stop3773"
          offset="0"
-         style="stop-color:#39a9dc;stop-opacity:1;" />
+         style="stop-color:#3CB4E6;stop-opacity:1;" />
       <stop
          id="stop3769"
          offset="1"
-         style="stop-color:#39a9dc;stop-opacity:0;" />
+         style="stop-color:#3CB4E6;stop-opacity:0;" />
     </linearGradient>
     <radialGradient
        inkscape:collect="always"
@@ -87,7 +87,7 @@
   </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"

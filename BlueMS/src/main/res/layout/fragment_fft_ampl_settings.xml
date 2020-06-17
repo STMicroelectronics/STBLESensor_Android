@@ -76,6 +76,7 @@
                 android:spinnerMode="dialog" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/BlueSTSDKInputTypeStyle"
                 android:id="@+id/fftAmpl_settings_overlapLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -90,6 +91,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/BlueSTSDKInputTypeStyle"
                 android:id="@+id/fftAmpl_settings_timeAcquisitionLayout"
                 android:hint="@string/fttAmpl_settings_acquisitionTime"
                 android:layout_width="match_parent"

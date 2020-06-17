@@ -40,7 +40,11 @@ package com.st.blesensor.cloud.GenericMqtt;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,8 +109,8 @@ public class GenericMqttConfigurationFactory implements CloudIotClientConfigurat
     }
 
     @Override
-    public void attachParameterConfiguration(Context c, ViewGroup root) {
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+        LayoutInflater inflater = LayoutInflater.from(root.getContext());
         View v = inflater.inflate(R.layout.cloud_config_generic_mqtt,root);
 
         TextInputLayout brokerUrlLayout = v.findViewById(R.id.genericMqtt_brokerUrlWrapper);
@@ -129,12 +133,17 @@ public class GenericMqttConfigurationFactory implements CloudIotClientConfigurat
         mPortText.addTextChangedListener(new CheckNumberRange(portLayout,R.string.cloudLog_genericMqtt_portError,
                 0,1<<16));
 
-        loadFromPreferences(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+        loadFromPreferences(root.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
 
     }
 
     @Override
-    public void loadDefaultParameters(@Nullable Node n) {
+    public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+        root.removeAllViews();
+    }
+
+    @Override
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
         if(n==null)
             return;
         if(mClientIdText.getText().length()==0)
@@ -147,7 +156,7 @@ public class GenericMqttConfigurationFactory implements CloudIotClientConfigurat
     }
 
     @Override
-    public CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
 
         storeToPreference(mBrokerUrlText.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
         return new GenericMqttFactory(mBrokerUrlText.getText().toString(),

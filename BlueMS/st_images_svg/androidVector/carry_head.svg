@@ -5,22 +5,22 @@
 <style type="text/css">
 	.st0{display:none;}
 	.st1{fill:#FFFFFF;}
-	.st2{fill:#B9C4CA;}
-	.st3{fill:#B9C4CA;stroke:#39A9DC;stroke-miterlimit:10;}
-	.st4{fill:none;stroke:#B9C4CA;stroke-width:2;stroke-miterlimit:10;}
+	.st2{fill:#d1d0d3;}
+	.st3{fill:#d1d0d3;stroke:#3CB4E6;stroke-miterlimit:10;}
+	.st4{fill:none;stroke:#d1d0d3;stroke-width:2;stroke-miterlimit:10;}
 	.st5{opacity:0.2;}
-	.st6{fill:#39A9DC;}
+	.st6{fill:#3CB4E6;}
 	.st7{opacity:0.79;fill:#FFFFFF;}
-	.st8{fill:none;stroke:#D4007A;stroke-width:3;stroke-miterlimit:10;}
-	.st9{fill:#D4007A;}
-	.st10{fill:none;stroke:#D4007A;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:3,3;}
-	.st11{fill:#FFFFFF;stroke:#39A9DC;stroke-width:2;stroke-miterlimit:10;}
-	.st12{fill:none;stroke:#B9C4CA;stroke-miterlimit:10;}
-	.st13{fill:#FFFFFF;stroke:#39A9DC;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st14{fill:none;stroke:#B9C4CA;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st15{fill:none;stroke:#D4007A;stroke-width:4;stroke-miterlimit:10;stroke-dasharray:3;}
-	.st16{fill:none;stroke:#D4007A;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
-	.st17{stroke:#B9C4CA;stroke-miterlimit:10;}
+	.st8{fill:none;stroke:#E6007E;stroke-width:3;stroke-miterlimit:10;}
+	.st9{fill:#E6007E;}
+	.st10{fill:none;stroke:#E6007E;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:3,3;}
+	.st11{fill:#FFFFFF;stroke:#3CB4E6;stroke-width:2;stroke-miterlimit:10;}
+	.st12{fill:none;stroke:#d1d0d3;stroke-miterlimit:10;}
+	.st13{fill:#FFFFFF;stroke:#3CB4E6;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st14{fill:none;stroke:#d1d0d3;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st15{fill:none;stroke:#E6007E;stroke-width:4;stroke-miterlimit:10;stroke-dasharray:3;}
+	.st16{fill:none;stroke:#E6007E;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+	.st17{stroke:#d1d0d3;stroke-miterlimit:10;}
 </style>
 <g id="Layer_1" class="st0">
 	

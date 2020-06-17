@@ -38,6 +38,10 @@
 package com.st.BlueMS;
 
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import com.st.BlueNRG.fwUpgrade.BlueNRGAdvertiseFilter;
@@ -48,6 +52,7 @@ import com.st.BlueSTSDK.Utils.BLENodeDefines;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.Utils.advertise.AdvertiseFilter;
 import com.st.BlueSTSDK.gui.fwUpgrade.FwUpgradeActivity;
+import com.st.BlueSTSDK.gui.util.SimpleFragmentDialog;
 import com.st.STM32WB.fwUpgrade.FwUpgradeSTM32WBActivity;
 import com.st.STM32WB.fwUpgrade.feature.STM32OTASupport;
 import com.st.STM32WB.p2pDemo.Peer2PeerDemoConfiguration;
@@ -87,18 +92,58 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
 
         ConnectionOption options = optionsBuilder.build();
 
-        n.enableNodeServer(BLENodeDefines.FeatureCharacteristics.getDefaultExportedFeature());
+        //disable the ble server for sensor tile box, to improve stability for the fw upgrade.
+        // it is not clear why.. and probably is not the root cause
+        if(n.getType() != Node.Type.SENSOR_TILE_BOX) {
+            try {
+                n.enableNodeServer(BLENodeDefines.FeatureCharacteristics.getDefaultExportedFeature());
+            } catch (IllegalStateException e) {
+                Toast.makeText(this, R.string.nodeList_serverNotStarted, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
 
         if(n.getAdvertiseInfo() instanceof BlueNRGAdvertiseFilter.BlueNRGAdvertiseInfo)
             startActivity(FwUpgradeActivity.getStartIntent(this, n,false,options));
         else if(n.getType()== Node.Type.STEVAL_WESU1)
             startActivity(DemosActivityWesu.getStartIntent(this,n,options));
-        else if (STM32OTASupport.isOTANode(n)){
-            startActivity(FwUpgradeSTM32WBActivity.getStartIntent(this, n,null,null,null));
+        else if (STM32OTASupport.isOTANode(n)) {
+            startActivity(FwUpgradeSTM32WBActivity.getStartIntent(this, n, null, null, null));
+        }else if (n.getType() == Node.Type.SENSOR_TILE_BOX){
+            displayPinWarningsAndConnect(n,options);
         }else {
             startActivity(DemosActivity.getStartIntent(this, n, options));
         }
 
+    }
+
+
+    private void displayPinWarningsAndConnect(Node node, ConnectionOption options){
+        if(stBoxPinDialogNeedToBeShown()){
+            displayPinWarnings(node,options);
+        }else{
+            startActivity(DemosActivity.getStartIntent(this, node, options));
+        }
+    }
+
+    private static final String STBOX_PIN_DIALOG_SHOWN = NodeListActivity.class.getCanonicalName()+".STBOX_PIN_DIALOG_SHOWN";
+    private static final String STBOX_PIN_DIALOG_SHOWN_TAG = NodeListActivity.class.getCanonicalName()+".STBOX_PIN_DIALOG_SHOWN_TAG";
+
+    private boolean stBoxPinDialogNeedToBeShown(){
+        final SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+        return !prefs.contains(STBOX_PIN_DIALOG_SHOWN);
+    }
+
+    private void displayPinWarnings(Node node, ConnectionOption options) {
+        SimpleFragmentDialog dialog = SimpleFragmentDialog.newInstance(R.string.nodeList_stbox_pinTitle,R.string.nodeList_stbox_pinDesc);
+        dialog.show(getSupportFragmentManager(),STBOX_PIN_DIALOG_SHOWN_TAG);
+        dialog.setOnclickListener((dialogInterface, i) -> {
+            PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean(STBOX_PIN_DIALOG_SHOWN,true)
+                    .apply();
+            startActivity(DemosActivity.getStartIntent(dialog.getContext(), node, options));
+        });
     }
 
 }//NodeListActivity

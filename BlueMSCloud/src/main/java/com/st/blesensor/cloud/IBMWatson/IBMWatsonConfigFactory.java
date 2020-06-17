@@ -39,7 +39,11 @@ package com.st.blesensor.cloud.IBMWatson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,8 +109,8 @@ public class IBMWatsonConfigFactory implements CloudIotClientConfigurationFactor
      * @param root container where add the view
      */
     @Override
-    public void attachParameterConfiguration(Context c, ViewGroup root) {
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+        LayoutInflater inflater = LayoutInflater.from(root.getContext());
         View v = inflater.inflate(R.layout.cloud_config_bluemx,root);
         TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMx_deviceIdWrapper);
         mDeviceIdText = deviceIdLayout.getEditText();
@@ -130,7 +134,12 @@ public class IBMWatsonConfigFactory implements CloudIotClientConfigurationFactor
         mDeviceTypeText.addTextChangedListener(new CheckNotEmpty(deviceTypeLayout,R.string.cloudLog_watson_deviceTypeError));
         mDeviceTypeText.addTextChangedListener(
                 new CheckRegularExpression(deviceTypeLayout,R.string.cloudLog_watson_invalidCharacterError,VALID_NAME_CHARACTER));
-        loadFromPreferences(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+        loadFromPreferences(root.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+    }
+
+    @Override
+    public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+        root.removeAllViews();
     }
 
     /**
@@ -138,7 +147,7 @@ public class IBMWatsonConfigFactory implements CloudIotClientConfigurationFactor
      * @param n node that will send the data to the broker
      */
     @Override
-    public void loadDefaultParameters(@Nullable Node n) {
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
         if(n==null)
             return;
         if(mDeviceTypeText.getText().length()==0)
@@ -157,7 +166,7 @@ public class IBMWatsonConfigFactory implements CloudIotClientConfigurationFactor
      * @return object for open a connection to the Ibm Watson service
      */
     @Override
-    public CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
         storeToPreference(mDeviceIdText.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
         return new IBMWatsonFactory(
                 mOrganizationText.getText().toString(),

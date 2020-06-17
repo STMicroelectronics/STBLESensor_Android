@@ -43,10 +43,16 @@ import com.st.BlueSTSDK.Debug
 import java.lang.StringBuilder
 import java.util.regex.Pattern
 
+/**
+ * class used to get back the mapping between the raw value and the label
+ * @param command command to send to get back the mapped values
+ * @param console object used to communicate with the device
+ */
 internal class ValueLabelConsole(private val command:String, private var console:Debug) {
 
-
+    /**only one command at the time can run */
     private var mCommandIsRunning:Boolean = false
+
     private val mTimeout = Handler(Looper.getMainLooper())
 
     fun loadLabel(onLoadComplete:(ValueLabelMapper?)->Unit){
@@ -63,7 +69,9 @@ internal class ValueLabelConsole(private val command:String, private var console
         private  val REGISTER_INFO: Pattern = Pattern.compile("<(MLC|FSM_OUTS)(\\d+)(_SRC)?>(.*)")
         private  val VALUE_INFO: Pattern = Pattern.compile("(\\d+)='(.*)'")
 
-
+        /**
+         * object that collects and parse the command response
+         */
         private class LoadValueLabelListener(
                 private val console: Debug,
                 private val timerThread: Handler,
@@ -127,7 +135,11 @@ internal class ValueLabelConsole(private val command:String, private var console
                 val match = REGISTER_INFO.matcher(registerInfo)
                 if (!match.matches())
                     return null
-                val id = match.group(2)?.toInt() ?: return null
+                var id = match.group(2)?.toInt() ?: return null
+                // FSM index start from 1, MLC index start from 0
+                if(match.group(1) == "FSM_OUTS") {
+                    id -= 1
+                }
                 val name = match.group(4 ) ?: return null
                 return Pair(id,name)
             }

@@ -50,6 +50,9 @@ import com.st.BlueMS.demos.util.BaseDemoFragment
 import com.st.BlueSTSDK.Node
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation
 
+/**
+ * Demo to show the finite state machine output
+ */
 @DemoDescriptionAnnotation(iconRes = R.drawable.neural_network_demo_icon,
         name = "Finite State Machine",
         requareAll = [FeatureFiniteStateMachine::class])
@@ -70,7 +73,7 @@ class FiniteStateMachineFragment : BaseDemoFragment() {
                 R.string.fsm_registerId_format)
         registerView.adapter = registerAdapter
         mlcViewModel.registerStatus.observe(viewLifecycleOwner, Observer { newStatus ->
-            registerAdapter.updateRegisterStatus(newStatus)
+            registerAdapter.submitList(newStatus)
         })
 
     }

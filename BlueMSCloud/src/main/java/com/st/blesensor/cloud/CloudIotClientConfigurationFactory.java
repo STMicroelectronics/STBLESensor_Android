@@ -41,6 +41,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+
 import android.view.ViewGroup;
 
 import com.st.BlueSTSDK.Node;
@@ -52,16 +54,17 @@ public interface CloudIotClientConfigurationFactory {
 
     /**
      * add the configuration element to the gui
-     * @param c context to use for load the view
+     * @param fm to use to attach a fragment if needed
      * @param root container where add the view
      */
-    void attachParameterConfiguration(@NonNull Context c,@NonNull ViewGroup root);
+    void attachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root);
+    void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root);
 
     /**
      * set the default data for the configuration
      * @param n node that will send the data to the boker
      */
-    void loadDefaultParameters(@Nullable Node n);
+    void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n);
 
     /**
      * mqtt service name
@@ -74,5 +77,5 @@ public interface CloudIotClientConfigurationFactory {
      * @return object that can be used for open a connection
      * @throws IllegalArgumentException if some parameters needed for build the factory is wrong/missing
      */
-    CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException;
+    CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException;
 }

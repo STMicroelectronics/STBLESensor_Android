@@ -63,6 +63,9 @@ import com.st.BlueSTSDK.gui.util.SimpleFragmentDialog;
 
 import java.util.List;
 
+/**
+ * fragment that show the list of annotation and start/stop the logging
+ */
 public class AnnotationListFragment extends Fragment {
 
     private static final String INSERT_DIALOG_TAG = AnnotationListFragment.class.getName()+".InsertDialog";
@@ -176,6 +179,7 @@ public class AnnotationListFragment extends Fragment {
     }
 
     private void showError(@StringRes int message) {
+        //TODO: use get getChildFragmentManager()
         FragmentManager manager = getFragmentManager();
         if(manager==null)
             return;
@@ -188,6 +192,7 @@ public class AnnotationListFragment extends Fragment {
     }
 
     public void showAddAnnotationDialog(){
+        //TODO: use get getChildFragmentManager()
         DialogFragment dialog = InsertLabelFragmentDialog.instantiate(
                 str -> mAnnotationViewModel.insert(str)
         );

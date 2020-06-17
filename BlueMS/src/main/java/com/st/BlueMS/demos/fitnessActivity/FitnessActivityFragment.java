@@ -60,6 +60,7 @@ import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
 
+//todo: used in the ALLMems2? it is used?
 @DemoDescriptionAnnotation(
         iconRes = R.drawable.fitness_demo_icon,
         name = "Fitness Activity",

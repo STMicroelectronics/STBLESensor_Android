@@ -83,6 +83,8 @@ public class AIDataLogDemoFragment extends BaseDemoFragment
         FragmentManager fm = getChildFragmentManager();
         if(fm.findFragmentByTag(SELECT_DATA_FRAGMENT_TAG)!=null)
             return;
+        //if no fragment are present show the settings, when the settings ends the
+        //onDataSelectedEnded method is called
         fm.beginTransaction()
                 .add(R.id.aiLog_fragment, AILogSetParametersDemoFragment.newInstance(node),SELECT_DATA_FRAGMENT_TAG)
                 .commit();
@@ -99,6 +101,9 @@ public class AIDataLogDemoFragment extends BaseDemoFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * show the tagging fragment view
+     */
     @Override
     public void onDataSelectedEnded() {
         FragmentManager fm = getChildFragmentManager();

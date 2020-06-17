@@ -60,11 +60,11 @@
          offset="0"
          style="stop-color:#1c6497;stop-opacity:1;" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="0.5"
          id="stop3843" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="1"
          id="stop3993" />
     </linearGradient>
@@ -84,7 +84,7 @@
          offset="0"
          style="stop-color:#1c6497;stop-opacity:1;" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="1"
          id="stop4045" />
     </linearGradient>
@@ -104,7 +104,7 @@
          offset="0"
          style="stop-color:#1c6497;stop-opacity:1;" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="1"
          id="stop4053" />
     </linearGradient>
@@ -124,7 +124,7 @@
          offset="0"
          style="stop-color:#1c6497;stop-opacity:1;" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="1"
          id="stop4061" />
     </linearGradient>
@@ -144,7 +144,7 @@
          offset="0"
          style="stop-color:#1c6497;stop-opacity:1;" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="1"
          id="stop4069" />
     </linearGradient>
@@ -164,7 +164,7 @@
          offset="0"
          style="stop-color:#1c6497;stop-opacity:1;" />
       <stop
-         style="stop-color:#39a9dc;stop-opacity:1;"
+         style="stop-color:#3CB4E6;stop-opacity:1;"
          offset="1"
          id="stop4077" />
     </linearGradient>
@@ -225,7 +225,7 @@
   </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"

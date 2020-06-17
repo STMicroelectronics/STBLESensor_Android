@@ -50,6 +50,9 @@ import com.st.BlueSTSDK.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * view model containing the fft data received by the BLE
+ */
 public class FFTDataViewModel extends ViewModel {
 
     static class FFTPoint{
@@ -76,6 +79,9 @@ public class FFTDataViewModel extends ViewModel {
 
     private Feature mFFTFeature;
 
+    /**
+     * every time we have new data, we update also the max values
+     */
     private Observer<List<float[]>> mUpdateMaxValues = new Observer<List<float[]>>() {
 
         @Override
@@ -134,6 +140,9 @@ public class FFTDataViewModel extends ViewModel {
         return mFftMax;
     }
 
+    /**
+     * set the data received by the ble to the live data
+     */
     private Feature.FeatureListener mFFTListener = (f, sample) -> {
         if(FeatureFFTAmplitude.isComplete(sample)){
             List<float[]> data = FeatureFFTAmplitude.getComponents(sample);

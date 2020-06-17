@@ -59,6 +59,11 @@ import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
 import java.util.List;
 
+/**
+ * Fragment showing the FFT Data
+ * this fragment must be attached to a LogFeatureActivity since it is using some methods to
+ * log the fft data
+ */
 @DemoDescriptionAnnotation(name = "FFTAmplitude", iconRes = R.drawable.demo_charts,
         requareAll = {FeatureFFTAmplitude.class})
 public class FFTAmplitudeFragment extends BaseDemoFragment {
@@ -87,6 +92,9 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
         FFTViewModel.startListenDataFrom(node);
         timeDomainViewModel.startListenDataFrom(node);
 
+        /*
+         * "manually" store the data on file, if the logging is enable, to have the log in better format
+         */
         FFTViewModel.getFftData().observe(getViewLifecycleOwner(), fftData -> {
             Float frequencyStep = FFTViewModel.getFrequencyStep().getValue();
             if(frequencyStep!=null && fftData!=null) {
@@ -97,6 +105,11 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
     }
 
 
+    /**
+     * save the data in a separate file
+     * @param fftData data to store
+     * @param frequencyStep data frequency
+     */
     private void logFFTData(List<float[]> fftData, Float frequencyStep) {
         LogFeatureActivity activity = (LogFeatureActivity)requireActivity();
         if(activity.isLogging()){
@@ -108,6 +121,11 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
         }
     }
 
+    /**
+     * create a file where store the fft data
+     * @param activity activity used to log the data
+     * @return path where store the data
+     */
     private String createLogFilePath(LogFeatureActivity activity) {
         if(mLogFilePath!=null)
             return  mLogFilePath;
@@ -187,6 +205,7 @@ public class FFTAmplitudeFragment extends BaseDemoFragment {
             stopDemo();
             Fragment settings = FFTSettingsFragment.newInstance(node);
             FragmentManager fm = getChildFragmentManager();
+            //when the user go back and no other fragments are shown start again this demo
             fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                 @Override
                 public void onBackStackChanged() {

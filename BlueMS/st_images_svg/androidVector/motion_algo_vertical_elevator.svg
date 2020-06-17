@@ -15,7 +15,7 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="motion_algo_vertical_elevator.svg">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -87,94 +87,94 @@
   <g
      transform="translate(0,-177)"
      id="layer1"
-     style="fill:#39a9dc;fill-opacity:1">
+     style="fill:#3CB4E6;fill-opacity:1">
     <g
        id="g9522"
        transform="matrix(0.73529412,0,0,-0.73529412,7.4264704,289.94118)"
-       style="fill:#39a9dc;fill-opacity:1">
+       style="fill:#3CB4E6;fill-opacity:1">
       <g
          id="g9552"
-         style="fill:#39a9dc;fill-opacity:1">
+         style="fill:#3CB4E6;fill-opacity:1">
         <g
            id="g9554"
            clip-path="url(#clipPath9558)"
-           style="fill:#39a9dc;fill-opacity:1">
+           style="fill:#3CB4E6;fill-opacity:1">
           <g
              id="g9560"
-             style="fill:#39a9dc;fill-opacity:1">
+             style="fill:#3CB4E6;fill-opacity:1">
             <g
                id="g9562"
                transform="matrix(144,0,0,144,-47,-123)"
-               style="fill:#39a9dc;fill-opacity:1" />
+               style="fill:#3CB4E6;fill-opacity:1" />
           </g>
         </g>
       </g>
       <g
          id="g9675"
-         style="fill:#39a9dc;fill-opacity:1">
+         style="fill:#3CB4E6;fill-opacity:1">
         <path
            id="path9580"
-           style="fill:#39a9dc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="fill:#3CB4E6;fill-opacity:1;fill-rule:nonzero;stroke:none"
            d="M 105,8 H 13 v 127 h 92 z M 7,4 H 136 V 140 H 7 Z" />
         <g
            id="g9582"
-           style="fill:#39a9dc;fill-opacity:1">
+           style="fill:#3CB4E6;fill-opacity:1">
           <g
              clip-path="url(#clipPath9588)"
              id="g9584"
-             style="fill:#39a9dc;fill-opacity:1">
+             style="fill:#3CB4E6;fill-opacity:1">
             <g
                transform="translate(59.093,112.1001)"
                id="g9590"
-               style="fill:#39a9dc;fill-opacity:1">
+               style="fill:#3CB4E6;fill-opacity:1">
               <path
                  id="path9592"
-                 style="fill:#39a9dc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#3CB4E6;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 c 2.337,0.075 4.297,0.98 5.882,2.714 1.584,1.735 2.337,3.771 2.262,6.108 -0.076,2.338 -0.943,4.336 -2.602,5.994 -1.658,1.659 -3.657,2.451 -5.994,2.376 -2.338,-0.077 -4.299,-0.981 -5.881,-2.715 -1.584,-1.735 -2.376,-3.77 -2.376,-6.108 0,-2.337 0.867,-4.335 2.602,-5.994 C -4.373,0.716 -2.337,-0.075 0,0" />
             </g>
             <g
                transform="translate(82.6565,94.1889)"
                id="g9594"
-               style="fill:#39a9dc;fill-opacity:1">
+               style="fill:#3CB4E6;fill-opacity:1">
               <path
                  id="path9596"
-                 style="fill:#39a9dc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#3CB4E6;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 -15.633,14.002 c -1.316,1.177 -3.061,1.809 -4.826,1.809 h -3.108 -3.109 c -1.765,0 -3.468,-0.632 -4.784,-1.809 L -47.224,-0.067 c -0.898,-0.803 -1.433,-1.942 -1.433,-3.146 v -21.23 c 0,-2.28 1.892,-3.746 4.172,-3.746 h 0.34 c 2.28,0 3.488,1.466 3.488,3.746 v 15.477 c 0,1.621 0.966,3.128 2.336,3.993 l 3.664,2.757 V -76.09 c 0,-2.244 2.192,-4.099 4.436,-4.099 h 1.19 c 2.243,0 4.062,1.608 4.065,3.85 l 0.05,40.15 h 1.349 1.348 l 0.051,-40.15 c 0.003,-2.242 1.821,-3.85 4.064,-3.85 h 1.19 c 2.245,0 4.257,1.855 4.257,4.099 v 73.874 l 3.164,-2.757 c 1.371,-0.865 1.836,-2.372 1.836,-3.993 v -15.477 c 0,-2.28 2.387,-3.746 4.667,-3.746 h 0.34 c 2.281,0 3.993,1.466 3.993,3.746 v 21.23 C 1.343,-2.009 0.898,-0.803 0,0" />
             </g>
             <g
                transform="translate(118.3916,82)"
                id="g9598"
-               style="fill:#d4007a;fill-opacity:1">
+               style="fill:#E6007E;fill-opacity:1">
               <path
                  id="path9600"
-                 style="fill:#d4007a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#E6007E;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 -0.355,20.573 c -0.014,0.83 0.645,1.539 1.473,1.554 0.805,-0.005 1.512,-0.632 1.527,-1.46 L 2.973,0 H 1.499 Z" />
             </g>
             <g
                transform="translate(119.3894,111.1035)"
                id="g9602"
-               style="fill:#d4007a;fill-opacity:1">
+               style="fill:#E6007E;fill-opacity:1">
               <path
                  id="path9604"
-                 style="fill:#d4007a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#E6007E;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 5.072,-11.822 -4.914,2.741 -4.815,-2.91 z" />
             </g>
             <g
                transform="translate(119.7168,49)"
                id="g9606"
-               style="fill:#d4007a;fill-opacity:1">
+               style="fill:#E6007E;fill-opacity:1">
               <path
                  id="path9608"
-                 style="fill:#d4007a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#E6007E;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 c -0.819,0 -1.487,0.656 -1.501,1.475 l -0.326,18.767 3,0.01 L 1.501,1.421 C 1.515,0.592 0.855,0 0.027,0 Z" />
             </g>
             <g
                transform="translate(119.8645,41.8257)"
                id="g9610"
-               style="fill:#d4007a;fill-opacity:1">
+               style="fill:#E6007E;fill-opacity:1">
               <path
                  id="path9612"
-                 style="fill:#d4007a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#E6007E;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 -5.072,11.822 4.914,-2.741 4.815,2.91 z" />
             </g>
           </g>

@@ -38,6 +38,9 @@ package com.st.BlueMS.demos.fftAmpitude;
 
 import android.graphics.Color;
 
+/**
+ * utility class with the plot configuration
+ */
 class FFTComponentsConfig {
 
     static class LineConf {

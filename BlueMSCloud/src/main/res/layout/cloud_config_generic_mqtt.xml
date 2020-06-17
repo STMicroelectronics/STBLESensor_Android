@@ -47,6 +47,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/BlueSTSDKInputTypeStyle"
             android:id="@+id/genericMqtt_brokerUrlWrapper"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -62,6 +63,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/BlueSTSDKInputTypeStyle"
             android:id="@+id/genericMqtt_portWrapper"
             android:layout_width="0dp"
             android:layout_weight="2"
@@ -80,6 +82,7 @@
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/genericMqtt_UserWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,6 +97,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/genericMqtt_passwordWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -109,6 +113,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
         android:id="@+id/genericMqtt_clientIdWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

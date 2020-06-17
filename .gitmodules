@@ -1,6 +1,9 @@
-[submodule "BlueSTSDK"]
-	path = BlueSTSDK
-	url = https://github.com/STMicroelectronics/BlueSTSDK_Android.git
 [submodule "BlueSTSDK_Gui_Android"]
 	path = BlueSTSDK_Gui_Android
-	url = https://github.com/STMicroelectronics/BlueSTSDK_GUI_Android.git
+	url = git@github.com:STMicroelectronics/BlueSTSDK_GUI_Android.git
+[submodule "BlueSTSDK"]
+	path = BlueSTSDK
+	url = git@github.com:STMicroelectronics/BlueSTSDK_Android.git
+[submodule "STWINBoard_GUI_Android"]
+	path = STWINBoard_GUI_Android
+	url = git@github.com:STMicroelectronics/STWINBoard_GUI_Android.git

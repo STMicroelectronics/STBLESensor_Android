@@ -51,7 +51,7 @@ public interface CalibrationContract {
      */
     interface View{
         /**
-         * show a dilog that inform the user about how to calibrate the board
+         * show a dialog that inform the user about how to calibrate the board
          */
         void showCalibrationDialog();
 
@@ -84,7 +84,7 @@ public interface CalibrationContract {
         void startCalibration();
 
         /**
-         * stop manange the calibraion for the feature
+         * stop manage the calibration for the feature
          */
         void unManageFeature();
     }

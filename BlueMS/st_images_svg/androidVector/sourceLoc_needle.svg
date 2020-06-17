@@ -15,7 +15,7 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="test.svg">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -51,9 +51,9 @@
   <path
      id="path3351"
      d="M130.000,80.000 L210.000,80.000 L170.000,30.000 Z"
-     style="fill:#d4007a;fill-rule:evenodd;stroke:#d4007a;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
+     style="fill:#E6007E;fill-rule:evenodd;stroke:#E6007E;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
   <path
      id="path3353"
      d="M165.000,170.000 L150.000,80.000 L190.000,80.000 L175.000,170.000 Z"
-     style="fill:#d4007a;fill-rule:evenodd;stroke:#d4007a;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
+     style="fill:#E6007E;fill-rule:evenodd;stroke:#E6007E;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
 </svg>

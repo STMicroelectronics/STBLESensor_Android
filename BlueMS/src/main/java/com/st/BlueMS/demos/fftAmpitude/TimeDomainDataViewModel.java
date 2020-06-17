@@ -45,8 +45,10 @@ import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureMotorTimeParameter;
 import com.st.BlueSTSDK.Node;
 
+/**
+ * View Model keeping the data from the time domain analysis
+ */
 public class TimeDomainDataViewModel extends ViewModel {
-
 
     static class TimeDomainStats{
         final float accPeak;

@@ -48,7 +48,7 @@ public abstract class SubSamplingFeatureListener implements Feature.FeatureListe
     private static final long DEFAULT_UPDATE_INTERVAL_MS = 5000;
 
     private final long mUpdateRateMs;
-    private Map<Feature,Long> mLastCloudUpdate=new HashMap<>();
+    private final Map<Feature,Long> mLastCloudUpdate=new HashMap<>();
 
     /**
      * build and object for send an update to the cloud each updateRateMs milliseconds
@@ -71,14 +71,17 @@ public abstract class SubSamplingFeatureListener implements Feature.FeatureListe
     }
 
     private boolean featureNeedCloudUpdate( Feature f, long notificationTime) {
-        Long lastNotification = mLastCloudUpdate.get(f);
-        //first notification or old value
-        if(lastNotification==null ||
-                ((notificationTime-lastNotification)>mUpdateRateMs)) {
-            mLastCloudUpdate.put(f,notificationTime);
-            return true;
+        boolean needUpdate = false;
+        synchronized (mLastCloudUpdate) {
+            Long lastNotification = mLastCloudUpdate.get(f);
+            //first notification or old value
+            if (lastNotification == null ||
+                    ((notificationTime - lastNotification) > mUpdateRateMs)) {
+                mLastCloudUpdate.put(f, notificationTime);
+                needUpdate = true;
+            }
         }
-        return false;
+        return needUpdate;
     }
 
     public abstract void onNewDataUpdate(@NonNull Feature f,@NonNull Feature.Sample sample);

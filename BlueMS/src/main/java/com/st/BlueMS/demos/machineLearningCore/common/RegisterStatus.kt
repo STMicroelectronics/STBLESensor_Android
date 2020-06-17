@@ -36,9 +36,15 @@
  */
 package com.st.BlueMS.demos.machineLearningCore.common
 
+/**
+ * struct representing the register status
+ */
 internal data class RegisterStatus(
         val registerId:Int,
+        //raw value of the register
         val value:Short, //uint8
+        //algorithm that generate the output
         val algorithmName:String? = null,
+        // label associated to the algorithm output
         val label:String? = null
 )

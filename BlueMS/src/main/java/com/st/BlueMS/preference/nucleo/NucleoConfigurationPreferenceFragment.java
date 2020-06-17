@@ -36,13 +36,14 @@
  */
 package com.st.BlueMS.preference.nucleo;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Node;

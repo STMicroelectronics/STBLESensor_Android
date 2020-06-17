@@ -48,6 +48,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -105,7 +106,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private static final String UPDATE_INTERVAL_KEY = CONF_PREFIX_KEY +".UPDATE_INTERVAL_KEY";
     private static final int DEFAULT_UPDATE_INTERVAL_MS = 5000;
 
-
+    /**
+     * List of supported cloud provider
+     */
     private List<CloudIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
             new IBMWatsonQuickStartConfigFactory(),
             new IBMWatsonConfigFactory(),
@@ -153,6 +156,11 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private CloudIotClientConnectionFactory mCloudConnectionFactory;
 
     /**
+    * object used to build the current configuraiton ui
+     */
+    private CloudIotClientConfigurationFactory mCloudConfigurationFactory;
+
+    /**
      * mqtt connection
      */
     private @Nullable
@@ -181,6 +189,12 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         }
     };
 
+    /*
+     * keep track of selected feature to avoid to disable all the notification if the user has not
+     * select anything
+     */
+    private int mNUserSelectedFeature = 0;
+
     /**
      * Enable/disable the notification for a feature when its state change form the feature list
      */
@@ -190,6 +204,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             if (mCloudLogListener != null) {
                 f.addFeatureListener(mCloudLogListener);
                 f.enableNotification();
+                mNUserSelectedFeature++;
             }
         }
 
@@ -198,6 +213,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             if (mCloudLogListener != null) {
                 f.removeFeatureListener(mCloudLogListener);
                 f.disableNotification();
+                mNUserSelectedFeature--;
             }
         }
     };
@@ -258,18 +274,20 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
 
+    /**
+     * filter list using the current selected cloud provider, only the supported features are returned
+     * @param availableFeature list of feature exported by the node
+     * @return list of feature supported by the selected cloud provider
+     */
     private List<Feature> getSupportedFeatures(List<Feature> availableFeature){
-        ArrayList<Feature> supprtedFeatures = new ArrayList<>(availableFeature.size());
-        //fiter availabe feature with  mCloudConnectionFactory.supportFeature
+        ArrayList<Feature> supportedFeatures = new ArrayList<>(availableFeature.size());
         for(Feature f: availableFeature){
             if(mCloudConnectionFactory.supportFeature(f)){
-                supprtedFeatures.add(f);
+                supportedFeatures.add(f);
             }
         }
 
-        return supprtedFeatures;
-
-
+        return supportedFeatures;
     }
 
     @Override
@@ -387,16 +405,23 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mCloudConfig.removeAllViews();
-                CloudIotClientConfigurationFactory selectedFactory =
-                        (CloudIotClientConfigurationFactory) adapterView.getItemAtPosition(i);
-                selectedFactory.attachParameterConfiguration(requireContext(), mCloudConfig);
-                selectedFactory.loadDefaultParameters(node);
+                FragmentManager fm = getChildFragmentManager();
+                CloudIotClientConfigurationFactory nextConf = (CloudIotClientConfigurationFactory) adapterView.getItemAtPosition(i);
+                if(nextConf!=mCloudConfigurationFactory){
+                    //remove the old view
+                    if(mCloudConfigurationFactory!=null)
+                        mCloudConfigurationFactory.detachParameterConfiguration(fm,mCloudConfig);
+                    mCloudConfigurationFactory = nextConf;
+                }
+                //add the new view and set the current node
+                if(mCloudConfigurationFactory!=null) {
+                    mCloudConfigurationFactory.attachParameterConfiguration(fm, mCloudConfig);
+                    mCloudConfigurationFactory.loadDefaultParameters(fm, node);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                mCloudConfig.removeAllViews();
             }
         });
 
@@ -410,6 +435,8 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         button.setOnClickListener(this::onStartStopCloudLogClick);
         if (isOnline()) {
             enableCloudButton();
+        }else{
+            disableCloudButton();
         }
     }
 
@@ -476,7 +503,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         }
 
         try {
-            mCloudConnectionFactory = getSelectCloud().getConnectionFactory();
+            mCloudConnectionFactory = mCloudConfigurationFactory.getConnectionFactory(getChildFragmentManager());
         }catch (IllegalArgumentException e){
             buildMqttErrorDialog(CloudLogFragment.this.getActivity(), e.getMessage()).show();
             Log.e(getClass().getName(),"Error: "+e.getMessage());
@@ -536,12 +563,16 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private void stopAllNotification() {
         if(mNode==null) // avoid NPE, in some devices..
             return;
+        //no active notification in this demo, so nothing to do
+        if(mNUserSelectedFeature == 0)
+            return ;
         for (Feature f : mNode.getFeatures()) {
             if (mNode.isEnableNotification(f)) {
                 f.removeFeatureListener(mCloudLogListener);
                 mNode.disableNotification(f);
             }//if enabled
         }//for
+        mNUserSelectedFeature = 0;
 
         //update the gui for show our changes
         RecyclerView.Adapter a = mFeatureListView.getAdapter();
@@ -645,6 +676,12 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
     }
 
+    /**
+     * start the service to download the a file, this function is using the DownloadManager,
+     * when the download ends an broadcast message is fired and captured by DownloadFwFileCompletedReceiver class
+     * @param fwUri file url to download
+     * @return request id
+     */
     private long downloadFile(String fwUri){
         DownloadManager.Request dwRequest = new DownloadManager.Request(Uri.parse(fwUri));
         dwRequest.setTitle(getString(R.string.cloudLog_downloadFw_title));
@@ -653,7 +690,6 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
         DownloadManager manager = (DownloadManager) requireContext().getSystemService(Context.DOWNLOAD_SERVICE);
         return  manager.enqueue(dwRequest);
-
     }
 
     @Override

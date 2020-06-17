@@ -37,7 +37,7 @@
 
 package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import androidx.annotation.NonNull;
 

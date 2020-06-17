@@ -36,6 +36,9 @@
  */
 package com.st.BlueMS.demos.fftAmpitude.settings;
 
+/**
+ * class representing the possible settings supported by the fw
+ */
 class FFTSettings {
 
     enum WindowType{

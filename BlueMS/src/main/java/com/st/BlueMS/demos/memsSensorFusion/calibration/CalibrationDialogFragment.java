@@ -38,10 +38,13 @@
 package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -49,7 +52,8 @@ import androidx.fragment.app.DialogFragment;
 import com.st.BlueMS.R;
 
 /**
- * simple dialog that show how to calibrate the board
+ * simple dialog that show how to calibrate the board, the object that use this fragment must
+ * implement the interface
  */
 public class CalibrationDialogFragment extends DialogFragment {
 
@@ -81,18 +85,15 @@ public class CalibrationDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Activity activity = getActivity();
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        Context context = requireContext();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(R.string.memsSensorFusionInfoTitle);
-        dialog.setView(activity.getLayoutInflater().inflate(R.layout
+        dialog.setView(LayoutInflater.from(context).inflate(R.layout
                 .dialog_calibration_sensor_fusion,null));
-        dialog.setPositiveButton(android.R.string.ok,new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                CalibrationDialogCallback callback = getCallback();
-                if(callback!=null)
-                    callback.onStartCalibrationClicked();
-            }
+        dialog.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+            CalibrationDialogCallback callback = getCallback();
+            if(callback!=null)
+                callback.onStartCalibrationClicked();
         });
         return dialog.create();
     }

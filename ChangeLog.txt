@@ -1,0 +1,10 @@
+ST BLE Sensor v4.6.4
+ - update icon and colors
+ST BLE Sensor v4.6.3
+ - update sdk to better manage reconnection with device during the pairing
+ST BLE Sensor v4.6.2
+- add support for SensorTile.Box fw v3.2.5
+  - add the possibility to upload mlc/fsm programs
+  - connection require a pin (123456)
+- update BLE toolox module, with support for heart rate and proximity profile
+- bug fix 

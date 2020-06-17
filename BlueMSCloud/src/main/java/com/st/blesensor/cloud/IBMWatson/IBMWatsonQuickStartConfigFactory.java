@@ -38,7 +38,11 @@
 package com.st.blesensor.cloud.IBMWatson;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,8 +71,8 @@ public class IBMWatsonQuickStartConfigFactory implements CloudIotClientConfigura
 
 
     @Override
-    public void attachParameterConfiguration(Context c, ViewGroup root) {
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+        LayoutInflater inflater = LayoutInflater.from(root.getContext());
         View v = inflater.inflate(R.layout.cloud_config_bluemx_quickstart,root);
         mDeviceIdText = v.findViewById(R.id.blueMXQuick_deviceId);
         TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMXQuick_deviceIdWrapper);
@@ -79,7 +83,7 @@ public class IBMWatsonQuickStartConfigFactory implements CloudIotClientConfigura
     }
 
     @Override
-    public void loadDefaultParameters(@Nullable Node n) {
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
         if(n==null){
             mNodeType = Node.Type.GENERIC;
             return;
@@ -95,7 +99,12 @@ public class IBMWatsonQuickStartConfigFactory implements CloudIotClientConfigura
     }
 
     @Override
-    public CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+        root.removeAllViews();
+    }
+
+    @Override
+    public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
         return new IBMWatsonQuickStartFactory(mNodeType.name(),mDeviceIdText.getText().toString());
     }
 }

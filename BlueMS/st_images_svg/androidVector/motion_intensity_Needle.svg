@@ -15,7 +15,7 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="motion_intensity_Needle2.svg">
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -64,14 +64,14 @@
           <g
              id="g6546">
             <g
-               style="fill:#d4007a;fill-opacity:1"
+               style="fill:#E6007E;fill-opacity:1"
                transform="matrix(0.69989152,0.68752844,-0.68752844,0.69989152,-3.7875641,10.5452)"
                id="g4328">
               <path
                  id="path4330"
                  transform="matrix(0.58035235,-0.57010085,-0.57010085,-0.58035235,-10.775564,47.077471)"
                  d="m 50.001953,32 -0.716797,16.132812 c -0.53588,0.207682 -0.982585,0.635515 -1.179687,1.222657 -0.35327,1.049894 0.209871,2.185792 1.259765,2.539062 1.048655,0.35327 2.185793,-0.211111 2.539063,-1.259765 0.342496,-1.02146 -0.186094,-2.117652 -1.181641,-2.501954 L 50.001953,32 Z"
-                 style="fill:#d4007a;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 style="fill:#E6007E;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  inkscape:connector-curvature="0" />
             </g>
             <g

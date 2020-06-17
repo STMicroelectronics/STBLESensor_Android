@@ -37,10 +37,15 @@
 
 package com.st.blesensor.cloud.AwsIot;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
@@ -54,31 +59,33 @@ public class AwSIotConfigurationFactory implements CloudIotClientConfigurationFa
     private static final String NAME = "AWS IoT";
     private static final String CONFIG_FRAGMENT_TAG = AwsConfigFragment.class.getCanonicalName();
 
-    private AwsConfigFragment mConfigFragment;
-
     @Override
-    public void attachParameterConfiguration(Context c, ViewGroup root) {
-        Activity a = (Activity)c;
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
 
         //check if a fragment is already attach, and remove it to attach the new one
-        mConfigFragment = (AwsConfigFragment)
-                a.getFragmentManager().findFragmentByTag(CONFIG_FRAGMENT_TAG);
-        AwsConfigFragment newFragment = new AwsConfigFragment();
+        AwsConfigFragment configFragment = (AwsConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
 
-        FragmentTransaction transaction = a.getFragmentManager().beginTransaction();
-        if(mConfigFragment==null)
-            transaction.add(root.getId(),newFragment,CONFIG_FRAGMENT_TAG);
-        else
-            transaction.replace(root.getId(),newFragment,CONFIG_FRAGMENT_TAG);
 
-        transaction.commit();
-        mConfigFragment = newFragment;
-
+        if(configFragment==null) {
+            AwsConfigFragment newFragment = new AwsConfigFragment();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.add(root.getId(), newFragment, CONFIG_FRAGMENT_TAG);
+            transaction.commitNow();
+        }
     }
 
     @Override
-    public void loadDefaultParameters(@Nullable Node n) {
-        mConfigFragment.setClientId(MqttClientUtil.getDefaultCloudDeviceName(n));
+    public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+        AwsConfigFragment configFragment = (AwsConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        if(configFragment!=null)
+            fm.beginTransaction().remove(configFragment).commit();
+    }
+
+    @Override
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
+        AwsConfigFragment mConfigFragment = (AwsConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        if(mConfigFragment!=null && n!=null)
+            mConfigFragment.setClientId(MqttClientUtil.getDefaultCloudDeviceName(n));
     }
 
     @Override
@@ -87,11 +94,10 @@ public class AwSIotConfigurationFactory implements CloudIotClientConfigurationFa
     }
 
     @Override
-    public CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
+        AwsConfigFragment mConfigFragment = (AwsConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
         return new AwsIotMqttFactory(mConfigFragment.getClientId(),mConfigFragment.getEndpoint(),
                mConfigFragment.getCertificateFile(),mConfigFragment.getPrivateKeyFile());
     }
-
-
 
 }

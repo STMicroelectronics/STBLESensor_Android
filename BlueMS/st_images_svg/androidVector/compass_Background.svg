@@ -20,7 +20,7 @@
      id="defs4384" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#FFFFFF"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
@@ -64,14 +64,14 @@
       <g
          id="g4191"
          transform="translate(137.43345,684.12516)"
-         style="fill:#002052;fill-opacity:1">
+         style="fill:#03234B;fill-opacity:1">
         <path
-           style="fill:#002052;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           style="fill:#03234B;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 194.00999,284.03476 34.63787,-19.99818 20.14453,-34.89134 -34.69967,20.03386 z"
            id="path4179"
            inkscape:connector-curvature="0" />
         <path
-           style="fill:#002052;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           style="fill:#03234B;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 248.89951,229.14524 -19.99818,-34.63787 -34.89134,-20.14453 20.03386,34.69967 z"
            id="path4181"
            inkscape:connector-curvature="0" />
@@ -79,12 +79,12 @@
            inkscape:connector-curvature="0"
            id="path4183"
            d="m 303.57479,284.03476 -34.63787,-19.99818 -20.14453,-34.89134 34.69967,20.03386 z"
-           style="fill:#002052;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+           style="fill:#03234B;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
         <path
            inkscape:connector-curvature="0"
            id="path4189"
            d="m 303.78903,174.36284 -19.99818,34.63787 -34.89134,20.14453 20.03386,-34.69967 z"
-           style="fill:#002052;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+           style="fill:#03234B;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       </g>
       <g
          id="g4354">
@@ -93,18 +93,18 @@
            cy="913.32397"
            cx="386.33295"
            id="path3359"
-           style="opacity:1;fill:none;fill-opacity:1;stroke:#3fabe2;stroke-width:7.73321438;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:none;fill-opacity:1;stroke:#3CB4E6;stroke-width:7.73321438;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         <g
-           style="fill:#3fabe2;fill-opacity:1"
+           style="fill:#3CB4E6;fill-opacity:1"
            id="g4284"
            transform="translate(372.04724,-504.18112)">
           <g
              id="g4337">
             <g
-               style="fill:#3fabe2;fill-opacity:1"
+               style="fill:#3CB4E6;fill-opacity:1"
                id="g4320">
               <path
-                 style="fill:#3fabe2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                 style="fill:#3CB4E6;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                  d="m 372.04688,366.18164 -22,138 -138,22 138,22 22,138 22,-138 138,-22 -138,-22 -22,-138 z"
                  transform="translate(-357.76153,891.32398)"
                  id="path4224"
@@ -123,7 +123,7 @@
                    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Freestyle Script';-inkscape-font-specification:'Freestyle Script'" /></text>
             </g>
             <g
-               style="fill:#3fabe2;fill-opacity:1"
+               style="fill:#3CB4E6;fill-opacity:1"
                transform="matrix(0,-1,1,0,-1403.2194,1431.7908)"
                id="g4324" />
           </g>

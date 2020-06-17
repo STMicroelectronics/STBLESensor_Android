@@ -44,10 +44,16 @@ import android.util.Log;
 
 import com.st.BlueSTSDK.Debug;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * class with the protocol used to set the fft settings,
+ * this class use the debug console to send and read the messages
+ */
 public class FFTSettingsConsole {
 
     private static final String READ_COMMAND = "getVibrParam";
@@ -110,6 +116,11 @@ public class FFTSettingsConsole {
         mConsole.write(cmd);
     }
 
+    /**
+     * set all the settings and call the callback when the command is applied
+     * @param newSettings value to set
+     * @param callback object to notify when the settings are set
+     */
     public void write(@NonNull FFTSettings newSettings, @Nullable FFTSettingsWriteCallback callback) {
         String cmd = String.format(Locale.US, SET_ALL_FORMAT,newSettings.odr,newSettings.fullScale,
                 newSettings.size,newSettings.winType.ordinal(),
@@ -129,14 +140,32 @@ public class FFTSettingsConsole {
         mConsole.write(cmd);
     }
 
+    /**
+     * interface to implement to receive the current settings
+     */
     public interface FFTSettingsReadCallback{
+        /**
+         * function cole when the settings are read
+         * @param values current settings or null if the read fails
+         */
         void onRead(@Nullable FFTSettings values);
     }
 
+    /**
+     * interface to implement to receive the write status
+     */
     public interface FFTSettingsWriteCallback{
+        /**
+         * call when the settings write complete
+         * @param success true if the settings are set, false if there was an transmission error or
+         *                an error applying the settings
+         */
         void onWrite(boolean success);
     }
 
+    /**
+     * class used to wait the set settings response
+     */
     private final class FFTSettingsWriteListener implements Debug.DebugOutputListener{
         private StringBuffer mBuffer;
 
@@ -158,7 +187,7 @@ public class FFTSettingsConsole {
         }
 
         @Override
-        public void onStdOutReceived(Debug debug, String message) {
+        public void onStdOutReceived(@NotNull Debug debug, @NotNull String message) {
             mTimeout.removeCallbacks(onTimeout);
             mBuffer.append(message);
             Log.d("Settings","response: "+mBuffer);
@@ -171,12 +200,12 @@ public class FFTSettingsConsole {
         }
 
         @Override
-        public void onStdErrReceived(Debug debug, String message) {
+        public void onStdErrReceived(@NotNull Debug debug, @NotNull String message) {
 
         }
 
         @Override
-        public void onStdInSent(Debug debug, String message, boolean writeResult) {
+        public void onStdInSent(@NotNull Debug debug, @NotNull String message, boolean writeResult) {
             if(mBuffer==null) {
                 mBuffer = new StringBuffer();
                 mTimeout.postDelayed(onTimeout, COMMAND_TIMEOUT_MS);
@@ -184,6 +213,9 @@ public class FFTSettingsConsole {
         }
     }
 
+    /**
+     * class used to receive the current settings from the board
+     */
     private final class FFTSettingsReadListener implements Debug.DebugOutputListener{
 
         private StringBuffer mBuffer;

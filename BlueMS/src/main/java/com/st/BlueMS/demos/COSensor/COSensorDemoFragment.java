@@ -55,7 +55,10 @@ import com.st.BlueSTSDK.Features.FeatureCOSensor;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 
-
+/**
+ * show the data from a CO sensor and permit to set the sensor sensitivity
+ */
+//todo is this demo used? it is supported by the MotEnv fw..
 @DemoDescriptionAnnotation(name = "CO Sensor",iconRes = R.drawable.co_sensor_icon,
         requareAll = {FeatureCOSensor.class})
 public class COSensorDemoFragment extends BaseDemoFragment implements

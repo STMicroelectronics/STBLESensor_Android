@@ -66,18 +66,24 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
      */
     private Feature mActivityRecognition;
 
-    private View mWaitView;
-    private ActivityView mMotionARView;
-    private ActivityView mGMPView;
-    private ActivityView mIGNView;
-    private ActivityView mHAR_MLCView;
-    private ActivityView mAPD_MLCView;
+    private View mWaitView; // dummy view to display until the first data isn't arrived
+
+    private ActivityView mMotionARView; // default view
+    private ActivityView mGMPView; // GMP activity recognition
+    private ActivityView mIGNView; // IGN activity recognition
+    private ActivityView mHAR_MLCView; // activity recognition from mlc
+    private ActivityView mAPD_MLCView; // adult presence recognition from mlc
 
     private ActivityView mAllView[];
 
     private int mCurrentAlgorithm=0;
     private ActivityType mCurrentActivity=ActivityType.NO_ACTIVITY;
 
+    /**
+     * return the view where show the result
+     * @param algorithmId id of the algorithm
+     * @return view where display the activity
+     */
     private ActivityView getViewFromAlgoId(int algorithmId){
         switch (algorithmId){
             case 0:
@@ -95,6 +101,12 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
     }
 
 
+    /**
+     * hide all the view except the view associated with the algorithmId and display the activity in
+     * that view
+     * @param algorithmId algorithm that generates the activity
+     * @param type activity to display
+     */
     private void showActivity(int algorithmId, ActivityType type){
         ActivityView activeView = getViewFromAlgoId(algorithmId);
         mWaitView.setVisibility(View.GONE);
@@ -109,7 +121,6 @@ public class ActivityRecognitionFragment extends BaseDemoFragment {
         mCurrentActivity = type;
         mCurrentAlgorithm = algorithmId;
     }
-
 
     /**
      * listener that will change the alpha to the selected image

@@ -39,8 +39,12 @@ package com.st.blesensor.cloud.AzureIot;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,8 +68,8 @@ public class AzureIotConfigFactory implements CloudIotClientConfigurationFactory
     private TextView mConnectionStringText;
 
     @Override
-    public void attachParameterConfiguration(Context c, ViewGroup root) {
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+        LayoutInflater inflater = LayoutInflater.from(root.getContext());
         View v = inflater.inflate(R.layout.cloud_config_azure,root);
         mConnectionStringText = v.findViewById(R.id.azure_connectionString);
         TextInputLayout connectionStringLayout = v.findViewById(R.id.azure_connectionStringWrapper);
@@ -73,11 +77,16 @@ public class AzureIotConfigFactory implements CloudIotClientConfigurationFactory
                 new ConnectionStringChecker(connectionStringLayout,
                         R.string.cloudLog_azure_connectionStringError));
         //load the last valid connection string
-        loadFromPreferences(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+        loadFromPreferences(root.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
     }
 
     @Override
-    public void loadDefaultParameters(@Nullable Node n) { }
+    public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+        root.removeAllViews();
+    }
+
+    @Override
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) { }
 
     @Override
     public String getName() {
@@ -85,7 +94,7 @@ public class AzureIotConfigFactory implements CloudIotClientConfigurationFactory
     }
 
     @Override
-    public CloudIotClientConnectionFactory getConnectionFactory() throws IllegalArgumentException {
+    public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
         ConnectionParameters param = ConnectionParameters.parse(mConnectionStringText.getText());
         Context c = mConnectionStringText.getContext();
         storeToPreference(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));

@@ -17,10 +17,10 @@
         tools:text="YLabel" />
 
     <com.google.android.material.button.MaterialButton
+        style="@style/IconButton"
         android:id="@+id/plotFeature_startPlotButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:icon="@drawable/ic_play_arrow"
         app:iconPadding="0dp"
         app:layout_constraintEnd_toEndOf="parent"

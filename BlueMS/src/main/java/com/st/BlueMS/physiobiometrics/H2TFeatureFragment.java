@@ -86,7 +86,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
 
     private boolean isNewStepDetector = true;
     private int    zScorelag = 5;
-    private double zScoreThreshold = 3;
+    private double zScoreThreshold = 2;
     private double zScoreInfluence = 0.1;
     private double zScoreHeelStrike = 150.0;
     //private double zScoreaH2T = -100.0;
@@ -220,6 +220,9 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
     protected final byte FEATURE_SET_HZ_SLOW = 0x2;
     protected final byte FEATURE_SET_HZ_FAST = 0x5;
     protected final byte FEATURE_CALIBRATE = 0x1;
+    protected final byte START_SAMPLING = 0x7;
+    protected final byte STOP_SAMPLING = 0x9;
+
 
 
     Handler handler = new Handler(Looper.getMainLooper()) {
@@ -246,7 +249,6 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
          * @param savedInstanceState unused                  
          * @return initialized View.
          */
-
         mStartPlotButton = root.findViewById(R.id.startPlotButton);
         mStartPlotButton.setOnClickListener(new ProcessListener());
         mStartPlotButton.setEnabled(false);
@@ -258,7 +260,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         Resources res = getResources();
         mH2tstatus = root.findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well analysis. Press start button then walk. Process file to simulate. ");
-
+        stopSampling();
         //mBeepChecked = (RadioButton) root.findViewById(R.id.beepGoodStep);
         isBeepChecked = true;
         //mBeepChecked.setOnClickListener(new BeepCheckedListener());
@@ -415,7 +417,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     Zval = sample.data[Zcoord].doubleValue()* gyro_fullscale;
                 } catch (Exception e) {
                     mIsLiveSession = false;
-                    mH2tstatus.setText("Error reading sample data. Session stopped. error = "+ e.toString());
+                    mH2tstatus.setText("Gyro OnUpdate: Error reading sample data. Session stopped. error = "+ e.toString());
                     e.printStackTrace();
                 }
                 gyroSampleCounter++;
@@ -502,7 +504,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                     //final String dataString = f.toString();
                 } catch (Exception e) {
                     mIsLiveSession = false;
-                    mH2tstatus.setText("Error reading sample data. Session stopped. error = "+ e.toString());
+                    mH2tstatus.setText("Accel onUpdate: Error reading sample data. Session stopped. error = "+ e.toString());
                     e.printStackTrace();
                 }
                 /*
@@ -517,6 +519,15 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 */
             }
         }//onUpdate
+    }
+
+    private void startSampling() {
+        sendH2TCommand(START_SAMPLING);
+        mH2tstatus.setText("Heel2Toe now sending data");
+    }
+    private void stopSampling() {
+        sendH2TCommand(STOP_SAMPLING);
+        mH2tstatus.setText("Heel2Toe has been stopped");
     }
 
     private void set25HZ() {
@@ -863,6 +874,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
             }//for
         }
         mIsLiveSession = true;
+        startSampling();
         soundMgr.playSound(startMeasureSound);
         mH2tstatus.setText("Step Detection in Progress");
 
@@ -889,6 +901,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
          * stop Heel2toe processing  for feature data and enable the feature
          */
         //mFrequency.setText(samplingFrequency + " Hz");
+        stopSampling();
         Node node = getNode();
         if (node == null)
             return;
@@ -934,7 +947,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 String results = zscoreStepAnalyticsDisplay.results(zscoreStepCalculations,
                         goodStepThreshold, maxSessionSeconds, dataFilename);
                 FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
-                mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
+                mH2tstatus.setText("Results:"+ System.getProperty("line.separator") + fs.reason);
             } else {
                 mH2tstatus.setText("no file saved. click SET FILE button");
             }
@@ -951,7 +964,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 String results = stepAnalyticsDisplay.results(stepCalculations,
                         goodStepThreshold, maxSessionSeconds, dataFilename);
                 FileStatus fs = fileProcess.writeResults(results, outputStream, gyroSampleCounter, gyroSample, accelSample);
-                mH2tstatus.setText(System.getProperty("line.separator") + fs.reason);
+                mH2tstatus.setText("Results2:"+System.getProperty("line.separator") + fs.reason);
             } else {
                 mH2tstatus.setText("no file saved. Set File");
             }

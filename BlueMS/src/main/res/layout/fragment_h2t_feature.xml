@@ -283,12 +283,12 @@
     <TextView
         android:id="@+id/h2tstatus"
         android:layout_width="match_parent"
-        android:layout_height="51dp"
+        android:layout_height="96dp"
         android:background="#000000"
         android:text="results"
         android:textAlignment="center"
         android:textColor="#ffffff"
-        android:textSize="20dp" />
+        android:textSize="14dp" />
     <View style="@style/Divider"/>
     <ScrollView
         android:id="@+id/resultscroll"

@@ -151,6 +151,10 @@ public class FileProcess  {
             while (i < accelMeasurements.size() && i < gyroMeasurements.size()) {
                 InertialMeasurement g = gyroMeasurements.get(i);
                 InertialMeasurement a = accelMeasurements.get(i++);
+                if ((g == null) || (a == null)) {
+                    fs.reason = "fileProcess warning. found a null object at sample: " + i + " of " + gyroMeasurements.size();
+                    break;
+                }
                 rawData.write(g.sample+","+g.timestamp + ","+
                         g.x+","+g.y+","+g.z+"," + a.x+","+a.y+","+a.z+","+g.step);
                 rawData.newLine();
@@ -158,7 +162,7 @@ public class FileProcess  {
             rawData.close();
 
         }  catch (Exception e) {
-            fs.reason = e.getMessage();
+            fs.reason = "fileProcess error: " + e.getMessage();
             fs.success = false;
         }
         return fs;

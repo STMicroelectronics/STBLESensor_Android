@@ -79,7 +79,7 @@ import java.util.List;
  */
 public class OfflineTestActivity extends AppCompatActivity {
 
-    private static final int matlabFormat = 0;
+    private static final int physioBioMetricsRFormat = 0;
     private static final int androidFormat = 1;
     private static final int X = 0;
     private static final int Y = 1;
@@ -159,22 +159,22 @@ public class OfflineTestActivity extends AppCompatActivity {
         mH2tstatus = findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well file analysis. Select the proper file format and then chosee a file (Process File) ");
 
-        mBeepChecked = (RadioButton) findViewById(R.id.beepGoodStep);
+/*        mBeepChecked = (RadioButton) findViewById(R.id.beepGoodStep);
         isBeepChecked = false;
-        mBeepChecked.setOnClickListener(new BeepCheckedListener());
+        mBeepChecked.setOnClickListener(new BeepCheckedListener());*/
 
 /*        mCaptureToFileChecked = (RadioButton) findViewById(R.id.captureToFile);
         isCaptureToFileChecked = false;
         mCaptureToFileChecked.setOnClickListener(new CaptureCheckedListener());*/
 
-        mSimulateChecked = (RadioButton) findViewById(R.id.simulate);
+/*        mSimulateChecked = (RadioButton) findViewById(R.id.simulate);
         isSimulateChecked = false;
-        mSimulateChecked.setOnClickListener(new SimulateCheckedListener());
+        mSimulateChecked.setOnClickListener(new SimulateCheckedListener());*/
 
         spinnerFileFormat = (Spinner) findViewById(R.id.fileformat);
-        spinnerFileFormat.setSelection(matlabFormat);
+        spinnerFileFormat.setSelection(physioBioMetricsRFormat);
         spinnerFileFormat.setOnItemSelectedListener(new SpinnerFileFormatListener());
-        fileformat = matlabFormat;
+        fileformat = physioBioMetricsRFormat;
 
         /*
         spinnerX  = (Spinner) findViewById(R.id.spinnerX);
@@ -202,7 +202,7 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         mFolderLocation = findViewById(R.id.folderLocation);
         dataFilename = "unknown format";
-        mFolderLocation.setText("choose a file to process (matlab or Heel2Toe) ...");
+        mFolderLocation.setText("choose a file to process (PhysioBioMetrics R  or Mobile app format) ...");
         folderIsSet = false;
 
         processFileButton = findViewById(R.id.processfileButton);
@@ -250,7 +250,7 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         /***********
          * first setup X, Y , and Z lookup table based on GUI selections;
-         *  in the matlab file, Gyroscope XYZ coordinates are at 0, 7, 4 respectively
+         *  in the PhysioBioMetrics file, Gyroscope XYZ coordinates are at 0, 6,5 respectively
          *   GyroscopeX_ds = Double.parseDouble(sArray[0]);
          *   GyroscopeY_ds = Double.parseDouble(sArray[7]);
          *   GyroscopeZ_ds = Double.parseDouble(sArray[4]);
@@ -279,15 +279,15 @@ public class OfflineTestActivity extends AppCompatActivity {
             try {
                 InputStream inputStream = this.contentResolver.openInputStream(content_describer);
                 dataFilename = queryName(this.contentResolver, content_describer);
-                if (fileformat == matlabFormat) {
+                if (fileformat == physioBioMetricsRFormat) {
                     inertialMeasurements = fileProcess.readCSV(inputStream);
                     if (inertialMeasurements.isEmpty()) {
-                        errorMsg = "Error. Input file is not shimmer matlab format";
+                        errorMsg = "Error. Input file is not physioBioMetrics R Format format";
                     }
                 } else if (fileformat == androidFormat) {
                     inertialMeasurements = fileProcess.readAndroidFileFormat(inputStream);
                     if (inertialMeasurements.isEmpty()) {
-                        errorMsg = "Error. Input file was not produced by this app";
+                        errorMsg = "Error. Input file was not produced by this application";
                     }
                 } else {
                     inertialMeasurements = null;

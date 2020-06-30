@@ -8,23 +8,28 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="0.8" >
+        android:weightSum="0.9" >
         <Spinner
             android:id="@+id/fileformat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/fileformat"
-            android:layout_weight=".4"
+            android:layout_weight=".9"
             android:spinnerMode="dropdown" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="0.9" >
         <Button
             android:id="@+id/processfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Process File"
-            android:layout_weight=".4"/>
+            android:text="Select and Process File"
+            android:layout_weight=".9"/>
 
     </LinearLayout>
-    <LinearLayout
+<!--    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="0.6" >
@@ -41,8 +46,7 @@
             android:layout_height="wrap_content"
             android:text="Simulate"
             android:layout_weight=".30"/>
-    </LinearLayout>
-
+    </LinearLayout>-->
 
     <TextView
         android:id="@+id/folderLocation"

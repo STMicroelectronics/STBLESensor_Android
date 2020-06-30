@@ -44,8 +44,8 @@
     <string name="title_activity_nfc_node_connection">Nfc Node</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="name">Name</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="name" translatable="false">Name</string>
 
     <string-array name="XYZ">
         <item>X</item>
@@ -58,8 +58,8 @@
         <item>25 Hz</item>
     </string-array>
     <string-array name="fileformat">
-        <item>MatLab file format</item>
-        <item>Heel2toe file format</item>
+        <item>PhysioBioMetrics R file format</item>
+        <item>Heel2toe mobile app file format</item>
     </string-array>
 
 </resources>

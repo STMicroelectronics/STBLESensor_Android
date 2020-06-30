@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,29 +18,6 @@ import java.util.List;
  */
 
 public class FileProcess  {
-
-    public List<String[]> readCSV(Context context, String fileName) {
-        List<String[]> rows = new ArrayList<>();
-        try {
-            InputStream is = context.getAssets().open(fileName);
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            String csvSplitBy = ",";
-
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                String[] row = line.split(csvSplitBy);
-                rows.add(row);
-            }
-            return rows;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public List<String[]> readCSV(InputStream is) {
         List<String[]> rows = new ArrayList<>();
@@ -51,10 +29,22 @@ public class FileProcess  {
 
             br.readLine();
 
+            int rnum = 0;
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(csvSplitBy);
-                rows.add(row);
+                try {   // make sure the line has numbers beofre parsing
+                    double val = Double.parseDouble(row[0]);
+                    // only add row if numbers
+                    rows.add(row);
+                }
+                catch (Exception e) {
+                    System.out.print("row " + rnum + " r: " );
+                    System.out.println(Arrays.toString(row));
+                    System.out.println("Exception: " + e);
+                }
+                rnum++;
             }
+
             return rows;
 
         } catch (IOException e) {
@@ -100,35 +90,24 @@ public class FileProcess  {
         }
     }
 
-    public boolean writeResults(String results, OutputStream outputStream, List<String[]> inertialMeasurements) {
-        try {
-            BufferedWriter rawData = new BufferedWriter(new OutputStreamWriter(outputStream));
-            rawData.write(results);
-            rawData.newLine();
-            // we stay comaptible with the old matlab files
-            rawData.write("GyroscopeX_ds,GyroscopeX_raw," +
-                    "AccelerometerZ_ms2,AccelerometerZ_raw," +
-                    "GyroscopeZ_ds,GyroscopeZ_raw," +
-                    "GyroscopeY_raw,GyroscopeY_ds," +
-                    "AccelerometerY_ms2,AccelerometerY_raw,AccelerometerX_ms2,AccelerometerX_raw," +
-                    "Timestamp,Timestamp_ms\n");
-            rawData.newLine();
-            for (String[] sArray : inertialMeasurements) {
-                int i = 0;
-                for (String s : sArray) {
-                    rawData.write(s);
-                    if (i++ < sArray.length) {
-                        rawData.write(",");
-                    }
-                }
-                rawData.newLine();
+    public ArrayList<Double> GetZdata(List<String[]> im, int zindex) {
+        ArrayList<Double> zdata = new  ArrayList<Double>();
+        for (String[] sArray : im) {
+            try {
+                zdata.add(Double.parseDouble(sArray[zindex]));
+            } catch (NumberFormatException e) {
+                System.out.print(e.toString());
+                System.out.print(zindex);
+                e.printStackTrace();
+                return null;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.print(e.toString());
+                System.out.print(zindex);
+                e.printStackTrace();
+                return null;
             }
-            rawData.close();
-
-        }  catch (IOException e) {
-            return false;
         }
-        return true;
+        return zdata;
     }
 
     public FileStatus writeResults(String results, OutputStream outputStream, long  sampleCount,

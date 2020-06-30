@@ -1,48 +1,58 @@
 package com.st.BlueMS.physiobiometrics.zscore;
 
 public class ZscoreStepCalculations {
-    int frequency;
+    String fname;
+    int freqHZ; //sampling frequency
     double rate;
-    int goodsteps;
-    int badsteps;
+    double footSwingThreshold; //threshold to be considered the start of a step
+    double stepThreshold; //threshold for a good step
+    int lag; // signal algorithm
+    double threshold; // signal algorithm
+    double influence; // signal algorithm
+    // results
+    int ngood;
+    int nbad;
     int nSteps;
-    double totalTime;
-    double goodpercent;
-    double badpercent;
-    double stepwalkingtime;
+    double timeOn;
+    double pcgood;
+    double pcbad;
+    double timeWalk;
     double totalwalkingtime;
     double startWalking;
     double stopWalking;
-    double avgstep;
-    double avgCadence;
-    double meanH2TAngularVelocity;
-    double stdH2TAngularVelocity;
-    double H2TcoefVariation;
-    double meanHSAngularVelocity;
-    double stdHSAngularVelocity;
-    double HScoefVariation;
+    double stepmeantime;
+    double cadmean;
+    double HeelStrikeAV;
+    double HeelStrikeAVSTD;
+    double HeelStrikeAVCV;
+    double FootSwingAV;
+    double FootSwingAVSTD;
+    double FootSwingAVCV;
 
     ZscoreStepCalculations() {
-        frequency =0;
+        fname = "";
+        freqHZ =0;
+        footSwingThreshold = 0;
+        stepThreshold = 0;
         rate =0;
-        goodsteps=0;
-        badsteps=0;
+        ngood=0;
+        nbad=0;
         nSteps=0;
-        totalTime=0;
-        goodpercent=0;
-        badpercent=0;
-        stepwalkingtime=0;
+        timeOn=0;
+        pcgood=0;
+        pcbad=0;
+        timeWalk=0;
         totalwalkingtime=0;
         startWalking=0;
         stopWalking=0;
-        avgstep=0;
-        avgCadence=0;
-        meanH2TAngularVelocity=0;
-        stdH2TAngularVelocity=0;
-        H2TcoefVariation=0;
-        meanHSAngularVelocity=0;
-        stdHSAngularVelocity=0;
-        HScoefVariation=0;
+        stepmeantime=0;
+        cadmean=0;
+        HeelStrikeAV=0;
+        HeelStrikeAVSTD=0;
+        HeelStrikeAVCV=0;
+        FootSwingAV=0;
+        FootSwingAVSTD=0;
+        FootSwingAVCV=0;
     }
 
 

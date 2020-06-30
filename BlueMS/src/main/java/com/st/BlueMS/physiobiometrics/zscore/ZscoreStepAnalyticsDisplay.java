@@ -101,7 +101,8 @@ public class ZscoreStepAnalyticsDisplay {
         return tr_data;
     }
 
-    public void results(Context context, TableLayout tl,  ZscoreStepCalculations sc, double threshold, int sessionLength, String filename) {
+    public void results(Context context, TableLayout tl,  ZscoreStepCalculations sc,
+                        double threshold, int sessionLength, String filename) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date today = Calendar.getInstance().getTime();
@@ -112,21 +113,21 @@ public class ZscoreStepAnalyticsDisplay {
         tl.addView(this.tableSingleRow(context, today.toString()));
         tl.addView(this.tableSingleRow(context, "file: " + filename));
         tl.addView(this.tableHeader(context));
-        tl.addView(this.tableData(context,"sampling rate",String.valueOf(sc.frequency), "Hz"));
+        tl.addView(this.tableData(context,"sampling rate",String.valueOf(sc.freqHZ), "Hz"));
         tl.addView(this.tableData(context,"Session length",df2.format(sessionLength),"s"));
-        tl.addView(this.tableData(context,"Threshold",df2.format(threshold),"d/s"));
-        tl.addView(this.tableData(context,"Walking time",df2.format(sc.totalwalkingtime),"s"));
+        tl.addView(this.tableData(context,"Good Step Threshold",df2.format(threshold),"d/s"));
+        tl.addView(this.tableData(context,"Walking time",df2.format(sc.timeWalk),"s"));
         tl.addView(this.tableData(context,"Total Steps",String.valueOf(sc.nSteps),"count"));
-        tl.addView(this.tableData(context,"Good Steps",String.valueOf(sc.goodsteps),df2.format(sc.goodpercent)+"%"));
-        tl.addView(this.tableData(context,"Bad Steps",String.valueOf(sc.badsteps),df2.format(sc.badpercent)+"%"));
-        tl.addView(this.tableData(context,"Average step",df2.format(sc.avgstep),"s"));
-        tl.addView(this.tableData(context,"Cadence",df2.format(sc.avgCadence),"step/m"));
-        tl.addView(this.tableData(context,"Heel Strike Angular Velocity (AV)",df2.format(sc.meanH2TAngularVelocity),"d/s"));
-        tl.addView(this.tableData(context,"AV Standard deviation",df2.format(sc.stdH2TAngularVelocity),"d/s"));
-        tl.addView(this.tableData(context,"Coefficient of variation",df2.format(sc.H2TcoefVariation),"CV"));
-        tl.addView(this.tableData(context,"Heel Strike Angular Velocity (AV)",df2.format(sc.meanHSAngularVelocity),"d/s"));
-        tl.addView(this.tableData(context,"HS AV Standard deviation",df2.format(sc.stdHSAngularVelocity),"d/s"));
-        tl.addView(this.tableData(context,"HS Coefficient of variation",df2.format(sc.HScoefVariation),"CV"));
+        tl.addView(this.tableData(context,"Good Steps",String.valueOf(sc.ngood),df2.format(sc.pcgood)+"%"));
+        tl.addView(this.tableData(context,"Bad Steps",String.valueOf(sc.nbad),df2.format(sc.pcbad)+"%"));
+        tl.addView(this.tableData(context,"Average step",df2.format(sc.stepmeantime),"s"));
+        tl.addView(this.tableData(context,"Cadence",df2.format(sc.cadmean),"step/m"));
+        tl.addView(this.tableData(context,"Heel Strike Angular Velocity (AV)",df2.format(sc.HeelStrikeAV),"d/s"));
+        tl.addView(this.tableData(context,"Heel Strike AV Standard deviation",df2.format(sc.HeelStrikeAVSTD),"d/s"));
+        tl.addView(this.tableData(context,"Heel Strike Coefficient of variation",df2.format(sc.HeelStrikeAVCV),"CV"));
+        tl.addView(this.tableData(context,"Foot Swing Angular Velocity (AV)",df2.format(sc.FootSwingAV),"d/s"));
+        tl.addView(this.tableData(context,"Foot Swing AV Standard deviation",df2.format(sc.FootSwingAVSTD),"d/s"));
+        tl.addView(this.tableData(context,"Foot Swing Coefficient of variation",df2.format(sc.FootSwingAVCV),"CV"));
     }
 
     public String results(ZscoreStepCalculations sc, double threshold, int sessionLength, String filename) {
@@ -135,19 +136,22 @@ public class ZscoreStepAnalyticsDisplay {
         Date today = Calendar.getInstance().getTime();
 
         String results = today.toString() + System.getProperty("line.separator"); //+ " file: " + filename));
-        results += "sampling rate," + String.valueOf(sc.frequency)+",Hz"+ System.getProperty("line.separator");
+        results += "sampling rate," + String.valueOf(sc.freqHZ)+",Hz"+ System.getProperty("line.separator");
         //results += "file name,"+df2.format(sessionLength)+",s"+ System.getProperty("line.separator");
         results += "Session length,"+df2.format(sessionLength)+",s"+ System.getProperty("line.separator");
         results += "Threshold,"+df2.format(threshold)+",d/s"+ System.getProperty("line.separator");
-        results += "Walking time,"+df2.format(sc.totalwalkingtime)+",s"+ System.getProperty("line.separator");
+        results += "Walking time,"+df2.format(sc.timeWalk)+",s"+ System.getProperty("line.separator");
         results += "Total Steps,"+String.valueOf(sc.nSteps)+",count"+ System.getProperty("line.separator");
-        results += "Good Steps,"+String.valueOf(sc.goodsteps)+df2.format(sc.goodpercent)+",%"+ System.getProperty("line.separator");
-        results += "Bad Steps,"+String.valueOf(sc.badsteps)+df2.format(sc.badpercent)+",%"+ System.getProperty("line.separator");
-        results += "Average step,"+df2.format(sc.avgstep)+",s"+ System.getProperty("line.separator");
-        results += "Cadence,"+df2.format(sc.avgCadence)+",step/m"+ System.getProperty("line.separator");
-        results += "Heel Strike Angular Velocity (AV),"+df2.format(sc.meanHSAngularVelocity)+",d/s"+ System.getProperty("line.separator");
-        results += "HS AV Standard deviation,"+df2.format(sc.stdHSAngularVelocity)+",d/s"+ System.getProperty("line.separator");
-        results += "HS Coefficient of variation,"+df2.format(sc.HScoefVariation)+",CV"+ System.getProperty("line.separator");
+        results += "Good Steps,"+String.valueOf(sc.ngood)+df2.format(sc.pcgood)+",%"+ System.getProperty("line.separator");
+        results += "Bad Steps,"+String.valueOf(sc.nbad)+df2.format(sc.pcbad)+",%"+ System.getProperty("line.separator");
+        results += "Average step,"+df2.format(sc.stepmeantime)+",s"+ System.getProperty("line.separator");
+        results += "Cadence,"+df2.format(sc.cadmean)+",step/m"+ System.getProperty("line.separator");
+        results += "Heel Strike Angular Velocity (AV),"+df2.format(sc.HeelStrikeAV)+",d/s"+ System.getProperty("line.separator");
+        results += "Heel Strike AV Standard deviation,"+df2.format(sc.HeelStrikeAVSTD)+",d/s"+ System.getProperty("line.separator");
+        results += "Heel Strike Coefficient of variation,"+df2.format(sc.HeelStrikeAVCV)+",CV"+ System.getProperty("line.separator");
+        results += "Foot Swing Angular Velocity (AV),"+df2.format(sc.FootSwingAV)+",d/s"+ System.getProperty("line.separator");
+        results += "Foot Swing AV Standard deviation,"+df2.format(sc.FootSwingAVSTD)+",d/s"+ System.getProperty("line.separator");
+        results += "Foot Swing Coefficient of variation,"+df2.format(sc.FootSwingAVCV)+",CV"+ System.getProperty("line.separator");
         return results;
     }
 }

@@ -101,7 +101,7 @@ public class OfflineTestActivity extends AppCompatActivity {
     private RadioButton mSimulateChecked;
     private boolean isSimulateChecked;
     private TextView mThresholdVal;
-    private double goodStepThreshold;
+
     private Button processFileButton;
     private Spinner spinnerFileFormat;
     private int fileformat;
@@ -132,13 +132,16 @@ public class OfflineTestActivity extends AppCompatActivity {
     private TextView folder;
     private boolean folderIsSet;
 
-    // zscore
-    private boolean isNewStepDetector = true;
+    // signal detector
     private int zScorelag = 5;
-    private double zScoreThreshold = 3;
+    private double zScoreThreshold = 2;
     private double zScoreInfluence = 0.1;
-    private double zScoreHeelStrike = 150.0;
-    private double zScoreaH2T = -100.0;
+
+    // step detector
+    private static int MAX_DATA_SIZE = 50000; // 16 minutes
+    private double footSwingThreshold = 100.0;
+    private double goodStepThreshold = -150.0;
+
     private ZscoreSignalDetector zscoreSignalDetector;
     private ZscoreSignalDetector.StepState thisStepState;
     private ArrayList<Double> dataH2t;
@@ -191,7 +194,6 @@ public class OfflineTestActivity extends AppCompatActivity {
         spinnerFrequency.setSelection(0);
         spinnerFrequency.setOnItemSelectedListener(new SpinnerFrequencyListener());
 
-        goodStepThreshold = -109.8; // default value from matlab
         mThresholdVal = findViewById(R.id.thresholdVal);
         mThresholdVal.setText("Threshold: " + goodStepThreshold + " d/s");
         mThreshold = (SeekBar) findViewById(R.id.thresholdBar);
@@ -224,7 +226,7 @@ public class OfflineTestActivity extends AppCompatActivity {
     public void startActivityForResult(Intent intent, int requestCode) {
 
         this.zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
-                zScoreInfluence, 50000, zScoreHeelStrike, zScoreaH2T, soundMgr, -1);//beepSound);
+                zScoreInfluence, MAX_DATA_SIZE, footSwingThreshold, goodStepThreshold, soundMgr, -1);
         thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
 
         super.startActivityForResult(intent, requestCode);
@@ -237,7 +239,6 @@ public class OfflineTestActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //  Handle activity result here
-        StepDetect stepDetect = new StepDetect();
         double[] zGyroArrayFilt;
         List<String[]> inertialMeasurements;
         List<StepResults> allStepResults = new ArrayList<StepResults>();
@@ -255,7 +256,9 @@ public class OfflineTestActivity extends AppCompatActivity {
          *   GyroscopeZ_ds = Double.parseDouble(sArray[4]);
          *                   *
          */
-        int[] xyz_gyro = {0, 7, 4};
+        //int[] xyz_gyro = {0, 7, 4};
+        int[] xyz_gyro = {0, 6, 5};
+
         String[] xyz = {"X", "Y", "Z"};
         int xGyroIndex = xyz_gyro[Xcoord];
         int yGyroIndex = xyz_gyro[Ycoord];
@@ -316,36 +319,11 @@ public class OfflineTestActivity extends AppCompatActivity {
                     //System.out.print("GyroscopeX_ds : " + GyroscopeX_ds + " GyroscopeY_ds : " +
                     //        GyroscopeY_ds + " GyroscopeZ_ds : " + GyroscopeZ_ds);
 
-                    if (isNewStepDetector) {
-                        int signal = this.zscoreSignalDetector.doSignal(zval, sample);
-                        thisStepState = this.zscoreSignalDetector.doStepDetect(zval, sample, signal, thisStepState);
-                        dataH2t.add(zval);
-                    } else {
-                        zGyroArrayFilt = stepDetect.filter(ms, GyroscopeX_ds, GyroscopeY_ds, zval, true);
-                        stepResults = stepDetect.detectStep(zGyroArrayFilt, goodStepThreshold, 20);
-                        stepResults.timestamp = ms;
-                        if (stepResults.goodstep) {
-                            if (isBeepChecked) {
-                                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
-                            }
-                            allStepResults.add(stepResults);
-                            goodstepResults.add(stepResults);
-                        } else if (stepResults.badstep) {
-                            allStepResults.add(stepResults);
-                            badstepResults.add(stepResults);
-                        }
-                        //System.out.println();
-                    }
+                    int signal = this.zscoreSignalDetector.doSignal(zval, sample);
+                    thisStepState = this.zscoreSignalDetector.doStepDetect(zval, sample, signal,
+                            thisStepState, false);
+                    dataH2t.add(zval);
                     sample++;
-                    // if simulate, then wait 20 ms to simulate real signal
-                   /* if (isSimulateChecked) {
-                        try {
-                            Thread.sleep(20);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                    } */
                 }
                 long totalTime = System.currentTimeMillis() - timeNow;
                 System.out.println("time: " + totalTime);
@@ -357,27 +335,19 @@ public class OfflineTestActivity extends AppCompatActivity {
                 List<Double> stdFilterList = resultsMap.get("stdFilter");
                 List<Double> goodStepFilterList = resultsMap.get("goodStepFilter");
                 List<Double> stepFilterList = resultsMap.get("stepFilter");
-                List<Double> heelPeakList = resultsMap.get("heelPeak");
-                List<Double> toePeakList = resultsMap.get("toePeak");
+                List<Double> HeelStrikeValley = resultsMap.get("HeelStrikeValley");
+                List<Double> maxFootSwings = resultsMap.get("maxFootSwings");
                 List<Double> beepList = resultsMap.get("beep");
 
-                if (isNewStepDetector) {
-                    ZscoreStepAnalytics zscoreStepAnalytics = new ZscoreStepAnalytics();
-                    ZscoreStepCalculations zscoreStepCalculations = zscoreStepAnalytics.signalAnalytics(dataH2t, signalsList,
-                            stepFilterList, heelPeakList, goodStepFilterList, toePeakList,
-                            20, 50, zScorelag, -109.0);
-                    ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
-                    zscoreStepAnalyticsDisplay.results(this, mResultsTable, zscoreStepCalculations,
-                            goodStepThreshold, 60000, dataFilename);
-                } else{
-                    StepAnalytics stepAnalytics = new StepAnalytics();
-                    StepCalculations stepCalculations = stepAnalytics.analytics(allStepResults,
-                            goodstepResults, badstepResults,
-                            sample, 50);
-                    StepAnalyticsDisplay stepAnalyticsDisplay = new StepAnalyticsDisplay();
-                    stepAnalyticsDisplay.results(this, mResultsTable, stepCalculations,
-                            goodStepThreshold, 60000, dataFilename);
-                }
+                ZscoreStepAnalytics stepAnalytics = new ZscoreStepAnalytics();
+                ZscoreStepCalculations stepCalculations = stepAnalytics.signalAnalytics(dataH2t, signalsList,
+                        stepFilterList, maxFootSwings, goodStepFilterList, HeelStrikeValley,
+                        20, 50,zScorelag,goodStepThreshold);
+
+                ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
+                zscoreStepAnalyticsDisplay.results(this, mResultsTable, stepCalculations,
+                        goodStepThreshold, 60000, dataFilename);
+
                 mH2tstatus.setText("");
 
             } else {

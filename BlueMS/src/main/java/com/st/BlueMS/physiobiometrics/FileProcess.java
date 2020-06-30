@@ -17,7 +17,35 @@ import java.util.List;
  * This is {@link android.app.Activity} for folder creation.
  */
 
+
 public class FileProcess  {
+
+    public int findZindex (InputStream is) {
+        try {
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            String csvSplitBy = ",";
+
+            line =  br.readLine();
+            String[] headerRow = line.split(csvSplitBy);
+
+            int zindex = -1;
+            int index = 0;
+            for (String header: headerRow) {
+                if (header.contains("Gyro") && header.contains("Z") && header.contains("CAL")) {
+                    zindex = index;
+                    break;
+                }
+                index++;
+            }
+            return zindex;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
     public List<String[]> readCSV(InputStream is) {
         List<String[]> rows = new ArrayList<>();

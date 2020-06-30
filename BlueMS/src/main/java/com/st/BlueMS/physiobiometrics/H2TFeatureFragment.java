@@ -321,7 +321,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         this.thiscontext = container.getContext();
         this.contentResolver = thiscontext.getContentResolver();
 
-        Sound soundMgr = new Sound();
+        soundMgr = new Sound();
         soundMgr.createNewSoundPool();
         startMeasureSound = soundMgr.loadSoundID(thiscontext, R.raw.startsoundbeep1);
         stopMeasureSound = soundMgr.loadSoundID(thiscontext, R.raw.alarmclock1);
@@ -451,7 +451,16 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                         }
                     });
                 }
-                gyroSample.add(new InertialMeasurement(gyroSampleCounter, sample.timestamp, Xval, Yval, Zval, step));
+                try {
+                    gyroSample.add(new InertialMeasurement(gyroSampleCounter, sample.timestamp, Xval, Yval, Zval, step));
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                    System.out.println("gyroSampleCounter: " + gyroSampleCounter);
+                    System.out.println("sample.timestamp: " + sample.timestamp);
+                    System.out.println("Xval: " + Xval + " Yval: " + Yval + " Zval: " + Zval + "  step: "+ step);
+                    System.out.println("sample.timestamp: " + sample.timestamp);
+                }
+
             }
         }//onUpdate
     }
@@ -794,7 +803,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         if (node == null)
             return;
         this.zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
-                zScoreInfluence, MAX_DATA_SIZE, footSwingThreshold, goodStepThreshold, soundMgr, -1);
+                zScoreInfluence, MAX_DATA_SIZE, footSwingThreshold, goodStepThreshold, soundMgr, beepSound);
         thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
         dataH2t = new ArrayList<Double>();
 
@@ -886,8 +895,8 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         List<Double> beepList = resultsMap.get("beep");
         ZscoreStepAnalytics zscoreStepAnalytics = new ZscoreStepAnalytics();
         ZscoreStepCalculations zscoreStepCalculations = zscoreStepAnalytics.signalAnalytics(dataH2t, signalsList,
-                stepFilterList, HeelStrikeValley, goodStepFilterList, maxFootSwings,
-                20, 50, zScorelag, (double) goodStepThreshold);
+                stepFilterList, maxFootSwings, goodStepFilterList, HeelStrikeValley,
+                20, 50,zScorelag,goodStepThreshold);
         ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
         zscoreStepAnalyticsDisplay.results(thiscontext, mResultsTable, zscoreStepCalculations,
                 goodStepThreshold, 60000, dataFilename);

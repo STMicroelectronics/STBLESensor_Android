@@ -280,11 +280,20 @@ public class OfflineTestActivity extends AppCompatActivity {
                 InputStream inputStream = this.contentResolver.openInputStream(content_describer);
                 dataFilename = queryName(this.contentResolver, content_describer);
                 if (fileformat == physioBioMetricsRFormat) {
+                    zGyroIndex = fileProcess.findZindex(inputStream);
+                    if (zGyroIndex == -1) {
+                        errorMsg = "Error. Input file was not produced by this application";
+                    }
+                    else {
+                        errorMsg =("FOUND zINDEX IN FILE = " + zGyroIndex);
+                    }
                     inertialMeasurements = fileProcess.readCSV(inputStream);
+
                     if (inertialMeasurements.isEmpty()) {
                         errorMsg = "Error. Input file is not physioBioMetrics R Format format";
                     }
                 } else if (fileformat == androidFormat) {
+                    zGyroIndex = 4;
                     inertialMeasurements = fileProcess.readAndroidFileFormat(inputStream);
                     if (inertialMeasurements.isEmpty()) {
                         errorMsg = "Error. Input file was not produced by this application";

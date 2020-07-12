@@ -802,6 +802,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
         Node node = getNode();
         if (node == null)
             return;
+
         this.zscoreSignalDetector = new ZscoreSignalDetector(zScorelag, zScoreThreshold,
                 zScoreInfluence, MAX_DATA_SIZE, footSwingThreshold, goodStepThreshold, soundMgr, beepSound);
         thisStepState = ZscoreSignalDetector.StepState.LOOKING_FOR_STEP;
@@ -899,7 +900,7 @@ public class H2TFeatureFragment extends BaseDemoFragment implements View.OnClick
                 20, 50,zScorelag,goodStepThreshold);
         ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
         zscoreStepAnalyticsDisplay.results(thiscontext, mResultsTable, zscoreStepCalculations,
-                goodStepThreshold, 60000, dataFilename);
+                goodStepThreshold, dataH2t.size(), dataFilename);
         if (captureReady) {
             FileProcess fileProcess = new FileProcess();
             String results = zscoreStepAnalyticsDisplay.results(zscoreStepCalculations,

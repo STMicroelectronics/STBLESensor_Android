@@ -1,10 +1,9 @@
 package com.st.BlueMS.physiobiometrics.zscore;
 
-
 public class ZscoreStepResults {
     public double timestamp;
-    public double minH2TdegreesPerSecond;
-    public double maxHSdegreesPerSecond;
+    public double minHeelStrike;
+    public double maxFootSwing;
     public boolean goodstep;
     public boolean badstep;
 
@@ -12,8 +11,8 @@ public class ZscoreStepResults {
         timestamp = 0;
         goodstep = false;
         badstep = false;
-        minH2TdegreesPerSecond = 0;
-        maxHSdegreesPerSecond = 0;
+        minHeelStrike = 0;
+        maxFootSwing = 0;
     }
 }
 

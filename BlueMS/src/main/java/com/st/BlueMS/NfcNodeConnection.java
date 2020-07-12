@@ -113,12 +113,12 @@ public class NfcNodeConnection extends NodeScanActivity {
 
             int boundState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,
                     BluetoothDevice.BOND_NONE);
-            Log.d("InsertPin", "onBoundStateChange State:" + boundState);
+            //Log.d("InsertPin", "onBoundStateChange State:" + boundState);
             //android lollipop show 2 notification -> we delete the pin only when we have finish
             // to bound
             if(boundState != BluetoothDevice.BOND_BONDING)
                 sPairingPin=null; //the pairing is done -> remove the pin
-            Log.d("InsertPin", "onBoundStateChange "+ Arrays.toString(sPairingPin));
+            //Log.d("InsertPin", "onBoundStateChange "+ Arrays.toString(sPairingPin));
         }
 
         @Override

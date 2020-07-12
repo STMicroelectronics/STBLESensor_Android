@@ -125,7 +125,7 @@ public class FFTSettingsConsole {
         public void onStdOutReceived(Debug debug, String message) {
             mTimeout.removeCallbacks(onTimeout);
             mBuffer.append(message);
-            Log.d("Settings","response: "+mBuffer);
+            //Log.d("Settings","response: "+mBuffer);
             if(SET_DONE_RESPONSE.matcher(mBuffer).find()){
                 notifySettingsWrite(true);
             }else{
@@ -213,7 +213,7 @@ public class FFTSettingsConsole {
             if(readSettings!=null){
                 notifySettingsRead(readSettings);
             }else{
-                Log.d("FFTSettings","buffer: "+mBuffer.toString());
+                //Log.d("FFTSettings","buffer: "+mBuffer.toString());
                 mTimeout.postDelayed(onTimeout,COMMAND_TIMEOUT_MS);
             }
 

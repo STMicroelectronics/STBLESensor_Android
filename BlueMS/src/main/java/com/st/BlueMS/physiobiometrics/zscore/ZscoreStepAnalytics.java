@@ -26,6 +26,7 @@ public class ZscoreStepAnalytics {
 	}
 
 	public void printStepCalculations () {
+		DecimalFormat df2 = new DecimalFormat("#.##");
 		System.out.println("fname = "+sc.fname);
 		System.out.println("freqHZ = "+sc.freqHZ);
 		System.out.println("footSwingThreshold = "+sc.footSwingThreshold);
@@ -40,102 +41,105 @@ public class ZscoreStepAnalytics {
 		System.out.println("nSteps= "+ sc.nSteps);
 		System.out.println("ngood= "+sc.ngood);
 		System.out.println("nbad= "+ sc.nbad);
-		System.out.println("pcgood= "+ sc.pcgood);
-		System.out.println("pcbad= " + sc.pcbad);
-		System.out.println("stepmeantime= "+sc.stepmeantime);
-		System.out.println("cadmean= "+sc.cadmean);
-		System.out.println("HeelStrikeAV= "+sc.HeelStrikeAV);
-		System.out.println("HeelStrikeAVSTD= "+sc.HeelStrikeAVSTD);
-		System.out.println("HeelStrikeAVCV= "+sc.HeelStrikeAVCV);
-		System.out.println("FootSwingAV= "+sc.FootSwingAV);
-		System.out.println("FootSwingAVSTD= "+sc.FootSwingAVSTD);
-		System.out.println("FootSwingAVCV= "+sc.FootSwingAVCV);
+		System.out.println("pcgood= "+ df2.format(sc.pcgood));
+		System.out.println("pcbad= " + df2.format(sc.pcbad));
+		System.out.println("stepmeantime= "+ df2.format(sc.stepmeantime));
+		System.out.println("cadmean= "+ df2.format(sc.cadmean));
+		System.out.println("HeelStrikeAV= "+ df2.format(sc.HeelStrikeAV));
+		System.out.println("HeelStrikeAVSTD= "+ df2.format(sc.HeelStrikeAVSTD));
+		System.out.println("HeelStrikeAVCV= "+ df2.format(sc.HeelStrikeAVCV));
+		System.out.println("FootSwingAV= "+ df2.format(sc.FootSwingAV));
+		System.out.println("FootSwingAVSTD= "+ df2.format(sc.FootSwingAVSTD));
+		System.out.println("FootSwingAVCV= "+ df2.format(sc.FootSwingAVCV));
 	}
 
-
+	public void printStepResults () {
+		DecimalFormat df2 = new DecimalFormat("#.##");
+		boolean goodStep;
+		int i = 0;
+		for (ZscoreStepResults s : sc.allStepResults) {
+			goodStep = (s.minHeelStrike <= sc.stepThreshold);
+			System.out.println(i++ + "\t"+  df2.format(s.timestamp) + "\t"+ df2.format(s.minHeelStrike) + "\t"+ df2.format(s.maxFootSwing) + "\t" + goodStep);
+		}
+	}
 
 	public ZscoreStepCalculations signalAnalytics(ArrayList<Double> data, List<Integer> signalsList,
-												  List<Double> stepFilterList, List<Double> heelPeakList, List<Double> goodStepFilterList,
-												  List<Double> toePeakList, int samples, int freqHZ, int lag, Double stepThreshold) {
+												  List<Double> stepFilterList, List<Double> FootSwingPeak, List<Double> goodStepFilterList,
+												  List<Double> HeelStrikeValley, int samples, int freqHZ, int lag, Double stepThreshold) {
 
 		sc = new ZscoreStepCalculations();
-		DecimalFormat df2 = new DecimalFormat("#.##");
 		sc.freqHZ = freqHZ;
 		sc.rate = 1 / (double) freqHZ;
-		double rateMilliseconds = sc.rate * 1000;
-		double totalH2TAngularVelocity = 0;
-		double totalHSAngularVelocity = 0;
+		double totalHeelStrikeAngularVelocity = 0;
+		double totalFootSwingAngularVelocity = 0;
 		boolean firststep = true;
-		double timestamp;
 
-		List<ZscoreStepResults> allStepResults = new ArrayList<ZscoreStepResults>();
+		sc.allStepResults = new ArrayList<ZscoreStepResults>();
 
 		for (int i = lag; i < data.size(); i++) {
 
 			// find the start of walking
 			if (stepFilterList.get(i) > 0) {
-				ZscoreStepResults stepResults = new ZscoreStepResults();
-				stepResults.timestamp = i;
-				// process step
-				sc.nSteps++;
-				if (firststep) {
-					sc.startWalking = i;
-					firststep = false;
+
+				Double minHeelStrike = findDataInStep(stepFilterList, HeelStrikeValley, i, false); // TODO CALC EVEN IF
+				// < THRESHOLD
+				Double maxFootSwing = findDataInStep(stepFilterList, FootSwingPeak, i, true);
+
+				if (minHeelStrike < 0) {
+					ZscoreStepResults stepResults = new ZscoreStepResults();
+					stepResults.timestamp = i;
+					// process step
+					sc.nSteps++;
+					if (firststep) {
+						sc.startWalking = i;
+						firststep = false;
+					}
+					sc.stopWalking = i;
+
+					totalHeelStrikeAngularVelocity += minHeelStrike;
+					stepResults.minHeelStrike = minHeelStrike;
+					totalFootSwingAngularVelocity += maxFootSwing;
+					stepResults.maxFootSwing = maxFootSwing;
+
+					if (minHeelStrike < stepThreshold) {
+						sc.ngood++;
+						stepResults.goodstep = true;
+					} else {
+						sc.nbad++;
+						stepResults.badstep = true;
+					}
+					sc.allStepResults.add(stepResults);
 				}
-				sc.stopWalking = i;
-
-				Double minToe = findDataInStep (stepFilterList, toePeakList, i, false); // TODO CALC EVEN IF < THRESHOLD
-				totalH2TAngularVelocity += minToe;
-				stepResults.minH2TdegreesPerSecond = minToe;
-
-				Double maxStep = findDataInStep (stepFilterList, heelPeakList, i, true);
-				totalHSAngularVelocity += maxStep;
-				stepResults.maxHSdegreesPerSecond = maxStep;
-
-				if (minToe < stepThreshold) {
-					sc.ngood++;
-					stepResults.goodstep = true;
-				} else {
-					sc.nbad++;
-					stepResults.badstep = true;
-				}
-				allStepResults.add(stepResults);
 			}
-		}
-		int i = 1;
-		boolean goodStep;
-		for (ZscoreStepResults s : allStepResults) {
-			goodStep = (s.minH2TdegreesPerSecond <= stepThreshold);
-			System.out.println(i++ + "\t"+ s.timestamp + "\t"+ s.minH2TdegreesPerSecond + "\t"+ s.maxHSdegreesPerSecond + "\t" + goodStep);
 		}
 		sc.timeOn = (double) data.size() * sc.rate;
 		sc.timeWalk = (sc.stopWalking - sc.startWalking) * sc.rate;
 		sc.totalwalkingtime = sc.timeWalk;
 		if (sc.nSteps > 0) {
-			sc.stepmeantime = sc.timeWalk / (double) (sc.nSteps-1);
+			sc.stepmeantime = sc.timeWalk / (double) (sc.nSteps - 1);
 			sc.cadmean = 120 / sc.stepmeantime;
-			sc.pcbad =  (double) sc.nbad/ (double) sc.nSteps;
-			sc.pcgood =  (double) sc.ngood/ (double) sc.nSteps;
-			sc.FootSwingAV = totalHSAngularVelocity / (double) sc.nSteps;
-			sc.HeelStrikeAV = totalH2TAngularVelocity / (double) sc.nSteps;
+			sc.pcbad = (double) sc.nbad / (double) sc.nSteps;
+			sc.pcgood = (double) sc.ngood / (double) sc.nSteps;
+			sc.FootSwingAV = totalFootSwingAngularVelocity / (double) sc.nSteps;
+			sc.HeelStrikeAV = totalHeelStrikeAngularVelocity / (double) sc.nSteps;
 			int index = 0;
-			while (index < allStepResults.size()) {
-				ZscoreStepResults step = allStepResults.get(index);
-				double differenceH2T = step.minH2TdegreesPerSecond - sc.HeelStrikeAV;
-				sc.HeelStrikeAVSTD += Math.pow(differenceH2T, 2);
+			while (index < sc.allStepResults.size()) {
+				ZscoreStepResults step = sc.allStepResults.get(index);
+				double differenceHeelStrike = step.minHeelStrike - sc.HeelStrikeAV;
+				sc.HeelStrikeAVSTD += Math.pow(differenceHeelStrike, 2);
 
-				double differenceHS = step.maxHSdegreesPerSecond - sc.FootSwingAV;
-				sc.FootSwingAVSTD += Math.pow(differenceHS, 2);
+				double differenceFootSwing = step.maxFootSwing - sc.FootSwingAV;
+				sc.FootSwingAVSTD += Math.pow(differenceFootSwing, 2);
 
 				index++;
 			}
-			sc.HeelStrikeAVSTD = sc.HeelStrikeAVSTD/(double) sc.nSteps;
+			sc.HeelStrikeAVSTD = sc.HeelStrikeAVSTD / (double) sc.nSteps;
 			sc.HeelStrikeAVSTD = Math.sqrt(sc.HeelStrikeAVSTD);
-			sc.HeelStrikeAVCV =  sc.HeelStrikeAVSTD/sc.HeelStrikeAV;
+			sc.HeelStrikeAVCV = sc.HeelStrikeAVSTD / sc.HeelStrikeAV;
 
-			sc.FootSwingAVSTD = sc.FootSwingAVSTD/(double) sc.nSteps;
+			sc.FootSwingAVSTD = sc.FootSwingAVSTD / (double) sc.nSteps;
 			sc.FootSwingAVSTD = Math.sqrt(sc.FootSwingAVSTD);
-			sc.FootSwingAVCV =  sc.FootSwingAVSTD/sc.FootSwingAV;
+			sc.FootSwingAVCV = sc.FootSwingAVSTD / sc.FootSwingAV;
 		}
 		return sc;
 	}

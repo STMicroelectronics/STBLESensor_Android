@@ -160,6 +160,8 @@ dependencies {
     //generic websocket speech to cloud
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
+    // firebase storage
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
 
     //memory leak detector
     debugImplementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: "$leakcanaryVersion"

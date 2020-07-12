@@ -56,6 +56,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
 import com.st.BlueMS.R;
 import com.st.BlueMS.physiobiometrics.shimmer.StepAnalytics;
 import com.st.BlueMS.physiobiometrics.shimmer.StepAnalyticsDisplay;
@@ -156,6 +157,7 @@ public class OfflineTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_h2tfile_feature);
 
+        //console.log("Auth: "+buf);
         mH2tstatus = findViewById(R.id.h2tstatus);
         mH2tstatus.setText("Ready for Walk-Well file analysis. Select the proper file format and then chosee a file (Process File) ");
 
@@ -245,7 +247,6 @@ public class OfflineTestActivity extends AppCompatActivity {
         List<StepResults> goodstepResults = new ArrayList<StepResults>();
         List<StepResults> badstepResults = new ArrayList<StepResults>();
         int sample = zScorelag;
-        double ms = 0;
         dataH2t = new ArrayList<Double>();
 
         /***********
@@ -300,7 +301,7 @@ public class OfflineTestActivity extends AppCompatActivity {
                     }
                 } else {
                     inertialMeasurements = null;
-                    errorMsg = "Error. unknown inut file format";
+                    errorMsg = "Error. unknown input file format";
                 }
             } catch (IOException e) {
                 inertialMeasurements = null;
@@ -318,13 +319,13 @@ public class OfflineTestActivity extends AppCompatActivity {
                         GyroscopeZ_ds = Double.parseDouble(sArray[zGyroIndex]);
                         zvals.add(GyroscopeZ_ds);
                     } catch (NumberFormatException e) {
-                        System.out.println("error. not mumeric");
+                        System.out.println("error. not numeric");
                     }
                 }
                 // process zvals
                 long timeNow = System.currentTimeMillis();
                 for (Double zval : zvals) {
-                    ms = sample * 20;
+                    //ms = sample * 20;
                     //System.out.print("GyroscopeX_ds : " + GyroscopeX_ds + " GyroscopeY_ds : " +
                     //        GyroscopeY_ds + " GyroscopeZ_ds : " + GyroscopeZ_ds);
 
@@ -353,9 +354,12 @@ public class OfflineTestActivity extends AppCompatActivity {
                         stepFilterList, maxFootSwings, goodStepFilterList, HeelStrikeValley,
                         20, 50,zScorelag,goodStepThreshold);
 
+                stepAnalytics.printStepResults();
+                stepAnalytics.printStepCalculations();
+
                 ZscoreStepAnalyticsDisplay zscoreStepAnalyticsDisplay = new ZscoreStepAnalyticsDisplay();
                 zscoreStepAnalyticsDisplay.results(this, mResultsTable, stepCalculations,
-                        goodStepThreshold, 60000, dataFilename);
+                        goodStepThreshold,  dataH2t.size(), dataFilename);
 
                 mH2tstatus.setText("");
 

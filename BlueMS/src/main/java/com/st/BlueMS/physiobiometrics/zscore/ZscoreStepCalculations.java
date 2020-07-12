@@ -1,4 +1,5 @@
 package com.st.BlueMS.physiobiometrics.zscore;
+import java.util.List;
 
 public class ZscoreStepCalculations {
     String fname;
@@ -28,6 +29,7 @@ public class ZscoreStepCalculations {
     double FootSwingAV;
     double FootSwingAVSTD;
     double FootSwingAVCV;
+    List<ZscoreStepResults> allStepResults;
 
     ZscoreStepCalculations() {
         fname = "";
@@ -54,6 +56,4 @@ public class ZscoreStepCalculations {
         FootSwingAVSTD=0;
         FootSwingAVCV=0;
     }
-
-
 }

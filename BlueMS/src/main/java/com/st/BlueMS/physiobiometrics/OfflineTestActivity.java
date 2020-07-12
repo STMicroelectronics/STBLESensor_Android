@@ -56,7 +56,6 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.google.firebase.storage.FirebaseStorage;
 import com.st.BlueMS.R;
 import com.st.BlueMS.physiobiometrics.shimmer.StepAnalytics;
 import com.st.BlueMS.physiobiometrics.shimmer.StepAnalyticsDisplay;
@@ -104,6 +103,7 @@ public class OfflineTestActivity extends AppCompatActivity {
     private TextView mThresholdVal;
 
     private Button processFileButton;
+    private Button firebaseButton;
     private Spinner spinnerFileFormat;
     private int fileformat;
     private TextView mFolderLocation;
@@ -209,6 +209,9 @@ public class OfflineTestActivity extends AppCompatActivity {
 
         processFileButton = findViewById(R.id.processfileButton);
         processFileButton.setOnClickListener(new ProcessFileListener());
+
+        firebaseButton = findViewById(R.id.firebase);
+        firebaseButton.setOnClickListener(new FirebaseButtonListener());
 
         //this.thiscontext = container.getContext();
         this.contentResolver = getContentResolver();
@@ -490,6 +493,13 @@ public class OfflineTestActivity extends AppCompatActivity {
             intent.setType("text/csv");
             intent = Intent.createChooser(intent, "Choose a file");
             startActivityForResult(intent, 1);
+        }
+    }
+    private class FirebaseButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            mH2tstatus.setText("firebase button");
         }
     }
 }

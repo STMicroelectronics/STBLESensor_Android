@@ -100,6 +100,7 @@ public class AzureIotFactory extends MqttClientConnectionFactory {
         return String.format(MQTT_BROKER_HOSTNANE_FORMAT,mParam.hostName);
     }
 
+
     @Override
     public boolean connect(@NonNull Context ctx, @NonNull CloutIotClient connection,
                            @NonNull final ConnectionListener connectionListener)

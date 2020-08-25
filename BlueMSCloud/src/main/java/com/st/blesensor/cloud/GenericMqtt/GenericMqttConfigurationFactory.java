@@ -37,117 +37,54 @@
 
 package com.st.blesensor.cloud.GenericMqtt;
 
-
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.textfield.TextInputLayout;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
+import com.st.blesensor.cloud.AwsIot.AwsConfigFragment;
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
 import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
-import com.st.blesensor.cloud.R;
-import com.st.blesensor.cloud.util.MqttClientUtil;
 import com.st.BlueSTSDK.Node;
-import com.st.BlueSTSDK.gui.util.InputChecker.CheckNumberRange;
-import com.st.BlueSTSDK.gui.util.InputChecker.CheckRegularExpression;
-
-import java.util.regex.Pattern;
+import com.st.blesensor.cloud.util.MqttClientUtil;
 
 /**
  * Ask the parameters for a generic mqtt broker
  */
 public class GenericMqttConfigurationFactory implements CloudIotClientConfigurationFactory {
     private static final String FACTORY_NAME = "Generic MQTT";
-
-    /*
-     * pattern to match a an broker url
-     */
-    private static final Pattern MQTT_URL = Pattern.compile("(ssl|tcp)://[^\\s]+");
-
-    private static final String CONF_PREFERENCE = GenericMqttConfigurationFactory.class.getCanonicalName();
-    private static final String BROKER_URL_KEY = CONF_PREFERENCE+".BROKER_URL_KEY";
-    private static final String USER_KEY = CONF_PREFERENCE+".USER_KEY";
-    private static final String PORT_KEY = CONF_PREFERENCE+".PORT_KEY";
-    private static final String CLIENT_ID_KEY = CONF_PREFERENCE+".CLIENT_ID_KEY";;
-
-    private EditText mBrokerUrlText;
-    private EditText mUserNameText;
-    private EditText mPasswordText;
-    private EditText mPortText;
-    private EditText mClientIdText;
-
-    /**
-     * if present load the previous connection data from the app preferences
-     * @param pref object where read the preference
-     */
-    private void loadFromPreferences(SharedPreferences pref){
-        mBrokerUrlText.setText(pref.getString(BROKER_URL_KEY,""));
-        mUserNameText.setText(pref.getString(USER_KEY,""));
-        mPortText.setText(pref.getString(PORT_KEY,""));
-        mClientIdText.setText(pref.getString(CLIENT_ID_KEY,""));
-    }
-
-    /**
-     * store the connection parameter into a preference object
-     * @param pref object where store the preference
-     */
-    private void storeToPreference(SharedPreferences pref){
-        pref.edit()
-                .putString(BROKER_URL_KEY, mBrokerUrlText.getText().toString())
-                .putString(USER_KEY,mUserNameText.getText().toString())
-                .putString(PORT_KEY,mPortText.getText().toString())
-                .putString(CLIENT_ID_KEY,mClientIdText.getText().toString())
-                .apply();
-    }
+    private static final String CONFIG_FRAGMENT_TAG = GenericMqttFragment.class.getCanonicalName();
 
     @Override
     public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
-        LayoutInflater inflater = LayoutInflater.from(root.getContext());
-        View v = inflater.inflate(R.layout.cloud_config_generic_mqtt,root);
-
-        TextInputLayout brokerUrlLayout = v.findViewById(R.id.genericMqtt_brokerUrlWrapper);
-        mBrokerUrlText = brokerUrlLayout.getEditText();
-        mBrokerUrlText.addTextChangedListener(
-                new CheckRegularExpression(brokerUrlLayout,R.string.cloudLog_genericMqtt_brokerUrlError,MQTT_URL));
-
-        TextInputLayout userLayout = v.findViewById(R.id.genericMqtt_UserWrapper);
-        mUserNameText = userLayout.getEditText();
-
-        TextInputLayout passwordLayout = v.findViewById(R.id.genericMqtt_passwordWrapper);
-        mPasswordText = passwordLayout.getEditText();
+        //check if a fragment is already attach, and remove it to attach the new one
+        GenericMqttFragment configFragment = (GenericMqttFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
 
 
-        TextInputLayout clientIdLayout = v.findViewById(R.id.genericMqtt_clientIdWrapper);
-        mClientIdText = clientIdLayout.getEditText();
-
-        TextInputLayout portLayout = v.findViewById(R.id.genericMqtt_portWrapper);
-        mPortText = portLayout.getEditText();
-        mPortText.addTextChangedListener(new CheckNumberRange(portLayout,R.string.cloudLog_genericMqtt_portError,
-                0,1<<16));
-
-        loadFromPreferences(root.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+        if(configFragment==null) {
+            GenericMqttFragment newFragment = new GenericMqttFragment();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.add(root.getId(), newFragment, CONFIG_FRAGMENT_TAG);
+            transaction.commitNow();
+        }
 
     }
 
     @Override
     public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
-        root.removeAllViews();
+        GenericMqttFragment configFragment = (GenericMqttFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        if(configFragment!=null)
+            fm.beginTransaction().remove(configFragment).commit();
     }
 
     @Override
     public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
-        if(n==null)
-            return;
-        if(mClientIdText.getText().length()==0)
-            mClientIdText.setText(MqttClientUtil.getDefaultCloudDeviceName(n));
+        GenericMqttFragment mConfigFragment = (GenericMqttFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+
+        if(mConfigFragment!=null && n!=null)
+            mConfigFragment.setClientId(MqttClientUtil.getDefaultCloudDeviceName(n));
     }
 
     @Override
@@ -158,11 +95,11 @@ public class GenericMqttConfigurationFactory implements CloudIotClientConfigurat
     @Override
     public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
 
-        storeToPreference(mBrokerUrlText.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
-        return new GenericMqttFactory(mBrokerUrlText.getText().toString(),
-                mPortText.getText().toString(),
-                mClientIdText.getText().toString(),
-                mUserNameText.getText().toString(),
-                mPasswordText.getText().toString());
+        GenericMqttFragment mConfigFragment = (GenericMqttFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        return new GenericMqttFactory(mConfigFragment.getBrokerUrl(),
+                mConfigFragment.getPort(),
+                mConfigFragment.getClientId(),
+                mConfigFragment.getUserName(),
+                mConfigFragment.getPassWd());
     }
 }

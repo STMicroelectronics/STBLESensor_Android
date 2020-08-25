@@ -64,8 +64,8 @@ android {
 
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 46
-        versionName '4.7.0'
+        versionCode 47
+        versionName '4.7.1'
         applicationId "com.st.bluems"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -79,6 +79,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".debug"
             versionNameSuffix "-dev" + getDate()
         }
@@ -119,7 +121,10 @@ android {
 
     packagingOptions {
         exclude "thirdpartynotice.txt"
+        exclude 'maven.properties'
+        exclude 'META-INF/DEPENDENCIES'
     }
+
 }
 
 ext {
@@ -135,21 +140,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutineVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutineAndroidVersion"
-
-    components.all {
-        allVariants {
-            withDependencies { deps ->
-                deps.each { dep ->
-                    if (dep.group == 'org.eclipse.paho' && dep.name =='org.eclipse.paho.client.mqttv3') {
-                        dep.version {
-                            require "1.2.0"
-                        }
-                        dep.because "require api 24: https://github.com/eclipse/paho.mqtt.java/issues/633"
-                    }
-                }
-            }
-        }
-    }
 
     implementation project(':BlueSTSDK')
     implementation project(':BlueSTSDK_Gui_Android')
@@ -203,7 +193,4 @@ dependencies {
     androidTestImplementation group:'androidx.test.espresso', name: 'espresso-core', version:"$rootProject.androidx_espressoVersion"
 
 }
-
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 

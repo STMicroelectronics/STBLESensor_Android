@@ -38,24 +38,12 @@
 package com.st.BlueMS;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.st.BlueSTSDK.gui.AboutActivity;
-import com.st.BlueSTSDK.gui.thirdPartyLibLicense.LibLicense;
 
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Entry point activity, it show a full screen image for 2s and than the button for start the

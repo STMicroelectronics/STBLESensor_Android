@@ -86,13 +86,9 @@ import com.st.BlueSTSDK.NodeServer;
 import com.st.BlueSTSDK.Utils.ConnectionOption;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import com.st.BlueSTSDK.gui.demos.DemoFragment;
-import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileCompletedReceiver;
 import com.st.STM32WB.fwUpgrade.feature.RebootOTAModeFeature;
 import com.st.STM32WB.p2pDemo.feature.FeatureControlLed;
 import com.st.STM32WB.p2pDemo.feature.FeatureSwitchStatus;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -179,7 +175,6 @@ public class DemosActivity extends com.st.BlueSTSDK.gui.DemosActivity {
             //FeatureDebugFragment.class
     };
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Class<? extends DemoFragment>[] getAllDemos() {
         ArrayList<Class<? extends DemoFragment>> demoList = new ArrayList<>(Arrays.asList(ALL_DEMOS));

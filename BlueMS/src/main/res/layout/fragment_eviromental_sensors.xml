@@ -35,6 +35,7 @@
   ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
   ~ OF SUCH DAMAGE.
   -->
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -43,277 +44,164 @@
     android:layout_height="match_parent"
     tools:context="com.st.BlueMS.demos.EnvironmentalSensorsFragment">
 
-
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guidelineVertical"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/guidelineHorizontal"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.25" />
 
-    <ImageView
-        android:id="@+id/thermometerImage"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.50" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/thermometerCard"
+        android:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:srcCompat="@drawable/temperature_icon"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guidelineVertical"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/thermometerText"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal1"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/thermometerText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/sensorNotAvailable"
-        android:textAlignment="center"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guidelineVertical" />
+            <ImageView
+                android:id="@+id/thermometerImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_gravity="center"
+                android:src="@drawable/temperature_icon" />
+            <TextView
+                android:id="@+id/thermometerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:text="@string/sensorNotAvailable"
+                android:textSize="22sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/luminosityImage"
-        android:layout_width="0dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/barometerCard"
+        android:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/luminosityText"
-        app:layout_constraintLeft_toLeftOf="@+id/guidelineVertical"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/illuminance_icon" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal1"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal2"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/luminosityText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/sensorNotAvailable"
-        android:textSize="22sp"
-        android:textAlignment="center"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guidelineVertical"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent" />
+            <ImageView
+                android:id="@+id/barometerImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_gravity="center"
+                android:src="@drawable/pressure_icon" />
+            <TextView
+                android:id="@+id/barometerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:text="@string/sensorNotAvailable"
+                android:textSize="22sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/barometerImage"
-        android:layout_width="0dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/humidityCard"
+        android:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:srcCompat="@drawable/pressure_icon"
-        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guidelineVertical"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/barometerText" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal2"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal3"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/barometerText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/sensorNotAvailable"
-        android:textSize="22sp"
-        android:textAlignment="center"
+            <ImageView
+                android:id="@+id/humidityImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_gravity="center"
+                android:src="@drawable/humidity_icon" />
+            <TextView
+                android:id="@+id/humidityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:text="@string/sensorNotAvailable"
+                android:textSize="22sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/luminosityCard"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal3"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/guidelineVertical"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
+        tools:layout_editor_absoluteX="8dp">
 
-    <ImageView
-        android:id="@+id/humidityImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/humidityText"
-        app:layout_constraintLeft_toLeftOf="@+id/guidelineVertical"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal"
-        app:srcCompat="@drawable/humidity_icon" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/humidityText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/sensorNotAvailable"
-        android:textSize="22sp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/guidelineVertical"
-        app:layout_constraintRight_toRightOf="parent" />
+            <ImageView
+                android:id="@+id/luminosityImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:src="@drawable/illuminance_icon" />
+
+            <TextView
+                android:id="@+id/luminosityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:text="@string/sensorNotAvailable"
+                android:textAlignment="center"
+                android:textSize="22sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--
-<android.support.v7.widget.GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:grid="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    grid:columnCount="2"
-    grid:orientation="vertical" grid:rowCount="2"
-    tools:context="com.st.BlueMS.demos.EnvironmentalSensorsFragment">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        grid:layout_column="0"
-        grid:layout_columnWeight="1"
-        grid:layout_row="0"
-        grid:layout_rowWeight="1">
-
-        <ImageView
-            android:id="@+id/thermometerImage"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="2"
-            android:src="@drawable/temperature_icon" />
-
-        <TextView
-            android:id="@+id/thermometerText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/sensorNotAvailable"
-            android:textSize="22sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        grid:layout_column="1"
-        grid:layout_columnWeight="1"
-        grid:layout_row="0"
-        grid:layout_rowWeight="1">
-
-        <ImageView
-            android:id="@+id/luminosityImage"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="2"
-            android:src="@drawable/illuminance_icon"/>
-
-        <TextView
-            android:id="@+id/luminosityText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/sensorNotAvailable"
-            android:textSize="22sp"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        grid:layout_column="0"
-        grid:layout_columnWeight="1"
-        grid:layout_row="1"
-        grid:layout_rowWeight="1">
-
-        <ImageView
-            android:id="@+id/barometerImage"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="2"
-            android:src="@drawable/pressure_icon"/>
-
-        <TextView
-            android:id="@+id/barometerText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:singleLine="false"
-            android:text="@string/sensorNotAvailable"
-            android:textSize="22sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        grid:layout_column="1"
-        grid:layout_columnWeight="1"
-        grid:layout_row="1"
-        grid:layout_rowWeight="1">
-
-        <ImageView
-            android:id="@+id/humidityImage"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="2"
-            android:src="@drawable/humidity_icon"/>
-
-        <TextView
-            android:id="@+id/humidityText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/sensorNotAvailable"
-            android:textSize="22sp"/>
-
-    </LinearLayout>
-
-</android.support.v7.widget.GridLayout>
--->

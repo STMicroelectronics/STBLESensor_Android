@@ -36,26 +36,67 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/BlueSTSDKInputTypeStyle"
+                android:id="@+id/genericMqtt_brokerUrlWrapper"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:hint="@string/cloudLog_genericMqtt_brokerUrlHint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/genericMqtt_brockerUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/BlueSTSDKInputTypeStyle"
+                android:id="@+id/genericMqtt_portWrapper"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:hint="@string/cloudLog_genericMqtt_portHint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/genericMqtt_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/BlueSTSDKInputTypeStyle"
-            android:id="@+id/genericMqtt_brokerUrlWrapper"
-            android:layout_width="0dp"
+            android:id="@+id/genericMqtt_UserWrapper"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:hint="@string/cloudLog_genericMqtt_brokerUrlHint">
+            android:hint="@string/cloudLog_genericMqtt_userHint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/genericMqtt_brockerUrl"
+                android:id="@+id/genericMqtt_User"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1" />
@@ -64,66 +105,34 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/BlueSTSDKInputTypeStyle"
-            android:id="@+id/genericMqtt_portWrapper"
-            android:layout_width="0dp"
-            android:layout_weight="2"
+            android:id="@+id/genericMqtt_passwordWrapper"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/cloudLog_genericMqtt_portHint">
+            app:passwordToggleEnabled="true"
+            android:hint="@string/cloudLog_genericMqtt_passwordHint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/genericMqtt_port"
+                android:id="@+id/genericMqtt_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:inputType="number" />
+                android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/BlueSTSDKInputTypeStyle"
+            android:id="@+id/genericMqtt_clientIdWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/cloudLog_genericMqtt_clientIdHint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/genericMqtt_clientId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/BlueSTSDKInputTypeStyle"
-        android:id="@+id/genericMqtt_UserWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_genericMqtt_userHint">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/genericMqtt_User"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/BlueSTSDKInputTypeStyle"
-        android:id="@+id/genericMqtt_passwordWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_genericMqtt_passwordHint">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/genericMqtt_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:inputType="textPassword" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/BlueSTSDKInputTypeStyle"
-        android:id="@+id/genericMqtt_clientIdWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/cloudLog_genericMqtt_clientIdHint">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/genericMqtt_clientId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

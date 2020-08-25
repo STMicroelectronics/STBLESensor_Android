@@ -133,6 +133,7 @@ class HSDTaggingFragment : Fragment() {
 
         viewModel.isSDCardInserted.observe(viewLifecycleOwner, Observer {isSDCardInserted ->
             mStartStopButton.isEnabled = isSDCardInserted != false
+
         })
 
         viewModel.isLogging.observe(viewLifecycleOwner, Observer {isLogging ->
@@ -146,7 +147,10 @@ class HSDTaggingFragment : Fragment() {
         if(logging){
             mStartStopButton.setText(R.string.tagLog_stopLog)
         }else{
-            mStartStopButton.setText(R.string.tagLog_startLog)
+            if(mStartStopButton.isEnabled)
+                mStartStopButton.setText(R.string.tagLog_startLog)
+            else
+                mStartStopButton.setText(R.string.tagLog_sdcardmissing)
         }
     }
 

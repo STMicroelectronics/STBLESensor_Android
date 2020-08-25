@@ -119,7 +119,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
      * @param type type of node that we are using
      * @return supported events
      */
-    private static DetectableEvent[] getDetectableEvent(Node.Type type){
+    public static DetectableEvent[] getDetectableEvent(Node.Type type){
         switch (type){
             case STEVAL_WESU1:
                 return WESU_SUPPORTED_EVENT;
@@ -139,7 +139,7 @@ public class AccEventFragment extends BaseDemoFragment implements AdapterView.On
     }
 
     /**
-     * default event to show for a specific not type
+     * default event to show for a specific node type
      * @param type type of board
      * @return default event for the board
      */

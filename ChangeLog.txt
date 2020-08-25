@@ -1,3 +1,8 @@
+ST BLE Sensor v4.7.1
+ - Added the new BLE advertise
+ - Update the Paho library
+ - minor UI change
+ - Removed not used Cloud Dashboard
 ST BLE Sensor v4.6.4
  - update icon and colors
 ST BLE Sensor v4.6.3

@@ -41,6 +41,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,6 +143,8 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
      * humidity_icon icons, it became transparent in function of the humidity_icon
      */
     private ImageView mHumidityImage;
+
+    private CardView mHumidityCard;
     /**
      * max allowed humidity_icon value for this application
      */
@@ -207,6 +211,8 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
      */
     private ImageView mTemperatureImage;
 
+    private CardView mTemperatureCard;
+
     /**
      * object that extract the temperature from a feature sample
      */
@@ -249,6 +255,8 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
      * image where we will show the barometer image
      */
     private ImageView mPressureImage;
+
+    private CardView mPressureCard;
 
     /**
      * object that extract the pressure from a feature sample
@@ -293,6 +301,8 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
      */
     private ImageView mLuminosityImage;
 
+    private CardView mLuminosityCard;
+
     /**
      * object that extract the luminosity from a feature sample
      */
@@ -334,16 +344,20 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         View root = inflater.inflate(R.layout.fragment_eviromental_sensors, container, false);
         mHumidityText = root.findViewById(R.id.humidityText);
         mHumidityImage = root.findViewById(R.id.humidityImage);
+        mHumidityCard = root.findViewById(R.id.humidityCard);
 
 
         mTemperatureText = root.findViewById(R.id.thermometerText);
         mTemperatureImage = root.findViewById(R.id.thermometerImage);
+        mTemperatureCard = root.findViewById(R.id.thermometerCard);
 
         mPressureText = root.findViewById(R.id.barometerText);
         mPressureImage = root.findViewById(R.id.barometerImage);
+        mPressureCard = root.findViewById(R.id.barometerCard);
 
         mLuminosityText = root.findViewById(R.id.luminosityText);
         mLuminosityImage = root.findViewById(R.id.luminosityImage);
+        mLuminosityCard = root.findViewById(R.id.luminosityCard);
 
         return root;
     }
@@ -367,11 +381,14 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
                 f.addFeatureListener(mHumidityListener);
                 node.enableNotification(f);
             }//for
-
-
-
+            updateGui(() -> {
+                mHumidityCard.setVisibility(View.VISIBLE);
+            });
         }else{
-            updateGui(() -> mHumidityImage.setImageResource(R.drawable.humidity_missing));
+            updateGui(() -> {
+                mHumidityImage.setImageResource(R.drawable.humidity_missing);
+                mHumidityCard.setVisibility(View.GONE);
+            });
         }
 
         mTemperature = node.getFeatures(FeatureTemperature.class);
@@ -382,8 +399,14 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
                 f.addFeatureListener(mTemperatureListener);
                 node.enableNotification(f);
             }//for
+            updateGui(() -> {
+                mTemperatureCard.setVisibility(View.VISIBLE);
+            });
         }else{
-            updateGui(() -> mTemperatureImage.setImageResource(R.drawable.temperature_missing_icon));
+            updateGui(() -> {
+                mTemperatureImage.setImageResource(R.drawable.temperature_missing_icon);
+                mTemperatureCard.setVisibility(View.GONE);
+            });
         }
 
         mPressure = node.getFeatures(FeaturePressure.class);
@@ -394,8 +417,14 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
                 f.addFeatureListener(mPressureListener);
                 node.enableNotification(f);
             }//for
+            updateGui(() -> {
+                mPressureCard.setVisibility(View.VISIBLE);
+            });
         }else{
-            updateGui(() -> mPressureImage.setImageResource(R.drawable.pressure_missing_icon));
+            updateGui(() -> {
+                mPressureImage.setImageResource(R.drawable.pressure_missing_icon);
+                mPressureCard.setVisibility(View.GONE);
+            });
         }
 
         mLuminosity = node.getFeatures(FeatureLuminosity.class);
@@ -406,8 +435,14 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
                 f.addFeatureListener(mLuminosityListener);
                 node.enableNotification(f);
             }//for
+            updateGui(() -> {
+                mLuminosityCard.setVisibility(View.VISIBLE);
+            });
         }else{
-            updateGui(() -> mLuminosityImage.setImageResource(R.drawable.illuminance_missing));
+            updateGui(() -> {
+                mLuminosityImage.setImageResource(R.drawable.illuminance_missing);
+                mLuminosityCard.setVisibility(View.GONE);
+            });
 
         }
 

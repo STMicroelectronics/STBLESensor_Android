@@ -91,6 +91,16 @@ public interface CloudIotClientConnectionFactory {
     }
 
     /**
+     * Callback called when we have a new Data Sample
+     */
+    interface NewSampleListener {
+        /**
+         * This is called when we have a new data to send to Cloud
+         */
+        void onNewSampleReady (int numSamples);
+    }
+
+    /**
      * create a mqtt mqtt
      * @param ctx context to use for crete the mqtt
      * @return object to use for open the connection
@@ -108,6 +118,10 @@ public interface CloudIotClientConnectionFactory {
     boolean connect(@NonNull Context ctx, @NonNull CloutIotClient client,
                     @NonNull ConnectionListener connectionListener) throws Exception;
 
+    default void newSampleReady(@Nullable NewSampleListener newSampleListener) {
+
+    }
+
     /**
      * listener that will send the data to the cloud service
      * @param broker mqtt to use for sned the mqtt message
@@ -116,12 +130,32 @@ public interface CloudIotClientConnectionFactory {
      */
     @Nullable FeatureListener getFeatureListener(@NonNull CloutIotClient broker,long minUpdateIntervalMs);
 
+
+     default void setNewSampleListener(@NonNull CloutIotClient broker, @NonNull NewSampleListener newSampleListener) {
+    }
+
     /**
      * close the connection with the cloud
      * @param client connection to close
      * @throws Exception error happen during the connection
      */
     void disconnect(@NonNull CloutIotClient client) throws Exception;
+
+    /**
+     *  Function for enabling or not the upload button
+     * @return
+     */
+    default boolean showUploadButton() {
+        return false;
+    };
+
+    /**
+     * upload the data to cloud
+     * @param client connection to close
+     */
+    default void upload(@NonNull Context ctx,@NonNull CloutIotClient client) {
+
+    }
 
     /**
      * free the connection resources

@@ -8,10 +8,19 @@ buildscript {
     repositories {
         jcenter()
         google()
+
+        //needed for Crashlytics
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
+
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.google.gms:google-services:4.3.3'
+        // google-services plugin needed for Crashlytics
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.android.gms:oss-licenses-plugin:$os_licenses_plugin_version"
 
@@ -24,6 +33,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        //Add for compiling BLESensor with login module shared with Asset Tracking
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -50,28 +62,71 @@ ext {
     androidx_localBroadcastVersion = "1.0.0"
     androidx_preferenceVersion = "1.1.1"
     androidx_swipeRefreshLayoutVersion = "1.0.0"
-
-    //https://github.com/eclipse/paho.mqtt.java/issues/633
-    cloud_pahoVersion = "1.2.0" //version > 1.2.0 require android api > 24 (7)
+    cloud_pahoVersion = "1.2.4"
     cloud_pahoServiceVersion = "1.1.1"
 
     gsonVersion = '2.8.6'
 
-    // Test dependecy
+    // Test dependency
     androidx_runnerVersion = '1.2.0'
     androidx_rulesVersion = '1.2.0'
     androidx_espressoVersion = '3.2.0'
-    junitVersion = '4.12'
     mockitoVersion = '1.9.5'
+
+
+    //Add for compiling BLESensor with login module shared with Asset Tracking
+    androidx_preference = '1.1.1'
+    androidx_activityKtx = '1.1.0'
+    androidx_fragmentKtx = '1.2.5'
+    androidx_viewPager2 = '1.0.0'
+    //Analytics
+    amazonSDKVersion = '2.16.12'
+    awsVersion = '2.16.12'
+
+    firebase_messagingVersion = '20.2.0'
+    junitVersion = '4.13'
+    androidx_junitVersion = '1.1.1'
+
 
     //kotlin
     kotlin_coroutineVersion = '1.3.7'
     kotlin_coroutineAndroidVersion = '1.3.7'
+    kotlin_coroutine = '1.3.7'
 
     javaVersion = JavaVersion.VERSION_1_8
 
     retrofitVersion = '2.9.0'
 
-    //Analytics
-    amazonSDKVersion = '2.16.12'
+
 }
+//dependency for the BLE Toolbox module
+ext.versions = [
+        'compileSdk'      : compileSdkVersion,
+        'buildTools'      : buildToolsVersion,
+        'minSdk'          : minSdkVersion,
+        'targetSdk'       : targetSdkVersion,
+        'appcompat'       : androidx_appCompatVersion,
+        'material'        : androidx_materialVersion,
+        'swipeRefresh'    : androidx_swipeRefreshLayoutVersion,
+        'localBroadcast'  : androidx_localBroadcastVersion,
+        'androidx'        : '1.0.0',
+        'androidxArch'    : '2.0.0',
+        'room'            : androidx_roomVersion,
+        'constraintLayout': androidx_constraintLayoutVersion,
+        'coreKtx'         : '1.2.0-rc01',
+        'coroutines'      : '1.3.0',
+        'fragment'        : androidx_fragmentVersion,
+        'espresso'        : '3.2.0',
+        'extJunit'        : '1.1.1',
+        'recyclerView'    : androidx_recycleViewVersion,
+        'coreTest'        : '2.1.0',
+        'junit'           : '4.12',
+        'mockk'           : '1.9.3',
+        'ktlint'          : '0.24.0',
+        'lifecycle'       : androidx_lifecycleExtVersion,
+        'test_coreKtx'    : '1.2.0',
+        'test_rules'      : '1.1.0-beta02',
+        'test_runner'     : '1.1.0-beta02',
+        'test_fragment'   : '1.2.0-rc03',
+        'ui_automator'    : '2.2.0-beta02',
+]

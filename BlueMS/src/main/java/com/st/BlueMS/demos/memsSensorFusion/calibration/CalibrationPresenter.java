@@ -39,8 +39,6 @@ package com.st.BlueMS.demos.memsSensorFusion.calibration;
 
 import androidx.annotation.NonNull;
 
-import androidx.annotation.NonNull;
-
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Features.FeatureAutoConfigurable;
 

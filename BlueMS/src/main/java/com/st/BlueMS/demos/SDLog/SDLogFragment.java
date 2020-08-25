@@ -99,7 +99,6 @@ public class SDLogFragment extends DemoFragment implements SDLogContract.View, F
     protected void enableNeededNotification(@NonNull Node node) {
         FeatureSDLogging logFeature = node.getFeature(FeatureSDLogging.class);
         mPresenter = new SDLogPresenter(this, logFeature);
-
         mPresenter.startDemo();
     }
 

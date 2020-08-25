@@ -38,14 +38,22 @@
 package com.st.BlueMS.demos.util;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.st.BlueMS.R;
+import com.st.BlueMS.demos.AccEvent.AccEventFragment;
+import com.st.BlueMS.demos.memsSensorFusion.calibration.CalibrationContract;
 import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 import com.st.BlueSTSDK.Node;
 
 import java.util.ArrayList;
@@ -76,6 +84,7 @@ public class FeatureListViewAdapter extends
 
     private List<Feature> mAvailableFeature;
     private OnFeatureSelectChange mListener;
+    private Context mcontex;
 
     public FeatureListViewAdapter(List<Feature> items, OnFeatureSelectChange listener) {
         mListener = listener;
@@ -93,8 +102,10 @@ public class FeatureListViewAdapter extends
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        mcontex = parent.getContext();
+        View view = LayoutInflater.from(mcontex)
                 .inflate(R.layout.feature_list_item, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -107,6 +118,36 @@ public class FeatureListViewAdapter extends
         holder.featureNameLabel.setText(f.getName());
         holder.enableLogButton.setChecked(node.isEnableNotification(f));
         holder.enableLogButton.setEnabled(holder.enableButton);
+        if(f instanceof FeatureAccelerationEvent) {
+            holder.select_acc_event.setVisibility(View.VISIBLE);
+            //create the adapter and attach it to the spinner
+            {
+                holder.mDetectableEventArrayAdapter = new ArrayAdapter<>(mcontex,
+                        android.R.layout.simple_list_item_1,
+                        AccEventFragment.getDetectableEvent(node.getType()));
+                holder.mEventSelector.setAdapter(holder.mDetectableEventArrayAdapter);
+
+                holder.mEventSelector.setSelection(holder.mDetectableEventArrayAdapter.getPosition(holder.mCurrentEvent));
+
+                //holder.mEventSelector.setOnItemSelectedListener(this);
+                holder.mEventSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        holder.mCurrentEvent = (FeatureAccelerationEvent.DetectableEvent) adapterView.getSelectedItem();
+                        ((FeatureAccelerationEvent) holder.feature).detectEvent(holder.mCurrentEvent,true);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        holder.mCurrentEvent=FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT;
+
+                    }
+                });
+                holder.mEventSelector.setEnabled(true);
+            }
+        } else {
+            holder.select_acc_event.setVisibility(View.GONE);
+        }
     }//onBindViewHolder
 
     @Override
@@ -124,6 +165,16 @@ public class FeatureListViewAdapter extends
         public final TextView featureNameLabel;
         public final CompoundButton enableLogButton;
         public boolean enableButton=true;
+        public View select_acc_event;
+        public Spinner mEventSelector;
+        /**
+         * current selected event
+         */
+        public FeatureAccelerationEvent.DetectableEvent mCurrentEvent=FeatureAccelerationEvent.DEFAULT_ENABLED_EVENT;
+        /**
+         * adapter with the list of supported event
+         */
+        private ArrayAdapter<FeatureAccelerationEvent.DetectableEvent> mDetectableEventArrayAdapter;
 
         public ViewHolder(View view) {
             super(view);
@@ -148,6 +199,8 @@ public class FeatureListViewAdapter extends
                 }
             });
             feature = null;
+            select_acc_event = (View) view.findViewById(R.id.select_acc_event_type);
+            mEventSelector = (Spinner) view.findViewById(R.id.selected_acc_event_type);
         }//ViewHolder
 
     }//ViewHolder

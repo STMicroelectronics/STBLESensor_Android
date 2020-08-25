@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tagLog_startLog">Start</string>
+    <string name="tagLog_sdcardmissing">SD Card Missing</string>
     <string name="tagLog_stopLog">Stop</string>
     <string name="tagLog_addLog">Add tag</string>
     <string name="tagLog_acquisitionName_hint">Acquisition name</string>

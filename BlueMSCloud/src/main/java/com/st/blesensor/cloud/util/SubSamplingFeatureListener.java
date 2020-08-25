@@ -39,6 +39,7 @@ package com.st.blesensor.cloud.util;
 import androidx.annotation.NonNull;
 
 import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Features.FeatureAccelerationEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,8 +65,11 @@ public abstract class SubSamplingFeatureListener implements Feature.FeatureListe
 
     @Override
     public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
-        if(!featureNeedCloudUpdate(f,sample.notificationTime))
-            return;
+        //if the Feature is a Async Event
+        if(!(f instanceof FeatureAccelerationEvent)) {
+            if (!featureNeedCloudUpdate(f, sample.notificationTime))
+                return;
+        }
         //otherwise send the data
         onNewDataUpdate(f,sample);
     }

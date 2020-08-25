@@ -1,47 +1,53 @@
 #! /bin/bash
 
-#export PATH=~/Library/Android/sdk/build-tools/29.0.3/:$PATH
-export PATH=~/Android/Sdk/build-tools/29.0.3/:$PATH
+if [ -n "$1" ]; then 
 
-versionName=$1
+	echo "Preparing Release" $1.
 
-cd BlueSTSDK
-git tag $versionName
-git push --tags origin
-cd ..
+else
 
-cd BlueSTSDK_Gui_Android
-git tag $versionName
-git push --tags origin
-cd ..
+	echo "Run with Argument Release Version "
+	exit
 
-cd BlueSTSDK_Analytics
-git tag $versionName
-git push --tags origin
-cd ..
+fi
 
-cd trilobytelib
-git tag $versionName
-git push --tags origin
-cd ..
+versionName=BlueMS_$1
 
-cd STWINBoard_GUI_Android
-git tag $versionName
-git push --tags origin
-cd ..
 
-git tag $versionName
-git push --tags origin 
 
-mkdir ../$versionName
+if [ ! -f ../release.keystore ]; then
+	./CreateSignerKey.sh
+fi
 
-zip -r ../$versionName/src_$versionName.zip . -x '*.git*' '*build/*' '*.gradle/*' '*release*'
+export PATH=~/AppData/Local/Android/Sdk/build-tools/29.0.3/:/c/Program\ Files/Java/jre1.8.0_141/bin:$PATH
 
+export JAVA_HOME=/c/Program\ Files/Android/Android\ Studio/jre
+export JRE_HOME=/c/Program\ Files/Android/Android\ Studio/jre
+
+
+mkdir -p ../$versionName
+
+echo "---------------"
+echo "| Zip Project |"
+echo "---------------"
+/c/Program\ Files/7-Zip/7z.exe a -t7z ../$versionName/src_$versionName.7z . -mx0  -xr!.git -xr!build -xr!.gradle -xr!release
+
+echo "-----------------"
+echo "| Clean Project |"
+echo "-----------------"
+./gradlew clean
+
+echo "-------------------"
+echo "| Compile Project |"
+echo "-------------------"
 ./gradlew assembleRelease
 
+echo "-------------------"
+echo "| sig/unsigned APK |"
+echo "-------------------"
 cp BlueMS/build/outputs/apk/release/BlueMS-release-unsigned.apk ../$versionName/$versionName-unsigned.apk
 
 zipalign -v -p 4 ../$versionName/$versionName-unsigned.apk ../$versionName/$versionName-unsigned-aligned.apk
 
-apksigner sign --v1-signing-enabled  --v2-signing-enabled   --ks myreleasekey.jks --ks-key-alias MyReleaseKey --ks-pass pass:password --out ../$versionName/$versionName-release.apk --in ../$versionName/$versionName-unsigned-aligned.apk
-apksigner verify ../$versionName/$versionName-release.apk
+apksigner.bat sign --v1-signing-enabled  --v2-signing-enabled   --ks ../release.keystore --ks-key-alias MyReleaseKey --ks-pass pass:MyPassword --out ../$versionName/$versionName-release.apk --in ../$versionName/$versionName-unsigned-aligned.apk
+apksigner.bat verify ../$versionName/$versionName-release.apk

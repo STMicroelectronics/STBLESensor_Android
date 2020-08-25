@@ -57,6 +57,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -64,6 +66,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileService;
 import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileCompletedReceiver;
@@ -72,7 +75,6 @@ import com.st.blesensor.cloud.AzureIot.AzureIotConfigFactory;
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
 import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
 import com.st.blesensor.cloud.GenericMqtt.GenericMqttConfigurationFactory;
-import com.st.blesensor.cloud.IBMWatson.IBMWatsonConfigFactory;
 import com.st.blesensor.cloud.IBMWatson.IBMWatsonQuickStartConfigFactory;
 import com.st.blesensor.cloud.util.CloudFwUpgradeRequestDialog;
 import com.st.blesensor.cloud.util.MqttClientConfigAdapter;
@@ -82,7 +84,6 @@ import com.st.BlueMS.demos.util.FeatureListViewAdapter.OnFeatureSelectChange;
 import com.st.BlueSTSDK.Feature;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
-import com.st.blesensor.cloud.AzureIoTCentral.AzureIoTCentralConfigFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,22 +101,27 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
     private static final String CONF_PREFIX_KEY = CloudLogFragment.class.getCanonicalName();
     private static final String UPDATE_INTERVAL_DIALOG_TAG = CONF_PREFIX_KEY +".UPDATE_INTERVAL_DIALOG_TAG";
-
-
     private static final String SELECTED_CLOUD_KEY = CONF_PREFIX_KEY +".SELECTED_CLOUD_KEY";
     private static final String UPDATE_INTERVAL_KEY = CONF_PREFIX_KEY +".UPDATE_INTERVAL_KEY";
+    private static final String UPLOAD_BUTTON_VISIBLE_KEY = CONF_PREFIX_KEY +".UPLOAD_BUTTON_VISIBLE_KEY";
+    private static final String UPLOAD_BUTTON_NUM_SAMPLES_KEY = CONF_PREFIX_KEY + ".UPLOAD_BUTTON_NUM_SAMPLES_KEY";
+
     private static final int DEFAULT_UPDATE_INTERVAL_MS = 5000;
 
     /**
      * List of supported cloud provider
      */
     private List<CloudIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
-            new IBMWatsonQuickStartConfigFactory(),
-            new IBMWatsonConfigFactory(),
-            new AzureIoTCentralConfigFactory(),
-            new AzureIotConfigFactory(),
-            new AwSIotConfigurationFactory(),
-            new GenericMqttConfigurationFactory()
+            //new AzureIoTCentralConfigFactory(), //very very old...
+            // new AzureIoTCentralConfigFactory2(),
+            //new STAzureDashboardConfigFactory(), // AST Azure Dashboard with Group unrolling
+            //new STAwsIotConfigurationFactory(), //AST AWS Dashboard
+            //new STAwsDashboardConfigurationFactory(), //ST ATR Dashboard Current 1.0
+            new AzureIotConfigFactory(),      //Generic Azure Dashboard
+            new AwSIotConfigurationFactory(), //Generic aws Dashboard
+            new IBMWatsonQuickStartConfigFactory(), //IBM Quick Start
+            //new IBMWatsonConfigFactory(),
+            new GenericMqttConfigurationFactory() // Generic MQTT
     );
 
     /**
@@ -126,6 +132,20 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * button for start/stop a cloud connection
      */
     private ImageButton mStartLogButton;
+
+    /**
+     * Animation for start/stop or upload log button
+     */
+    private Animation animRotateButton;
+    private Animation animRotateBackButton;
+
+    /**
+     * button for uploading the data to cloud
+     */
+    private ExtendedFloatingActionButton mUpoladLogButton;
+
+    private int mNumSamplesForUploadLogButton = 0;
+
     /**
      * spinner used for select the cloud provider
      */
@@ -156,7 +176,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private CloudIotClientConnectionFactory mCloudConnectionFactory;
 
     /**
-    * object used to build the current configuraiton ui
+    * object used to build the current configuration ui
      */
     private CloudIotClientConfigurationFactory mCloudConfigurationFactory;
 
@@ -171,10 +191,28 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      */
     private Feature.FeatureListener mCloudLogListener;
 
+    private CloudIotClientConnectionFactory.NewSampleListener mNewSampleListener;
+
+
     /**
      * snackbar used for display the page with the data
      */
     private Button mDataPageLink;
+
+    public void UpdateNSamplesExtendedFab(int numSamples) {
+        mNumSamplesForUploadLogButton = numSamples;
+        updateGui(() ->{
+            String text = String.format("Samples %-5d",numSamples);
+            if(numSamples!=0) {
+                ///?? otherwise transition problem from 99->100 ??????
+                mUpoladLogButton.setExtended(false);
+                mUpoladLogButton.setExtended(true);
+            } else {
+                mUpoladLogButton.setExtended(false);
+            }
+            mUpoladLogButton.setText(text);
+        });
+    }
 
     /**
      * listener that close the cloud connection when the node lost the connection
@@ -188,6 +226,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             }
         }
     };
+
 
     /*
      * keep track of selected feature to avoid to disable all the notification if the user has not
@@ -292,6 +331,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
+        Log.i("CloudFragment","enableNeededNotification");
         mNode = node;
         mFwDownloadReceiver = new DownloadFwFileCompletedReceiver(requireContext(),node);
         if (isCloudConnected()) {
@@ -301,7 +341,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     /**
-     * utility function that return the selected CloudIotClientConfigurationFactory from the spiner
+     * utility function that return the selected CloudIotClientConfigurationFactory from the spinner
      * @return current selection form the spinner
      */
     private CloudIotClientConfigurationFactory getSelectCloud() {
@@ -315,6 +355,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      */
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
+        Log.i("CloudFragment","disableNeedNotification");
         if (!isCloudConnected()) {
             stopAllNotification();
         } else {
@@ -327,6 +368,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i("CloudFragment","onCreateView");
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_cloud_log, container, false);
         mFeatureListView = root.findViewById(R.id.cloudLogFeatureList);
@@ -334,6 +376,28 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
         mStartLogButton = root.findViewById(R.id.startCloudLog);
         setUpStartLogButton(mStartLogButton);
+
+        mUpoladLogButton = root.findViewById(R.id.uploadCloudLog);
+        mUpoladLogButton.setOnClickListener(this::onUploadCloudLogClick);
+//        animScaleInButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_scale_in);
+//        animScaleOutButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_scale_out);
+//        animScaleOutButton.setAnimationListener(new Animation.AnimationListener() {
+//           @Override
+//           public void onAnimationStart(Animation animation) {
+//          }
+//          @Override
+//          public void onAnimationEnd(Animation animation) {
+//                mUpoladLogButton.setVisibility(View.GONE);
+//           }
+//           @Override
+//           public void onAnimationRepeat(Animation animation) {
+//            }
+//        });
+        mUpoladLogButton.hide();
+        UpdateNSamplesExtendedFab(0);
+
+        animRotateButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_rotate);
+        animRotateBackButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_rotate_back);
 
         mCloudClientSpinner = root.findViewById(R.id.cloudProviderSpinner);
         setUpCloudClientSpinner(mCloudClientSpinner,getNode(), savedInstanceState);
@@ -353,15 +417,31 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.i("CloudFragment","onSaveInstanceState");
         super.onSaveInstanceState(outState);
-        if(mCloudClientSpinner != null)
-            outState.putInt(SELECTED_CLOUD_KEY,mCloudClientSpinner.getSelectedItemPosition());
+        if(mCloudClientSpinner != null) {
+            outState.putInt(SELECTED_CLOUD_KEY, mCloudClientSpinner.getSelectedItemPosition());
+        }
+        if(mUpoladLogButton.isShown()) {
+            outState.putBoolean(UPLOAD_BUTTON_VISIBLE_KEY, mUpoladLogButton.isShown());
+        }
 
+        outState.putInt(UPLOAD_BUTTON_NUM_SAMPLES_KEY, mNumSamplesForUploadLogButton);
     }
 
     private void restoreCloudClientParamState(Bundle savedInstanceState) {
+        Log.i("CloudFragment","restoreCloudClientParamState");
         int selected = savedInstanceState.getInt(SELECTED_CLOUD_KEY);
         mCloudClientSpinner.setSelection(selected);
+
+        if(savedInstanceState.getBoolean(UPLOAD_BUTTON_VISIBLE_KEY)) {
+            mUpoladLogButton.show();
+        } else {
+            mUpoladLogButton.hide();
+        }
+
+        mNumSamplesForUploadLogButton = savedInstanceState.getInt(UPLOAD_BUTTON_NUM_SAMPLES_KEY);
+        UpdateNSamplesExtendedFab(mNumSamplesForUploadLogButton);
     }
 
 
@@ -385,12 +465,10 @@ public class CloudLogFragment extends DemoWithNetFragment implements
                 }catch (ActivityNotFoundException e){
                     Toast.makeText(activity, R.string.cloudLog_browserNotFound, Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
         dataPageLink.setVisibility(View.GONE);
     }
-
 
     /**
      * atach the adapter to the spinner and set the selectedListener
@@ -399,6 +477,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private void setUpCloudClientSpinner(Spinner spinner, @Nullable final Node node, @Nullable Bundle savedState){
         spinner.setAdapter(new MqttClientConfigAdapter(getActivity(), mCloudProviders));
 
+        Log.i("CloudFragment","setUpCloudClientSpinner");
         /*
          * remove the previous view and add the new views for configure the selected service
          */
@@ -432,6 +511,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
 
     private void setUpStartLogButton(ImageButton button) {
+        Log.i("CloudFragment","setUpStartLogButton");
         button.setOnClickListener(this::onStartStopCloudLogClick);
         if (isOnline()) {
             enableCloudButton();
@@ -445,6 +525,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * @return true if the connection with the cloud service is open, false otherwise
      */
     private boolean isCloudConnected() {
+        Log.i("CloudFragment","isCloudConnected");
         return mCloudConnectionFactory != null && mMqttClient!=null &&
                 mCloudConnectionFactory.isConnected(mMqttClient);
     }
@@ -454,7 +535,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * set up the fragment views to display when the connection is open
      */
     private void showConnectedView() {
+        Log.i("CloudFragment","showConnectedView");
         mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_stop_24dp);
+        mStartLogButton.startAnimation(animRotateButton);
         disableCloudConfiguration();
         hideConnectingView();
         mCloudConnectionProgress.setVisibility(View.GONE);
@@ -465,19 +548,21 @@ public class CloudLogFragment extends DemoWithNetFragment implements
                 mSendDataToCloudWhenSelected));
         if(mCloudConnectionFactory.getDataPage()!=null)
             mDataPageLink.setVisibility(View.VISIBLE);
-
     }
 
     /**
      * set up the fragment views to display when the connection is closed
      */
     private void showDisconnectedView() {
+        Log.i("CloudFragment","showDisconnectedView");
         mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_24dp);
+        mStartLogButton.startAnimation(animRotateBackButton);
         enableCloudConfiguration();
         mFeatureListView.setVisibility(View.GONE);
         mDataPageLink.setVisibility(View.GONE);
         mShowDetailsButton.setVisibility(View.GONE);
         mCloudConfig.setVisibility(View.VISIBLE);
+        UpdateNSamplesExtendedFab(0);
     }
 
     private void showConnectingView(){
@@ -494,6 +579,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * open a connection to the selected cloud service
      */
     private void startCloudConnection() {
+        Log.i("CloudFragment","startCloudConnection");
         if(isCloudConnected()) {
             return;
         }
@@ -510,6 +596,20 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             return;
         }
 
+        if (mCloudConnectionFactory.showUploadButton()) {
+//            mUpoladLogButton.setVisibility(View.VISIBLE);
+//            mUpoladLogButton.startAnimation(animScaleInButton);
+
+            mUpoladLogButton.show();
+
+            mNewSampleListener = new CloudIotClientConnectionFactory.NewSampleListener() {
+                @Override
+                public void onNewSampleReady(int numSamples) {
+                    UpdateNSamplesExtendedFab(numSamples);
+                }
+            };
+        }
+
         try {
             mMqttClient = mCloudConnectionFactory.createClient(requireActivity());
             Context ctx = requireContext();
@@ -518,6 +618,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             mCloudConnectionFactory.connect(ctx, mMqttClient, new CloudIotClientConnectionFactory.ConnectionListener() {
                 @Override
                 public void onSuccess() {
+                    mCloudConnectionFactory.setNewSampleListener(mMqttClient,mNewSampleListener);
                     mCloudLogListener = mCloudConnectionFactory.getFeatureListener(mMqttClient,getUpdateInterval());
                     mCloudConnectionFactory.enableCloudFwUpgrade(mNode, mMqttClient, fwUrl -> {
                         Uri firmwareRemoteLocation = Uri.parse(fwUrl);
@@ -551,16 +652,20 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     }
 
     /**
-     * remove the resource used by the mqtt mqtt
+     * remove the resource used by the mqtt
      */
     @Override
     public void onDestroy() {
+        Log.i("CloudFragment","onDestroy");
         super.onDestroy();
         if(mCloudConnectionFactory!=null && mMqttClient!=null)
             mCloudConnectionFactory.destroy(mMqttClient);
+
+        UpdateNSamplesExtendedFab(0);
     }
 
     private void stopAllNotification() {
+        Log.i("CloudFragment","stopAllNotification");
         if(mNode==null) // avoid NPE, in some devices..
             return;
         //no active notification in this demo, so nothing to do
@@ -584,16 +689,22 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * close the cloud connection
      */
     private void closeCloudConnection() {
-        if (isCloudConnected()) { //cloudConnected check that mMqttClient is not null
+        Log.i("CloudFragment","closeCloudConnection");
+        if (isCloudConnected()) { //cloudConnected check that Mqtt Client is not null
             mCloudLogListener = null;
             Context ctx = getActivity();
-            if(ctx!=null) // can be null if called after the d
+            if(ctx!=null) // can be null
                 mFwDownloadReceiver.unregisterReceiver();
             try {
                 mCloudConnectionFactory.disconnect(mMqttClient);
             } catch (Exception e) {
                 buildMqttErrorDialog(getActivity(), e.getMessage()).show();
             }//try-catch
+
+            if (mCloudConnectionFactory.showUploadButton()) {
+                //mUpoladLogButton.startAnimation(animScaleOutButton);
+                mUpoladLogButton.hide();
+            }
 
         }//if
     }//closeCloudConnection
@@ -603,6 +714,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * @param v button pressed
      */
     private void onStartStopCloudLogClick(View v) {
+        Log.i("CloudFragment","onStartStopCloudLogClick");
         if (!isCloudConnected()) {
             startCloudConnection();
         } else {
@@ -610,6 +722,16 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             closeCloudConnection();
             showDisconnectedView();
         }//if-else
+    }
+
+    /**
+     * function called when the upload button is pressed
+     * @param v button pressed
+     */
+    private void onUploadCloudLogClick(View v) {
+        Log.i("CloudFragment","onUploadCloudLogClick");
+        stopAllNotification();
+        mCloudConnectionFactory.upload(requireContext(),mMqttClient);
     }
 
     /**
@@ -638,17 +760,20 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     @Override
     protected void onSystemHasConnectivity() {
         super.onSystemHasConnectivity();
+        Log.i("CloudFragment","onSystemHasConnectivity");
         enableCloudButton();
     }
 
 
     private void disableCloudConfiguration() {
+        Log.i("CloudFragment","disableCloudConfiguration");
         mCloudClientSpinner.setEnabled(false);
         changeEnableState(mCloudConfig, false);
         mFeatureListViewContainer.setVisibility(View.VISIBLE);
     }
 
     private void enableCloudConfiguration() {
+        Log.i("CloudFragment","enableCloudConfiguration");
         mCloudClientSpinner.setEnabled(true);
         changeEnableState(mCloudConfig, true);
         mFeatureListViewContainer.setVisibility(View.GONE);
@@ -657,13 +782,16 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
     private void enableCloudButton() {
         //only the first time change the icon
+        Log.i("CloudFragment","enableCloudButton");
         if(!mStartLogButton.isEnabled()) {
             mStartLogButton.setEnabled(true);
             mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_24dp);
+            mStartLogButton.startAnimation(animRotateBackButton);
         }
     }
 
     private void disableCloudButton() {
+        Log.i("CloudFragment","disableCloudButton");
         mStartLogButton.setEnabled(false);
         mStartLogButton.setImageResource(R.drawable.ic_cloud_offline_24dp);
     }

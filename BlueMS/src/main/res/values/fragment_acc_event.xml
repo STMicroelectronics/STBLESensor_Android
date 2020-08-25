@@ -37,7 +37,7 @@
   -->
 
 <resources>
-    <string name="accEvent_selectEventLabel">Detected event:</string>
+    <string name="accEvent_selectEventLabel">Event:</string>
     <string name="accEvent_freefall">FreeFall</string>
     <string name="accEvent_wakeUp">Wake Up</string>
     <string name="accEvent_tilt">Tilt</string>

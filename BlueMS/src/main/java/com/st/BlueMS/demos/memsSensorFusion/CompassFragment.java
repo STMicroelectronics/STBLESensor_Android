@@ -64,7 +64,6 @@ import com.st.BlueMS.R;
         iconRes = R.drawable.compass_demo_icon)
 public class CompassFragment extends BaseDemoFragment {
 
-    private FeatureEulerAngle mEulerAngle;
     private FeatureCompass mCompassFeature;
     private ImageView mCompassNeedle;
     private TextView mCompassAngle;

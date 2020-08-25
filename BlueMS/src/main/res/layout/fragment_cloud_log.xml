@@ -128,8 +128,8 @@
                     android:id="@+id/cloudLogFeatureList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/node_list_item"/>
 
@@ -137,14 +137,31 @@
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/startCloudLog"
+    <LinearLayout
+        android:layout_gravity="bottom|end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_cloud_upload_24dp" />
+        android:orientation="vertical">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/startCloudLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_gravity="right"
+            app:srcCompat="@drawable/ic_cloud_upload_24dp" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/uploadCloudLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:iconPadding="4dp"
+            android:visibility="gone"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/ic_cloud_upload_24dp" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 <!--         app:layout_behavior="com.st.BlueMS.demos.util.behavior.ScrollAwareFABBehavior"

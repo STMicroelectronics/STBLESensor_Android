@@ -38,51 +38,43 @@
 package com.st.blesensor.cloud.AzureIot;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.textfield.TextInputLayout;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import com.st.blesensor.cloud.AzureIot.util.ConnectionParameters;
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
 import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
-import com.st.blesensor.cloud.R;
-import com.st.BlueSTSDK.gui.util.InputChecker.InputChecker;
+
 import com.st.BlueSTSDK.Node;
 
 public class AzureIotConfigFactory implements CloudIotClientConfigurationFactory {
 
-    private static final String CONF_PREFERENCE = AzureIotConfigFactory.class.getCanonicalName();
-    private static final String CONNECTION_STRING = CONF_PREFERENCE+".CONNECTION_STRING";
-
+    private static final String CONFIG_FRAGMENT_TAG = AzureIoTConfigFragment.class.getCanonicalName();
     private static final String CLOUD_NAME= "Azure IoT";
 
-    private TextView mConnectionStringText;
 
     @Override
-    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
-        LayoutInflater inflater = LayoutInflater.from(root.getContext());
-        View v = inflater.inflate(R.layout.cloud_config_azure,root);
-        mConnectionStringText = v.findViewById(R.id.azure_connectionString);
-        TextInputLayout connectionStringLayout = v.findViewById(R.id.azure_connectionStringWrapper);
-        mConnectionStringText.addTextChangedListener(
-                new ConnectionStringChecker(connectionStringLayout,
-                        R.string.cloudLog_azure_connectionStringError));
-        //load the last valid connection string
-        loadFromPreferences(root.getContext().getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root, @Nullable String id_mcu) {
+        //check if a fragment is already attach, and remove it to attach the new one
+        AzureIoTConfigFragment configFragment = (AzureIoTConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+
+        if(configFragment==null) {
+            AzureIoTConfigFragment newFragment = new AzureIoTConfigFragment();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.add(root.getId(), newFragment, CONFIG_FRAGMENT_TAG);
+            transaction.commitNow();
+        }
     }
 
     @Override
     public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
-        root.removeAllViews();
+        AzureIoTConfigFragment configFragment = (AzureIoTConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        if(configFragment!=null)
+            fm.beginTransaction().remove(configFragment).commit();
     }
 
     @Override
@@ -95,37 +87,8 @@ public class AzureIotConfigFactory implements CloudIotClientConfigurationFactory
 
     @Override
     public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
-        ConnectionParameters param = ConnectionParameters.parse(mConnectionStringText.getText());
-        Context c = mConnectionStringText.getContext();
-        storeToPreference(c.getSharedPreferences(CONF_PREFERENCE,Context.MODE_PRIVATE));
+        AzureIoTConfigFragment mConfigFragment = (AzureIoTConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        ConnectionParameters param = ConnectionParameters.parse(mConfigFragment.getConnectionString());
         return new AzureIotFactory(param);
     }
-
-    private void loadFromPreferences(SharedPreferences pref){
-        mConnectionStringText.setText(pref.getString(CONNECTION_STRING,""));
-    }
-
-    private void storeToPreference(SharedPreferences pref){
-        pref.edit()
-                .putString(CONNECTION_STRING,mConnectionStringText.getText().toString())
-                .apply();
-    }
-
-    /**
-     * class used to check that if the user input is a valid connection string or not
-     */
-    private static class ConnectionStringChecker extends InputChecker {
-
-        ConnectionStringChecker(TextInputLayout textInputLayout,
-                                @StringRes int errorMessageId) {
-            super(textInputLayout, errorMessageId);
-        }
-
-        @Override
-        protected boolean validate(String input) {
-            return ConnectionParameters.hasValidFormat(input);
-        }
-
-    }//ConnectionStringChecker
-
 }

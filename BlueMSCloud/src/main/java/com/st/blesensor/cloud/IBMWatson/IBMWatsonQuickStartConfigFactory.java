@@ -37,74 +37,63 @@
 
 package com.st.blesensor.cloud.IBMWatson;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.textfield.TextInputLayout;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.st.blesensor.cloud.CloudIotClientConfigurationFactory;
 import com.st.blesensor.cloud.CloudIotClientConnectionFactory;
-import com.st.blesensor.cloud.R;
-import com.st.blesensor.cloud.util.MqttClientUtil;
-import com.st.BlueSTSDK.gui.util.InputChecker.CheckNotEmpty;
-import com.st.BlueSTSDK.gui.util.InputChecker.CheckRegularExpression;
 
 import com.st.BlueSTSDK.Node;
-
-import static com.st.blesensor.cloud.IBMWatson.IBMWatsonUtil.VALID_NAME_CHARACTER;
 
 /**
  *  Object that help to configure the Ibm Watson Iot/BlueMX service, using the quickstart configuration
  */
 public class IBMWatsonQuickStartConfigFactory implements CloudIotClientConfigurationFactory {
 
-    private static final String FACTORY_NAME="IBM Watson IoT - Quickstart";
-    private EditText mDeviceIdText;
-    private Node.Type mNodeType;
-
+    private static final String CONFIG_FRAGMENT_TAG = IBMWatsonQuickStartConfigFragment.class.getCanonicalName();
+    private static final String CLOUD_NAME="IBM Watson IoT - Quickstart";
 
     @Override
-    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
-        LayoutInflater inflater = LayoutInflater.from(root.getContext());
-        View v = inflater.inflate(R.layout.cloud_config_bluemx_quickstart,root);
-        mDeviceIdText = v.findViewById(R.id.blueMXQuick_deviceId);
-        TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMXQuick_deviceIdWrapper);
-        mDeviceIdText.addTextChangedListener(
-                new CheckNotEmpty(deviceIdLayout,R.string.cloudLog_watson_deviceIdError));
-        mDeviceIdText.addTextChangedListener(
-                new CheckRegularExpression(deviceIdLayout,R.string.cloudLog_watson_invalidCharacterError,VALID_NAME_CHARACTER));
-    }
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root,@Nullable String id_mcu) {
+        //check if a fragment is already attach, and remove it to attach the new one
+        IBMWatsonQuickStartConfigFragment configFragment = (IBMWatsonQuickStartConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
 
-    @Override
-    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
-        if(n==null){
-            mNodeType = Node.Type.GENERIC;
-            return;
-        }//else
-        if(mDeviceIdText.getText().length()==0)
-            mDeviceIdText.setText(MqttClientUtil.getDefaultCloudDeviceName(n));
-        mNodeType=n.getType();
-    }
-
-    @Override
-    public String getName() {
-        return FACTORY_NAME;
+        if(configFragment==null) {
+            IBMWatsonQuickStartConfigFragment newFragment = new IBMWatsonQuickStartConfigFragment();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.add(root.getId(), newFragment, CONFIG_FRAGMENT_TAG);
+            transaction.commitNow();
+        }
     }
 
     @Override
     public void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
-        root.removeAllViews();
+        IBMWatsonQuickStartConfigFragment configFragment = (IBMWatsonQuickStartConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        if(configFragment!=null)
+            fm.beginTransaction().remove(configFragment).commit();
+    }
+
+    @Override
+    public void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n) {
+        IBMWatsonQuickStartConfigFragment mConfigFragment = (IBMWatsonQuickStartConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        if(mConfigFragment.getDeviceID()==null) {
+            /* This is done only at the beginning */
+            mConfigFragment.setNode(n);
+        }
+    }
+
+    @Override
+    public String getName() {
+        return CLOUD_NAME;
     }
 
     @Override
     public CloudIotClientConnectionFactory getConnectionFactory(@NonNull FragmentManager fm) throws IllegalArgumentException {
-        return new IBMWatsonQuickStartFactory(mNodeType.name(),mDeviceIdText.getText().toString());
+        IBMWatsonQuickStartConfigFragment mConfigFragment = (IBMWatsonQuickStartConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
+        return new IBMWatsonQuickStartFactory(mConfigFragment.getNodeType().name(),mConfigFragment.getDeviceID());
     }
 }

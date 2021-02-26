@@ -60,8 +60,10 @@ internal class PlotDataViewModel  : ViewModel(){
     val lastDataDescription:LiveData<String>
     get() = _lastDataDescription
 
-    private var mFisrtNotificationTimeStamp:Long = 0
+    private var mFirstNotificationTimeStamp:Long = 0
     private var mCurrentPlottingFeature:Feature? = null
+
+    private  var mNotificationEnabled = false
 
     private fun filterSample(f:Feature, sample:Feature.Sample): Feature.Sample{
         if( f is FeatureProximity){
@@ -74,27 +76,32 @@ internal class PlotDataViewModel  : ViewModel(){
 
     private val mFeatureListener = Feature.FeatureListener{ f,sample ->
         //remove the starting time to avoid to have enormous x values
-        val plotEntry = filterSample(f,sample).toPlotEntry(xOffset = mFisrtNotificationTimeStamp)
+        val plotEntry = filterSample(f,sample).toPlotEntry(xOffset = mFirstNotificationTimeStamp)
         val lastX = _lastPlotData.value?.x ?: Long.MIN_VALUE
         if(plotEntry.x < lastX)
             return@FeatureListener
         _lastPlotData.postValue(plotEntry)
-        _lastDataDescription.postValue(f.toString())
+        _lastDataDescription.postValue(f.toStringToPlot())
     }
 
     fun startPlotFeature(f:Feature){
         stopPlot()
-        mFisrtNotificationTimeStamp = System.currentTimeMillis()
+        mFirstNotificationTimeStamp = System.currentTimeMillis()
         f.addFeatureListener(mFeatureListener)
-        f.enableNotification()
+        //f.enableNotification()
         _isPlotting.value=true
         mCurrentPlottingFeature = f
+        if(!mNotificationEnabled) {
+            notificationStartStop()
+        }
     }
 
     fun stopPlot(){
         mCurrentPlottingFeature?.apply {
             removeFeatureListener(mFeatureListener)
-            disableNotification()
+            if(mNotificationEnabled) {
+                notificationStartStop()
+            }
         }
         _isPlotting.value=false
         _lastPlotData.postValue(null)
@@ -109,9 +116,24 @@ internal class PlotDataViewModel  : ViewModel(){
         }
     }
 
+    fun onResumePauseButtonPressed(){
+        notificationStartStop()
+    }
+
+    private fun notificationStartStop() {
+        mCurrentPlottingFeature?.apply {
+            mNotificationEnabled = if(mNotificationEnabled) {
+                disableNotification()
+                false
+            } else {
+                this.enableNotification()
+                true
+            }
+        }
+    }
 }
 
 private fun Feature.Sample.toPlotEntry(xOffset:Long): PlotEntry{
-    val yData = FloatArray(data.size) { i -> data[i].toFloat() }
+    val yData = FloatArray(data.size) { i -> data[i].toFloat() }.filterIndexed { index, _ -> dataDesc[index].plotIt  }.toFloatArray()
     return PlotEntry(notificationTime-xOffset,yData)
 }

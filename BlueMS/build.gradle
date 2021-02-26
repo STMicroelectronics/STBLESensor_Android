@@ -64,8 +64,8 @@ android {
 
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 47
-        versionName '4.7.1'
+        versionCode 51
+        versionName '4.9.0'
         applicationId "com.st.bluems"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -79,10 +79,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".debug"
             versionNameSuffix "-dev" + getDate()
+            //resValue 'string', 'application_id', android.defaultConfig.applicationId + applicationIdSuffix
         }
     }
 
@@ -162,6 +161,8 @@ dependencies {
     implementation group: 'androidx.preference', name:'preference-ktx', version:"$rootProject.androidx_preferenceVersion"
 
     implementation group:'androidx.room', name:'room-runtime', version: "$rootProject.androidx_roomVersion"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor group:'androidx.room', name:'room-compiler', version: "$rootProject.androidx_roomVersion"
 
     // Lifecycle components

@@ -61,7 +61,9 @@ internal data class PlotBoundary(
                 FeatureDirectionOfArrival::class to  PlotBoundary(FeatureDirectionOfArrival.DATA_MIN.toFloat(), FeatureDirectionOfArrival.DATA_MAX.toFloat(), 37),
                 FeaturePressure::class to  PlotBoundary(960.0f,1060.0f, 11),
                 FeatureTemperature::class to  PlotBoundary(0.0f, 50.0f, 11),
-                FeatureActivity::class to  PlotBoundary(FeatureActivity.DATA_MIN, FeatureActivity.DATA_MAX, (FeatureActivity.DATA_MAX-FeatureActivity.DATA_MIN).toInt()+1)
+                FeatureActivity::class to  PlotBoundary(FeatureActivity.DATA_MIN, FeatureActivity.DATA_MAX, (FeatureActivity.DATA_MAX-FeatureActivity.DATA_MIN).toInt()+1),
+                FeatureQVAR::class to PlotBoundary(nLabels = 21), //auto scale on
+                FeatureToFMultiObject::class to PlotBoundary( nLabels = 21) //auto scale on
         )
 
         fun getDefaultFor(f:Feature): PlotBoundary {

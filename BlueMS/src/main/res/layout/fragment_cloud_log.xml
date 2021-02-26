@@ -157,6 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             app:iconPadding="4dp"
+            android:text="Samples 0     "
             android:visibility="gone"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:backgroundTint="@color/colorPrimary"

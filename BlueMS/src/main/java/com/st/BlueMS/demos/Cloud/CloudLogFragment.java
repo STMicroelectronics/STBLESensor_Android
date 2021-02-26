@@ -68,6 +68,8 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.st.BlueMS.R;
+import com.st.BlueSTSDK.Debug;
+import com.st.BlueSTSDK.Utils.ConsoleCommand;
 import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileService;
 import com.st.BlueSTSDK.gui.fwUpgrade.download.DownloadFwFileCompletedReceiver;
 import com.st.blesensor.cloud.AwsIot.AwSIotConfigurationFactory;
@@ -88,12 +90,15 @@ import com.st.BlueSTSDK.gui.demos.DemoDescriptionAnnotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Sent the feature data to a cloud provider
  */
 @DemoDescriptionAnnotation(name = "Cloud Logging",
-        iconRes = R.drawable.ic_cloud_upload_24dp)
+        iconRes = R.drawable.ic_cloud_upload_24dp,
+        requareAny=true)
 public class CloudLogFragment extends DemoWithNetFragment implements
         CloudIotClientConnectionFactory.FwUpgradeAvailableCallback,
         CloudFwUpgradeRequestDialog.CloudFwUpgradeRequestCallback,
@@ -112,22 +117,27 @@ public class CloudLogFragment extends DemoWithNetFragment implements
      * List of supported cloud provider
      */
     private List<CloudIotClientConfigurationFactory> mCloudProviders =  Arrays.asList(
-            //new AzureIoTCentralConfigFactory(), //very very old...
-            // new AzureIoTCentralConfigFactory2(),
-            //new STAzureDashboardConfigFactory(), // AST Azure Dashboard with Group unrolling
-            //new STAwsIotConfigurationFactory(), //AST AWS Dashboard
-            //new STAwsDashboardConfigurationFactory(), //ST ATR Dashboard Current 1.0
+            new GenericMqttConfigurationFactory(), // Generic MQTT
             new AzureIotConfigFactory(),      //Generic Azure Dashboard
             new AwSIotConfigurationFactory(), //Generic aws Dashboard
-            new IBMWatsonQuickStartConfigFactory(), //IBM Quick Start
-            //new IBMWatsonConfigFactory(),
-            new GenericMqttConfigurationFactory() // Generic MQTT
+            new IBMWatsonQuickStartConfigFactory() //IBM Quick Start
+
     );
 
     /**
      * Node use for the demo
      */
     private Node mNode;
+
+    private static final long COMMAND_TIMEOUT=1000;
+    private static final String UID_COMMAND = "uid";
+    private static final Pattern BOARD_UID_PARSE = Pattern.compile("([0-9A-Fa-f]*)(_)([0-9A-Fa-f]{3,4})");
+
+    /**
+     * STM32 Unique ID
+     */
+    private static String mMCU_id;
+
     /**
      * button for start/stop a cloud connection
      */
@@ -200,16 +210,10 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private Button mDataPageLink;
 
     public void UpdateNSamplesExtendedFab(int numSamples) {
+        Log.i("UpdateNSamples","numSamples"+numSamples);
         mNumSamplesForUploadLogButton = numSamples;
         updateGui(() ->{
             String text = String.format("Samples %-5d",numSamples);
-            if(numSamples!=0) {
-                ///?? otherwise transition problem from 99->100 ??????
-                mUpoladLogButton.setExtended(false);
-                mUpoladLogButton.setExtended(true);
-            } else {
-                mUpoladLogButton.setExtended(false);
-            }
             mUpoladLogButton.setText(text);
         });
     }
@@ -334,6 +338,31 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         Log.i("CloudFragment","enableNeededNotification");
         mNode = node;
         mFwDownloadReceiver = new DownloadFwFileCompletedReceiver(requireContext(),node);
+
+        //exec the command to retrieve the info
+        Debug console = node.getDebug();
+        if(console!=null) {
+            new ConsoleCommand(console, COMMAND_TIMEOUT).exec(UID_COMMAND,
+                    new ConsoleCommand.Callback() {
+                        @Override
+                        public void onCommandResponds(String response) {
+                            Matcher matcher = BOARD_UID_PARSE.matcher(response);
+                            if (matcher.find()) {
+                                mMCU_id = matcher.group(1);
+                            } else {
+                                mMCU_id = node.getFriendlyName();
+                            }
+                        }
+
+                        @Override
+                        public void onCommandError() {
+                            mMCU_id = node.getFriendlyName();
+                        }
+                    });
+        } else {
+            mMCU_id =  node.getFriendlyName();
+        }
+
         if (isCloudConnected()) {
             showConnectedView();
         } else
@@ -379,24 +408,26 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 
         mUpoladLogButton = root.findViewById(R.id.uploadCloudLog);
         mUpoladLogButton.setOnClickListener(this::onUploadCloudLogClick);
-//        animScaleInButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_scale_in);
-//        animScaleOutButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_scale_out);
-//        animScaleOutButton.setAnimationListener(new Animation.AnimationListener() {
+        mUpoladLogButton.hide();
+        //UpdateNSamplesExtendedFab(0);
+
+        animRotateButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_rotate);
+//
+//        animRotateButton.setAnimationListener(new Animation.AnimationListener() {
 //           @Override
 //           public void onAnimationStart(Animation animation) {
 //          }
 //          @Override
 //          public void onAnimationEnd(Animation animation) {
-//                mUpoladLogButton.setVisibility(View.GONE);
+//               if(mNumSamplesForUploadLogButton!=0) {
+//                   UpdateNSamplesExtendedFab(mNumSamplesForUploadLogButton);
+//               }
 //           }
 //           @Override
 //           public void onAnimationRepeat(Animation animation) {
 //            }
 //        });
-        mUpoladLogButton.hide();
-        UpdateNSamplesExtendedFab(0);
 
-        animRotateButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_rotate);
         animRotateBackButton = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_rotate_back);
 
         mCloudClientSpinner = root.findViewById(R.id.cloudProviderSpinner);
@@ -494,7 +525,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
                 }
                 //add the new view and set the current node
                 if(mCloudConfigurationFactory!=null) {
-                    mCloudConfigurationFactory.attachParameterConfiguration(fm, mCloudConfig);
+                    mCloudConfigurationFactory.attachParameterConfiguration(fm, mCloudConfig,mMCU_id);
                     mCloudConfigurationFactory.loadDefaultParameters(fm, node);
                 }
             }
@@ -504,9 +535,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements
             }
         });
 
-         if(savedState!=null){
-             restoreCloudClientParamState(savedState);
-         }
+        if(savedState!=null){
+            restoreCloudClientParamState(savedState);
+        }
     }
 
 
@@ -537,17 +568,23 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private void showConnectedView() {
         Log.i("CloudFragment","showConnectedView");
         mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_stop_24dp);
-        mStartLogButton.startAnimation(animRotateButton);
+        if((mNumSamplesForUploadLogButton==0) && (animRotateButton!=null)){
+            mStartLogButton.startAnimation(animRotateButton);
+        }
         disableCloudConfiguration();
         hideConnectingView();
         mCloudConnectionProgress.setVisibility(View.GONE);
         mShowDetailsButton.setVisibility(View.VISIBLE);
         mCloudConfig.setVisibility(View.GONE);
         mFeatureListView.setVisibility(View.VISIBLE);
-        mFeatureListView.setAdapter(new FeatureListViewAdapter(getSupportedFeatures(mNode.getFeatures()),
-                mSendDataToCloudWhenSelected));
+        mFeatureListView.setAdapter(new FeatureListViewAdapter(getSupportedFeatures(mNode.getFeatures()),mSendDataToCloudWhenSelected));
         if(mCloudConnectionFactory.getDataPage()!=null)
             mDataPageLink.setVisibility(View.VISIBLE);
+
+        if (mCloudConnectionFactory.showUploadButton()) {
+            UpdateNSamplesExtendedFab(mNumSamplesForUploadLogButton);
+            mUpoladLogButton.show();
+        }
     }
 
     /**
@@ -556,7 +593,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements
     private void showDisconnectedView() {
         Log.i("CloudFragment","showDisconnectedView");
         mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_24dp);
-        mStartLogButton.startAnimation(animRotateBackButton);
+        if(animRotateBackButton!=null) {
+            mStartLogButton.startAnimation(animRotateBackButton);
+        }
         enableCloudConfiguration();
         mFeatureListView.setVisibility(View.GONE);
         mDataPageLink.setVisibility(View.GONE);
@@ -601,6 +640,7 @@ public class CloudLogFragment extends DemoWithNetFragment implements
 //            mUpoladLogButton.startAnimation(animScaleInButton);
 
             mUpoladLogButton.show();
+            UpdateNSamplesExtendedFab(mNumSamplesForUploadLogButton);
 
             mNewSampleListener = new CloudIotClientConnectionFactory.NewSampleListener() {
                 @Override
@@ -786,7 +826,6 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         if(!mStartLogButton.isEnabled()) {
             mStartLogButton.setEnabled(true);
             mStartLogButton.setImageResource(R.drawable.ic_cloud_upload_24dp);
-            mStartLogButton.startAnimation(animRotateBackButton);
         }
     }
 
@@ -794,6 +833,9 @@ public class CloudLogFragment extends DemoWithNetFragment implements
         Log.i("CloudFragment","disableCloudButton");
         mStartLogButton.setEnabled(false);
         mStartLogButton.setImageResource(R.drawable.ic_cloud_offline_24dp);
+        if(animRotateBackButton!=null) {
+            mStartLogButton.startAnimation(animRotateBackButton);
+        }
     }
 
     @Override

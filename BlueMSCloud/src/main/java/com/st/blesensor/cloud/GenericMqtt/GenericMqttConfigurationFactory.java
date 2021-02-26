@@ -58,7 +58,7 @@ public class GenericMqttConfigurationFactory implements CloudIotClientConfigurat
     private static final String CONFIG_FRAGMENT_TAG = GenericMqttFragment.class.getCanonicalName();
 
     @Override
-    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root, @Nullable String id_mcu) {
         //check if a fragment is already attach, and remove it to attach the new one
         GenericMqttFragment configFragment = (GenericMqttFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);
 

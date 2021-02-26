@@ -43,7 +43,24 @@
 
     <string name="title_activity_nfc_node_connection">Nfc Node</string>
 
+    <string name="distance_not_available" translatable="false">0000 mm</string>
+    <string name="tof_objects_not_found" translatable="false">Object Not Found</string>
+    <string name="tof_presence_not_found" translatable="false">Presence Not Found</string>
+    <string name="tof_presence_switch" translatable="false">Distance/Presence</string>
+
+    <string name="shortcut_search" translatable="false">Search Board</string>
+    <string name="shortcut_app" translatable="false">Create new App</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_send_receive_certificate" translatable="false">SendReceiveCertificate</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
+
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
+    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
+    <string name="device_id" translatable="false">Device ID</string>
 
 </resources>

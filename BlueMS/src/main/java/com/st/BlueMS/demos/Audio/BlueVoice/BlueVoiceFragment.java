@@ -41,8 +41,8 @@ import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,14 +53,16 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.st.BlueSTSDK.Features.Audio.AudioCodecManager;
-import com.st.BlueSTSDK.Features.Audio.FeatureAudio;
-import com.st.BlueSTSDK.Features.Audio.FeatureAudioConf;
-import com.st.BlueMS.demos.util.BaseDemoFragment;
+import androidx.annotation.NonNull;
+
 import com.st.BlueMS.R;
 import com.st.BlueMS.demos.Audio.Utils.AudioRecorder;
 import com.st.BlueMS.demos.Audio.Utils.WaveformView;
+import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Feature;
+import com.st.BlueSTSDK.Features.Audio.AudioCodecManager;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudio;
+import com.st.BlueSTSDK.Features.Audio.FeatureAudioConf;
 import com.st.BlueSTSDK.Features.FeatureBeamforming;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.Utils.LogFeatureActivity;
@@ -78,16 +80,15 @@ import java.util.Locale;
         requareAll = {FeatureAudio.class,FeatureAudioConf.class})
 public class BlueVoiceFragment extends BaseDemoFragment {
 
-    private static final String TAG = BlueVoiceFragment.class.getCanonicalName();
+    private static final String BVCONF_PREFIX_KEY = BlueVoiceFragment.class.getCanonicalName();
 
     private static final int AUDIO_STREAM = AudioManager.STREAM_MUSIC;
 
-    private static final String VOLUME_LEVEL = TAG+".VOLUME_LEVEL";
-    private static final String IS_MUTE = TAG+".IS_MUTE";
+    private static final String VOLUME_LEVEL_KEY = BVCONF_PREFIX_KEY+".VOLUME_LEVEL_KEY";
+    private static final String IS_MUTE_KEY = BVCONF_PREFIX_KEY+".IS_MUTE";
 
     private int audioSamplingFreq;
     private short audioChannels;
-    //private Boolean audioEnabled;
 
     private static final @FeatureBeamforming.Direction int DEFAULT_BEAM_FORMING_DIRECTION = FeatureBeamforming.Direction.RIGHT;
 
@@ -161,9 +162,6 @@ public class BlueVoiceFragment extends BaseDemoFragment {
             audioChannels = mAudioCodecManager.getChannels();
         }
 
-        /*if(audioEnabled == null || audioEnabled != mAudioCodecManager.isAudioEnabled()) {
-            audioEnabled = mAudioCodecManager.isAudioEnabled();
-            if (audioEnabled)*/
         if(mAudioCodecManager.isAudioEnabled() != null) {
             if (mAudioCodecManager.isAudioEnabled())
                 startAudioStreaming(f.getParentNode());
@@ -241,9 +239,7 @@ public class BlueVoiceFragment extends BaseDemoFragment {
 
         mCodecValue = mRootView.findViewById(R.id.blueVoice_codecValue);
 
-        if(savedInstanceState!=null){
-            restoreGuiStatus(savedInstanceState);
-        }
+        restoreGuiStatus();
 
         return mRootView;
     }
@@ -264,6 +260,10 @@ public class BlueVoiceFragment extends BaseDemoFragment {
         super.onPause();
         if(mAudioWavDump!=null && mAudioWavDump.isRecording())
             mAudioWavDump.stopRec();
+        if(mVolumeBar != null)
+            storeVolumeLevel(mVolumeBar.getProgress());
+        if(mMuteButton != null)
+            storeMuteStatus(mMuteButton.isMute());
     }
 
     @Override
@@ -272,23 +272,32 @@ public class BlueVoiceFragment extends BaseDemoFragment {
         stopAudioTrack();
     }
 
-    private void restoreGuiStatus(Bundle savedInstanceState) {
-        if(savedInstanceState.containsKey(VOLUME_LEVEL)){
-            mVolumeBar.setProgress(savedInstanceState.getInt(VOLUME_LEVEL));
-        }
-        if(savedInstanceState.containsKey(IS_MUTE)){
-            if(savedInstanceState.getBoolean(IS_MUTE)!=mMuteButton.isMute())
-                mMuteButton.changeState();
-        }
+    private void restoreGuiStatus(){
+        mVolumeBar.setProgress(getVolumeLevel());
+        if(getMuteStatus() != mMuteButton.isMute())
+            mMuteButton.changeState();
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if(mVolumeBar!=null)
-            outState.putInt(VOLUME_LEVEL,mVolumeBar.getProgress());
-        if(mMuteButton!=null)
-            outState.putBoolean(IS_MUTE,mMuteButton.isMute());
+    private void storeVolumeLevel(int volumeLevel){
+        requireActivity().getSharedPreferences(BVCONF_PREFIX_KEY,Context.MODE_PRIVATE).edit()
+                .putInt(VOLUME_LEVEL_KEY, volumeLevel)
+                .apply();
+    }
+
+    private void storeMuteStatus(boolean isMute){
+        requireActivity().getSharedPreferences(BVCONF_PREFIX_KEY,Context.MODE_PRIVATE).edit()
+                .putBoolean(IS_MUTE_KEY, isMute)
+                .apply();
+    }
+
+    private int getVolumeLevel(){
+        return requireActivity().getSharedPreferences(BVCONF_PREFIX_KEY,Context.MODE_PRIVATE)
+                .getInt(VOLUME_LEVEL_KEY, mAudioManager.getStreamVolume(AUDIO_STREAM));
+    }
+
+    private boolean getMuteStatus(){
+        return requireActivity().getSharedPreferences(BVCONF_PREFIX_KEY,Context.MODE_PRIVATE)
+                .getBoolean(IS_MUTE_KEY,false);
     }
 
     private void setUpVolumeBar(int maxVolume){
@@ -322,7 +331,6 @@ public class BlueVoiceFragment extends BaseDemoFragment {
             mAudioCodecManager = mAudioSync.instantiateManager(true,false);
             audioSamplingFreq = mAudioCodecManager.getSamplingFreq();
             audioChannels = mAudioCodecManager.getChannels();
-            //audioEnabled = mAudioCodecManager.isAudioEnabled();
 
             mAudioSync.addFeatureListener(mAudioSyncListener);
             node.enableNotification(mAudioSync);
@@ -430,7 +438,12 @@ public class BlueVoiceFragment extends BaseDemoFragment {
 
     void playAudio(short sample[]){
         synchronized (this) {
-            mAudioTrack.write(sample, 0, sample.length);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                mAudioTrack.write(sample, 0, sample.length,
+                        AudioTrack.WRITE_NON_BLOCKING);
+            } else {
+                mAudioTrack.write(sample, 0, sample.length);
+            }
         }
     }
 

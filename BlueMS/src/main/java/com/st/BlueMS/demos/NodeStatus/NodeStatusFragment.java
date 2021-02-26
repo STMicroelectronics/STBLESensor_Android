@@ -46,6 +46,7 @@ import android.os.HandlerThread;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.math.MathUtils;
 
@@ -97,6 +98,7 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
     private TextView mBatteryPercentageText;
     private TextView mBatteryVoltageText;
     private ImageView mBatteryIcon;
+    private CardView mBatteryCardView;
     private static int[] BATTERY_CHARGING_IMAGES = new int[]{
             R.drawable.battery_00c,
             R.drawable.battery_20c,
@@ -176,8 +178,8 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
                     final Resources res = NodeStatusFragment.this.getResources();
                     final float percentage = FeatureBattery.getBatteryLevel(data);
                     final FeatureBattery.BatteryStatus status = FeatureBattery.getBatteryStatus(data);
-                    float voltage = FeatureBattery.getVoltage(data);
-                    float current = FeatureBattery.getCurrent(data);
+                    final float voltage = FeatureBattery.getVoltage(data);
+                    final float current = FeatureBattery.getCurrent(data);
 
                     final @DrawableRes int batteryIcon = getBatteryIcon(percentage, status);
                     final Drawable icon = ContextCompat.getDrawable(requireContext(),batteryIcon);
@@ -189,11 +191,12 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
                     final String batteryVoltage = res.getString(R.string.nodeStatus_battery_voltage,
                             voltage, fieldsDesc[FeatureBattery.VOLTAGE_INDEX].getUnit());
                     final String batteryCurrent;
-                    if(Float.isNaN(current))
+                    if(Float.isNaN(current)) {
                         batteryCurrent = res.getString(R.string.nodeStatus_battery_current_unknown);
-                    else
+                    } else {
                         batteryCurrent = res.getString(R.string.nodeStatus_battery_current,
-                            current, fieldsDesc[FeatureBattery.CURRENT_INDEX].getUnit());
+                                current, fieldsDesc[FeatureBattery.CURRENT_INDEX].getUnit());
+                    }
 
                     float remainingBattery = mBatteryCapacity * (percentage/100.0f);
                     float remainingTime = getRemainingTimeMinutes(remainingBattery,current);
@@ -204,16 +207,41 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
                     updateGui(() -> {
                         try {
 
-                            mBatteryStatusText.setText(batteryStatus);
-                            mBatteryPercentageText.setText(batteryPercentage);
+                            if(status!= FeatureBattery.BatteryStatus.Unknown) {
+                                mBatteryStatusText.setVisibility(View.VISIBLE);
+                                mBatteryStatusText.setText(batteryStatus);
+                            } else {
+                                mBatteryStatusText.setVisibility(View.INVISIBLE);
+                            }
+
+                            if(Float.isNaN(percentage) | (percentage==0.0)) {
+                                mBatteryPercentageText.setVisibility(View.INVISIBLE);
+                            } else {
+                                mBatteryPercentageText.setVisibility(View.VISIBLE);
+                                mBatteryPercentageText.setText(batteryPercentage);
+                            }
 
                             mBatteryIcon.setImageDrawable(icon);
-                            mBatteryVoltageText.setText(batteryVoltage);
-                            mBatteryCurrentText.setText(batteryCurrent);
+
+                            if(Float.isNaN(voltage) | (voltage==0.0)) {
+                                mBatteryVoltageText.setVisibility(View.INVISIBLE);
+                            } else {
+                                mBatteryVoltageText.setVisibility(View.VISIBLE);
+                                mBatteryVoltageText.setText(batteryVoltage);
+                            }
+
+                            if(Float.isNaN(current) | (current==0.0)) {
+                                mBatteryCurrentText.setVisibility(View.INVISIBLE);
+                            } else {
+                                mBatteryCurrentText.setVisibility(View.VISIBLE);
+                                mBatteryCurrentText.setText(batteryCurrent);
+                            }
+
                             if(displayRemainingTime(status)) {
+                                mRemainingTime.setVisibility(View.VISIBLE);
                                 mRemainingTime.setText(remainingTimeStr);
                             }else{
-                                mRemainingTime.setText("");
+                                mRemainingTime.setVisibility(View.INVISIBLE);
                             }
                         }catch (NullPointerException e){
                             //this exception can happen when the task is run after the fragment is
@@ -273,6 +301,8 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
         mBatteryPercentageText = root.findViewById(R.id.status_batteryPercentageText);
         mBatteryStatusText = root.findViewById(R.id.status_batteryStatusText);
         mBatteryVoltageText = root.findViewById(R.id.status_batteryVoltageText);
+        mBatteryCardView = root.findViewById(R.id.status_batteryCard);
+        mBatteryCardView.setVisibility(View.GONE);
         mBatteryCurrentText = root.findViewById(R.id.status_batteryCurrentText);
         mBatteryIcon = root.findViewById(R.id.status_batteryImage);
         mRemainingTime  = root.findViewById(R.id.status_batteryRemainingTimeText);
@@ -326,12 +356,14 @@ public class NodeStatusFragment extends BaseDemoFragment implements Node.BleConn
         node.addBleConnectionParamListener(this);
         mUpdateRssiRequestQueue.postDelayed(mAskNewRssi, RSSI_UPDATE_PERIOD_MS);
         if(mBatteryFeature!=null){
+            mBatteryCardView.setVisibility(View.VISIBLE);
             mBatteryFeature.addFeatureListener(mBatteryListener);
             node.enableNotification(mBatteryFeature);
             loadBatteryCapacity();
             loadStdConsumedCurrent();
-        }else
+        } else {
             mBatteryVoltageText.setText(R.string.nodeStatus_battery_notFound);
+        }
     }
 
     @Override

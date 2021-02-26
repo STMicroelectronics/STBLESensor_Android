@@ -6,7 +6,6 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
-
     <style name="AppFullscreenTheme" parent="FullscreenTheme">
         <item name="android:windowBackground">@drawable/splash_screen_image</item>
     </style>
@@ -18,6 +17,11 @@
         <item name="android:insetRight">0dp</item>
         <item name="iconPadding">0dp</item>
         <item name="iconGravity">textStart</item>
+    </style>
+
+    <style name="CircularDeterminateProgressBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/circle</item>
     </style>
 
 </resources>

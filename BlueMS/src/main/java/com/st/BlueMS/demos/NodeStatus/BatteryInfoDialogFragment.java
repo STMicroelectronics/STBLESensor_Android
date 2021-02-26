@@ -56,6 +56,7 @@ import android.widget.TextView;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Manager;
 import com.st.BlueSTSDK.Node;
+import com.st.BlueSTSDK.Utils.ConsoleCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +171,7 @@ public class BatteryInfoDialogFragment extends DialogFragment {
                 return;
             }//if
 
-            //exec the command to retrive the info
+            //exec the command to retrieve the info
             new ConsoleCommand(mNode.getDebug(), COMMAND_TIMEOUT).exec(BATTERY_INFO_COMMAND,
                     new ConsoleCommand.Callback() {
                 @Override

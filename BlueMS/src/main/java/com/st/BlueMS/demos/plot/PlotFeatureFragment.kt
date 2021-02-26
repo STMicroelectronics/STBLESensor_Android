@@ -67,6 +67,8 @@ import kotlin.time.ExperimentalTime
             FeatureCOSensor::class,
             FeatureEulerAngle::class,
             FeatureMemsNorm::class,
+            FeatureQVAR::class,
+            FeatureToFMultiObject::class,
             FeatureEventCounter::class])
 class PlotFeatureFragment : BaseDemoFragment(){
 

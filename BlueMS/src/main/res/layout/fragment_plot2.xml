@@ -31,10 +31,11 @@
         android:id="@+id/plotFeature_chart"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/plotFeature_featureValue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/plotFeature_yLabel"
-        app:layout_constraintTop_toBottomOf="@+id/plotFeature_startPlotButton">
+        app:layout_constraintTop_toBottomOf="@+id/plotFeature_startPlotButton"
+        app:layout_constraintVertical_bias="0.0">
 
     </com.github.mikephil.charting.charts.LineChart>
 
@@ -48,5 +49,18 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/plotFeature_featureValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/plotFeature_yLabel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        tools:text="Feature Value" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

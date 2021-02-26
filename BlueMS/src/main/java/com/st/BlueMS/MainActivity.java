@@ -64,10 +64,4 @@ public class MainActivity extends com.st.BlueSTSDK.gui.MainActivity {
         Intent licenseIntent = new Intent(this, OssLicensesMenuActivity.class);
         AboutActivity.startActivityWithAboutPage(this,ABOUT_PAGE_URL,privacyPage,licenseIntent);
     }
-
-    @Override
-    public URL getPrivacyPolicyUrl(){
-        return null;
-    }
-
 }

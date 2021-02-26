@@ -36,9 +36,12 @@
  */
 package com.st.BlueMS.demos.plot
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsSpinner
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -48,6 +51,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
@@ -68,6 +72,7 @@ class PlotFragment : Fragment(){
     private lateinit var mYAxisLabel: TextView
     private lateinit var mFeatureSelector: AbsSpinner
     private lateinit var mStartPlotButton:MaterialButton
+    private lateinit var mFeatureValue: TextView
 
     @ExperimentalTime
     private val settingsViewModel by activityViewModels<PlotSettingsViewModel>()
@@ -85,8 +90,10 @@ class PlotFragment : Fragment(){
         mFeatureSelector = view.findViewById(R.id.plotFeature_featureSelector)
         initializePlot(mPlot)
         mLineColors = resources.getIntArray(R.array.dataSetColor)
+        mFeatureValue = view.findViewById(R.id.plotFeature_featureValue)
         mStartPlotButton = view.findViewById(R.id.plotFeature_startPlotButton)
         mStartPlotButton.setOnClickListener { onStartStopPlotButtonClicked() }
+        mStartPlotButton.setOnLongClickListener() { onResumePausePlotButtonClicked() }
         mFeatureSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
@@ -102,6 +109,7 @@ class PlotFragment : Fragment(){
     private fun initializePlot(chart: LineChart) {
         //hide chart description
         chart.description.isEnabled = true
+        chart.description.text= ""
 
         // isEnable touch gestures
         chart.setTouchEnabled(true)
@@ -124,6 +132,7 @@ class PlotFragment : Fragment(){
 
         chart.setNoDataText(resources.getString(R.string.plotFeature_noData))
         chart.setNoDataTextColor(resources.getColor(R.color.colorAccent))
+        chart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
     }
 
     @ExperimentalTime
@@ -133,8 +142,8 @@ class PlotFragment : Fragment(){
         attachDataViewModel()
     }
 
-    private fun buildLineDataSet(name:String, color:Int) : LineDataSet{
-        return LineDataSet(LinkedList(),name).apply {
+    private fun buildLineDataSet(name: String, color: Int) : LineDataSet{
+        return LineDataSet(LinkedList(), name).apply {
             axisDependency = YAxis.AxisDependency.LEFT
             setDrawCircles(false)
             setDrawValues(false)
@@ -145,29 +154,31 @@ class PlotFragment : Fragment(){
 
     @ExperimentalTime
     private fun attachPlotSettingsViewModel(savedInstanceState: Bundle?) {
-        settingsViewModel.legendItems.observe(viewLifecycleOwner, Observer {items ->
+        settingsViewModel.legendItems.observe(viewLifecycleOwner, Observer { items ->
             val lineData = items.mapIndexed { i, name ->
-                buildLineDataSet(name,mLineColors[i%mLineColors.size])
+                buildLineDataSet(name, mLineColors[i % mLineColors.size])
             }
-            restorePlotData(lineData,savedInstanceState)
+            restorePlotData(lineData, savedInstanceState)
             mPlot.data = LineData(lineData)
-            mPlot.legend.isEnabled = lineData.size != 1
+            mPlot.description.text= ""
+            //Enable if we want to show the Legend only if we are more that one line
+            //mPlot.legend.isEnabled = lineData.size != 1
         })
         settingsViewModel.yAxisLabel.observe(viewLifecycleOwner, Observer { yLabel ->
             mYAxisLabel.text = yLabel
         })
         settingsViewModel.supportedFeature.observe(viewLifecycleOwner, Observer { featureList ->
-            mFeatureSelector.adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,featureList).apply {
+            mFeatureSelector.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, featureList).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
         })
         settingsViewModel.selectedFeatureIndex.observe(viewLifecycleOwner, Observer { index ->
             mFeatureSelector.setSelection(index)
         })
-        settingsViewModel.selectedFeature.observe(viewLifecycleOwner, Observer { selectedFeautre ->
-            if(dataViewModel.isPlotting.value == true){
+        settingsViewModel.selectedFeature.observe(viewLifecycleOwner, Observer { selectedFeature ->
+            if (dataViewModel.isPlotting.value == true) {
                 settingsViewModel.startPlotSelectedFeature()
-                dataViewModel.startPlotFeature(selectedFeautre)
+                dataViewModel.startPlotFeature(selectedFeature)
             }
         })
 
@@ -177,18 +188,18 @@ class PlotFragment : Fragment(){
                 yAxis.labelCount = it
             }
 
-            if(boundary.enableAutoScale){
+            if (boundary.enableAutoScale) {
                 mPlot.isAutoScaleMinMaxEnabled = true
                 yAxis.apply {
                     resetAxisMaximum()
                     resetAxisMinimum()
                 }
-            }else{
+            } else {
                 mPlot.isAutoScaleMinMaxEnabled = false
                 yAxis.apply {
-                    if(boundary.max != null)
+                    if (boundary.max != null)
                         axisMaximum = boundary.max
-                    if(boundary.min !=null)
+                    if (boundary.min != null)
                         axisMinimum = boundary.min
                 }
             }
@@ -202,12 +213,12 @@ class PlotFragment : Fragment(){
         dataViewModel.lastPlotData.observe(viewLifecycleOwner, Observer { lastData ->
             //if we have a number of data different from the number of legends
             //rebuild the plot
-            if(lastData?.y?.size != settingsViewModel.legendItems.value?.size){
+            if (lastData?.y?.size != settingsViewModel.legendItems.value?.size) {
                 settingsViewModel.startPlotSelectedFeature()
             }
-            mPlot.data?.let {lineData ->
+            mPlot.data?.let { lineData ->
                 lastData?.y?.forEachIndexed { index, value ->
-                    lineData.addEntry(Entry(lastData.x.toFloat(),value),index)
+                    lineData.addEntry(Entry(lastData.x.toFloat(), value), index)
                 }
                 lineData.removeEntryOlderThan(settingsViewModel.plotDuration.value)
                 lineData.notifyDataChanged()
@@ -215,20 +226,22 @@ class PlotFragment : Fragment(){
                 mPlot.invalidate()
             }
         })
+
         dataViewModel.lastDataDescription.observe(viewLifecycleOwner, Observer { description ->
-            mPlot.description.text =  description
+            //mPlot.description.text = description
+            mFeatureValue.text = description
         })
         dataViewModel.isPlotting.observe(viewLifecycleOwner, Observer { isPlotting ->
-            if(isPlotting){
+            if (isPlotting) {
                 mStartPlotButton.setIconResource(R.drawable.ic_stop)
-            }else{
+            } else {
                 mStartPlotButton.setIconResource(R.drawable.ic_play_arrow)
             }
         })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.d("state","save")
+        Log.d("state", "save")
         if(::mPlot.isInitialized) {
             mFirstTimeRestore=true
             mPlot.data?.dataSets?.forEachIndexed { index, lineData ->
@@ -238,16 +251,16 @@ class PlotFragment : Fragment(){
         super.onSaveInstanceState(outState)
     }
 
-    private fun saveLineData(index:Int,lineData: ILineDataSet, outState: Bundle){
+    private fun saveLineData(index: Int, lineData: ILineDataSet, outState: Bundle){
 
         val entrys = ArrayList<Entry>(lineData.entryCount)
         for (i in 0 until lineData.entryCount){
             entrys.add(lineData.getEntryForIndex(i))
         }
-        outState.putParcelableArrayList("values_${index}",entrys)
+        outState.putParcelableArrayList("values_${index}", entrys)
     }
 
-    private fun loadLineData(index:Int,lineData: ILineDataSet, inState:Bundle){
+    private fun loadLineData(index: Int, lineData: ILineDataSet, inState: Bundle){
         val entrys = inState.getParcelableArrayList<Entry>("values_${index}")
         entrys?.forEach { lineData.addEntry(it) }
     }
@@ -256,12 +269,12 @@ class PlotFragment : Fragment(){
         val status = savedInstanceState ?: return
         if(mFirstTimeRestore){
             lineData.forEachIndexed { index, lineDataSet ->
-                loadLineData(index,lineDataSet,status)
+                loadLineData(index, lineDataSet, status)
             }
             mFirstTimeRestore = false
-            Log.d("state","restore")
+            Log.d("state", "restore")
         }else{
-            Log.d("state","NOT restore")
+            Log.d("state", "NOT restore")
         }
     }
 
@@ -277,11 +290,23 @@ class PlotFragment : Fragment(){
 
     @ExperimentalTime
     private fun onStartStopPlotButtonClicked(){
-        if(dataViewModel.isPlotting.value == false)
+        if(dataViewModel.isPlotting.value == false) {
             settingsViewModel.startPlotSelectedFeature()
+        }
         settingsViewModel.selectedFeature.value?.let {
             dataViewModel.onStartStopButtonPressed(it)
+            //Delete the Last Sample Value
+            mFeatureValue.text=""
         }
+    }
+
+    @ExperimentalTime
+    private fun onResumePausePlotButtonClicked() : Boolean{
+        if(dataViewModel.isPlotting.value == true)
+            settingsViewModel.selectedFeature.value?.let {
+                dataViewModel.onResumePauseButtonPressed()
+            }
+        return true
     }
 
 }
@@ -299,7 +324,7 @@ private fun LineData.removeEntryOlderThan(timeRange: Duration?){
     }
 }
 
-private fun ILineDataSet.removeXLessThan(value:Float){
+private fun ILineDataSet.removeXLessThan(value: Float){
     while (getEntryForIndex(0).x<value){
         removeFirst()
     }

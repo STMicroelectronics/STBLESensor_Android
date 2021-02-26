@@ -60,8 +60,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
 
     //address where send the data
-    private static final String QUICKSTART_URL="ssl://quickstart.messaging.internetofthings.ibmcloud.com:8883";
-    //private static final String QUICKSTART_URL="tcp://quickstart.messaging.internetofthings.ibmcloud.com:1883";
+    //For enabling ssl instead of tcp enable also the line starting with "IMPORTANT"
+    //private static final String QUICKSTART_URL="ssl://quickstart.messaging.internetofthings.ibmcloud.com:8883";
+    private static final String QUICKSTART_URL="tcp://quickstart.messaging.internetofthings.ibmcloud.com:1883";
 
     //page where see the data send to the cloud
     private static final String QUICKSTART_PAGE_DATA =
@@ -102,7 +103,8 @@ public class IBMWatsonQuickStartFactory extends MqttClientConnectionFactory {
         options.setCleanSession(true);
         options.setUserName("use-token-auth");
         options.setPassword(new char[0]);
-        options.setSocketFactory(MqttClientUtil.createSSLSocketFactory(ctx, R.raw.bluemx_cloud));
+        //IMPORTANT: Enable also this line for ssl instead of tcp
+        //options.setSocketFactory(MqttClientUtil.createSSLSocketFactory(ctx, R.raw.bluemx_cloud));
 
         return client.connect(options,ctx, buildMqttListener(connectionListener))!=null;
     }

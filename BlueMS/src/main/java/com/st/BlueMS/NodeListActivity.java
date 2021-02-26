@@ -81,7 +81,8 @@ public class NodeListActivity extends com.st.BlueSTSDK.gui.NodeListActivity {
 
         ConnectionOption.ConnectionOptionBuilder optionsBuilder = ConnectionOption.builder()
                 .resetCache(clearCacheIsSelected())
-                .enableAutoConnect(false)
+                .enableAutoConnect(keepConnectionOpenIsSelected())
+                //.enableAutoConnect(false)
                 .setFeatureMap(STM32OTASupport.getOTAFeatures())
                 .setFeatureMap(BlueNRGOTASupport.getOTAFeatures())
                 .setFeatureMap(new StdCharToFeatureMap());

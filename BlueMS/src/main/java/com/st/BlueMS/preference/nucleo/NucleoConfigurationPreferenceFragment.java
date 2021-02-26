@@ -36,11 +36,15 @@
  */
 package com.st.BlueMS.preference.nucleo;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -48,14 +52,19 @@ import androidx.appcompat.app.AlertDialog;
 import com.st.BlueMS.R;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.gui.preferences.PreferenceFragmentWithNode;
-import com.st.BlueSTSDK.gui.util.SimpleFragmentDialog;
-
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
+import static android.R.layout.simple_spinner_item;
 
 public class NucleoConfigurationPreferenceFragment extends PreferenceFragmentWithNode {
 
-    private static final String CHANGE_NAME_PREF = "DEVICE_LOCAL_NAME";
-    private static final String SYNC_TIME_PREF = "DEVICE_SYNC_TIME";
+    private static final String CHANGE_NAME_PREF  = "DEVICE_LOCAL_NAME";
+    private static final String SYNC_TIME_PREF    = "DEVICE_SYNC_TIME";
+    private static final String SYNC_WIFI_PREF    = "DEVICE_WIFI_SEND_CRED";
+
+    private static String selectedSecurity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,7 @@ public class NucleoConfigurationPreferenceFragment extends PreferenceFragmentWit
         PreferenceManager prefs = getPreferenceManager();
         prefs.findPreference(CHANGE_NAME_PREF).setEnabled(false);
         prefs.findPreference(SYNC_TIME_PREF).setEnabled(false);
+        prefs.findPreference(SYNC_WIFI_PREF).setEnabled(false);
     }
 
     private void setUpSetNamePreference(String currentName, final NucleoConsole console){
@@ -100,15 +110,61 @@ public class NucleoConfigurationPreferenceFragment extends PreferenceFragmentWit
                 });
     }
 
+    private void setUpSyncWifiPreference(final NucleoConsole console) {
+        getPreferenceManager().findPreference(SYNC_WIFI_PREF)
+                .setOnPreferenceClickListener(preference -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    // Get the layout inflater
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    // Inflate and set the layout for the dialog
+                    // Pass null as the parent view because its going in the dialog layout
+                    View v = inflater.inflate(R.layout.wifi_credentials,null);
+
+
+                    List<String>  securityTypeList =  Arrays.asList("OPEN", "WEP", "WPA", "WPA2","WPA/WPA2");
+                    Spinner securitySpinner=  v.findViewById(R.id.wifi_security);
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), simple_spinner_item, securityTypeList);
+                    securitySpinner.setAdapter(dataAdapter);
+
+                    securitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            selectedSecurity = dataAdapter.getItem(position);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            selectedSecurity = dataAdapter.getItem(0);
+                        }
+                    });
+
+                    builder.setView(v);
+
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+                    builder.setPositiveButton("Send to Node", (dialog, which) -> {
+                                    console.SetWifiCred(((TextView) v.findViewById(R.id.wifi_ssid)).getText().toString(),
+                                                        ((TextView) v.findViewById(R.id.wifi_password)).getText().toString(),
+                                                        selectedSecurity);
+                                    dialog.dismiss();
+                                });
+                    builder.create();
+                    builder.show();
+                    return false;
+                });
+    }
+
     @Override
     protected void onNodeIsAvailable(Node node) {
+        // Disable if there is not the Debug Console
         if(node.getDebug()==null) {
             disableAllPreferences();
             return;
         }
-        //else
         final NucleoConsole console = new NucleoConsole(node.getDebug());
         setUpSetNamePreference(node.getName(),console);
         setUpSyncTimePreference(console);
+        setUpSyncWifiPreference(console);
     }
 }

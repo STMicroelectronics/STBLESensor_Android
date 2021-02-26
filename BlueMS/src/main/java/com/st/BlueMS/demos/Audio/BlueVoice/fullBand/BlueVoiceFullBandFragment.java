@@ -68,7 +68,7 @@ import com.st.BlueMS.R;
 import com.st.BlueMS.demos.util.BaseDemoFragment;
 import com.st.BlueSTSDK.Features.Audio.AudioCodecManager;
 import com.st.BlueSTSDK.Features.Audio.FeatureAudioConf;
-import com.st.BlueSTSDK.Features.Audio.Opus.ExportedFeatureAudioOpus;
+import com.st.BlueSTSDK.Features.Audio.Opus.ExportedFeatureAudioOpusMusic;
 import com.st.BlueSTSDK.Node;
 import com.st.BlueSTSDK.NodeServer;
 import com.st.BlueSTSDK.NodeServer.NodeServerListener;
@@ -122,7 +122,7 @@ public class BlueVoiceFullBandFragment extends BaseDemoFragment {
     private RecyclerView recyclerViewSL;
     private SongViewAdapter mSongListViewAdapter;
 
-    private ExportedFeatureAudioOpus mAudioTransmitter;
+    private ExportedFeatureAudioOpusMusic mAudioTransmitter;
     private AudioCodecManager mAudioCodecManager;
     private PCMExtractor pcmExtractor;
 
@@ -144,28 +144,14 @@ public class BlueVoiceFullBandFragment extends BaseDemoFragment {
      * check it we have the permission to write data on the sd
      * @return true if we have it, false if we ask for it
      */
-    private boolean checkReadExternalSDPermission(final int requestCode){
+    private boolean checkReadExternalSDPermission(){
         Activity activity = requireActivity();
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                final View viewRoot = ((ViewGroup) activity
-                        .findViewById(android.R.id.content)).getChildAt(0);
-                //onClick
-                Snackbar.make(viewRoot, R.string.blueVoiceFB_readPermission,
-                        Snackbar.LENGTH_INDEFINITE)
-                        .setAction(android.R.string.ok, view ->
-                                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                requestCode)).show();
-            } else {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        requestCode);
-            }//if-else
-            return false;
-        }else
-            return  true;
+        return ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestReadExternalSDPermission(final int requestCode){
+        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, requestCode);
     }
 
     @Override
@@ -388,8 +374,10 @@ public class BlueVoiceFullBandFragment extends BaseDemoFragment {
 
         ImageButton mBrowseSongsButton = mRootView.findViewById(R.id.blueVoiceFB_BrowseSongs);
         mBrowseSongsButton.setOnClickListener(view -> {
-            if(checkReadExternalSDPermission(REQUEST_READ_ACCESS)) {
+            if(checkReadExternalSDPermission()) {
                 openDirectorySelector();
+            } else {
+                requestReadExternalSDPermission(REQUEST_READ_ACCESS);
             }
         });
         recyclerViewSL = mRootView.findViewById(R.id.song_list);
@@ -424,7 +412,7 @@ public class BlueVoiceFullBandFragment extends BaseDemoFragment {
             return;
 
         server.addListener(mNodeServerListener);
-        mAudioTransmitter = server.getExportedFeature(ExportedFeatureAudioOpus.class);
+        mAudioTransmitter = server.getExportedFeature(ExportedFeatureAudioOpusMusic.class);
 
         FeatureAudioConf mAudioConf = node.getFeature(FeatureAudioConf.class);
         if(mAudioConf !=null && mAudioTransmitter!=null) {

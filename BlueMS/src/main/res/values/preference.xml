@@ -38,11 +38,14 @@
 <resources>
     <string name="config_title">Node Configuration</string>
     <string name="config_summary">Get and Set the node configuration</string>
-    <string name="pref_general_node_settings">Node general settings</string>
-    <string name="pref_local_name">Local Name</string>
-    <string name="pref_local_name_desc">Modify the Bluetooth Low Energy name</string>
-    <string name="pref_sync_node_time">Set node time</string>
-    <string name="pref_sync_node_time_desc">Click here to synchronize mobile and node time</string>
-    <string name="pref_sync_time_sent">Time synchronized</string>
-    <string name="pref_local_name_errorTitle">Invalid Name</string>
+    <string name="pref_general_node_settings" translatable="false">Node general settings</string>
+    <string name="pref_wifi_node_settings" translatable="false">Node Wi-Fi settings</string>
+    <string name="pref_local_name" translatable="false">Local Name</string>
+    <string name="pref_local_name_desc" translatable="false">Modify the Bluetooth Low Energy name</string>
+    <string name="pref_sync_node_time" translatable="false">Set node time</string>
+    <string name="pref_sync_node_time_desc" translatable="false">Click here to synchronize mobile and node time</string>
+    <string name="pref_wifi_cred" translatable="false">Wi-Fi Credentials</string>
+    <string name="pref_wifi_cred_desc" translatable="false">Click here to set Wi-Fi credentials</string>
+    <string name="pref_sync_time_sent" translatable="false">Time synchronized</string>
+    <string name="pref_local_name_errorTitle" translatable="false">Invalid Name</string>
 </resources>

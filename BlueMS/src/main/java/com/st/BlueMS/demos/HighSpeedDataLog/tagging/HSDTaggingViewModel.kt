@@ -37,8 +37,13 @@ internal class HSDTaggingViewModel :ViewModel(){
         val annotation = FeatureHSDataLogConfig.getDeviceTagConfig(sample) ?: return@FeatureListener
 
         mAnnotationViewDataList.clear()
-        mAnnotationViewDataList.addAll(annotation.softwareTags.map { it.toAnnotationViewData() })
-        mAnnotationViewDataList.addAll(annotation.hardwareTags.map { it.toAnnotationViewData() })
+        if(annotation.softwareTags!=null) {
+            mAnnotationViewDataList.addAll(annotation.softwareTags.map { it.toAnnotationViewData() })
+        }
+
+        if(annotation.hardwareTags!=null) {
+            mAnnotationViewDataList.addAll(annotation.hardwareTags.map { it.toAnnotationViewData() })
+        }
         _annotation.postValue(mAnnotationViewDataList.toList())
 
     }

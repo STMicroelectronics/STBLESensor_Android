@@ -60,7 +60,7 @@ public class AwSIotConfigurationFactory implements CloudIotClientConfigurationFa
     private static final String CONFIG_FRAGMENT_TAG = AwsConfigFragment.class.getCanonicalName();
 
     @Override
-    public void attachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root) {
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root, @Nullable String id_mcu) {
 
         //check if a fragment is already attach, and remove it to attach the new one
         AwsConfigFragment configFragment = (AwsConfigFragment)fm.findFragmentByTag(CONFIG_FRAGMENT_TAG);

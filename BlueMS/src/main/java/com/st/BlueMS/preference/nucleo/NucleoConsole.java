@@ -51,6 +51,8 @@ public class NucleoConsole {
     private static final String SET_NAME_COMMAND_FORMAT ="setName %s\n";
     private static final DateFormat SET_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss",Locale.getDefault());
     private static final String SET_TIME_COMMAND_FORMAT= "setTime %s\n";
+    private static final String SET_WIFI_COMMAND_FORMAT= "setWifi %s\n";
+
     //when the u parameters is available convert to:
     // private static final DateFormat SET_DATE_FORMAT = new SimpleDateFormat("uu/dd/MM/yy",Locale.getDefault());
     // private static final String SET_DATE_COMMAND_FORMAT= "setDate %s\n";
@@ -116,5 +118,11 @@ public class NucleoConsole {
     public void setDateAndTime(Date date){
         setDate(date);
         setTime(date);
+    }
+
+    public void SetWifiCred(String sSID,String passWd, String security) {
+        String wifiCredentials = String.format("{\r\n\"ssid\": \"%s\",\r\n\"password\" : \"%s\",\r\n\"securityType\" : \"%s\"}",sSID,passWd,security);
+        String command = String.format(Locale.getDefault(),SET_WIFI_COMMAND_FORMAT,wifiCredentials);
+        mConsole.write(command);
     }
 }

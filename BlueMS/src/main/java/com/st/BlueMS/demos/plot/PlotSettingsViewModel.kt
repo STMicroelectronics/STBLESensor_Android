@@ -89,7 +89,8 @@ internal class PlotSettingsViewModel(node: Node)  : ViewModel(){
 
     fun startPlotSelectedFeature(){
         val f = _selectedFeature.value ?: return
-        val fields = f.fieldsDesc
+        val fields = f.fieldsDesc.filterIndexed { _, it -> it.plotIt}
+
         val items = fields.map { it.name }.toTypedArray()
         _legendItems.postValue(items)
         val unit = fields.firstOrNull()?.unit

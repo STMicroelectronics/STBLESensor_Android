@@ -109,7 +109,7 @@ public class IBMWatsonConfigFactory implements CloudIotClientConfigurationFactor
      * @param root container where add the view
      */
     @Override
-    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root) {
+    public void attachParameterConfiguration(@NonNull FragmentManager fm, ViewGroup root, @Nullable String id_mcu) {
         LayoutInflater inflater = LayoutInflater.from(root.getContext());
         View v = inflater.inflate(R.layout.cloud_config_bluemx,root);
         TextInputLayout deviceIdLayout = v.findViewById(R.id.blueMx_deviceIdWrapper);

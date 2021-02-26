@@ -57,12 +57,12 @@ public interface CloudIotClientConfigurationFactory {
      * @param fm to use to attach a fragment if needed
      * @param root container where add the view
      */
-    void attachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root);
+    void attachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root, @Nullable String id_mcu);
     void detachParameterConfiguration(@NonNull FragmentManager fm, @NonNull ViewGroup root);
 
     /**
      * set the default data for the configuration
-     * @param n node that will send the data to the boker
+     * @param n node that will send the data to the broker
      */
     void loadDefaultParameters(@NonNull FragmentManager fm,@Nullable Node n);
 

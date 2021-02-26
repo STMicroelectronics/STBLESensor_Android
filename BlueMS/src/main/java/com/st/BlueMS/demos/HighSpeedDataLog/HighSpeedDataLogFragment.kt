@@ -3,6 +3,7 @@ package com.st.BlueMS.demos.HighSpeedDataLog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -12,6 +13,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.st.BlueMS.R
 import com.st.BlueMS.demos.HighSpeedDataLog.tagging.HSDTaggingFragment
@@ -23,7 +25,8 @@ import com.st.STWINBoard_Gui.HSDConfigFragment
 import kotlin.math.roundToInt
 
 
-@DemoDescriptionAnnotation(name = "HighSpeed Data Log", requareAll = [FeatureHSDataLogConfig::class])
+@DemoDescriptionAnnotation(name = "HighSpeed Data Log", iconRes = R.drawable.ic_hsdatalog,
+        requareAll = [FeatureHSDataLogConfig::class])
 class HighSpeedDataLogFragment : BaseDemoFragment(){
 
     private val viewModel by viewModels<HighSpeedDataLogViewModel> ()
@@ -55,6 +58,10 @@ class HighSpeedDataLogFragment : BaseDemoFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED;
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         attachBoardName(view.findViewById(R.id.hsdl_boardName))
         attachBoardId(view.findViewById(R.id.hsdl_boardId))
         attachBoardBatteryLevel(view.findViewById(R.id.hsdl_batteryLevel), view.findViewById(R.id.hsdl_batteryLevelImage))
@@ -66,6 +73,12 @@ class HighSpeedDataLogFragment : BaseDemoFragment(){
                 showConfigFragment()
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

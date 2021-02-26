@@ -46,7 +46,7 @@ import com.st.BlueSTSDK.gui.SettingsActivityWithNode;
 
 import java.util.List;
 
-
+// Start the Nucleo Configuration with Settings
 public class SettingsWithNucleoConfiguration extends SettingsActivityWithNode {
 
     public static Intent getStartIntent(Context c, Node node){

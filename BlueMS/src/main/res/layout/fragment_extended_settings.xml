@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/ExSettScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ExtSettInfoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/ExtSettInfoText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:drawablePadding="8dp"
+                        android:text="Board Report"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/ext_config_info"
+                        app:drawableTint="@color/colorPrimary" />
+
+                    <LinearLayout
+                        android:id="@+id/ExtSettInfoLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ExtSettReadUidText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="STM32 UID"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettReadVFwText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Version Firmware"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettReadVInfoText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Info"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettReadVHelpText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Help"
+                            android:textSize="24sp" />
+
+
+                        <TextView
+                            android:id="@+id/ExtSettReadVPowerStatusText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Power Status"
+                            android:textSize="24sp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ExtSettSecurityCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/ExtSettSecurityText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:drawablePadding="8dp"
+                        android:text="Board Security"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/ext_config_security"
+                        app:drawableTint="@color/colorPrimary" />
+
+                    <LinearLayout
+                        android:id="@+id/ExtSettSecurityLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ExtSettChangePinText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Change Secure PIN"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettClearDBText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Clear Security Database"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettReadCertText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Certificate Registration"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettSetCertText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Certificate Request"
+                            android:textSize="24sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ExtSettControlCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/ExtSettControlText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:drawablePadding="8dp"
+                        android:text="Board Control"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/ext_config_settings_power"
+                        app:drawableTint="@color/colorPrimary" />
+
+                    <LinearLayout
+                        android:id="@+id/ExtSettControlLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ExtSettDFUText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Reboot on DFU mode"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettPowerOffText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Poweroff"
+                            android:textSize="24sp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ExtSettSettingCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/ExtSettSettingText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:drawablePadding="8dp"
+                        android:text="Board Settings"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/ic_ext_config_icon"
+                        app:drawableTint="@color/colorPrimary" />
+
+                    <LinearLayout
+                        android:id="@+id/ExtSettSettingLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ExtSettSetNameText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Set Name"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettCustomCommands"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Read Custom Commands"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettSetTimeText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Set Time"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettSetDateText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Set Date"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/ExtSettSetWiFiText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginBottom="16dp"
+                            android:enabled="false"
+                            android:text="Set Wi-Fi credentials"
+                            android:textSize="24sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ExtSettCustomCommandsCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:cardElevation="4dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ExtSettCustomCommandsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:drawablePadding="8dp"
+                    android:text="Custom Commands"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    app:drawableLeftCompat="@drawable/ext_config_build"
+                    app:drawableTint="@color/colorPrimary" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/ExtSettCustomCommandsRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        tools:listitem="@layout/custom_command_element"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/ExSettProgress"
+        android:visibility="gone"
+        tools:visibility="visible"
+        layout="@layout/progress_bar_with_text"/>
+
+</RelativeLayout>

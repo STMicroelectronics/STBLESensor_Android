@@ -51,5 +51,10 @@
         android:title="@string/pref_sync_node_time"
         android:summary="@string/pref_sync_node_time_desc"
         android:persistent="false" />
+    <Preference
+        android:key="DEVICE_WIFI_SEND_CRED"
+        android:title="@string/pref_wifi_cred"
+        android:summary="@string/pref_wifi_cred_desc"
+        android:persistent="false" />
     </PreferenceCategory>
 </PreferenceScreen>

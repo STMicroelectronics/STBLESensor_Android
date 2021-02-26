@@ -36,15 +36,16 @@
  */
 package com.st.BlueMS.demos.Audio.BlueVoice.fullBand;
 
-import android.app.Application;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 /**
  * Class that defines the status of a playable song
  */
-public class BVSong implements Comparable<BVSong>{
+public class BVSong implements Comparable<BVSong>, Parcelable {
     private String title;
     private String path;
     private Uri uriPath;
@@ -81,6 +82,27 @@ public class BVSong implements Comparable<BVSong>{
         this.isPlaying = false;
         this.isDemoSong = isDemoSong;
     }
+
+    protected BVSong(Parcel in) {
+        title = in.readString();
+        path = in.readString();
+        uriPath = in.readParcelable(Uri.class.getClassLoader());
+        type = in.readString();
+        isPlaying = in.readByte() != 0;
+        isDemoSong = in.readByte() != 0;
+    }
+
+    public static final Creator<BVSong> CREATOR = new Creator<BVSong>() {
+        @Override
+        public BVSong createFromParcel(Parcel in) {
+            return new BVSong(in);
+        }
+
+        @Override
+        public BVSong[] newArray(int size) {
+            return new BVSong[size];
+        }
+    };
 
     /**
      * Get the song title
@@ -145,5 +167,17 @@ public class BVSong implements Comparable<BVSong>{
                 ", path='" + path + '\'' +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(path);
+        parcel.writeString(type);
     }
 }

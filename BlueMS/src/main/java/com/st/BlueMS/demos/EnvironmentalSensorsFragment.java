@@ -40,13 +40,17 @@ package com.st.BlueMS.demos;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.st.BlueMS.demos.util.BaseDemoFragment;
@@ -65,54 +69,56 @@ import java.util.List;
  * Show the Temperature, Humidity, lux and barometer values. Each value will have also its icon
  * that will change in base of the feature value
  */
-@DemoDescriptionAnnotation(name="Environmental",iconRes=R.drawable.demo_environmental_sensor,
-    requareOneOf = {FeatureHumidity.class,FeatureLuminosity.class,FeaturePressure.class,
-            FeatureTemperature.class})
+@DemoDescriptionAnnotation(name = "Environmental", iconRes = R.drawable.demo_environmental_sensor,
+        requareOneOf = {FeatureHumidity.class, FeatureLuminosity.class, FeaturePressure.class,
+                FeatureTemperature.class})
 public class EnvironmentalSensorsFragment extends BaseDemoFragment {
 
     /**
      * format used for print the different environmental values
      */
     private final static String TEMP_FORMAT = "%.1f [%s]";
-    private final static String HUM_FORMAT ="%.1f [%s]";
-    private final static String PRES_FORMAT="%.2f [%s]";
-    private final static String LUX_FORMAT="%.1f [%s]";
+    private final static String HUM_FORMAT = "%.1f [%s]";
+    private final static String PRES_FORMAT = "%.2f [%s]";
+    private final static String LUX_FORMAT = "%.1f [%s]";
 
 
     /**
      * get the string to show containing a value for each line
+     *
      * @param format format used for print the value and the unit
-     * @param unit unit to use
+     * @param unit   unit to use
      * @param values array with the value to print
      * @return string showing all the value, one for each line
      */
-    private static String getDisplayString(final String format,final String unit,
-                                           float values[]){
+    private static String getDisplayString(final String format, final String unit,
+                                           float values[]) {
         StringBuilder sb = new StringBuilder();
-        for(int i =0;i<values.length-1;i++){
-            sb.append(String.format(format,values[i],unit));
+        for (int i = 0; i < values.length - 1; i++) {
+            sb.append(String.format(format, values[i], unit));
             sb.append('\n');
         }//for
-        sb.append(String.format(format,values[values.length-1],unit));
+        sb.append(String.format(format, values[values.length - 1], unit));
         return sb.toString();
     }
 
 
-    private interface ExtractDataFunction{
+    private interface ExtractDataFunction {
         float getData(Feature.Sample s);
     }
 
     /**
      * get a sample for each feature and extract the float data from it
-     * @param features list of feature
+     *
+     * @param features            list of feature
      * @param extractDataFunction object that will extract the data from the sample
      * @return list of values inside the feature
      */
     private static float[] extractData(final List<? extends Feature> features,
-                                       final ExtractDataFunction extractDataFunction){
+                                       final ExtractDataFunction extractDataFunction) {
         int nFeature = features.size();
         float data[] = new float[nFeature];
-        for(int i=0;i<nFeature;i++){
+        for (int i = 0; i < nFeature; i++) {
             data[i] = extractDataFunction.getData(features.get(i).getSample());
         }//for
         return data;
@@ -158,7 +164,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     /**
      * object that extract the humidity_icon from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataHum  = FeatureHumidity::getHumidity;
+    private final static ExtractDataFunction sExtractDataHum = FeatureHumidity::getHumidity;
 
     /**
      * listener for the humidity_icon feature, it will update the humidity_icon value and change the alpha
@@ -168,15 +174,15 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
 
         private Drawable image;
 
-        HumidityListener(Resources res){
+        HumidityListener(Resources res) {
             image = res.getDrawable(R.drawable.humidity_icon);
         }
 
         @Override
         public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             String unit = mHumidity.get(0).getFieldsDesc()[0].getUnit();
-            float data[] =extractData(mHumidity, sExtractDataHum);
-            final String dataString = getDisplayString(HUM_FORMAT,unit,data);
+            float data[] = extractData(mHumidity, sExtractDataHum);
+            final String dataString = getDisplayString(HUM_FORMAT, unit, data);
             final int imageAlpha = (int) (100.0f *
                     (clamp(data[0], HUMIDITY_MIN_VAL, HUMIDITY_MAX_VAL) - HUMIDITY_MIN_VAL) /
                     (HUMIDITY_MAX_VAL - HUMIDITY_MIN_VAL));
@@ -193,6 +199,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
 
         }//on update
     }
+
     //we cant initialize the listener here because we need to wait that the fragment is attached
     // to an activity
     private Feature.FeatureListener mHumidityListener;
@@ -201,7 +208,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     /**
      * feature where we can read the temperature value
      */
-    private List<FeatureTemperature>  mTemperature;
+    private List<FeatureTemperature> mTemperature;
     /**
      * label where we show the temperature value
      */
@@ -213,10 +220,14 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
 
     private CardView mTemperatureCard;
 
+    private SwitchCompat mTemperatureButtonCF;
+
+    private Boolean mTemperatureCelsius = true;
+
     /**
      * object that extract the temperature from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataTemp  = FeatureTemperature::getTemperature;
+    private final static ExtractDataFunction sExtractDataTemp = FeatureTemperature::getTemperature;
 
     /**
      * listener for the humidity_icon feature, it will update the humidity_icon value and change the image
@@ -227,14 +238,23 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         @Override
         public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
 
-            String unit = mTemperature.get(0).getFieldsDesc()[0].getUnit();
-            float data[] =extractData(mTemperature,sExtractDataTemp);
-            final String dataString = getDisplayString(TEMP_FORMAT,unit,data);
+            String unit;
+            float data[] = extractData(mTemperature, sExtractDataTemp);
+            String dataString;
+            if (mTemperatureCelsius) {
+                unit = mTemperature.get(0).getFieldsDesc()[0].getUnit();
+            } else {
+                unit = "℉";
+                for (int index = 0; index < data.length; index++) {
+                    data[index] = (data[index] * 9 / 5) + 32;
+                }
+            }
+            dataString = getDisplayString(TEMP_FORMAT, unit, data);
 
             updateGui(() -> {
                 try {
                     mTemperatureText.setText(dataString);
-                }catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     //this exception can happen when the task is run after the fragment is
                     // destroyed
                 }
@@ -246,7 +266,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     /**
      * feature where we can read the pressure value
      */
-    private List<FeaturePressure>  mPressure;
+    private List<FeaturePressure> mPressure;
     /**
      * label where we show the pressure value
      */
@@ -261,7 +281,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     /**
      * object that extract the pressure from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataPres  = FeaturePressure::getPressure;
+    private final static ExtractDataFunction sExtractDataPres = FeaturePressure::getPressure;
 
     /**
      * listener for the pressure feature, it will update the pressure value and change the image
@@ -272,7 +292,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         @Override
         public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
             String unit = mPressure.get(0).getFieldsDesc()[0].getUnit();
-            float data[] =extractData(mPressure, sExtractDataPres);
+            float data[] = extractData(mPressure, sExtractDataPres);
             final String dataString = getDisplayString(PRES_FORMAT, unit, data);
             updateGui(() -> {
                 try {
@@ -291,7 +311,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     /**
      * feature where we read the luminosity value
      */
-    private List<FeatureLuminosity>  mLuminosity;
+    private List<FeatureLuminosity> mLuminosity;
     /**
      * label where write the luminosity value
      */
@@ -306,7 +326,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     /**
      * object that extract the luminosity from a feature sample
      */
-    private final static ExtractDataFunction sExtractDataLux  = FeatureLuminosity::getLuminosity;
+    private final static ExtractDataFunction sExtractDataLux = FeatureLuminosity::getLuminosity;
 
     /**
      * listener for the luminosity feature, it will update the luminosity value and change the image
@@ -318,7 +338,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         public void onUpdate(@NonNull Feature f, @NonNull Feature.Sample sample) {
 
             String unit = mLuminosity.get(0).getFieldsDesc()[0].getUnit();
-            float data[] =extractData(mLuminosity, sExtractDataLux);
+            float data[] = extractData(mLuminosity, sExtractDataLux);
             final String dataString = getDisplayString(LUX_FORMAT, unit, data);
 
             updateGui(() -> {
@@ -351,6 +371,15 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         mTemperatureImage = root.findViewById(R.id.thermometerImage);
         mTemperatureCard = root.findViewById(R.id.thermometerCard);
 
+        //Switch for Celsius/Fahrenheit
+        mTemperatureButtonCF = root.findViewById(R.id.thermometerSwitch);
+        mTemperatureButtonCF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeCelsiusFahrenheit();
+            }
+        });
+
         mPressureText = root.findViewById(R.id.barometerText);
         mPressureImage = root.findViewById(R.id.barometerImage);
         mPressureCard = root.findViewById(R.id.barometerCard);
@@ -360,6 +389,14 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         mLuminosityCard = root.findViewById(R.id.luminosityCard);
 
         return root;
+    }
+
+    private void changeCelsiusFahrenheit() {
+        if (mTemperatureButtonCF.isChecked()) {
+            mTemperatureCelsius = false;
+        } else {
+            mTemperatureCelsius = true;
+        }
     }
 
     /**
@@ -372,8 +409,10 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
     @Override
     protected void enableNeededNotification(@NonNull Node node) {
 
+        //showIntroductionMessage("Demo for visualizing Environmental Values", getContext());
+
         mHumidity = node.getFeatures(FeatureHumidity.class);
-        if(!mHumidity.isEmpty()) {
+        if (!mHumidity.isEmpty()) {
             View.OnClickListener forceUpdate = new ForceUpdateFeature(mHumidity);
             mHumidityListener = new HumidityListener(getResources());
             mHumidityImage.setOnClickListener(forceUpdate);
@@ -384,7 +423,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             updateGui(() -> {
                 mHumidityCard.setVisibility(View.VISIBLE);
             });
-        }else{
+        } else {
             updateGui(() -> {
                 mHumidityImage.setImageResource(R.drawable.humidity_missing);
                 mHumidityCard.setVisibility(View.GONE);
@@ -392,7 +431,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         }
 
         mTemperature = node.getFeatures(FeatureTemperature.class);
-        if(!mTemperature.isEmpty()) {
+        if (!mTemperature.isEmpty()) {
             View.OnClickListener forceUpdate = new ForceUpdateFeature(mTemperature);
             mTemperatureImage.setOnClickListener(forceUpdate);
             for (Feature f : mTemperature) {
@@ -402,7 +441,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             updateGui(() -> {
                 mTemperatureCard.setVisibility(View.VISIBLE);
             });
-        }else{
+        } else {
             updateGui(() -> {
                 mTemperatureImage.setImageResource(R.drawable.temperature_missing_icon);
                 mTemperatureCard.setVisibility(View.GONE);
@@ -410,7 +449,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         }
 
         mPressure = node.getFeatures(FeaturePressure.class);
-        if(!mPressure.isEmpty()) {
+        if (!mPressure.isEmpty()) {
             View.OnClickListener forceUpdate = new ForceUpdateFeature(mPressure);
             mPressureImage.setOnClickListener(forceUpdate);
             for (Feature f : mPressure) {
@@ -420,7 +459,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             updateGui(() -> {
                 mPressureCard.setVisibility(View.VISIBLE);
             });
-        }else{
+        } else {
             updateGui(() -> {
                 mPressureImage.setImageResource(R.drawable.pressure_missing_icon);
                 mPressureCard.setVisibility(View.GONE);
@@ -428,7 +467,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
         }
 
         mLuminosity = node.getFeatures(FeatureLuminosity.class);
-        if(!mLuminosity.isEmpty()) {
+        if (!mLuminosity.isEmpty()) {
             View.OnClickListener forceUpdate = new ForceUpdateFeature(mLuminosity);
             mLuminosityImage.setOnClickListener(forceUpdate);
             for (Feature f : mLuminosity) {
@@ -438,7 +477,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             updateGui(() -> {
                 mLuminosityCard.setVisibility(View.VISIBLE);
             });
-        }else{
+        } else {
             updateGui(() -> {
                 mLuminosityImage.setImageResource(R.drawable.illuminance_missing);
                 mLuminosityCard.setVisibility(View.GONE);
@@ -456,7 +495,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
      */
     @Override
     protected void disableNeedNotification(@NonNull Node node) {
-        if(mHumidity!=null && !mHumidity.isEmpty()) {
+        if (mHumidity != null && !mHumidity.isEmpty()) {
             mHumidityImage.setOnClickListener(null);
             for (Feature f : mHumidity) {
                 f.removeFeatureListener(mHumidityListener);
@@ -464,7 +503,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             }//for
         }
 
-        if(mTemperature!=null && !mTemperature.isEmpty()) {
+        if (mTemperature != null && !mTemperature.isEmpty()) {
             mTemperatureImage.setOnClickListener(null);
             for (Feature f : mTemperature) {
                 f.removeFeatureListener(mTemperatureListener);
@@ -472,7 +511,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             }//for
         }
 
-        if(mPressure!=null && !mPressure.isEmpty()) {
+        if (mPressure != null && !mPressure.isEmpty()) {
             mPressureImage.setOnClickListener(null);
             for (Feature f : mPressure) {
                 f.removeFeatureListener(mPressureListener);
@@ -480,7 +519,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
             }//for
         }
 
-        if(mLuminosity!=null && !mLuminosity.isEmpty()) {
+        if (mLuminosity != null && !mLuminosity.isEmpty()) {
             mLuminosityImage.setOnClickListener(null);
             for (Feature f : mLuminosity) {
                 f.removeFeatureListener(mLuminosityListener);
@@ -515,7 +554,7 @@ public class EnvironmentalSensorsFragment extends BaseDemoFragment {
          */
         @Override
         public void onClick(View v) {
-            for(Feature f: mFeatures) {
+            for (Feature f : mFeatures) {
                 Node node = f.getParentNode();
                 if (node != null)
                     node.readFeature(f);

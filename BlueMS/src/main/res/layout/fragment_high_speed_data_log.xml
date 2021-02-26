@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:id="@+id/hsdl_cpuValueLayout"
-        android:layout_width="48dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
@@ -54,7 +54,7 @@
 
     <LinearLayout
         android:id="@+id/hsdl_batteryValueLayout"
-        android:layout_width="48dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"

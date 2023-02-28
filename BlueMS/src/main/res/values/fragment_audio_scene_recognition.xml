@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="audio_scene_unknown">Unknown</string>
-    <string name="audio_scene_inVehicle">In vehicle</string>
-    <string name="audio_scene_outdoor">Outdoor</string>
-    <string name="audio_scene_indoor">Indoor</string>
-    <string name="audio_baby_not_crying">Baby not Crying</string>
-    <string name="audio_baby_crying">Baby Crying</string>
-</resources>

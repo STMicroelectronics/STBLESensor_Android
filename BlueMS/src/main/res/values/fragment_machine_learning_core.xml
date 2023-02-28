@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="mlc_registerIdWithName_format">Decision Tree: %d - %s</string>
-    <string name="mlc_registerId_format">Decision Tree: %d</string>
-    <string name="fsm_registerIdWithName_format">Program: %d - %s</string>
-    <string name="fsm_registerId_format">Program: %d</string>
-    <string name="mlc_registerValueWithLabel_format">Value: %s (0x%X)</string>
-    <string name="mlc_registerValue_format">Value: 0x%X</string>
-</resources>

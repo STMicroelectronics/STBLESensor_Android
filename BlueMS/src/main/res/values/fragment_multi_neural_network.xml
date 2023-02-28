@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="multiNN_algoSelectDesc">Select the algorithm to enable</string>
-    <string name="multiNN_audioSceneDesc">Audio Scene Classification</string>
-    <string name="multiNN_humanActivityDesc">Human Activity Classification</string>
-    <string name="multiNN_comboDesc">MultiNN Classification</string>
-
-</resources>

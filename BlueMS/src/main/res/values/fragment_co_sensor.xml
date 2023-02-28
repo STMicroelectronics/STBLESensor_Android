@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="coSensor_numberFormat">%.2f</string>
-    <string name="coSensor_setSensitivityDialogTitle">Set New Sensitivity</string>
-    <string name="coSensor_sensorValueLabel">CO Data:</string>
-    <string name="coSensor_sensitivityHint">Sensitivity</string>
-    <string name="coSensor_setSensitivityMenuItem">Set Sensitivity</string>
-    <dimen name="coSensor_textSize">32sp</dimen>
-</resources>

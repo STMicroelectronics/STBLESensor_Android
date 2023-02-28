@@ -1,0 +1,2 @@
+# Android_Module_STWinBoardGuiClassic
+Module for adding HSDataLog1 and HSDataLog2 functionalities

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/otaReboot_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/otaReboot_title"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/otaReboot_boardDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/otaReboot_board_desc"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_title" />
+
+            <Spinner
+                android:id="@+id/otaReboot_boardSelection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:minHeight="48dp"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_boardDescription"
+                tools:layout_editor_absoluteX="8dp" />
+
+            <TextView
+                android:id="@+id/otaReboot_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:text="@string/otaReboot_desc"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_boardSelection" />
+
+            <RadioGroup
+                android:id="@+id/otaReboot_fwTypeGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:checkedButton="@+id/otaReboot_invisible"
+
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_description">
+
+                <RadioButton
+                    android:id="@+id/otaReboot_invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:text="@string/otaReboot_invisible" />
+
+                <RadioButton
+                    android:id="@+id/otaReboot_appMemory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/otaReboot_appMemory" />
+
+                <RadioButton
+                    android:id="@+id/otaReboot_bleMemory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/otaReboot_bleMemory" />
+
+                <RadioButton
+                    android:id="@+id/otaReboot_customMemory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/otaReboot_customMemory" />
+            </RadioGroup>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/otaReboot_sectorLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="@string/otaReboot_sectorDesc"
+                app:errorEnabled="true"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_fwTypeGroup">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/otaReboot_lengthLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="@string/otaReboot_lengthDesc"
+                app:errorEnabled="true"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_sectorLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/otaReboot_customAddrView"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="otaReboot_lengthLayout,otaReboot_sectorLayout" />
+
+            <TextView
+                android:id="@+id/otaReboot_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/otaReboot_firmware"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_margin="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_selectFileButton"/>
+
+            <TextView
+                android:id="@+id/otaReboot_fwFileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/otaReboot_file"
+                app:layout_constraintStart_toEndOf="@+id/otaReboot_file"
+                tools:text="File Name"
+                android:ellipsize = "marquee"
+                android:fadingEdge = "horizontal"
+                android:marqueeRepeatLimit = "marquee_forever"
+                android:scrollHorizontally = "true"
+                android:singleLine = "true"/>
+
+            <Button
+                android:id="@+id/otaReboot_selectFileButton"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/otaReboot_selectFileButton"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otaReboot_lengthLayout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/otaReboot_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:enabled="false"
+        app:srcCompat="@drawable/ic_restart_24dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

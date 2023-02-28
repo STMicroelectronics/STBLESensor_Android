@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="otaUpload_invalidHex" translatable="false">Invalid Hex number</string>
+    <string name="otaUpload_invalidMemoryAddress" translatable="false">Invalid memory address</string>
+    <string name="otaUpload_invalidBlockAddress" translatable="false">Memory address should be multiple of Board Sector Size</string>
+    <string name="otaUpload_invalidFile" translatable="false">Select a file to flash</string>
+    <string name="otaUpload_address" translatable="false">Address</string>
+    <string name="otaUpload_start" translatable="false">Upload Start</string>
+    <string name="otaUpload_status" translatable="false">Uploaded %d bytes</string>
+    <string name="otaUpload_completed" translatable="false">Upload completed</string>
+    <string name="otaUpload_finished" translatable="false">Upload finished in %.2f seconds\nThe board is resetting, please restart the app.</string>
+    <string name="otaUpload_error" translatable="false">Upload Error: %s</string>
+    <string name="otaUpload_applicationType" translatable="false">Application Binary</string>
+    <string name="otaUpload_bleType" translatable="false">Wireless Binary</string>
+    <string name="otaUpload_userConfType" translatable="false">User Conf Binary</string>
+</resources>

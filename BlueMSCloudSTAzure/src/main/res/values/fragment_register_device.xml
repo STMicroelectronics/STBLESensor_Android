@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stAzure_registerDeviceTitle">Register Device</string>
+    <string name="stAzure_registerDeviceButton">Register Device</string>
+    <string name="stAzure_createGroupButton">Create Group</string>
+    <string name="stAzure_passwordHint">Password</string>
+    <string name="stAzure_groupNameHint">Group Name</string>
+
+    <string name="stAzure_invalidGroupName">Invalid group name</string>
+    <string name="stAzure_invalidGropuPassword">Invalid password</string>
+    <string name="stAzure_accessForbbidden">Access forbidden</string>
+    <string name="stAzure_unkownDevice">Unknown device, register it</string>
+    <string name="stAzure_kownDevice">Know device, ready to connect</string>
+</resources>

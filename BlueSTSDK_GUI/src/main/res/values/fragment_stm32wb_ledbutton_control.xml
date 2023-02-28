@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="stm32wb_rssiFormat">%d [dBm]</string>
+
+    <string name="stm32wb_deviceNameFormat">Device Server %d</string>
+    <string name="stm32wb_single_switchRadio">Switch Protocol radio</string>
+    <string name="stm32wb_single_eventFormat">Button pressed: %s { %d }</string>
+    <string name="stm32wb_single_led_caption">Click on the image to change the led status</string>
+    <string name="stm32wb_single_alarm_caption">No alarm received</string>
+    <string name="stm32wb_single_instruction">Press SW1 button to identify the board</string>
+    <string name="stm32wb_network_instruction">Press SW1 button to start scanning</string>
+    <string name="stm32wb_network_allLedSwitch">Change all led status</string>
+    <string name="stm32wb_network_titleText">Router</string>
+    <integer name="stm32wb_single_alarmBlinkDuration">500</integer>
+
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="fwVersion_boardInfo">Board Info</string>
+    <string name="fwVersion_name">Name: </string>
+    <string name="fwVersion_version">Version: </string>
+    <string name="fwVersion_versionFormat" translatable="false">%d.%d.%d</string>
+    <string name="fwVersion_mcu">MCU Type: </string>
+    <string name="fwVersion_loading">Loading firmware version…</string>
+    <string name="fwVersion_unknown">Unknown</string>
+</resources>

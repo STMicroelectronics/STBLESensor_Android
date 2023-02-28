@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBgColor"
+    android:orientation="vertical">
+
+    <include layout="@layout/st_actionbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/double_padding">
+
+
+            <LinearLayout
+                android:id="@+id/input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.st.trilobyte.widget.FlowBuilderWidget
+                    android:id="@+id/input_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/extra_margin"
+                    custom:empty_message="@string/input_empty_message"
+                    custom:title="@string/input" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/function_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:background="@color/subTitleColor" />
+
+                <com.st.trilobyte.widget.FlowBuilderWidget
+                    android:id="@+id/functions_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:empty_message="@string/function_empty_message"
+                    custom:title="@string/functions" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@color/subTitleColor" />
+
+
+                <TextView
+                    android:id="@+id/add_function"
+                    style="@style/Text.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/backgroundMainApp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/default_padding"
+                    android:text="@string/add_function"
+                    android:textAllCaps="true"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@color/subTitleColor" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/output_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.st.trilobyte.widget.FlowBuilderWidget
+                    android:id="@+id/output_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:empty_message="@string/output_empty_message"
+                    custom:title="@string/output" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundMainApp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/terminate_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/double_padding"
+            android:paddingBottom="@dimen/double_padding">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_close"
+                app:tint="@color/subTitleColor" />
+
+            <TextView
+                style="@style/Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:text="@string/terminate"
+                android:textAllCaps="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/save_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/double_padding"
+            android:paddingBottom="@dimen/double_padding">
+
+            <ImageView
+                android:id="@+id/save_flow_imageview"
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
+                android:tint="@color/widgetCompletedHeaderBgColor"
+                app:srcCompat="@drawable/ic_done" />
+
+            <TextView
+                android:id="@+id/save_flow_textview"
+                style="@style/Text.Bold.LightBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:text="@string/save_flow"
+                android:textAllCaps="true" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

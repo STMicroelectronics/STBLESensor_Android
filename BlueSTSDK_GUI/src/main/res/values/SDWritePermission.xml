@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="SDWritePermission_rationale">The app need to save files in your SD</string>
+    <string name="SDWritePermission_notGranted">Impossible save the files in your SD</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_scene_unknown" translatable="false">Unknown</string>
+    <string name="audio_scene_inVehicle" translatable="false">In vehicle</string>
+    <string name="audio_scene_outdoor" translatable="false">Outdoor</string>
+    <string name="audio_scene_indoor" translatable="false">Indoor</string>
+    <string name="audio_baby_not_crying" translatable="false">Baby not Crying</string>
+    <string name="audio_baby_crying" translatable="false">Baby Crying</string>
+    <string name="audio_scene_off" translatable="false">ASC Off</string>
+    <string name="audio_scene_on" translatable="false">ASC On</string>
+    <string name="audio_scene_error" translatable="false">Error</string>
+</resources>

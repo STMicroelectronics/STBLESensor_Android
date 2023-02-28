@@ -1,0 +1,87 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    buildFeatures {
+        viewBinding true
+    }
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    namespace 'com.st.blesensor.cloud'
+
+}
+
+dependencies {
+    implementation project(':BlueSTSDK')
+    implementation project(':BlueSTSDK_GUI')
+    implementation project(':UI')
+
+    implementation group: 'com.google.android.material', name: 'material', version: "$rootProject.androidx_materialVersion"
+    implementation group: 'androidx.appcompat', name: 'appcompat', version: "$rootProject.androidx_appCompatVersion"
+    implementation group: 'androidx.constraintlayout', name: 'constraintlayout', version: "$rootProject.androidx_constraintLayoutVersion"
+    implementation group: 'androidx.activity', name: 'activity-ktx', version: "$rootProject.androidx_activityKtx"
+
+
+    //necessary for ProviderInstaller.installIfNeeded for enable tls1.2 on android 4.4@samsung s4
+    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '18.1.0'
+
+    //necessary to cloud demo, for mqtt connection
+    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: "$rootProject.cloud_pahoVersion"
+    api group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: "$rootProject.cloud_pahoServiceVersion"
+
+    //amazon aws iot
+    implementation group: 'com.amazonaws', name: 'aws-android-sdk-iot', version: "$rootProject.awsVersion"
+
+    //azure iot client
+    //implementation 'com.github.lucadruda:iotc-java-device-client:1.0.3'
+    implementation 'com.github.lucadruda:iotc-java-device-client:2.1.1'
+    //implementation 'com.microsoft.azure.sdk.iot:iot-device-client:1.33.1'
+    //implementation 'com.microsoft.azure.sdk.iot:iot-device-client:2.0.0-preview-002'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.4'
+
+
+    testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: "$rootProject.mockitoVersion"
+
+    androidTestImplementation group:'androidx.test', name:'runner', version:"$rootProject.androidx_runnerVersion"
+    androidTestImplementation group:'androidx.test', name:'rules', version:"$rootProject.androidx_rulesVersion"
+    androidTestImplementation group:'androidx.test.espresso', name: 'espresso-core', version:"$rootProject.androidx_espressoVersion"
+    implementation "androidx.core:core-ktx:$rootProject.core_ktx"
+
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: "$rootProject.retrofitVersion"
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: "$rootProject.retrofitVersion"
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+
+    //Tmp for kotlin 1.7 and room 2.4.2 waiting room 2.4.3
+    //kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0"
+
+    //QR code Scanner
+    implementation "com.journeyapps:zxing-android-embedded:4.3.0"
+}
+repositories {
+    mavenCentral()
+}

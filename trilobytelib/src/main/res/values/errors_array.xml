@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="board_errors">
+        <item>@string/board_fw_version_error</item>
+        <item>@string/board_parsing_error</item>
+        <item>@string/board_missing_sd_error</item>
+        <item>@string/board_usb_error</item>
+        <item>@string/board_missing_app_file</item>
+        <item>@string/board_io_error</item>
+        <item>@string/board_timeout_upload_error</item>
+        <item>@string/board_generic_upload_error</item>
+        <item>@string/app_version_error</item>
+    </string-array>
+</resources>

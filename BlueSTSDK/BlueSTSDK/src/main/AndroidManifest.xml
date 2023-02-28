@@ -1,0 +1,34 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.st.BlueSTSDK">
+
+    <!-- install only in device with ble -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <!-- use the bluetooth -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <!-- search for new devices -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <!-- need for search for new devices for api >=33 !-->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <!-- need for search for new devices for api >23 !-->
+    <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- need for search for nwe devices for API>30 !-->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- store log files -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- read log files -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <application>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.logFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/log_file_path" />
+        </provider>
+    </application>
+
+</manifest>

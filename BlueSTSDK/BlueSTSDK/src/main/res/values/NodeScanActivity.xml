@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="EnablePositionService">Please enable the Location service for search new devices</string>
+    <string name="LocationCoarseRationale">For searching new devices the location permission is mandatory</string>
+    <string name="LocationNotGranted">Impossible to search for new devices without the Location permission enabled</string>
+    <string name="LocationGranted">Location Permission Granted</string>
+    <string name="BluetoothScanRationale">For searching new devices the bluetooth scan permission is mandatory</string>
+    <string name="BluetoothScanNotGranted">Impossible to search for new devices without the bluetooth scan permission enabled</string>
+    <string name="BluetoothScanGranted">Bluetooth Scan Permission Granted</string>
+    <string name="BluetoothConnectRationale">For connecting one device the bluetooth connection permission is mandatory</string>
+    <string name="BluetoothConnectNotGranted">Impossible to connect one device without the bluetooth connection permission enabled</string>
+    <string name="BluetoothConnectGranted">Bluetooth Connection Permission Granted</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_pressure_name">Pressure</string>
+    <string name="data_temperature_name">Temperature</string>
+    <string name="data_humidity_name">Humidity</string>
+    <string name="data_acceleration_name">Acceleration</string>
+
+    <string name="data_acceleration_unit">mg</string>
+    <string name="data_pressure_unit">mbar</string>
+    <string name="data_humidity_unit">%RH</string>
+    <string name="data_temperature_unit">°C</string>
+
+    <string name="data_vibration_format">%.0f</string>
+    <string name="data_pressure_format">%.1f</string>
+    <string name="data_humidity_format">%.0f</string>
+    <string name="data_temperature_format">%.0f</string>
+</resources>

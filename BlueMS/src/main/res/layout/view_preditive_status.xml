@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/STStyleCardView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/predictive_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/predictive_xStatusImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/predictive_xValue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/predictive_xStatus"
+                tools:srcCompat="@drawable/predictive_status_good"/>
+
+
+            <TextView
+                android:id="@+id/predictive_xStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/predictive_xFreq"
+                app:layout_constraintStart_toEndOf="@+id/predictive_xStatusImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Status: Good" />
+
+            <TextView
+                android:id="@+id/predictive_xFreq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/predictive_xValue"
+                app:layout_constraintStart_toStartOf="@+id/predictive_xStatus"
+                app:layout_constraintTop_toBottomOf="@+id/predictive_xStatus"
+                tools:text="Frequency: 1 Hz"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/predictive_xValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/predictive_xStatus"
+                app:layout_constraintTop_toBottomOf="@+id/predictive_xFreq"
+                tools:visibility="visible"
+                tools:text="Value: 1.00" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/predictive_yStatusImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/predictive_yValue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/predictive_yStatus"
+                tools:srcCompat="@drawable/predictive_status_good" />
+
+
+            <TextView
+                android:id="@+id/predictive_yStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/predictive_yFreq"
+                app:layout_constraintStart_toEndOf="@+id/predictive_yStatusImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Status: Good"/>
+
+            <TextView
+                android:id="@+id/predictive_yFreq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/predictive_yValue"
+                app:layout_constraintStart_toStartOf="@+id/predictive_yStatus"
+                app:layout_constraintTop_toBottomOf="@+id/predictive_yStatus"
+                tools:text="Frequency: 1 Hz"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/predictive_yValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/predictive_yStatus"
+                app:layout_constraintTop_toBottomOf="@+id/predictive_yFreq"
+                tools:text="Value: 1.00"
+                tools:visibility="visible"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/predictive_zStatusImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/predictive_zValue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/predictive_zStatus"
+                tools:srcCompat="@drawable/predictive_status_good" />
+
+
+            <TextView
+                android:id="@+id/predictive_zStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/predictive_zFreq"
+                app:layout_constraintStart_toEndOf="@+id/predictive_zStatusImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Status: Good" />
+
+            <TextView
+                android:id="@+id/predictive_zFreq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/predictive_zValue"
+                app:layout_constraintStart_toStartOf="@+id/predictive_zStatus"
+                app:layout_constraintTop_toBottomOf="@+id/predictive_zStatus"
+                tools:text="Frequency: 1 Hz"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/predictive_zValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/predictive_zStatus"
+                app:layout_constraintTop_toBottomOf="@+id/predictive_zFreq"
+                tools:text="Value: 1.00"
+                tools:visibility="visible"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+<!--
+    the barrier is not working, what is wrong???
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.constraint.Barrier
+            android:id="@+id/predictive_xBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="predictive_xValue,predictive_xStatusImage" />
+
+        <TextView
+            android:id="@+id/predictive_yStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/predictive_yFreq"
+            app:layout_constraintStart_toEndOf="@+id/predictive_yStatusImage"
+            app:layout_constraintTop_toBottomOf="@id/predictive_xBarrier"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Status: warning" />
+
+        <ImageView
+            android:id="@+id/predictive_yStatusImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/predictive_yValue"
+            app:layout_constraintStart_toStartOf="@+id/predictive_xStatusImage"
+            app:layout_constraintTop_toTopOf="@+id/predictive_yStatus"
+            tools:srcCompat="@drawable/predictive_status_warnings" />
+
+
+        <TextView
+            android:id="@+id/predictive_yFreq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/predictive_yValue"
+            app:layout_constraintStart_toStartOf="@+id/predictive_yStatus"
+            app:layout_constraintTop_toBottomOf="@+id/predictive_yStatus"
+            tools:text="Frequency: 2 Hz" />
+
+
+        <TextView
+            android:id="@+id/predictive_yValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/predictive_yStatus"
+            app:layout_constraintTop_toBottomOf="@+id/predictive_yFreq"
+            tools:text="Value: 2.0" />
+
+
+        <android.support.constraint.Barrier
+            android:id="@+id/predictive_yBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="predictive_yValue,predictive_yStatusImage" />
+
+        <ImageView
+            android:id="@+id/predictive_zStatusImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/predictive_zValue"
+            app:layout_constraintStart_toStartOf="@+id/predictive_yStatusImage"
+            app:layout_constraintTop_toTopOf="@+id/predictive_zStatus"
+            tools:srcCompat="@drawable/predictive_status_bad" />
+
+        <TextView
+            android:id="@+id/predictive_zStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/predictive_zFreq"
+            app:layout_constraintStart_toEndOf="@+id/predictive_zStatusImage"
+            app:layout_constraintTop_toBottomOf="@id/predictive_yBarrier"
+            tools:text="Status: warnings" />
+
+        <TextView
+            android:id="@+id/predictive_zFreq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/predictive_zValue"
+            app:layout_constraintStart_toStartOf="@+id/predictive_zStatus"
+            app:layout_constraintTop_toBottomOf="@+id/predictive_zStatus"
+            tools:text="Frequency: 2 Hz" />
+
+        <TextView
+            android:id="@+id/predictive_zValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/predictive_zStatus"
+            app:layout_constraintTop_toBottomOf="@+id/predictive_zFreq"
+            tools:text="Value: 3" />
+
+    </android.support.constraint.ConstraintLayout>
+    -->
+</androidx.cardview.widget.CardView>

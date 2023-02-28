@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="board_scan_timeout">Board scanning has timed out. Make sure the board is nearby and is properly powered.</string>
+    <string name="wrong_board_error">This functionality is available only with a SensorTile.box board.</string>
+    <string name="upload_uploaded_successfully">App loaded successfully</string>
+
+    <string name="sd_recording_info_message">Connect to the board to start the data recording</string>
+
+</resources>

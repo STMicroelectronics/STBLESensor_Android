@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sensor"
+        android:enabled="true"
+        android:icon="@drawable/ic_sensor"
+        android:title="@string/navigation_tab_sensors"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_flow"
+        android:enabled="true"
+        android:icon="@drawable/ic_flows"
+        android:title="@string/navigation_tab_flows"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_more"
+        android:enabled="true"
+        android:icon="@drawable/ic_more"
+        android:title="@string/navigation_tab_more"
+        app:showAsAction="ifRoom"/>
+</menu>

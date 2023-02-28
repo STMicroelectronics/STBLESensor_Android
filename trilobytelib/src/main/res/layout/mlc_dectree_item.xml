@@ -1,0 +1,736 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/Text.Bold.Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:text="@string/ucf_file"/>
+
+    <Button
+        android:id="@+id/ucf_file_selection_mlc_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ucf_file_empty"
+        style="?attr/buttonBarButtonStyle"
+        android:padding="16dp"
+        android:textAllCaps="true"/>
+
+    <TextView
+        style="@style/Text.Bold.Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:textAllCaps="true"
+        android:text="@string/mlc_fsm_labels_title"/>
+
+    <!-- MLC0 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree0"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree0_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree0_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree0_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree0_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree0_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree1"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree1_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree1_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree1_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree1_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree1_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree2"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree2_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree2_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree2_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree2_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree2_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree3"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree3_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree3_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree3_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree3_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree3_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC4 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree4"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree4_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree4_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree4_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree4_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree4_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC5 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree5"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree5_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree5_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree5_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree5_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree5_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC6 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree6"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree6_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree6_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree6_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree6_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree6_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+    <!-- MLC7 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/mlc_dectree7"
+            android:textAllCaps="true"/>
+
+        <EditText
+            android:id="@+id/mlc_dectree7_name"
+            style="@style/Text.Bold.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:inputType="text"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree7_expand"
+            android:contentDescription="@string/expand_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mlc_dectree7_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:text="@string/mlc_fsm_output"
+                android:textAllCaps="true"/>
+
+            <TextView
+                style="@style/Text.Bold.Label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/mlc_fsm_label"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mlc_dectree7_labels_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:orientation="vertical"/>
+
+        <ImageView
+            android:id="@+id/mlc_dectree7_add_label"
+            android:contentDescription="@string/add_label_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            android:tint="@color/subTitleColor"
+            app:srcCompat="@drawable/ic_add_label"/>
+
+    </LinearLayout>
+
+</LinearLayout>

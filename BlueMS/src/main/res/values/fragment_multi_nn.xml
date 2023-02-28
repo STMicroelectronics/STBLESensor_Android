@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="multiNN_quiet">Quiet...</string>
+    <string name="multiNN_warning">Warning!!!</string>
+</resources>

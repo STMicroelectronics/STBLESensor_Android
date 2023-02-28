@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="level_offset_angle_format">Offset: %1$3.2f° </string>
+    <string name="level_full_angle_format">Yaw: %1$3.2f° Pitch: %2$3.2f° Roll: %3$3.2f° </string>
+</resources>

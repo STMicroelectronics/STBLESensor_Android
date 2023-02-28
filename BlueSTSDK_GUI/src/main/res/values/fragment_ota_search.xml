@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="otaSearch_scanStart">Start Scanning…</string>
+    <string name="otaSearch_nodeFound">Node found</string>
+    <string name="otaSearch_nodeNotFound">Node not found</string>
+
+</resources>

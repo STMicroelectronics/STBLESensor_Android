@@ -1,0 +1,380 @@
+{
+  "description": "Data recorder",
+  "category": "Log",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX"
+  ],
+  "flows": [],
+  "functions": [],
+  "id": "fb76c02f-7a28-4b6e-9fd5-340ab570dabc",
+  "notes": "Records temperature, humidity, pressure, gyroscope, accelerometer and magnetometer data into the SD",
+  "outputs": [
+    {
+      "description": "File to SD card",
+      "icon": "ic_sdcard",
+      "id": "O1",
+      "properties": [
+        {
+          "label": "File name",
+          "type": "STRING",
+          "value": "output"
+        },
+        {
+          "label": "Buffer dimension (max: 10000)",
+          "type": "INT",
+          "value": 0.0
+        }
+      ]
+    }
+  ],
+  "sensors": [
+    {
+      "configuration": {
+        "filters": {}
+      },
+      "dataType": "uint64_t scalar",
+      "datasheetLink": "https://www.st.com/en/microcontrollers/stm32l4r9zi.html",
+      "description": "RTC (Date)",
+      "fullScaleUm": "",
+      "icon": "ic_rtc",
+      "id": "S11",
+      "model": "STM32L4R9ZI",
+      "notes": "",
+      "output": "Date",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "um": "utc format"
+    },
+    {
+      "configuration": {
+        "filters": {}
+      },
+      "dataType": "float scalar",
+      "datasheetLink": "https://www.st.com/en/microcontrollers/stm32l4r9zi.html",
+      "description": "RTC (Time)",
+      "fullScaleUm": "",
+      "icon": "ic_rtc",
+      "id": "S10",
+      "model": "STM32L4R9ZI",
+      "notes": "",
+      "output": "Time",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "um": "msec"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {
+          "lowPass": {
+            "label": "700",
+            "value": 1
+          }
+        },
+        "fullScale": 2,
+        "odr": 104.0,
+        "powerMode": "LOW_POWER"
+      },
+      "dataType": "Float vector x3",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dso.pdf",
+      "description": "IMU Accelerometer sensor",
+      "fullScaleUm": "g",
+      "fullScales": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "icon": "ic_inemo",
+      "id": "S5",
+      "model": "LSM6DSOX",
+      "notes": "",
+      "output": "Acceleration",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Low power",
+          "mode": "LOW_POWER",
+          "odrs": [
+            1.6,
+            12.5,
+            26.0,
+            52.0,
+            104.0,
+            208.0
+          ]
+        },
+        {
+          "label": "High performance",
+          "mode": "HIGH_PERFORMANCE",
+          "odrs": [
+            12.5,
+            26.0,
+            52.0,
+            104.0,
+            208.0,
+            416.0,
+            833.0,
+            1666.0,
+            3333.0,
+            6666.0
+          ]
+        }
+      ],
+      "um": "mg"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {},
+        "fullScale": 250,
+        "odr": 104.0,
+        "powerMode": "LOW_POWER"
+      },
+      "dataType": "Float vector x3",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dso.pdf",
+      "description": "IMU Gyroscope sensor",
+      "fullScaleUm": "dps",
+      "fullScales": [
+        125,
+        250,
+        500,
+        1000,
+        2000
+      ],
+      "icon": "ic_inemo",
+      "id": "S6",
+      "model": "LSM6DSOX",
+      "notes": "",
+      "output": "Angular rate",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Low power",
+          "mode": "LOW_POWER",
+          "odrs": [
+            12.5,
+            26.0,
+            52.0,
+            104.0,
+            208.0
+          ]
+        },
+        {
+          "label": "High performance",
+          "mode": "HIGH_PERFORMANCE",
+          "odrs": [
+            12.5,
+            26.0,
+            52.0,
+            104.0,
+            208.0,
+            416.0,
+            833.0,
+            1666.0,
+            3333.0,
+            6666.0
+          ]
+        }
+      ],
+      "um": "mdps"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {},
+        "odr": 100.0,
+        "powerMode": "LOW_POWER"
+      },
+      "dataType": "Float vector x3",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lis2mdl.pdf",
+      "description": "Magnetic field sensor",
+      "fullScaleUm": "",
+      "icon": "ic_magnetometer",
+      "id": "S8",
+      "model": "LIS2MDL",
+      "notes": "OFF_CANC always enabled",
+      "output": "Magnetic field",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Low power",
+          "mode": "LOW_POWER",
+          "odrs": [
+            10.0,
+            20.0,
+            50.0,
+            100.0
+          ]
+        },
+        {
+          "label": "High resolution",
+          "mode": "HIGH_RESOLUTION",
+          "odrs": [
+            10.0,
+            20.0,
+            50.0,
+            100.0
+          ]
+        }
+      ],
+      "um": "mG"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {},
+        "odr": 1.0,
+        "powerMode": "NONE"
+      },
+      "dataType": "Float scalar",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/stts751.pdf",
+      "description": "Temperature sensor",
+      "fullScaleUm": "",
+      "icon": "ic_termometer",
+      "id": "S1",
+      "model": "STTS751",
+      "notes": "use max bit resolution for each ODR",
+      "output": "Temperature",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Power Mode",
+          "minCustomOdr": 17.0,
+          "mode": "NONE",
+          "odrs": [
+            0.0625,
+            0.125,
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0
+          ]
+        }
+      ],
+      "um": "degC"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {},
+        "odr": 1.0,
+        "powerMode": "NONE"
+      },
+      "dataType": "Float scalar",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/hts221.pdf",
+      "description": "Humidity sensor",
+      "fullScaleUm": "",
+      "icon": "ic_humidity",
+      "id": "S2",
+      "model": "HTS221",
+      "notes": "",
+      "output": "Humidity",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Power Mode",
+          "minCustomOdr": 2.0,
+          "mode": "NONE",
+          "odrs": [
+            1.0,
+            7.0,
+            12.5
+          ]
+        }
+      ],
+      "um": "% RH"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {
+          "lowPass": {
+            "label": "ODR/2",
+            "value": 1
+          }
+        },
+        "odr": 1.0,
+        "powerMode": "LOW_NOISE"
+      },
+      "dataType": "Float scalar",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lps22hh.pdf",
+      "description": "Pressure sensor",
+      "fullScaleUm": "",
+      "icon": "ic_pressure",
+      "id": "S3",
+      "model": "LPS22HH",
+      "notes": "",
+      "output": "Pressure",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Low noise",
+          "minCustomOdr": 2.0,
+          "mode": "LOW_NOISE",
+          "odrs": [
+            1.0,
+            10.0,
+            25.0,
+            50.0,
+            75.0
+          ]
+        },
+        {
+          "label": "Low current",
+          "minCustomOdr": 2.0,
+          "mode": "LOW_CURRENT",
+          "odrs": [
+            1.0,
+            10.0,
+            25.0,
+            50.0,
+            75.0,
+            100.0,
+            200.0
+          ]
+        }
+      ],
+      "um": "hPa"
+    }
+  ],
+  "version": 1
+}

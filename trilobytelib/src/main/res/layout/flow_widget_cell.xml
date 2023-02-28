@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/default_padding"
+    android:paddingTop="@dimen/double_padding"
+    android:paddingBottom="@dimen/double_padding">
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tint="@color/subTitleColor"
+        app:srcCompat="@drawable/ic_sensor"/>
+
+    <TextView
+        android:id="@+id/item_textview"
+        style="@style/Text.Bold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/default_padding"
+        tools:text="Temperature Sensor"/>
+
+    <ImageView
+        android:id="@+id/item_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding"
+        android:tint="@color/subTitleColor"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_settings"/>
+
+</LinearLayout>

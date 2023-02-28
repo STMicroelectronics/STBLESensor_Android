@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    namespace 'com.st.blesensor.cloud.stazure'
+
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutineVersion"
+
+    implementation project(':BlueSTSDK')
+    implementation project(':BlueSTSDK_GUI')
+    implementation project(':BlueMSCloud')
+
+    implementation 'com.microsoft.azure.sdk.iot:iot-device-client:1.33.1'
+    //implementation 'com.microsoft.azure.sdk.iot:iot-device-client:2.0.0-preview-002'
+
+    implementation group: 'androidx.constraintlayout', name: 'constraintlayout', version: "$rootProject.androidx_constraintLayoutVersion"
+    implementation group: 'com.google.android.material', name: 'material', version: "$rootProject.androidx_materialVersion"
+
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: "$rootProject.androidx_lifecycleExtVersion"
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: "$rootProject.androidx_lifecycleKtx"
+
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: "$rootProject.retrofitVersion"
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: "$rootProject.retrofitVersion"
+
+    implementation group:'androidx.room', name:'room-runtime', version: "$rootProject.androidx_roomVersion"
+    implementation group:'androidx.room', name:'room-ktx', version: "$rootProject.androidx_roomVersion"
+    kapt group:'androidx.room', name:'room-compiler', version: "$rootProject.androidx_roomVersion"
+
+    implementation group: 'androidx.appcompat', name: 'appcompat', version: "$rootProject.androidx_appCompatVersion"
+
+    testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
+
+    //Tmp for kotlin 1.7 and room 2.4.2 waiting room 2.4.3
+    //kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0"
+
+    androidTestImplementation group:'androidx.test', name:'runner', version:"$rootProject.androidx_runnerVersion"
+    androidTestImplementation group:'androidx.test', name:'rules', version:"$rootProject.androidx_rulesVersion"
+    androidTestImplementation group:'androidx.test.espresso', name: 'espresso-core', version:"$rootProject.androidx_espressoVersion"
+}

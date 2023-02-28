@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/input_viewer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/Text.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/input"
+        android:textAllCaps="true"/>
+
+    <LinearLayout
+        android:id="@+id/viewer_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundMainApp"
+        android:orientation="vertical"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="@color/subTitleColor"/>
+
+</LinearLayout>

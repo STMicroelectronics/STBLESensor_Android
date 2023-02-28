@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="deviceList_lastSyncFormat">Last Sync: %s</string>
+    <string name="deviceList_emptyText">No devices.\nPlease register new device by clicking on the + button.</string>
+    <string name="deviceItem_configurationButton">Configuration</string>
+    <string name="deviceItem_showDataButton">Show Data</string>
+    <string name="deviceList_errorRetrievingDeviceList">Error retrieving the device list</string>
+    <string name="deviceList_loadingText">Loading devices…</string>
+</resources>

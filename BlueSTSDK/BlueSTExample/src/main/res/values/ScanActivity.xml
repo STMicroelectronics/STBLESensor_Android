@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_scan">Device Scan</string>
+    <string name="startScanMenu">Start Scan</string>
+    <string name="StopScanMenu">Stop Scan</string>
+</resources>

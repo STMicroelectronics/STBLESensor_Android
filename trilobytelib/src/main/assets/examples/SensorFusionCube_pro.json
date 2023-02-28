@@ -1,0 +1,317 @@
+{
+  "description": "Sensor Fusion - Quaternion",
+  "category": "Motion",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX_PRO"
+  ],
+  "flows": [
+    {
+      "description": "Compensated magnetometer",
+      "flows": [
+      ],
+      "functions": [
+        {
+          "description": "Hard-Iron compensation",
+          "id": "F6",
+          "inputs": [
+            "S8"
+          ],
+          "mandatoryInputs": [
+          ],
+          "maxRepeatCount": 0,
+          "outputs": [
+            "O1",
+            "O2",
+            "O3",
+            "O4"
+          ],
+          "parametersCount": 1,
+          "properties": [
+            {
+              "label": "TIMER",
+              "type": "INT",
+              "value": 0.0
+            }
+          ]
+        }
+      ],
+      "id": "62cb7e20-0ede-48d6-a19f-fb2cb196053e",
+      "notes": "",
+      "outputs": [
+        {
+          "description": "Save as Input",
+          "icon": "ic_input",
+          "id": "O4",
+          "properties": [
+          ]
+        }
+      ],
+      "sensors": [
+        {
+          "acquisitionTime": 0.0,
+          "configuration": {
+            "acquisitionTime": 0.0,
+            "filters": {
+            },
+            "odr": 50.0,
+            "powerMode": "LOW_POWER"
+          },
+          "dataType": "Float vector x3",
+          "datasheetLink": "https://www.st.com/resource/en/datasheet/lis2mdl.pdf",
+          "description": "Magnetic field sensor",
+          "fullScaleUm": "",
+          "icon": "ic_magnetometer",
+          "id": "S8",
+          "model": "LIS2MDL",
+          "notes": "OFF_CANC always enabled",
+          "output": "Magnetic field",
+          "outputs": [
+            "O1",
+            "O2",
+            "O3"
+          ],
+          "powerModes": [
+            {
+              "label": "Low power",
+              "mode": "LOW_POWER",
+              "odrs": [
+                10.0,
+                20.0,
+                50.0,
+                100.0
+              ]
+            },
+            {
+              "label": "High resolution",
+              "mode": "HIGH_RESOLUTION",
+              "odrs": [
+                10.0,
+                20.0,
+                50.0,
+                100.0
+              ]
+            }
+          ],
+          "um": "mG"
+        }
+      ],
+      "version": 1
+    }
+  ],
+  "functions": [
+    {
+      "description": "Sensor Fusion (Quaternions)",
+      "id": "F3",
+      "inputs": [
+        "S5",
+        "S6",
+        "F6"
+      ],
+      "mandatoryInputs": [
+        [
+          "S5",
+          "S6",
+          "F6"
+        ]
+      ],
+      "maxRepeatCount": 0,
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "parametersCount": 3,
+      "properties": [
+        {
+          "label": "ATime",
+          "type": "FLOAT",
+          "value": 0.9
+        },
+        {
+          "label": "MTime",
+          "type": "FLOAT",
+          "value": 1.5
+        },
+        {
+          "label": "FrTime",
+          "type": "FLOAT",
+          "value": 0.7
+        },
+        {
+          "label": "Gbias mag th",
+          "type": "FLOAT",
+          "value": 0.003
+        },
+        {
+          "label": "Gbias acc th",
+          "type": "FLOAT",
+          "value": 0.00153
+        },
+        {
+          "label": "Gbias gyro th",
+          "type": "FLOAT",
+          "value": 0.004
+        },
+        {
+          "label": "TIMER",
+          "type": "INT",
+          "value": 0.0
+        }
+      ]
+    }
+  ],
+  "id": "813d1468-c3ea-473b-8a13-eaf41e13f73b",
+  "notes": "The app uses the the LSM6DSV16X iNemo 6-axis inertial measurement unit and the LIS2MDL 3-axis compensated magnetometer to show the orientation estimation of SensorTile.boxPRO in the 3D space.\nThe algorithm used is the sensor fusion algorithm (MotionFX library) embedded in the SensorTile.box MCU which uses the sensors data as inputs (9-axis) and calculates the quaternion coefficient and the Euler angles describing the orientation of the SensorTile.box represented by rotation of 3D cube model.\nThe sensor fusion algorithm is basically an Kalman filter that minimizes the sensors\u0027 inaccuracies based on peculiarities of other sensors; it includes gyroscope calibration and magnetometer calibration (to compensate the magnetometer offset).",
+  "outputs": [
+    {
+      "description": "Stream to Bluetooth",
+      "icon": "ic_bluetooth",
+      "id": "O3",
+      "properties": [
+      ]
+    }
+  ],
+  "sensors": [
+{
+    "id": "S5",
+    "description": "Accelerometer sensor",
+    "icon": "ic_inemo",
+    "output": "Acceleration",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "model": "LSM6DSV16X",
+   "board_compatibility" : [
+     "SENSOR_TILE_BOX_PRO"
+   ],
+    "um": "mg",
+    "fullScaleUm": "g",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          1.875,
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 60,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 60,
+      "filters": {
+        "lowPass": {
+            "label": "700",
+            "value": 1
+          }
+      },
+      "fullScale": 2,
+      "acquisitionTime": 0
+    }
+    },
+    {
+    "id": "S6",
+    "description": "Gyroscope sensor",
+    "output": "Angular rate",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "icon": "ic_inemo",
+    "model": "LSM6DSV16X",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "um": "mdps",
+    "fullScaleUm": "dps",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      125,
+      250,
+      500,
+      1000,
+      2000,
+	  4000
+    ],
+	"powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 52,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 52,
+      "fullScale": 2000,
+      "acquisitionTime": 0
+    }
+    }
+  ],
+  "version": 1
+}

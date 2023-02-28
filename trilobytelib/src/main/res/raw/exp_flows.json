@@ -1,0 +1,213 @@
+[
+  {
+    "description": "Battery Low",
+    "flows": [],
+    "functions": [
+      {
+        "description": "Battery Low",
+        "id": "L2",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O4",
+          "O5"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "3d55dd97-0a53-4bf1-a54e-dc88279b4224",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "id": "O4",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Save as Input",
+        "icon": "ic_input",
+        "properties": []
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  },
+  {
+    "description": "Bluetooth Connected",
+    "flows": [],
+    "functions": [
+      {
+        "description": "Bluetooth Connected",
+        "id": "L4",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O4",
+          "O5"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "813b210f-3649-4b35-b942-559e59ee5e38",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "id": "O4",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Save as Input",
+        "icon": "ic_input",
+        "properties": []
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  },
+  {
+    "description": "Logic FALSE",
+    "flows": [],
+    "functions": [
+      {
+        "description": "Logic FALSE",
+        "id": "L10",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O4",
+          "O5"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "0f6f5130-0a0e-475b-86c4-839591b9eb44",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "id": "O4",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Save as Input",
+        "icon": "ic_input",
+        "properties": []
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  },
+  {
+    "description": "Logic TRUE",
+    "flows": [],
+    "functions": [
+      {
+        "description": "Logic TRUE",
+        "id": "L9",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O4",
+          "O5"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "4aaabdcb-ebab-4e36-8d5a-d55be660c9e0",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "id": "O4",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Save as Input",
+        "icon": "ic_input",
+        "properties": []
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  },
+  {
+    "description": "USB Connected",
+    "flows": [],
+    "functions": [
+      {
+        "description": "USB Connected",
+        "id": "L3",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O4",
+          "O5"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "a64a49ae-e831-4e0a-a58c-68b6ddc027c7",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "id": "O4",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Save as Input",
+        "icon": "ic_input",
+        "properties": []
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  }
+]
+

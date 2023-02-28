@@ -1,11 +1,169 @@
+ST BLE Sensor V4.18.1
+- Libraries Update
+
+ST BLE Sensor V4.18.0
+- Fixed Themes selection
+- Added Support to WBA board
+- Fixed Android Write permission for BlueVoice Audio Recording
+- Changed the name for STDES-CBMLoRaBLE
+- Added the BinaryContent Demo (in Beta mode)
+
+ST BLE Sensor V4.17.4
+- Changed the NEAI Anomaly Detection and Class Classification demos
+- Fixed a bug for IoTCentral PnPL
+- Fixed a bug when connecting using NFC
+
+
+ST BLE Sensor V4.17.3
+- Added the capability to send Enum values on IoTCentral PnP Cloud demo
+- Changed the NEAI Anomaly detection and Class Classification demos
+
+
+ST BLE Sensor V4.17.2
+- Fixed a bug for Write Permission for Android >11
+- Fixed a bug for Start cvs Log
+- Improved the IoTCentral PnP Cloud Demo
+
+ST BLE Sensor V4.17.0
+- New NFC Demo
+- Improved Ext Configuration and Level Demo
+- Added support to Flows for the SensorTile.box-Pro board
+- NEAI Classification demo
+- Libraries update
+- Bugs fixing
+
+
+ST BLE Sensor V4.16.1
+- New Gesture Navigation Demo
+- New Event Counter Demo
+- Added the capability to manage different boards on "Create Flow" section
+- Display Exception error detail if the "Custom Fw Db Entry" is not correct
+- Added the capability to hide icons on Node list
+- Added default Value for custom Commands
+- Added the Acc Event HW Features to WB55... Like Nucleo Boards
+- Libraries Update
+- Bugs fixing
+
+
+ST BLE Sensor V4.16.0
+- New Format for Firmware Database
+- Introduced PnPL and HighSpeedDataLog2 demo
+- Added the capability to use PnPL commands for customising the Demos
+- Changed the Level Demo
+- Changed the FFT text Color
+- Improved NEAI Nano Edge AI Anomaly Detection
+- Increased the Fonts for Extended Configuration 
+
+ST BLE Sensor V4.15.0
+- Added the capability to propose a Firmware Update at board connection
+- Added Nano Edge AI Anomaly Detection Feature
+- MLC and FSM updated with a Variabile Number of Registers
+- Added the capability to download one Update o test new board directly from the BlueST SDK Catalog
+- Added new Deep URI for BLE connection
+- Now some features are excluded from Textual Demo
+- Changed some Standard Custom Commands for Extended Configuration BLE char
+- Improved the support to STWin.box and SensorTile.box-Pro boards
+- Changed the BlueST-SDK catalog
+- Added the support to STSYS-SBU06
+- Libraries Update
+STDES_CBMLORABLE
+ST BLE Sensor V4.14.6
+- Bug fixing for Dashboard URL
+- Added 2 new Default Commands for Extended Configuration Feature
+- Added SensorTile.box-Pro and F446 Support
+- Added Piano Demo
+
+ST BLE Sensor V4.14.5
+- Textual Demo Fix Feature Change during Playing
+- Bug Fixing
+
+ST BLE Sensor V4.14.4
+- FOTA for SensorTile.box-Pro
+- Update the Libraries for fixing the MS Appcenter Crashes
+
+ST BLE Sensor V4.14.3
+- Changed the endpoint for ST AWS Dashboard
+
+ST BLE Sensor V4.14.2
+- Updated libraries
+- Removed some deprecated methods
+- Fixed Wrong Asset tracking dashboard endpoints
+
+ST BLE Sensor V4.14.1
+- Attached the ViewModel to Cloud Demo for avoiding to ask more times UID and Running Fw
+- Fixed the Sending Sample value for using a single Line and avoid Null sample Unit
+- Fixed Wrong Message when we don't configured a cloud Dashboard
+- Added Escape code and Escape Message to Adv option byte
+
+ST BLE Sensor V4.14.0
+- Added IoT Central PnP Cloud Demo
+- Bug fixing
+
+ST BLE Sensor V4.13.0
+- Added Fast FoTA to Proteus/Polaris Boards
+- Added the Capability to Use DER/PEM board's certificate
+- Added the General Purpose Features type
+- Added the possibility to display the data received in Textual way
+- Added the GNSS Demo
+- Fast FoTA introduced for BlueST-SDK V2 boards
+- Fix Environmenatal Demo Layout
+- Fix Scoped Storage for API Level 30
+- Added the Error Message from Extended Configuration Char
+- Added the Hardware Events for Proteus Board
+- Keep the Phone awake when it's connected to one Node
+- Changed the FirmwareDB URL
+- Introduced the ViewPager2
+- Updating Libraries
+- Fixed one bug for Board DB
+- Fixed one bug for Temp/Press/Hum offset
+
+ST BLE Sensor V4.12.0
+- Added Support STRed-L
+- Added PredictiveMaintenance Dashboard support
+
+ST BLE Sensor V4.11.1
+- Bug Fixing onBackPressed
+
+ST BLE Sensor V4.11.0
+- Removed IBM QuickStart Cloud Demo
+- Introduced Fast FOTA on STM32WB1x/STM32WB3x/STM32WB5x boards
+- Enable Wireless Coprocessor Binary Update for STM32WB1x boards
+- Changed the UI
+- Created the List of Demos main page
+- Moved the Log button from Top application bar to Overflow Menu
+- Added the Capability to set Sensors on Extended Configuration Char
+- HSDataLog bug fixing
+- Fixes some layouts
+- Libraries update
+- Removed Firebase Crash analytics
+- Removed jcenter
+- Removed Alpha on Humidity Icon for environmental feature
+- Introduced the Common UI module
+- Introduced the Common Login module
+- Added the Database for Associated board
+- Added the Database for BlueST-SDK V2 models repository
+- Removed the Landscape Layout for the whole application
+- Added Dynamically Scale Plot for Environmental Features
+- General Bugs Fixing
+
+ST BLE Sensor V4.10.0
+- Added the possibility to stream Data or Register board certificate on ST Asset Tracking Dashboard
+- Added the Login to MyST.com for using the ST Asset Tracking Dashboard
+- Libraries update
+- Added the Enumerative Custom Command on Ext Configuration Feature
+- Introduced the Select/Deselect all Tags for High Speed Data Log
+- Dark Mode theme (Beta)
+- Fixed one bug on Ext Configuration Feature
+- Fixed one bug for High Speed Data Log Feature
+- Fixed the Missing HW feature for STWIN board
+
 ST BLE Sensor V4.9.0
 - Added the Bluevoice full-duplex Demo
 - Added the support to STM32WB1x board
 - Added the Ambient Light Demo
 - Added the Extended Configuration Characteristic
-- Removed the “Toolbox” section. It’s now a standalone application:
-	https://play.google.com/store/apps/details?id=com.st.dit.stbletoolbox
-- Added the possibility to display Temperature on Celsius or Fahrenheit 
+- Added the possibility to display Temperature on Celsius or Fahrenheit
+- Removed the ToolBox section because now it's a standalone application
 - Fixed a bug for audio STL2TransportProtocol
 - Fixed Permissions request
 - Some UI Changes

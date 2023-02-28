@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagLog_startLog" translatable="false">Start</string>
+    <string name="tagLog_sdcardmissing" translatable="false">SD Card Missing</string>
+    <string name="tagLog_stopLog" translatable="false">Stop</string>
+    <string name="tagLog_addLog" translatable="false">Add tag</string>
+    <string name="tagLog_acquisitionName_hint" translatable="false">(Optional) Acquisition name</string>
+    <string name="tagLog_acquisitionDescription_hint" translatable="false" >(Optional) Acquisition description</string>
+    <string name="tagLog_changeLabel_title" translatable="false" >Change the tag label</string>
+    <string name="tagLog_changeLabel_ok" translatable="false" >Apply</string>
+    <string name="tagLog_changeLabel_cancel" translatable="false">Cancel</string>
+</resources>

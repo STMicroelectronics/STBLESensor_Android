@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name" translatable="false" >SensorTile.box</string>
+    <string name="yes" translatable="false">Yes</string>
+    <string name="no" translatable="false">No</string>
+    <string name="ok" translatable="false">Ok</string>
+    <string name="cancel" translatable="false">Cancel</string>
+    <string name="date" translatable="false">Date</string>
+    <string name="edit" translatable="false">Edit</string>
+    <string name="hour" translatable="false">Hour</string>
+    <string name="navigation_tab_sensors" translatable="false">SENSORS</string>
+    <string name="navigation_tab_flows" translatable="false">START</string>
+    <string name="navigation_tab_more" translatable="false">MORE</string>
+    <string name="example_flow" translatable="false">Example Apps</string>
+    <string name="example_flow_categories" translatable="false">Example Apps categories</string>
+    <string name="sensor" translatable="false">Sensor</string>
+    <string name="sensors" translatable="false">Sensors</string>
+    <string name="available_sensors" translatable="false">Available sensors</string>
+    <string name="input" translatable="false">Input</string>
+    <string name="output" translatable="false">Output</string>
+    <string name="unit" translatable="false">Unit</string>
+    <string name="data_type" translatable="false">Data Type</string>
+    <string name="properties" translatable="false">Properties</string>
+    <string name="notes" translatable="false">Description</string>
+    <string name="note" translatable="false">Description</string>
+    <string name="id" translatable="false">Id</string>
+    <string name="product_code" translatable="false">Product code</string>
+    <string name="custom_odr_min_value" translatable="false">min value %.2f s</string>
+    <string name="error_entered_odr_not_allowed" translatable="false">The entered odr value is not allowed.</string>
+    <string name="model" translatable="false">Model</string>
+    <string name="odr" translatable="false">ODR</string>
+    <string name="one_shot_odr" translatable="false">One shot ODR</string>
+    <string name="odr_extended" translatable="false">Output data rate (ODR)</string>
+    <string name="full_scale" translatable="false">FS</string>
+    <string name="full_scale_extended" translatable="false">Full-scale (FS)</string>
+    <string name="power_mode" translatable="false">Power mode</string>
+    <string name="acquisition_time" translatable="false">Acquisition Time (minutes)</string>
+    <string name="ucf_file" translatable="false">Configuration file</string>
+    <string name="ucf_file_empty" translatable="false">Select a .ucf file</string>
+    <string name="ucf_file_description" translatable="false">Browse for a UCF file</string>
+    <string name="add_label_description" translatable="false">Add Label</string>
+    <string name="remove_label_description" translatable="false">Remove Label</string>
+    <string name="expand_label_description" translatable="false">Expand Labels</string>
+    <string name="ucf_file_steval_unsupported" translatable="false">The selected ucf file is not compatible with the LSM6DSOX device</string>
+    <string name="ucf_file_mlc_disabled" translatable="false">The selected ucf file does not enable the Machine Learning Core</string>
+    <string name="ucf_file_fsm_disabled" translatable="false">The selected ucf file does not enable the Finite State Machine</string>
+    <string-array name="dectrees_number" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+    <string name="mlc_fsm_labels_title" translatable="false">Labels</string>
+    <string name="mlc_labels_title" translatable="false">Machine Learning Core Labels</string>
+    <string name="mlc_dectree0" translatable="false">DecTree1</string>
+    <string name="mlc_dectree1" translatable="false">DecTree2</string>
+    <string name="mlc_dectree2" translatable="false">DecTree3</string>
+    <string name="mlc_dectree3" translatable="false">DecTree4</string>
+    <string name="mlc_dectree4" translatable="false">DecTree5</string>
+    <string name="mlc_dectree5" translatable="false">DecTree6</string>
+    <string name="mlc_dectree6" translatable="false">DecTree7</string>
+    <string name="mlc_dectree7" translatable="false">DecTree8</string>
+    <string name="fsm_labels_title" translatable="false">Finite State Machine Labels</string>
+    <string name="fsm_program0" translatable="false">Program1</string>
+    <string name="fsm_program1" translatable="false">Program2</string>
+    <string name="fsm_program2" translatable="false">Program3</string>
+    <string name="fsm_program3" translatable="false">Program4</string>
+    <string name="fsm_program4" translatable="false">Program5</string>
+    <string name="fsm_program5" translatable="false">Program6</string>
+    <string name="fsm_program6" translatable="false">Program7</string>
+    <string name="fsm_program7" translatable="false">Program8</string>
+    <string name="fsm_program8" translatable="false">Program9</string>
+    <string name="fsm_program9" translatable="false">Program10</string>
+    <string name="fsm_program10" translatable="false">Program11</string>
+    <string name="fsm_program11" translatable="false">Program12</string>
+    <string name="fsm_program12" translatable="false">Program13</string>
+    <string name="fsm_program13" translatable="false">Program14</string>
+    <string name="fsm_program14" translatable="false">Program15</string>
+    <string name="fsm_program15" translatable="false">Program16</string>
+    <string name="mlc_fsm_output" translatable="false">Output</string>
+    <string name="mlc_fsm_label" translatable="false">Label</string>
+    <string name="highpass_filter" translatable="false">Highpass filter</string>
+    <string name="lowpass_filter" translatable="false">Lowpass filter</string>
+    <string name="filter" translatable="false">Filter</string>
+    <string name="sampling_frequencies" translatable="false">Sampling frequencies</string>
+    <string name="open_from_st" translatable="false">open from <u>www.st.com</u></string>
+    <string name="datasheet" translatable="false">Datasheet</string>
+    <string name="your_flows" translatable="false">Your Apps</string>
+    <string name="create_flow" translatable="false">+ NEW APP</string>
+    <string name="new_flow" translatable="false">New App</string>
+    <string name="technical_documentation" translatable="false">Technical documentation</string>
+    <string name="help_support" translatable="false"><![CDATA[Help & Support]]></string>
+    <string name="about_sensortile_box" translatable="false">About SensorTile.box</string>
+    <string name="about_sensortile_box_pro" translatable="false">About SensorTile.box-Pro</string>
+    <string name="stm_website" translatable="false">ST Website</string>
+    <string name="expert_view" translatable="false">Expert view</string>
+    <string name="custom_flows" translatable="false">Custom Apps</string>
+    <string name="upload_and_run" translatable="false">Upload and run the app on your board.</string>
+    <string name="input_sources" translatable="false">Input sources</string>
+    <string name="flow" translatable="false">App</string>
+    <string name="functions" translatable="false">Functions</string>
+    <string name="function" translatable="false">Function</string>
+    <string name="available_functions" translatable="false">Available functions</string>
+    <string name="input_empty_message" translatable="false">Select input source</string>
+    <string name="function_empty_message" translatable="false">Choose a function</string>
+    <string name="output_empty_message" translatable="false">Choose output</string>
+    <string name="terminate" translatable="false">terminate</string>
+    <string name="save_flow" translatable="false">save App</string>
+    <string name="flow_as_input" translatable="false">App as input</string>
+    <string name="set_input" translatable="false">set input</string>
+    <string name="action_continue" translatable="false">continue</string>
+    <string name="available_output_methods" translatable="false">Available output methods</string>
+    <string name="flow_details" translatable="false">App details</string>
+    <string name="add_name_and_notes" translatable="false">Add a name and notes to your App</string>
+    <string name="flow_name" translatable="false">Name</string>
+    <string name="finish" translatable="false">finish</string>
+    <string name="save_and_run" translatable="false">Save and run the App on the board</string>
+    <string name="request_delete_selected_flow" translatable="false">Deleting current App. Are you sure?</string>
+    <string name="add_function" translatable="false"> + Add function</string>
+    <string name="input_options" translatable="false">Input options</string>
+    <string name="upload" translatable="false">PLAY</string>
+    <string name="flow_overview" translatable="false">App overview</string>
+    <string name="save_config" translatable="false">save config</string>
+    <string name="output_options" translatable="false">Output options</string>
+    <string name="sensor_adapter_row_s" translatable="false">%s %s</string>
+    <string name="function_options" translatable="false">Function options</string>
+    <string name="ask_delete_function" translatable="false">Are you sure you want to delete the selected function?</string>
+    <string name="select_flow_to_play" translatable="false">Select app to play</string>
+    <string name="exp_flow" translatable="false">Exps</string>
+    <string name="no_filter" translatable="false">No filter</string>
+    <string name="build_if_header" translatable="false">IF condition</string>
+    <string name="if_statement" translatable="false">IF</string>
+    <string name="expression_widget_empty_message" translatable="false">Choose an expression</string>
+    <string name="execute" translatable="false">Execute</string>
+    <string name="expression_widget_empty_statements" translatable="false">Choose app to upload</string>
+    <string name="save" translatable="false">Save</string>
+    <string name="select_flows" translatable="false">Select apps</string>
+    <string name="select_condition" translatable="false">Select condition</string>
+    <string name="available_boards" translatable="false">Available boards</string>
+    <string name="board_scan_message" translatable="false">Scanning for nearby boards. Choose your board to run the apps.</string>
+    <string name="board" translatable="false">Board</string>
+    <string name="overwrite_board" translatable="false">Overwrite board</string>
+    <string name="uploading_your_flow" translatable="false">Uploading your App</string>
+
+    <string name="upload_please_wait" translatable="false">It may take few seconds. Please wait…</string>
+    <string name="error_accept_all_permissions" translatable="false">To use this app, you need to accept all permissions and activate all required peripheral</string>
+    <string name="cannot_save_flow_not_completed" translatable="false">To save this App, you need to select the input and output</string>
+    <string name="error_select_input_before_save" translatable="false">Select at least one input to save</string>
+    <string name="error_select_mlc_fsm_before_save" translatable="false">MLC Virtual Sensor and FSM Virtual Sensor cannot be selected together</string>
+    <string name="error_select_same_sensor_before_save" translatable="false">MLC Virtual Sensor and FSM Virtual Sensor cannot be selected together</string>
+    <string name="error_select_output_to_save" translatable="false">To save this App, you need to select one output</string>
+    <string name="error_select_function_to_continue" translatable="false">To move on, you need to select one function</string>
+    <string name="error_cannot_write_external_memory" translatable="false">To create custom Apps, you need to give access to the phone memory</string>
+    <string name="error_name_required" translatable="false">To save, you need to provide a name to the App</string>
+    <string name="error_saving_flow_check_external_memory" translatable="false">An error happened during App saving. Please allow access to phone memory</string>
+    <string name="warn_abort_flow_wizard" translatable="false">Losing all changes. Continue?</string>
+    <string name="error_cannot_save_property_value_s" translatable="false">Error saving property %s</string>
+    <string name="warn_overvrite_message" translatable="false">Any Apps currently loaded on board will be replaced. Continue?</string>
+    <string name="error_conflicting_flow_names" translatable="false">Error an App with this name already exist. Overwrite it?</string>
+    <string name="warn_need_gps_ble_scan" translatable="false">For best performances boards scanning require GPS enabled.</string>
+
+    <string name="warn_recheck_input_section" translatable="false">The selected function is compatible with multiple chosen inputs. Recheck the App input section.\n\nConflicting inputs:\n%s</string>
+    <string name="error_cannot_save_flow" translatable="false">It is not possible to save an app as an input if it consists of sensors only.</string>
+    <string name="cannot_add_function_terminator_reached" translatable="false">It is not possible to add new functions to the current flow because a terminator function has been used.</string>
+    <string name="warn_terminator_function_selected" translatable="false">After the select function it will not be possible to add other functions. Continue?</string>
+    <string name="board_fw_version_error" translatable="false">App upload failed. Please update the board firmware.</string>
+    <string name="board_parsing_error" translatable="false">An error occurred on the board during App analysis.</string>
+    <string name="board_missing_sd_error" translatable="false">SD card missing. Insert the memory card and try again.</string>
+    <string name="board_usb_error" translatable="false">USB cable not connected. Connect the USB cable and try again</string>
+    <string name="board_generic_upload_error" translatable="false">There was an error loading the App on the board.</string>
+    <string name="board_timeout_upload_error" translatable="false">There was an error loading the App on the board.</string>
+    <string name="board_missing_app_file" translatable="false">SD file needed for the app not found.</string>
+    <string name="board_io_error" translatable="false">IO error during the app start up</string>
+    <string name="app_version_error" translatable="false">App upload failed. Please update the Android Application.</string>
+
+    <string name="error_cannot_upload_flow_multiple_sensors_only_flows" translatable="false">Cannot play selected Apps. There are two app composed by only sensors</string>
+    <string name="error_cannot_upload_flow_sensor_configuration_misleading" translatable="false">Cannot play selected Apps. %s is present with multiple configurations.</string>
+    <string name="error_cannot_upload_flow_sensor_odr_exceeded" translatable="false">Cannot play selected Apps. %s has excedeed max ble odr value</string>
+    <string name="error_cannot_upload_flow_function_exceed_count" translatable="false">Cannot play selected Apps. %s </string>
+    <string name="error_select_flows_before_play" translatable="false">Select at least one app to play</string>
+    <string name="error_select_if_condition_before_play" translatable="false">Select a IF condition before play</string>
+    <string name="error_select_outputs_to_save" translatable="false">You cannot simultaneously select a physical output (usb, sd, bt) and logical output (as input, exp)</string>
+    <string name="error_cannot_set_two_logical_output" translatable="false">You cannot simultaneously select two logical output (as input, exp)</string>
+    <string name="error_cannot_save_property_value_d" translatable="false">Error saving property %s must be lower than %d</string>
+    <string name="error_not_enough_parameter_count" translatable="false">To use the selected function it is necessary to provide %d input.</string>
+</resources>

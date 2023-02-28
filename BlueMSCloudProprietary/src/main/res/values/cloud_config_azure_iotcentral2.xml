@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_iotCentral_registerDevice">Add device to an IoT Central application</string>
+    <string name="azure_iotCentral_loginRequest">Login in  IoT Central</string>
+    <string name="azure_iotCentral_selectApplication">Select Azure IoT Central application</string>
+    <string name="azure_iotCentral_loginApplication">Log in into the application</string>
+    <string name="azure_iotCentral_selectTemplate">Select device template</string>
+    <string name="azure_iotCentral_createDevice">Create new device</string>
+    <string name="azure_iotCentral_creationComplete">Device created, ready to connect</string>
+    <string name="azure_iotCentral_knowDevice">Known device, ready to connect</string>
+</resources>

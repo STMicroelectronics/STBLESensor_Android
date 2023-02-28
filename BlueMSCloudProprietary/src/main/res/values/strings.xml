@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="st_aws_dashboard_device_id" translatable="false">It will be the STM32 UID</string>
+    <string name="device_id" translatable="false">Device ID</string>
+</resources>

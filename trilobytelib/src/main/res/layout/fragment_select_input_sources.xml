@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBgColor"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/st_actionbar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/double_padding">
+
+            <TextView
+                style="@style/Text.Subtitle.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_maring"
+                android:text="@string/sensors"
+                android:textAllCaps="true"/>
+
+            <LinearLayout
+                android:id="@+id/sensors_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_maring"
+                android:orientation="vertical"/>
+
+            <TextView
+                android:id="@+id/exp_flows_label"
+                style="@style/Text.Subtitle.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_maring"
+                android:text="@string/exp_flow"
+                android:textAllCaps="true"/>
+
+            <LinearLayout
+                android:id="@+id/exp_flows_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_maring"
+                android:orientation="vertical"/>
+
+            <TextView
+                android:id="@+id/flows_as_input_label"
+                style="@style/Text.Subtitle.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_maring"
+                android:text="@string/flow_as_input"
+                android:textAllCaps="true" />
+
+            <LinearLayout
+                android:id="@+id/flows_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_maring"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_shadow_transparent_bg"
+        android:gravity="end">
+
+        <LinearLayout
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/double_maring"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/double_padding"
+            android:paddingTop="@dimen/default_padding"
+            android:paddingEnd="@dimen/double_padding"
+            android:paddingBottom="@dimen/default_padding">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@color/colorAccent"
+                app:srcCompat="@drawable/ic_done"/>
+
+            <TextView
+                style="@style/Text.Bold.Accent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/set_input"
+                android:textAllCaps="true"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

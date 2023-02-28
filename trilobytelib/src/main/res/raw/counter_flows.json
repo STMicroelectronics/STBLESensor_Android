@@ -1,0 +1,126 @@
+[
+  {
+    "description": "Write counter on SD",
+    "flows": [],
+    "functions": [
+      {
+        "id": "L11",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Counter",
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O1"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "ba96d3fb-c596-4718-a881-0a83d83d9617",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "description":"File to SD card",
+        "icon":"ic_sdcard",
+        "id":"O1",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+	      "SENSOR_TILE_BOX_PRO"
+        ],
+        "properties":[]
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  },
+  {
+    "description": "Stream counter to USB",
+    "flows": [],
+    "functions": [
+      {
+        "id": "L11",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Counter",
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O2"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "8425bb7b-41e8-4d06-8e63-5add87b59a26",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "id": "O2",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Stream to USB",
+        "icon": "ic_usb",
+        "properties": []
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  },
+  {
+    "description": "Stream Counter to bluetooth",
+    "flows": [],
+    "functions": [
+      {
+        "id": "L11",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "description": "Counter",
+        "inputs": [],
+        "mandatoryInputs": [],
+        "outputs": [
+          "O3"
+        ],
+        "parametersCount": 0,
+        "properties": []
+      }
+    ],
+    "id": "e28f27b3-e6d7-4c10-addf-6af8cc2402c1",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX",
+	  "SENSOR_TILE_BOX_PRO"
+    ],
+    "notes": "",
+    "outputs": [
+      {
+        "description":"Stream to Bluetooth",
+        "icon":"ic_bluetooth",
+        "id":"O3",
+        "board_compatibility" : [
+          "SENSOR_TILE_BOX",
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+        "properties":[]
+      }
+    ],
+    "sensors": [],
+    "version": 1
+  }
+]
+

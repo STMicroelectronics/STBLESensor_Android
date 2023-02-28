@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="registerDevice_getDeviceProfile">Registering the device…</string>
+    <string name="registerDevice_title_format">Device ID: %s</string>
+    <string name="registerDevice_registrationError">Error creating the device</string>
+    <string name="registerDevice_registrationOngoing">Registering the device…</string>
+    <string name="registerDevice_registrationNeeded">Unknown device, please register it</string>
+    <string name="registerDevice_onlineCheck">Check if the device already exist…</string>
+    <string name="registerDevice_deviceNameHint">Device name</string>
+    <string name="registerDevice_registerButton">Register Device</string>
+    <string name="registerDevice_create_api_key">Create Api Key</string>
+    <string name="registerDevice_getApiKey">Device already registered. \n Uploading data will start soon…</string>
+    <string name="registerDevice_cert_manager_getApiKey">Device already registered</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_iotCentral_provisioning_title">Provisioning</string>
+    <string name="azure_iotCentral_provisioning_description">Waiting application provisioning…</string>
+
+</resources>

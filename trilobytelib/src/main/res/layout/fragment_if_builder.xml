@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBgColor"
+    android:orientation="vertical">
+
+    <include layout="@layout/st_actionbar"
+        android:id="@+id/st_actionbar_if_builder"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/double_padding">
+
+            <com.st.trilobyte.widget.IfBuilderWidget
+                android:id="@+id/expression_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/extra_margin"
+                custom:if_widget_empty_message="@string/expression_widget_empty_message"
+                custom:if_widget_title="@string/if_statement"/>
+
+            <com.st.trilobyte.widget.IfBuilderWidget
+                android:id="@+id/statements_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/extra_margin"
+                custom:if_widget_empty_message="@string/expression_widget_empty_statements"
+                custom:if_widget_title="@string/execute"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/terminate_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/double_padding"
+            android:paddingBottom="@dimen/double_padding">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_close"
+                app:tint="@color/subTitleColor" />
+
+            <TextView
+                style="@style/Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:text="@string/terminate"
+                android:textAllCaps="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/upload_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/double_padding"
+            android:paddingBottom="@dimen/double_padding">
+
+            <ImageView
+                android:id="@+id/save_flow_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@color/widgetCompletedHeaderBgColor"
+                app:srcCompat="@drawable/ic_done"/>
+
+            <TextView
+                android:id="@+id/save_flow_textview"
+                style="@style/Text.Bold.LightBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:text="@string/upload"
+                android:textAllCaps="true"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fwUpgrade.FwVersionFragment"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:id="@+id/fwVersion_loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/fwVersion_loading" />
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/fwVersion_contentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_columnSpan="2"
+            android:gravity="center"
+            android:text="@string/fwVersion_boardInfo"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <TextView
+            android:text="@string/fwVersion_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:id="@+id/fwVersion_nameValue"
+            tools:text="FP-NAME"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        <TextView android:text="@string/fwVersion_version"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:id="@+id/fwVersion_versionValue"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            tools:text="1.0.0" />
+
+        <TextView
+            android:text="@string/fwVersion_mcu"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:id="@+id/fwVersion_mcuTypeValue"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            tools:text="MCU type" />
+
+    </GridLayout>
+</FrameLayout>

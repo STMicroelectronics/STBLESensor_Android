@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="dialog_width">280dp</dimen>
+    <dimen name="dialog_startPadding">24dp</dimen>
+    <dimen name="dialog_endPadding">8dp</dimen>
+    <dimen name="dialog_topPadding">24dp</dimen>
+    <dimen name="dialog_bottomPadding">8dp</dimen>
+
+</resources>

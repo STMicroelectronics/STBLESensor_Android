@@ -1,0 +1,1718 @@
+[
+  {
+    "sensorId": "S3",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX"
+    ],
+    "values": [
+      {
+        "id": 1,
+        "powerModes": [
+          "LOW_NOISE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1,
+              10,
+              25,
+              50,
+              75
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 1
+              },
+              {
+                "label": "ODR/9",
+                "value": 2
+              },
+              {
+                "label": "ODR/20",
+                "value": 3
+              }
+            ],
+            "highPass": []
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "powerModes": [
+          "LOW_CURRENT"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1,
+              10,
+              25,
+              50,
+              75,
+              100,
+              200
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 1
+              },
+              {
+                "label": "ODR/9",
+                "value": 2
+              },
+              {
+                "label": "ODR/20",
+                "value": 3
+              }
+            ],
+            "highPass": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S3",
+    "board_compatibility" : [
+		  "SENSOR_TILE_BOX_PRO"
+        ],
+    "values": [
+	  {
+        "id": 1,
+        "powerModes": [
+          "LOW_NOISE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1,
+              10,
+              25,
+              50,
+              75
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/9",
+                "value": 3
+              }
+            ],
+            "highPass": []
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "powerModes": [
+          "LOW_CURRENT"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1,
+              10,
+              25,
+              50,
+              75,
+              100,
+              200
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/9",
+                "value": 3
+              }
+            ],
+            "highPass": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S4",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX"
+    ],
+    "values": [
+      {
+        "id": 1,
+        "powerModes": [
+          "LOW_POWER"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1.6,
+              12.5,
+              25,
+              50,
+              100
+            ],
+            "lowPass": [
+              {
+                "label": "3200",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "powerModes": [
+          "LOW_POWER_2"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1.6,
+              12.5,
+              25,
+              50,
+              100,
+              200
+            ],
+            "lowPass": [
+              {
+                "label": "720",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "powerModes": [
+          "LOW_POWER_3"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1.6,
+              12.5,
+              25,
+              50,
+              100,
+              200
+            ],
+            "lowPass": [
+              {
+                "label": "360",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "powerModes": [
+          "LOW_POWER_4"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1.6,
+              12.5,
+              25,
+              50,
+              100,
+              200
+            ],
+            "lowPass": [
+              {
+                "label": "180",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "powerModes": [
+          "HIGH_PERFORMANCE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              12.5,
+              25,
+              50,
+              100,
+              200,
+              400,
+              800
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              1600
+            ],
+            "lowPass": [
+              {
+                "label": "400",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/10",
+                "value": 3
+              },
+              {
+                "label": "ODR/20",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S4",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "values": [
+	  {
+        "id": 1,
+        "powerModes": [
+          "LOW_POWER"
+        ],
+        "filters": [
+		  {
+            "odrs": [
+              6
+            ],
+            "lowPass": [
+              {
+                "label": "3",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "powerModes": [
+          "HIGH_PERFORMANCE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              6
+            ],
+            "lowPass": [
+              {
+                "label": "3",
+                "value": 1
+              }
+            ]
+          },
+		  {
+            "odrs": [
+              12.5
+            ],
+            "lowPass": [
+              {
+                "label": "3",
+                "value": 1
+              },
+			  {
+                "label": "6",
+                "value": 2
+              }
+            ]
+          },
+		  {
+            "odrs": [
+              25
+            ],
+            "lowPass": [
+              {
+                "label": "3",
+                "value": 1
+              },
+			  {
+                "label": "6",
+                "value": 2
+              },
+			  {
+                "label": "12.5",
+                "value": 3
+              }
+            ]
+          },
+		  {
+            "odrs": [
+              50,
+              100,
+              200,
+              400,
+              800
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 2
+              },
+              {
+                "label": "ODR/8",
+                "value": 3
+              },
+              {
+                "label": "ODR/16",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S5",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX"
+    ],
+    "values": [
+      {
+        "id": 1,
+        "powerModes": [
+          "LOW_POWER"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1.6,
+              12.5,
+              26,
+              52,
+              104,
+              208
+            ],
+            "lowPass": [
+              {
+                "label": "700",
+                "value": 1
+              },
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "powerModes": [
+          "HIGH_PERFORMANCE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              12.5,
+              26,
+              52,
+              104,
+              208,
+              416,
+              833,
+              1666,
+              3333,
+              6666
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 2
+              },
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S5",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "values": [
+	  {
+        "id": 1,
+        "powerModes": [
+          "LOW_POWER"
+        ],
+        "filters": [
+          {
+            "odrs": [
+            1.875,
+            7.5,
+            15,
+            30,
+	   	    60,
+            120,
+            240,
+	   	    480,
+	   	    960,
+            1920
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "powerModes": [
+          "HIGH_PERFORMANCE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+            7.5,
+			15,
+            30,
+		    60,
+            120,
+            240,
+	  	    480,
+	  	    960,
+		    1920,
+		    3840,
+		    7680
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/2",
+                "value": 2
+              },
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ],
+            "highPass": [
+              {
+                "label": "ODR/4",
+                "value": 3
+              },
+              {
+                "label": "ODR/10",
+                "value": 4
+              },
+              {
+                "label": "ODR/20",
+                "value": 5
+              },
+              {
+                "label": "ODR/45",
+                "value": 6
+              },
+              {
+                "label": "ODR/100",
+                "value": 7
+              },
+              {
+                "label": "ODR/200",
+                "value": 8
+              },
+              {
+                "label": "ODR/400",
+                "value": 9
+              },
+              {
+                "label": "ODR/800",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S6",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX"
+    ],
+    "values": [
+      {
+        "id": 1,
+        "powerModes": [
+          "HIGH_PERFORMANCE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              12.5
+            ],
+            "lowPass": [
+              {
+                "label": "4.2",
+                "value": 1
+              },
+              {
+                "label": "4.1",
+                "value": 7
+              },
+              {
+                "label": "3.9",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              26
+            ],
+            "lowPass": [
+              {
+                "label": "8.3",
+                "value": 1
+              },
+              {
+                "label": "7.8",
+                "value": 7
+              },
+              {
+                "label": "6.7",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              52
+            ],
+            "lowPass": [
+              {
+                "label": "16.6",
+                "value": 1
+              },
+              {
+                "label": "16.7",
+                "value": 5
+              },
+              {
+                "label": "16.8",
+                "value": 6
+              },
+              {
+                "label": "13.4",
+                "value": 7
+              },
+              {
+                "label": "9.7",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              104
+            ],
+            "lowPass": [
+              {
+                "label": "33.0",
+                "value": 1
+              },
+              {
+                "label": "31.0",
+                "value": 6
+              },
+              {
+                "label": "19.0",
+                "value": 7
+              },
+              {
+                "label": "11.5",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              208
+            ],
+            "lowPass": [
+              {
+                "label": "66.8",
+                "value": 9
+              },
+              {
+                "label": "67.0",
+                "value": 1
+              },
+              {
+                "label": "62.4",
+                "value": 5
+              },
+              {
+                "label": "43.2",
+                "value": 6
+              },
+              {
+                "label": "23.1",
+                "value": 7
+              },
+              {
+                "label": "12.2",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              416
+            ],
+            "lowPass": [
+              {
+                "label": "135.9",
+                "value": 10
+              },
+              {
+                "label": "136.6",
+                "value": 1
+              },
+              {
+                "label": "130.5",
+                "value": 2
+              },
+              {
+                "label": "120.3",
+                "value": 3
+              },
+              {
+                "label": "137.1",
+                "value": 4
+              },
+              {
+                "label": "86.7",
+                "value": 5
+              },
+              {
+                "label": "48.0",
+                "value": 6
+              },
+              {
+                "label": "24.6",
+                "value": 7
+              },
+              {
+                "label": "12.4",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              833
+            ],
+            "lowPass": [
+              {
+                "label": "295.5",
+                "value": 11
+              },
+              {
+                "label": "239.2",
+                "value": 1
+              },
+              {
+                "label": "192.4",
+                "value": 2
+              },
+              {
+                "label": "154.2",
+                "value": 3
+              },
+              {
+                "label": "281.8",
+                "value": 4
+              },
+              {
+                "label": "96.6",
+                "value": 5
+              },
+              {
+                "label": "49.4",
+                "value": 6
+              },
+              {
+                "label": "25.0",
+                "value": 7
+              },
+              {
+                "label": "12.5",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              1666
+            ],
+            "lowPass": [
+              {
+                "label": "1108.1",
+                "value": 12
+              },
+              {
+                "label": "304.2",
+                "value": 1
+              },
+              {
+                "label": "220.7",
+                "value": 2
+              },
+              {
+                "label": "166.6",
+                "value": 3
+              },
+              {
+                "label": "453.2",
+                "value": 4
+              },
+              {
+                "label": "99.6",
+                "value": 5
+              },
+              {
+                "label": "49.8",
+                "value": 6
+              },
+              {
+                "label": "25.1",
+                "value": 7
+              },
+              {
+                "label": "12.5",
+                "value": 8
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              3333
+            ],
+            "lowPass": [
+              {
+                "label": "1320.7",
+                "value": 13
+              },
+              {
+                "label": "328.5",
+                "value": 2
+              },
+              {
+                "label": "229.6",
+                "value": 3
+              },
+              {
+                "label": "170.1",
+                "value": 4
+              },
+              {
+                "label": "559.2",
+                "value": 5
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "odrs": [
+              6666
+            ],
+            "lowPass": [
+              {
+                "label": "1441.8",
+                "value": 14
+              },
+              {
+                "label": "335.5",
+                "value": 2
+              },
+              {
+                "label": "232.0",
+                "value": 3
+              },
+              {
+                "label": "171.1",
+                "value": 4
+              },
+              {
+                "label": "609.0",
+                "value": 5
+              }
+            ],
+            "highPass": [
+              {
+                "label": "0.016",
+                "value": 1
+              },
+              {
+                "label": "0.065",
+                "value": 2
+              },
+              {
+                "label": "0.260",
+                "value": 3
+              },
+              {
+                "label": "1.04",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S6",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "values": [
+	  {
+        "id": 1,
+        "powerModes": [
+		  "LOW_POWER",
+          "HIGH_PERFORMANCE"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              60
+            ],
+            "lowPass": [
+              {
+                "label": "18.0",
+                "value": 7
+              },
+              {
+                "label": "12.1",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "odrs": [
+              120
+            ],
+            "lowPass": [
+              {
+                "label": "43.0",
+                "value": 6
+              },
+              {
+                "label": "24.2",
+                "value": 7
+              },
+              {
+                "label": "13.7",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "odrs": [
+              240
+            ],
+            "lowPass": [
+              {
+                "label": "78.0",
+                "value": 5
+              },
+              {
+                "label": "53.0",
+                "value": 6
+              },
+              {
+                "label": "27.3",
+                "value": 7
+              },
+              {
+                "label": "14.2",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "odrs": [
+              480
+            ],
+            "lowPass": [
+              {
+                "label": "174.0",
+                "value": 1
+              },
+			  {
+                "label": "157.0",
+                "value": 2
+              },
+			  {
+                "label": "131.0",
+                "value": 3
+              },
+			  {
+                "label": "186.0",
+                "value": 4
+              },
+			  {
+                "label": "94.0",
+                "value": 5
+              },
+              {
+                "label": "57.0",
+                "value": 6
+              },
+              {
+                "label": "28.40",
+                "value": 7
+              },
+              {
+                "label": "14.3",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "odrs": [
+              960
+            ],
+            "lowPass": [
+              {
+                "label": "353.0",
+                "value": 1
+              },
+              {
+                "label": "194.0",
+                "value": 2
+              },
+			  {
+                "label": "148.0",
+                "value": 3
+              },
+              {
+                "label": "313.0",
+                "value": 4
+              },
+              {
+                "label": "99.0",
+                "value": 5
+              },
+              {
+                "label": "58.0",
+                "value": 6
+              },
+              {
+                "label": "28.8",
+                "value": 7
+              },
+              {
+                "label": "14.4",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "odrs": [
+              1920
+            ],
+            "lowPass": [
+              {
+                "label": "273.0",
+                "value": 1
+              },
+              {
+                "label": "209.0",
+                "value": 2
+              },
+              {
+                "label": "154.0",
+                "value": 3
+              },
+              {
+                "label": "405.0",
+                "value": 4
+              },
+              {
+                "label": "101.0",
+                "value": 5
+              },
+              {
+                "label": "58.0",
+                "value": 6
+              },
+              {
+                "label": "28.8",
+                "value": 7
+              },
+              {
+                "label": "14.4",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "odrs": [
+              3840
+            ],
+            "lowPass": [
+              {
+                "label": "280.0",
+                "value": 1
+              },
+              {
+                "label": "211.0",
+                "value": 2
+              },
+              {
+                "label": "156.0",
+                "value": 3
+              },
+              {
+                "label": "428.0",
+                "value": 4
+              },
+              {
+                "label": "102.0",
+                "value": 5
+              },
+              {
+                "label": "58.0",
+                "value": 6
+              }
+            ]
+          },
+          {
+            "odrs": [
+              7680
+            ],
+            "lowPass": [
+              {
+                "label": "282.0",
+                "value": 1
+              },
+              {
+                "label": "212.0",
+                "value": 2
+              },
+              {
+                "label": "156.0",
+                "value": 3
+              },
+              {
+                "label": "434.0",
+                "value": 4
+              },
+              {
+                "label": "102.0",
+                "value": 5
+              },
+              {
+                "label": "58.0",
+                "value": 6
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "S7",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX"
+    ],
+    "values": [
+      {
+        "id": 1,
+        "powerModes": [
+          "NONE"
+        ],
+        "filters": [
+          {
+            "odrs": [],
+            "lowPass": [
+              {
+                "label": "235",
+                "value": 1
+              },
+              {
+                "label": "440",
+                "value": 2
+              }
+            ],
+            "highPass": []
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_iotCentral_app_login_title">Login</string>
+    <string name="azure_iotCentral_app_login_description">Waiting application login…</string>
+</resources>

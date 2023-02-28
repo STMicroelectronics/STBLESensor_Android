@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="STButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/color_states_stbutton</item>
+    </style>
+</resources>

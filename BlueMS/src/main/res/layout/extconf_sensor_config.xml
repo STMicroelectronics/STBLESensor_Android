@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/backgroundMainApp"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/extconfig_sensor_config"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_sensor"
+            android:layout_weight="1"/>
+
+
+        <Button
+            android:id="@+id/extconfig_sensor_positive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="end"
+            android:text="Done"/>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/extconfig_sensor_progress"
+        layout="@layout/progress_bar_with_text"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</RelativeLayout>

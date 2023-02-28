@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="wb_board_type">
+        <item>------</item>
+        <item>STM32WB5x/WB3x</item>
+        <item>STM32WB1x</item>
+    </string-array>
+</resources>

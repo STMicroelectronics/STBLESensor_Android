@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_flowButton" translatable="false">Create a new Application</string>
+    <string name="new_app_dialog_title" translatable="false">Warning</string>
+    <string name="main_toolboxButton" translatable="false">Open BLE Toolbox</string>
+    <string name="new_app_dialog_content_beta" translatable="false">This functionality is only available with SensorTile.box/SensorTile.box-Pro</string>
+    <string name="new_app_dialog_content" translatable="false">This functionality is only available with SensorTile.box</string>
+    <string name="nodeList_serverNotStarted" translatable="false">Bluetooth server not started</string>
+</resources>

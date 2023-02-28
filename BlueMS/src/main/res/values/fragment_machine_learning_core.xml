@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mlc_registerIdWithName_format" translatable="false">Decision Tree: %d - %s</string>
+    <string name="mlc_registerId_format" translatable="false">Decision Tree: %d</string>
+    <string name="fsm_registerIdWithName_format" translatable="false">Program: %d - %s</string>
+    <string name="fsm_registerId_format" translatable="false">Program: %d</string>
+    <string name="mlc_registerValueWithLabel_format" translatable="false">Value: %s (0x%X)</string>
+    <string name="mlc_registerValue_format" translatable="false">Value: 0x%X</string>
+    <string name="stredl_registerIdWithName_format" translatable="false">Stredl: %d - %s</string>
+    <string name="stredl_registerId_format" translatable="false">Stredl: %d</string>
+
+</resources>

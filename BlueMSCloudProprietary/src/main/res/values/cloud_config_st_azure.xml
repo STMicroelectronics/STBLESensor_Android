@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cloudLog_StAzure_licConsoleMissing">Impossible retrieve node data</string>
+    <string name="cloudLog_StAzure_licConsoleFound">Load node data</string>
+    <string name="cloudLog_StAzure_nodeRegistration">Node registration…</string>
+    <string name="cloudLog_StAzure_registrationComplete">Registration completed</string>
+    <string name="cloudLog_StAzure_registrationFail">Impossible complete the device registration</string>
+    <string name="cloudLog_StAzure_invalidDeviceData">Invalid device data</string>
+</resources>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~ and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~ conditions and the following disclaimer in the documentation and/or other materials provided
+  ~ with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~ STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~ promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~ in a directory whose title begins with st_images may only be used for internal purposes and
+  ~ shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~ icons, pictures, logos and other images that are provided with the source code in a directory
+  ~ whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/subSensor_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/sensor_type_unknown"
+        app:layout_constraintStart_toStartOf="@+id/subSensor_name"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_name" />
+
+    <Spinner
+        android:id="@+id/subSensor_odrSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/subSensor_enable"
+        app:layout_constraintStart_toStartOf="@+id/subSensor_odrLabel"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_odrLabel" />
+
+    <Spinner
+        android:id="@+id/subSensor_fsSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/subSensor_odrSelector"
+        app:layout_constraintStart_toStartOf="@+id/subSensor_odrSelector"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_fullScaleLabel" />
+
+    <Switch
+        android:id="@+id/subSensor_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/subSensor_enable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/subSensor_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/subSensor_enable"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="ACCELEROMETER" />
+
+    <TextView
+        android:id="@+id/subSensor_fullScaleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/subSensor_fullScaleLabel"
+        app:layout_constraintStart_toStartOf="@+id/subSensor_odrLabel"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_odrSelector" />
+
+    <TextView
+        android:id="@+id/subSensor_odrLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/subSensor_odrLabel"
+        app:layout_constraintStart_toEndOf="@+id/subSensor_icon"
+        app:layout_constraintTop_toTopOf="@+id/subSensor_icon" />
+
+    <TextView
+        android:id="@+id/subSensor_fsUnit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        tools:text="mG"
+        app:layout_constraintBaseline_toBaselineOf="@+id/subSensor_fullScaleLabel"
+        app:layout_constraintEnd_toEndOf="@+id/subSensor_fsSelector"
+        app:layout_constraintStart_toEndOf="@+id/subSensor_fullScaleLabel" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
+        android:id="@+id/subSensor_sampleTSLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/subSensor_fsSelector"
+        app:layout_constraintStart_toStartOf="@+id/subSensor_fullScaleLabel"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_fsSelector">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/subSensor_sampleTSValue"
+            android:imeOptions="actionSend"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/subSensor_MLCLoadButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/subSensor_load_mlc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/subSensor_fsSelector"
+        app:layout_constraintStart_toStartOf="@+id/subSensor_fsSelector"
+        app:layout_constraintTop_toBottomOf="@+id/ucf_load_status_check" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/ucf_load_status_check"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:clickable="false"
+        app:chipIconVisible="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/ucf_file_loaded"
+        app:layout_constraintBottom_toTopOf="@+id/subSensor_MLCLoadButton"
+        app:layout_constraintEnd_toEndOf="@+id/subSensor_sampleTSLayout"
+        app:layout_constraintStart_toStartOf="@id/subSensor_fsSelector"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_sampleTSLayout" />
+
+    <!--<com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/ucf_load_status_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="false"
+        android:gravity="end"
+        android:text="@string/ucf_file_loaded"
+        app:layout_constraintBottom_toTopOf="@+id/subSensor_MLCLoadButton"
+        app:layout_constraintEnd_toEndOf="@+id/subSensor_sampleTSLayout"
+        app:layout_constraintTop_toBottomOf="@+id/subSensor_sampleTSLayout" />-->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/subSensor_fullScaleViews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="subSensor_fullScaleLabel,subSensor_fsSelector,subSensor_fsUnit" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/subSensor_odrViews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="subSensor_odrLabel,subSensor_odrSelector" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,187 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ScrollView
+            android:id="@+id/iaLog_selectData_SetParameters"
+            android:layout_width="match_parent"
+            android:fadeScrollbars="false"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/iaLog_selectData_nextButton"
+            app:layout_constraintTop_toTopOf="parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/iaLog_selectData_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/iaLog_selectData_description"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/aiLog_featureData_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iaLog_selectData_description"
+                    tools:listitem="@layout/ai_log_feature_item" />
+
+                <TextView
+                    android:id="@+id/iaLog_selectData_environmentalValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/iaLog_selectData_environmentalSamplingFreqValue"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/aiLog_featureData_list" />
+
+                <Spinner
+                    android:id="@+id/iaLog_selectData_environmentalSelector"
+                    style="@style/Widget.AppCompat.Spinner.DropDown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/iaLog_selectData_seekBarMargin"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/iaLog_selectData_seekBarMargin"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="@+id/iaLog_selectData_environmentalValue"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/iaLog_selectData_environmentalValue"
+                    app:layout_constraintTop_toBottomOf="@+id/iaLog_selectData_environmentalValue" />
+
+                <TextView
+                    android:id="@+id/iaLog_selectData_inertialFrequencyValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/iaLog_selectData_inertialSamplingFreqValue"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iaLog_selectData_environmentalSelector" />
+
+                <Spinner
+                    android:id="@+id/iaLog_selectData_inertialFrequencySelector"
+                    style="@style/Widget.AppCompat.Spinner.DropDown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/iaLog_selectData_seekBarMargin"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/iaLog_selectData_seekBarMargin"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="@+id/iaLog_selectData_inertialFrequencyValue"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/iaLog_selectData_inertialFrequencyValue"
+                    app:layout_constraintTop_toBottomOf="@+id/iaLog_selectData_inertialFrequencyValue" />
+
+                <TextView
+                    android:id="@+id/iaLog_selectData_audioVolumeValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/iaLog_selectData_audioVolumeValue"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iaLog_selectData_inertialFrequencySelector" />
+
+                <Spinner
+                    android:id="@+id/iaLog_selectData_audioVolumeSelector"
+                    style="@style/Widget.AppCompat.Spinner.DropDown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/iaLog_selectData_seekBarMargin"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/iaLog_selectData_seekBarMargin"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="@+id/iaLog_selectData_audioVolumeValue"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/iaLog_selectData_audioVolumeValue"
+                    app:layout_constraintTop_toBottomOf="@+id/iaLog_selectData_audioVolumeValue" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/aiLog_selectData_isLogging">
+
+            <TextView
+                android:id="@+id/aiLog_selectData_isLogging_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/aiLog_selectData_isLogging"
+                app:layout_constraintBottom_toTopOf="@+id/aiLog_selectData_isLogging_stopLog"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <Button
+                android:id="@+id/aiLog_selectData_isLogging_stopLog"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/aiLog_selectData_isLogging_stopLog"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/aiLog_selectData_isLogging_text"
+                app:layout_constraintStart_toStartOf="@+id/aiLog_selectData_isLogging_text"
+                app:layout_constraintTop_toBottomOf="@+id/aiLog_selectData_isLogging_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/iaLog_selectData_nextButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/iaLog_selectData_nextButton"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

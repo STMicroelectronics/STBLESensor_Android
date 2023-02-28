@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="saving_csv_log_message">.csv logs files saved on Download/STMicroelectronics/Log</string>
+</resources>

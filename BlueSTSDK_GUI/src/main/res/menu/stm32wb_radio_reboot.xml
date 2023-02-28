@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/stm32wb_single_switchRadio"
+        android:title="@string/stm32wb_single_switchRadio"
+        app:showAsAction="never"/>
+</menu>

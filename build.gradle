@@ -1,0 +1,104 @@
+/// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+
+buildscript {
+    ext.kotlin_version = '1.8.0'
+    ext.os_licenses_plugin_version='0.10.4'
+
+    repositories {
+        mavenCentral()
+        google()
+
+        //needed for CrashAnalytics
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
+
+    }
+    dependencies {
+
+        classpath 'com.android.tools.build:gradle:7.4.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.android.gms:oss-licenses-plugin:$os_licenses_plugin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        //Add for compiling BLESensor with login module shared with Asset Tracking
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+// Define versions in a single place
+ext {
+    // Sdk and tools
+    minSdkVersion = 26
+    targetSdkVersion = 33
+    compileSdkVersion = 33
+    buildToolsVersion = '30.0.3'
+
+    androidx_appCompatVersion = '1.6.1'
+    androidx_supportLegacy = '1.0.0'
+    androidx_gridLayout = '1.0.0'
+    androidx_materialVersion = '1.8.0'
+    androidx_constraintLayoutVersion = '2.1.4'
+    androidx_recycleViewVersion = '1.2.1'
+    androidx_cardViewVersion = '1.0.0'
+    androidx_lifecycleExtVersion = '2.2.0'
+    androidx_lifecycleSaveStateVersion = '2.5.1'
+    androidx_lifecycleCompilerVersion = '2.5.1'
+    androidx_lifecycleKtx = '2.5.1'
+    androidx_roomVersion = "2.5.0"
+    androidx_annotationVersion = "1.5.0"
+    androidx_localBroadcastVersion = "1.1.0"
+    androidx_preferenceVersion = "1.2.0"
+    androidx_swipeRefreshLayoutVersion = "1.1.0"
+    cloud_pahoVersion = "1.2.5"
+    cloud_pahoServiceVersion = "1.1.1"
+
+    gsonVersion = '2.9.1'
+
+    glideVersion = '4.13.2'
+
+    // Test dependency
+    androidx_runnerVersion = '1.5.2'
+    androidx_rulesVersion = '1.5.0'
+    androidx_espressoVersion = '3.5.1'
+    mockitoVersion = '4.8.0'
+    core_ktx = '1.9.0'
+
+
+    //Add for compiling BLESensor with login module shared with Asset Tracking
+    androidx_preference = '1.2.0'
+    androidx_activityKtx = '1.6.1'
+    androidx_fragmentKtx = '1.5.5'
+    androidx_viewPager2 = '1.0.0'
+    //Analytics
+    awsVersion = '2.53.0'
+
+    firebase_messagingVersion = '23.0.8'
+    junitVersion = '4.13.2'
+    androidx_junitVersion = '1.1.5'
+
+
+    //kotlin
+    kotlin_coroutineVersion = '1.6.4'
+
+
+    retrofitVersion = '2.9.0'
+    androidx_roomVersion = "2.5.0"
+
+
+    javaVersion = JavaVersion.VERSION_1_8
+
+    retrofitVersion = '2.9.0'
+
+
+}

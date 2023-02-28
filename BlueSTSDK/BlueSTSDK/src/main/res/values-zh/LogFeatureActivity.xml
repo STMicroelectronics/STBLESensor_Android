@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="startLogging">开始记录</string>
+    <string name="stopLogging">停止记录</string>
+
+    <string name="askExprotByMailForceStop">记录停止</string>
+    <string name="askExprotByMailTitle">发送邮件</string>
+    <string name="askExprotByMailMessageExtraSize">已保存的日志有 %d MB, 某些邮件服务不能支持大文件附件.\n确定要发送已保存的日志么?</string>
+    <string name="askExprotByMailMessage">通过邮件发送日志?</string>
+    <string name="WriteSDRationale">APP需要保存日志到您的SD卡</string>
+    <string name="WriteSDNotGranted">无法保存日志到您的SD卡</string>
+</resources>

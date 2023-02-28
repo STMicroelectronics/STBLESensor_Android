@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="left"
+        android:textSize="16sp"
+        android:paddingStart="8dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:text="To create a new device, select a device model, name and unique ID"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:text="Device Name"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/cloud_config_azure_iot_central_pnp_add_new_device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Board"
+            android:inputType="textNoSuggestions"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:text="Device ID"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        app:errorEnabled="true"
+        android:paddingEnd="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/cloud_config_azure_iot_central_pnp_add_new_device_ID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1234567890123456789"
+            android:inputType="textNoSuggestions"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:text="Device Template"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/cloud_config_azure_iot_central_pnp_add_new_device_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:paddingStart="8dp"
+        android:padding="8dp"
+        android:spinnerMode="dropdown">
+    </Spinner>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:key = "device_preference_header"
+        android:fragment="com.st.BlueSTSDK.Example.DevicePreferenceFragment"
+        android:title="@string/config_title"
+        android:summary="@string/config_summary"/>
+
+
+</preference-headers>

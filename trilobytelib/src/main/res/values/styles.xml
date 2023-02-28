@@ -1,0 +1,70 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="STBoxTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="STBoxAppTheme.No.Actionbar" parent="AppTheme.NoActionBar"/>
+
+    <!--Transparent screen-->
+    <style name="STBoxAppThemeTranslucent" parent="STBoxTheme">
+        <item name="android:windowBackground">@color/backgroundMainApp</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="StActionbar">
+        <item name="android:textColor">@color/actionbarTitleColor</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+    <style name="Text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/nunitosans_regular</item>
+    </style>
+
+    <style name="Text.Bold">
+        <item name="android:fontFamily">@font/nunitosans_bold</item>
+    </style>
+
+    <style name="Text.Bold.Accent">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="Text.Bold.Primary">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="Text.Bold.LightBlue">
+        <item name="android:textColor">@color/widgetCompletedHeaderBgColor</item>
+    </style>
+
+    <style name="Text.Title" parent="Text">
+        <item name="android:textColor">@color/titleColor</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">@font/nunitosans_bold</item>
+    </style>
+
+    <style name="Text.Subtitle">
+        <item name="android:textColor">@color/labelPlotContrast</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Text.Bold.Label">
+        <item name="android:textColor">@color/labelPlotContrast</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Text.Subtitle.Bold">
+        <item name="android:fontFamily">@font/nunitosans_bold</item>
+    </style>
+
+    <style name="Text.Subtitle.Bold.Black">
+        <item name="android:textColor">@color/labelPlotContrast</item>
+    </style>
+</resources>

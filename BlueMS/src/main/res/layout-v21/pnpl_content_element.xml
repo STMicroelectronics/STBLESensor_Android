@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pnpl_cont_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp">
+
+    <TextView
+        android:id="@+id/pnpl_cont_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Content Name" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/pnpl_cont_value_string"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:inputType="text"
+        android:visibility="invisible"
+        android:imeOptions="actionSend"
+        app:layout_constraintBottom_toBottomOf="@+id/pnpl_cont_name"
+        app:layout_constraintEnd_toStartOf="@id/pnpl_send_command"
+        app:layout_constraintStart_toEndOf="@id/pnpl_cont_name"
+        app:layout_constraintTop_toTopOf="@+id/pnpl_cont_name" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/pnpl_cont_value_double"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:inputType="numberDecimal"
+        android:visibility="invisible"
+        android:imeOptions="actionSend"
+        app:layout_constraintBottom_toBottomOf="@+id/pnpl_cont_name"
+        app:layout_constraintEnd_toStartOf="@id/pnpl_send_command"
+        app:layout_constraintStart_toEndOf="@id/pnpl_cont_name"
+        app:layout_constraintTop_toTopOf="@+id/pnpl_cont_name" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/pnpl_cont_value_integer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:inputType="number"
+        android:visibility="invisible"
+        android:imeOptions="actionSend"
+        app:layout_constraintBottom_toBottomOf="@+id/pnpl_cont_name"
+        app:layout_constraintEnd_toStartOf="@id/pnpl_send_command"
+        app:layout_constraintStart_toEndOf="@id/pnpl_cont_name"
+        app:layout_constraintTop_toTopOf="@+id/pnpl_cont_name" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/pnpl_cont_value_boolean"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:visibility="invisible"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pnpl_cont_name"
+        app:layout_constraintEnd_toStartOf="@id/pnpl_send_command"
+        app:layout_constraintStart_toEndOf="@id/pnpl_cont_name"
+        app:layout_constraintTop_toTopOf="@+id/pnpl_cont_name" />
+
+    <Spinner
+        android:id="@+id/pnpl_cont_value_enum"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/pnpl_cont_name"
+        app:layout_constraintEnd_toStartOf="@id/pnpl_send_command"
+        app:layout_constraintStart_toEndOf="@id/pnpl_cont_name"
+        app:layout_constraintTop_toTopOf="@+id/pnpl_cont_name" />
+
+    <Button
+        android:id="@+id/pnpl_comm_load_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="8dp"
+        android:text="Upload file"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/pnpl_comm_file_load_check"
+        app:layout_constraintTop_toBottomOf="@+id/pnpl_cont_name" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/pnpl_comm_file_load_check"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:clickable="false"
+        android:visibility="gone"
+        android:text="File not loaded"
+        app:chipIconVisible="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pnpl_comm_load_file" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pnpl_sub_cont_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="@+id/pnpl_cont_name"
+        app:layout_constraintTop_toBottomOf="@+id/pnpl_cont_name"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/pnpl_send_command"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:text="Send"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

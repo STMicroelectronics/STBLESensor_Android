@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_debug_console">Debug Console</string>
+    <string name="DebugNotAvailable">Debug service not available on this node</string>
+    <string name="ErrorSendMsg">Error send message</string>
+    <string name="AnotherMsgIsSending">We are sending another message</string>
+</resources>

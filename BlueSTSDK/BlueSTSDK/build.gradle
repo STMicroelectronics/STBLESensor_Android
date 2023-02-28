@@ -1,0 +1,73 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    defaultConfig {
+        minSdkVersion  26
+        targetSdkVersion  33
+        compileSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        consumerProguardFiles 'proguard-rules.pro'
+
+        ndk {
+            moduleName "opusUser"
+        }
+
+        sourceSets.main {
+            jniLibs.srcDir 'src/main/jniLibs'
+            jni.srcDirs = [] //disable automatic ndk-build call
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+
+            buildConfigField "String", "BLUESTSDK_DB_BASE_VERSION", "\"4.18.0\""
+            buildConfigField "String", "BLUESTSDK_DB_BASE_URL", "\"https://raw.githubusercontent.com/STMicroelectronics/appconfig/blesensor_4.18/bluestsdkv2/\""
+            buildConfigField "String", "BLUESTSDK_DB_BASE_BETA_URL", "\"https://raw.githubusercontent.com/SW-Platforms/appconfig/release/bluestsdkv2/\""
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug{
+            buildConfigField "String", "BLUESTSDK_DB_BASE_VERSION", "\"4.18.0\""
+            buildConfigField "String", "BLUESTSDK_DB_BASE_URL", "\"https://raw.githubusercontent.com/STMicroelectronics/appconfig/blesensor_4.18/bluestsdkv2/\""
+            buildConfigField "String", "BLUESTSDK_DB_BASE_BETA_URL", "\"https://raw.githubusercontent.com/SW-Platforms/appconfig/release/bluestsdkv2/\""
+        }
+    }
+    productFlavors {
+    }
+    compileSdkVersion compileSdkVersion
+    buildToolsVersion buildToolsVersion
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
+
+    implementation group:'androidx.room', name:'room-runtime', version: '2.5.0'
+    implementation group:'androidx.room', name:'room-ktx', version: '2.5.0'
+    kapt group:'androidx.room', name:'room-compiler', version: '2.5.0'
+
+    //Tmp for kotlin 1.7 and room 2.4.2 waiting room 2.4.3
+    //kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0"
+
+    implementation group: 'com.google.android.material', name: 'material', version: androidx_materialVersion
+    implementation group: 'androidx.appcompat', name: 'appcompat', version: androidx_appCompatVersion
+    implementation group: 'androidx.annotation', name:'annotation',version: androidx_annotationVersion
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: gsonVersion
+
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation 'org.robolectric:robolectric:4.8.2'
+}

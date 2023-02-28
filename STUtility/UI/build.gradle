@@ -1,0 +1,69 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        all {
+            res.srcDirs += [
+                    'drawable_resources/st_boards',
+                    'drawable_resources/st_icons',
+                    'drawable_resources/connectivity_logo',
+                    'drawable_resources/st_sensor_icons',
+                    'drawable_resources/menu_icons',
+                    'drawable_resources/graphics_element',
+                    'drawable_resources/bluestsdk_icons',
+                    'values_resources/st_style',
+                    'values_resources/plot_resource',
+                    'values_resources/strings',
+                    'layout_resources',
+                    'layout_resources/configure_sensors',
+                    'layout_resources/dashboard',
+                    'layout_resources/bluestsdk_layout'
+            ]
+        }
+    }
+    buildToolsVersion buildToolsVersion
+    namespace 'com.st.ui'
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$rootProject.core_ktx"
+    implementation "androidx.appcompat:appcompat:$rootProject.androidx_appCompatVersion"
+    implementation 'com.google.android.material:material:1.8.0'
+    testImplementation 'junit:junit:4.13.2'
+
+    // MPAndroid Chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+}

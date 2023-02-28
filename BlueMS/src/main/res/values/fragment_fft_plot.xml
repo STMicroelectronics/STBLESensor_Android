@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="fftAmpl_title" translatable="false">FFT Data</string>
+    <string name="fftAmpl_noDataText" translatable="false">Data acquisition ongoing…</string>
+    <string name="fftAmpl_detailsButton" translatable="false">Details</string>
+    <string name="fftAmpl_xAxis" translatable="false">Hz</string>
+    <string name="fftDetails_title" translatable="false">FFT Details</string>
+    <string name="fftDetails_freqInfo_title" translatable="false">Frequency Data Info</string>
+    <string name="fftDetails_freqInfo_format" translatable="false">%s: Max: %.4f @ %.2f Hz</string>
+
+    <string name="fftDetails_timeInfo_title" translatable="false">Time Data Info</string>
+    <string name="fftDetails_timeInfo_format" translatable="false">%s: Acc Peak: %.2f %s\n\tRMS Speed %.2f %s</string>
+    <string name="fftDetails_timeInfo_not_available" translatable="false">Not Available</string>
+    <string name="menu_fft_amplitude_settings" translatable="false">FFT Settings</string>
+
+</resources>
+

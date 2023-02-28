@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.st.BlueSTSDK.Utils.LogFeatureActivity">
+
+    <item
+        android:id="@+id/startLog"
+        android:orderInCategory="100"
+        android:iconTint="@color/cardview_light_background"
+        tools:iconTint="@color/cardview_dark_background"
+        android:title="@string/startLogging"/>
+
+    <item
+        android:id="@+id/stopLog"
+        android:orderInCategory="100"
+        android:iconTint="@color/cardview_light_background"
+        tools:iconTint="@color/cardview_dark_background"
+        android:title="@string/stopLogging"/>
+</menu>

@@ -1,0 +1,54 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+    buildTypes {
+        debug {
+            buildConfigField "int", "FW_VERSION", "1"
+        }
+        release {
+            buildConfigField "int", "FW_VERSION", "1"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    namespace 'com.st.trilobyte'
+}
+
+dependencies {
+
+    implementation group: 'androidx.appcompat', name: 'appcompat', version: "$rootProject.androidx_appCompatVersion"
+    implementation group: 'androidx.constraintlayout', name: 'constraintlayout', version: "$rootProject.androidx_constraintLayoutVersion"
+    implementation group: 'androidx.cardview', name: 'cardview', version: "$rootProject.androidx_cardViewVersion"
+
+    implementation group:'androidx.localbroadcastmanager', name:'localbroadcastmanager', version:"$rootProject.androidx_localBroadcastVersion"
+    implementation group: 'com.google.android.material', name: 'material', version: "$rootProject.androidx_materialVersion"
+    implementation group: 'androidx.fragment', name: 'fragment-ktx', version: "$rootProject.androidx_fragmentKtx"
+    implementation group: 'androidx.activity', name: 'activity-ktx', version: "$rootProject.androidx_activityKtx"
+
+    implementation project(':BlueSTSDK')
+    implementation project(':BlueSTSDK_GUI')
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: "$rootProject.gsonVersion"
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
+    androidTestImplementation group:'androidx.test', name:'runner', version:"$rootProject.androidx_runnerVersion"
+    androidTestImplementation group:'androidx.test', name:'rules', version:"$rootProject.androidx_rulesVersion"
+    androidTestImplementation group:'androidx.test.espresso', name: 'espresso-core', version:"$rootProject.androidx_espressoVersion"
+
+}

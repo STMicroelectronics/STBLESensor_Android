@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  STMicroelectronics – All rights reserved
+  ~ The STMicroelectronics corporate logo is a trademark of STMicroelectronics
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright notice, this list of conditions
+  ~   and the following disclaimer.
+  ~
+  ~ - Redistributions in binary form must reproduce the above copyright notice, this list of
+  ~   conditions and the following disclaimer in the documentation and/or other materials provided
+  ~   with the distribution.
+  ~
+  ~ - Neither the name nor trademarks of STMicroelectronics International N.V. nor any other
+  ~   STMicroelectronics company nor the names of its contributors may be used to endorse or
+  ~   promote products derived from this software without specific prior written permission.
+  ~
+  ~ - All of the icons, pictures, logos and other images that are provided with the source code
+  ~   in a directory whose title begins with st_images may only be used for internal purposes and
+  ~   shall not be redistributed to any third party or modified in any way.
+  ~
+  ~ - Any redistributions in binary form shall not include the capability to display any of the
+  ~   icons, pictures, logos and other images that are provided with the source code in a directory
+  ~   whose title begins with st_images.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+  ~ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  ~ AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+  ~ OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  ~ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  ~ OF SUCH DAMAGE.
+  -->
+
+<resources>
+    <color name="colorPrimary">#FFE256</color>
+    <color name="colorCirclePlot">#F89E02</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#FFD300</color>
+    <color name="colorOnAccent">#001C51</color>
+    <color name="colorGrey">#B3CBA900</color>
+
+    <color name="backgroundMainApp">#000000</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <color name="green">#98EA00</color>
+
+    <color name="labelPlotContrast">#FFFFFF</color>
+
+    <color name="fabColorPrimaryDark">#FFCF56</color>
+
+    <color name="debugConsole_errorMsg">#FFFF0000</color>
+    <color name="debugConsole_outMsg">#FFFFFF</color>
+    <color name="debugConsole_inMsg">#FFD300</color>
+
+    <color name="markerLoginLogo">#FFCF56</color>
+    <color name="boxLoginLogo">#FFE256</color>
+
+    <color name="colorConnectivity">#FFD300</color>
+    <color name="colorConnectivityOnline">#FFD300</color>
+    <color name="colorConnectivityOffline">#ABAAAB</color>
+
+    <color name="colorSTButtonEnabled">#FFD300</color>
+    <color name="colorSTButtonDisabled">#ABAAAB</color>
+
+    <color name="colorIdle">#03BC03</color>
+    <color name="colorRecording">#FFFF0000</color>
+
+    <color name="colorResetGraphZoom">#FFD300</color>
+
+    <color name="colorBackgroundEvents">#424749</color>
+
+    <color name="backgroundArrowHeadLogo">#ffffffff</color>
+
+    <color name="swipeColor_background">#424749</color>
+    <color name="swipeColor_1">#D1C8A2</color>
+    <color name="swipeColor_2">#D5C26B</color>
+    <color name="swipeColor_3">#D5B931</color>
+    <color name="swipeColor_4">#D9B608</color>
+    <color name="cardview_background">#FF424242</color>
+
+    <color name="dotGreen">#388E3C</color>
+    <color name="dotYellow">#FCD835</color>
+    <color name="dotAmber">#FFA000</color>
+    <color name="dotOrange">#F57C00</color>
+    <color name="dotRed">#D32F2F</color>
+
+</resources>

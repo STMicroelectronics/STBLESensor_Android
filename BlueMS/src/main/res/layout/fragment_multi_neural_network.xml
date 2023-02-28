@@ -1,0 +1,211 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.st.BlueMS.demos.multiNN.MultiNeuralNetworkFragment">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Spinner
+        android:id="@+id/multiNN_algoSelectSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/multiNN_algoSelectDesc" />
+
+    <TextView
+        android:id="@+id/multiNN_algoSelectDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/multiNN_algoSelectDesc"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/multiNN_algoSelectSpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/multiNN_humanActivityCardView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        style="@style/STStyleCardView"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/multiNN_audioSceneCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/multiNN_algoSelectSpinner">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/multiNN_humanActivityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/multiNN_humanActivityDesc"
+                android:layout_alignParentTop="true"/>
+
+
+            <ImageView
+                android:id="@+id/multiNN_humanActivityImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/multiNN_humanActivityDesc"
+                android:layout_below="@+id/multiNN_humanActivityText"
+                android:layout_centerHorizontal="true"
+                tools:srcCompat="@drawable/activity_biking" />
+
+            <TextView
+                android:id="@+id/multiNN_humanActivityStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/algorithm_running"
+                android:textColor="@color/colorPrimary"
+                android:layout_alignEnd="@+id/multiNN_humanActivityText"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/multiNN_humanActivityDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textAlignment="center"
+                tools:text="@string/activityRecognition_bikingImageDesc" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/multiNN_audioSceneCardView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        style="@style/STStyleCardView"
+        app:layout_constraintBottom_toTopOf="@+id/multiNN_comboCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/multiNN_humanActivityCardView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/multiNN_audioSceneText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/multiNN_audioSceneDesc"
+                android:layout_alignParentTop="true"/>
+
+
+            <ImageView
+                android:id="@+id/multiNN_audioSceneImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/multiNN_audioSceneImageDesc"
+                android:layout_below="@+id/multiNN_audioSceneText"
+                android:layout_centerHorizontal="true"
+                tools:srcCompat="@drawable/audio_scene_inside" />
+
+            <TextView
+                android:id="@+id/multiNN_audioSceneStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/multiNN_audioSceneText"
+                android:text="@string/algorithm_running"
+                android:textColor="@color/colorPrimary"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/multiNN_audioSceneImageDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textAlignment="center"
+                tools:text="@string/audioScene_indoor" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/multiNN_comboCardView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        style="@style/STStyleCardView"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/multiNN_audioSceneCardView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/multiNN_comboText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/multiNN_comboDesc"
+                android:layout_alignParentTop="true"/>
+
+
+            <ImageView
+                android:id="@+id/multiNN_comboImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/multiNN_comboDesc"
+                android:layout_below="@+id/multiNN_comboText"
+                android:layout_centerHorizontal="true"
+                tools:srcCompat="@drawable/activity_biking" />
+
+            <TextView
+                android:id="@+id/multiNN_comboStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/algorithm_running"
+                android:textColor="@color/colorPrimary"
+                android:layout_alignEnd="@+id/multiNN_comboText"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/multiNN_comboDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textAlignment="center"
+                tools:text="@string/activityRecognition_bikingImageDesc" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/multiNN_algoSelectGroup"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="multiNN_algoSelectDesc,multiNN_algoSelectSpinner"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

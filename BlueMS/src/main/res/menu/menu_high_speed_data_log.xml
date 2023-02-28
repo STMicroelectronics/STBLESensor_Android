@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/hsdl_config_menu"
+        android:icon="@drawable/hsdl_settings_icon"
+        android:title="@string/hsdl_config_menu" />
+    <item
+        android:id="@+id/hsdl_tags_menu"
+        android:icon="@drawable/ic_play"
+        android:title="@string/hsdl_tags_menu" />
+</menu>

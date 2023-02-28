@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/dialog_width"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/dialog_bottomPadding"
+    android:paddingEnd="@dimen/dialog_endPadding"
+    android:paddingStart="@dimen/dialog_startPadding"
+    android:orientation="vertical"
+    tools:context=".AzureIoTCentral2.selectApplication.ApplicationSelectorFragment">
+
+    <ProgressBar
+        android:id="@+id/azure_iotCentral_applicationLoading"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/azure_iotCentral_selectAppDesc"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/azure_iotCentral_applicationList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <Button
+        android:id="@+id/azure_iotCentral_createApplication"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/azure_iotCentral_createNewApp" />
+</LinearLayout>

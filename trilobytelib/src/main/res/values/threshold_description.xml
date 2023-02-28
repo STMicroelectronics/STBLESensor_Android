@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="thresholdDesc_temperature">Enter the temperature (in \u2103) above which the threshold is triggered</string>
+    <string name="thresholdDesc_pressure">Enter the pressure (in mbar) above which the threshold is triggered</string>
+    <string name="thresholdDesc_humidity">Enter the humidity (in %) above which the threshold is triggered</string>
+    <string name="thresholdDesc_acceleration">Enter the acceleration norm (in mg) above which the threshold is triggered</string>
+    <string name="thresholdDesc_gyroscope">Enter the gyroscope norm (in mdps) above which the threshold is triggered</string>
+    <string name="thresholdDesc_magnetometer">Enter the magnetometer norm (in mGa) above which the threshold is triggered</string>
+    <string name="thresholdDesc_timer">Enter the time (in seconds) after which the threshold is triggered</string>
+</resources>

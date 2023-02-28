@@ -1,0 +1,1 @@
+-keepclasseswithmembernames class com.st.utility.databases.associatedBoard.AssociatedBoard

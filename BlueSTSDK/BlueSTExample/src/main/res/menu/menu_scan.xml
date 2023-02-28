@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.st.BlueSTSDK.Example.ScanActivity">
+    <item
+        android:id="@+id/menu_start_scan"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/startScanMenu"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_stop_scan"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:orderInCategory="2"
+        android:title="@string/StopScanMenu"
+        app:showAsAction="ifRoom"/>
+</menu>

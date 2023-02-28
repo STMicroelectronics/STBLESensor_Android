@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="EnablePositionService">请打开定位服务以搜索设备</string>
+    <string name="LocationCoarseRationale">打开定位许可后才能搜索新设备</string>
+    <string name="LocationNotGranted">无法搜索新设备</string>
+    <string name="LocationGranted">现在可以搜索新设备</string>
+    <string name="BluetoothScanRationale">对于搜索新设备，蓝牙扫描权限是强制性的</string>
+    <string name="BluetoothScanNotGranted">未启用蓝牙扫描权限无法搜索新设备</string>
+    <string name="BluetoothScanGranted">现在可以搜索新设备</string>
+    <string name="BluetoothConnectRationale">要连接一台设备，蓝牙连接权限是强制性的</string>
+    <string name="BluetoothConnectNotGranted">未启用蓝牙连接权限无法连接一台设备</string>
+    <string name="BluetoothConnectGranted">现在可以连接一台设备</string>
+</resources>

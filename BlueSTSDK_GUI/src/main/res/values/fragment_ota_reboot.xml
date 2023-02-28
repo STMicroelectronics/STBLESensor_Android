@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="otaReboot_title" translatable="false">Reboot options</string>
+    <string name="otaReboot_board_desc" translatable="false">Select the board type</string>
+    <string name="otaReboot_desc" translatable="false">Select the sector to delete during the reboot</string>
+    <string name="otaReboot_appMemory" translatable="false">Application Coprocessor Binary</string>
+    <string name="otaReboot_invisible" translatable="false">Invisible Choice</string>
+    <string name="otaReboot_bleMemory" translatable="false">Wireless Coprocessor Binary</string>
+    <string name="otaReboot_customMemory" translatable="false">Custom</string>
+    <string name="otaReboot_sectorDesc" translatable="false">First Sector to delete</string>
+    <string name="otaReboot_lengthDesc" translatable="false">Number of sector to delete</string>
+    <string name="otaReboot_notHexError" translatable="false">Invalid hexadecimal number</string>
+    <string name="otaReboot_sectorOutOfRange" translatable="false">Sector out of range</string>
+    <string name="otaReboot_lengthOutOfRange" translatable="false">Length out of range</string>
+    <string name="otaReboot_rebootDialog" translatable="false">The board is resetting, please switch off the radio before reconnect</string>
+    <string name="otaReboot_firmware" translatable="false">Selected firmware:</string>
+    <string name="otaReboot_selectFileButton" translatable="false">select file</string>
+</resources>

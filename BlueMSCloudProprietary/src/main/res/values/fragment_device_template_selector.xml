@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_iotCentral_deviceTemplateSelectorLoaderDesc">Load app templates</string>
+    <string name="azure_iotCentral_deviceTemplateSelectorSelectedDesc">Select device template</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ST_cloudLog_aws_clientId_hint">"Client Id"</string>
+    <string name="ST_cloudLog_aws_clientId_error">"Client Id must not be empty"</string>
+    <string name="ST_cloudLog_aws_register">Register</string>
+    <string name="ST_cloudLog_aws_cert_key">Certificate</string>
+    <string name="ST_cloudLog_aws_select_file">Select file</string>
+</resources>

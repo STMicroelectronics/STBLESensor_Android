@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.st.BlueSTSDK.Example.FeatureListActivity">
+    <item android:id="@+id/menu_showRegister"
+          android:orderInCategory="100"
+          android:title="@string/openRegister"
+          app:showAsAction="never"/>
+    <item android:id="@+id/menu_showDebug"
+          android:orderInCategory="100"
+          android:title="@string/openDebugConsole"
+          app:showAsAction="never"/>
+</menu>

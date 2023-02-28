@@ -1,0 +1,227 @@
+{
+"description":"In-Vehicle Baby Alarm",
+  "category": "AI & MLC",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX_PRO"
+  ],
+"flows":[
+],
+"functions":[
+{
+"description":"In-Vehicle Baby Alarm",
+"id":"F31",
+"inputs":[
+"S5",
+"S6",
+"S9"
+],
+"mandatoryInputs":[
+[
+"S5",
+"S6",
+"S9"
+]
+],
+"outputs":[
+"O1",
+"O2",
+"O3"
+],
+"parametersCount":2,
+"properties":[
+]
+}
+],
+"id":"fa03f606-8324-4d26-983f-d149d6cf3827",
+"notes":"The app is the combination of BABY CRYING DETECTOR and VEHICLE MOVEMENT DETECTOR.
+The sensors used are the analog MEMS microphone MP23ABS1, the LSM6DSOX MEMS accelerometer, gyroscope and the embedded Machine Learning Core.
+The Baby crying app implements the AI processing and the FFT of audio signal to detect if a baby is crying using the microphone.
+The MLC Vehicle movement recognition algorithm (MotionAR library) can recognize the movement of the vehicle by mechanical vibration of accelerometer and gyroscope.
+The features have been used for MLC code generation are: MEAN-acc, VAR-acc, PeakToPeak-acc, MAX-acc, MEAN-gyro, VAR-gyro, PeakToPeak-gyro, MAX-gyro, MIN-gyro, ENERGY-gyro.
+The combination of no adult in vehicle and baby is crying generates an alert on the smartphone.",
+"outputs":[
+{
+"description":"Stream to Bluetooth",
+"icon":"ic_bluetooth",
+"id":"O3",
+"properties":[
+]
+}
+],
+"sensors":[
+{
+    "id": "S5",
+    "description": "Accelerometer sensor",
+    "icon": "ic_inemo",
+    "output": "Acceleration",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "model": "LSM6DSV16X",
+   "board_compatibility" : [
+     "SENSOR_TILE_BOX_PRO"
+   ],
+    "um": "mg",
+    "fullScaleUm": "g",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          1.875,
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 60,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 60,
+      "filters": {
+        "lowPass": {
+            "label": "700",
+            "value": 1
+          }
+      },
+      "fullScale": 2,
+      "acquisitionTime": 0
+    }
+    },
+    {
+    "id": "S6",
+    "description": "Gyroscope sensor",
+    "output": "Angular rate",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "icon": "ic_inemo",
+    "model": "LSM6DSV16X",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "um": "mdps",
+    "fullScaleUm": "dps",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      125,
+      250,
+      500,
+      1000,
+      2000,
+	  4000
+    ],
+	"powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 52,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 52,
+      "fullScale": 2000,
+      "acquisitionTime": 0
+    }
+    },
+{
+"acquisitionTime":0.0,
+"configuration":{
+"acquisitionTime":0.0,
+"filters":{
+},
+"odr":16000.0,
+"powerMode":"NONE"
+},
+"dataType":"int16_t vector x n",
+"datasheetLink":"https://www.st.com/resource/en/datasheet/mp23abs1.pdf",
+"description":"Microphone",
+"fullScaleUm":"",
+"icon":"ic_microphone",
+"id":"S9",
+"model":"MP23ABS1",
+"notes":"n depends on the sampling freq: we are used to send a data every 1 msec",
+"output":"Sound",
+"outputs":[
+"O1",
+"O3"
+],
+"powerModes":[
+{
+"label":"Power Mode",
+"mode":"NONE",
+"odrs":[
+16000.0
+]
+}
+],
+"um":"dBV"
+}
+],
+"version":1
+}

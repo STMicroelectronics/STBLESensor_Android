@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="iaLog_selectData_description">Select the sensors to log into the node SD Card</string>
+    <string name="iaLog_selectData_nextButton">Continue</string>
+    <string name="aiLog_annotation_description">Insert the needed label, and start recording the data.\nWhen the logging is enabled all other functionality are disabled</string>
+    <string name="aiLog_annotation_menu_add">Label</string>
+
+    <string name="aiLog_annotation_errorTitle">Error</string>
+    <string name="aiLog_annotation_errorSDMissing">SD Card is missing</string>
+    <string name="aiLog_annotation_errorIOError">IO Error</string>
+
+
+    <string name="aiLog_annotation_button_add">Add Label</string>
+    <string name="aiLog_annotation_button_startLog">Start Logging</string>
+    <string name="aiLog_annotation_button_stopLog">Stop Logging</string>
+
+    <string name="aiLog_selectData_isLogging">Stop the logging to change the parameters</string>
+    <string name="aiLog_selectData_isLogging_stopLog">Stop Logging</string>
+
+    <string name="iaLog_selectData_environmentalSamplingFreqValue">Environmental sensors are sampled with a frequency of:</string>
+    <string name="iaLog_selectData_environmentalSamplingFreqValueFormat">%.2f Hz</string>
+    <string name="iaLog_selectData_audioVolumeValue">Audio recorded with a level of:</string>
+    <string name="iaLog_selectData_audioVolumeValueFormat">%.1f x</string>
+    <string name="iaLog_selectData_inertialSamplingFreqValue">Inertial sensors are sampled with a frequency of:</string>
+    <string name="iaLog_selectData_inertialSamplingFreqValueFormat">%.0f Hz</string>
+
+    <dimen name="iaLog_selectData_seekBarMargin">32dp</dimen>
+</resources>

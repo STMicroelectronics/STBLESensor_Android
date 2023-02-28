@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="300dp">
+
+    <ProgressBar
+        android:id="@+id/create_loadingProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toTopOf="@+id/createApp_tenantSelectorText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/createApp_tenantSelectorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/createApp_tenantSelectorText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/create_loadingProgress" />
+
+    <Spinner
+        android:id="@+id/createApp_tenantSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/createApp_tenantSelectorText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_tenantSelectorText" />
+
+    <TextView
+        android:id="@+id/createApp_subscriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/createApp_subscriptionText"
+        app:layout_constraintStart_toStartOf="@+id/createApp_tenantSelectorText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_tenantSelector" />
+
+    <Spinner
+        android:id="@+id/create_subscriptionSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/createApp_tenantSelector"
+        app:layout_constraintStart_toStartOf="@+id/createApp_subscriptionText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_subscriptionText" />
+
+
+    <TextView
+        android:id="@+id/createApp_resourceGroupText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/createApp_resourceGroupText"
+        app:layout_constraintStart_toStartOf="@+id/createApp_subscriptionText"
+        app:layout_constraintTop_toBottomOf="@+id/create_subscriptionSelector" />
+
+    <Spinner
+        android:id="@+id/createApp_resourceGroupSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/create_subscriptionSelector"
+        app:layout_constraintStart_toStartOf="@+id/createApp_resourceGroupText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_resourceGroupText" />
+
+    <TextView
+        android:id="@+id/createApp_azureRegionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/createApp_azureRegionText"
+        app:layout_constraintStart_toStartOf="@+id/createApp_resourceGroupText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_resourceGroupSelector" />
+
+    <Spinner
+        android:id="@+id/createApp_regionSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/createApp_resourceGroupSelector"
+        app:layout_constraintStart_toStartOf="@+id/createApp_azureRegionText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_azureRegionText" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/BlueSTSDKInputTypeStyle"
+        android:id="@+id/createApp_nameTextLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="@string/createApp_appNameHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/createApp_azureRegionText"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_regionSelector">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/createApp_nameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/createApp_createButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/createApp_createButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createApp_nameTextLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,184 @@
+{
+  "description": "Free-Fall Detection",
+  "category": "Motion",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX_PRO"
+  ],
+  "expression":{
+      "flows":[
+         {
+            "id":"3ccd1fcf-b081-4a00-beda-4af83e290215",
+            "sensors":[
+               "S5"
+            ],
+            "flows":[
+               
+            ],
+            "functions":[
+               {
+                  "id":"L1",
+                  "values":[
+                     {
+                        "label":"Threshold",
+                        "value":200.0
+                     },
+                     {
+                        "label":"Type",
+                        "value":4
+                     }
+                  ]
+               }
+            ],
+            "outputs":[
+               {
+                  "id":"O5",
+                  "values":[
+                     {
+                        "label":"Turn on LED when condition true",
+                        "value":true
+                     },
+					 {
+                        "label":"Turn on Buzzer when condition true",
+                        "value":true
+                     }
+                  ]
+               }
+            ]
+         }
+      ],
+      "sensors":[
+         {
+            "id":"S5",
+            "powerMode":3,
+            "odr":60.0,
+            "fullScale":2,
+            "acquisitionTime":0.0,
+            "filter":{
+               
+            }
+         }
+      ],
+      "version":1
+   },
+  "statements":[
+      {
+         "flows":[
+            {
+               "id":"e28f27b3-e6d7-4c10-addf-6af8cc2402c1",
+               "sensors":[
+                  
+               ],
+               "flows":[
+                  
+               ],
+               "functions":[
+                  {
+                     "id":"L11",
+                     "values":[
+                        
+                     ]
+                  }
+               ],
+               "outputs":[
+                  {
+                     "id":"O3",
+                     "values":[
+                        
+                     ]
+                  }
+               ]
+            }
+         ],
+         "sensors":[
+            
+         ],
+         "version":1
+      }
+   ] ,
+  "outputs": [
+    {
+      "description": "Stream to Bluetooth",
+      "icon": "ic_bluetooth",
+      "id": "O3",
+      "properties": [
+      ]
+    }
+  ],
+  "sensors": [
+{
+    "id": "S5",
+    "description": "Accelerometer sensor",
+    "icon": "ic_inemo",
+    "output": "Acceleration",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "model": "LSM6DSV16X",
+   "board_compatibility" : [
+     "SENSOR_TILE_BOX_PRO"
+   ],
+    "um": "mg",
+    "fullScaleUm": "g",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          1.875,
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 60,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 60,
+      "filters": {
+        "lowPass": {
+            "label": "700",
+            "value": 1
+          }
+      },
+      "fullScale": 2,
+      "acquisitionTime": 0
+    }
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,14 @@
+include ':BlueMS',
+        ':BlueSTSDK',
+        ':BlueSTSDK_GUI',
+        ':STWINBoard_GUI',
+        ':BlueMSCloud',
+        ':trilobytelib',
+        ':BlueMSCloudProprietary',
+        ':BlueMSCloudSTAzure',
+        ':UI',
+        ':DataBases'
+
+project(':BlueSTSDK').projectDir = new File('BlueSTSDK/BlueSTSDK')
+project(":DataBases").projectDir = new File(rootDir, 'STUtility/DataBases')
+project(":UI").projectDir = new File(rootDir, 'STUtility/UI')

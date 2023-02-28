@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cloudLog_fwUpgrade_startUpgrade">Start firmware upgrade</string>
+    <string name="cloudLog_fwUpgrade_canceUpgrade">Cancel</string>
+    <string name="cloudLog_fwUpgrade_notification_title">A new firmware is available</string>
+    <string name="cloudLog_fwUpgrade_notification_desc">Download and install %1s ?</string>
+    <string name="cloudLog_fw_upgrade_download_desc">Downloading firmware</string>
+
+    <string name="cloudLog_downloadFw_title">Download firmware file</string>
+    <string name="cloudLog_downloadFw_desc">Downloading new firmware for: %1s</string>
+
+    </resources>

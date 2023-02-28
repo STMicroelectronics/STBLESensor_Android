@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_demo">Feature list</string>
+
+    <string name="openRegister">Register</string>
+    <string name="openDebugConsole">Debug Console</string>
+    <dimen name="featureTextSize">22sp</dimen>
+
+
+</resources>

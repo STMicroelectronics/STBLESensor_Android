@@ -1,0 +1,346 @@
+{
+  "description": "Data recorder",
+  "category": "Log",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX_PRO"
+  ],
+  "flows": [],
+  "functions": [],
+  "id": "fb76c02f-7a28-4b6e-9fd5-340ab570dabc",
+  "notes": "Records temperature, pressure, accelerometer, gyroscope and magnetometer data into the SD",
+  "outputs": [
+    {
+      "description": "File to SD card",
+      "icon": "ic_sdcard",
+      "id": "O1",
+      "properties": [
+        {
+          "label": "File name",
+          "type": "STRING",
+          "value": "output"
+        },
+        {
+          "label": "Buffer dimension (max: 10000)",
+          "type": "INT",
+          "value": 0.0
+        }
+      ]
+    }
+  ],
+  "sensors": [
+    {
+      "configuration": {
+        "filters": {}
+      },
+      "dataType": "uint64_t scalar",
+      "datasheetLink": "https://www.st.com/en/microcontrollers/stm32u5858ai.html",
+      "description": "RTC (Date)",
+      "fullScaleUm": "",
+      "icon": "ic_rtc",
+      "id": "S11",
+      "model": "STM32U5858AI",
+      "notes": "",
+      "output": "Date",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "um": "utc format"
+    },
+    {
+      "configuration": {
+        "filters": {}
+      },
+      "dataType": "float scalar",
+      "datasheetLink": "https://www.st.com/en/microcontrollers/stm32u5858ai.html",
+      "description": "RTC (Time)",
+      "fullScaleUm": "",
+      "icon": "ic_rtc",
+      "id": "S10",
+      "model": "STM32U5858AI",
+      "notes": "",
+      "output": "Time",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "um": "msec"
+    },
+    {
+    "id": "S5",
+    "description": "Accelerometer sensor",
+    "icon": "ic_inemo",
+    "output": "Acceleration",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "model": "LSM6DSV16X",
+   "board_compatibility" : [
+     "SENSOR_TILE_BOX_PRO"
+   ],
+    "um": "mg",
+    "fullScaleUm": "g",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          1.875,
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 60,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 60,
+      "filters": {
+        "lowPass": {
+            "label": "700",
+            "value": 1
+          }
+      },
+      "fullScale": 2,
+      "acquisitionTime": 0
+    }
+    },
+    {
+    "id": "S6",
+    "description": "Gyroscope sensor",
+    "output": "Angular rate",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "icon": "ic_inemo",
+    "model": "LSM6DSV16X",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "um": "mdps",
+    "fullScaleUm": "dps",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      125,
+      250,
+      500,
+      1000,
+      2000,
+	  4000
+    ],
+	"powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 52,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 52,
+      "fullScale": 2000,
+      "acquisitionTime": 0
+    }
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {},
+        "odr": 100.0,
+        "powerMode": "LOW_POWER"
+      },
+      "dataType": "Float vector x3",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lis2mdl.pdf",
+      "description": "Magnetic field sensor",
+      "fullScaleUm": "",
+      "icon": "ic_magnetometer",
+      "id": "S8",
+      "model": "LIS2MDL",
+      "notes": "OFF_CANC always enabled",
+      "output": "Magnetic field",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Low power",
+          "mode": "LOW_POWER",
+          "odrs": [
+            10.0,
+            20.0,
+            50.0,
+            100.0
+          ]
+        },
+        {
+          "label": "High resolution",
+          "mode": "HIGH_RESOLUTION",
+          "odrs": [
+            10.0,
+            20.0,
+            50.0,
+            100.0
+          ]
+        }
+      ],
+      "um": "mG"
+    },
+    {
+      "acquisitionTime": 0.0,
+      "configuration": {
+        "acquisitionTime": 0.0,
+        "filters": {},
+        "odr": 1.0,
+        "powerMode": "NONE"
+      },
+      "dataType": "Float scalar",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/stts751.pdf",
+      "description": "Temperature sensor",
+      "fullScaleUm": "",
+      "icon": "ic_termometer",
+      "id": "S1",
+      "model": "STTS751",
+      "notes": "use max bit resolution for each ODR",
+      "output": "Temperature",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Power Mode",
+          "minCustomOdr": 17.0,
+          "mode": "NONE",
+          "odrs": [
+            0.0625,
+            0.125,
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0
+          ]
+        }
+      ],
+      "um": "degC"
+    },
+    {
+    "id": "S3",
+    "description": "Pressure sensor",
+    "icon": "ic_pressure",
+    "model": "LPS22DF",
+    "board_compatibility" : [
+      "SENSOR_TILE_BOX_PRO"
+    ],
+    "output": "Pressure",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "um": "hPa",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lps22df.pdf",
+    "dataType": "Float scalar",
+    "powerModes": [
+      {
+        "mode": "NONE",
+        "label": "Power Mode",
+        "odrs": [
+          1,
+		  4,
+          10,
+          25,
+          50,
+          75
+        ],
+        "minCustomOdr": 2
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 50,
+    "configuration": {
+      "powerMode": "NONE",
+      "odr": 1,
+      "filters": {
+        "lowPass": {
+            "label": "ODR/2",
+            "value": 1
+          }
+      },
+      "acquisitionTime": 0
+    }
+    }
+  ],
+  "version": 1
+}

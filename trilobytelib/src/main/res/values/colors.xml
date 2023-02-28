@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--WINDOW AND TEXT-->
+    <color name="windowBgColor">#EDF3F5</color>
+    <color name="titleColor">#19B3E7</color>
+    <color name="subTitleColor">#7C898E</color>
+    <color name="cardTitleColor">#424749</color>
+    <color name="actionbarTitleColor">#FFFFFF</color>
+    <color name="sensors_details_background">#FFFFFF</color>
+
+    <!--NAVIGATION-->
+    <color name="navigationViewIdleItemColors">#7D8A8F</color>
+    <color name="navigationViewSelectedItemColors">#19B3E7</color>
+
+    <!--WIDGET-->
+    <color name="widgetHeaderBgColor">#DBDBDB</color>
+    <color name="widgetCompletedHeaderBgColor">#A4C5D0</color>
+</resources>

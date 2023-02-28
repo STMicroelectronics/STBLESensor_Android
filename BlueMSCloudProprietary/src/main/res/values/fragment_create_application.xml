@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="createApp_tenantSelectorText">Azure Active Direcotry</string>
+    <string name="createApp_subscriptionText">Subscription</string>
+    <string name="createApp_resourceGroupText">Resource Group</string>
+    <string name="createApp_azureRegionText">Azure Region</string>
+    <string name="createApp_createButton">Create</string>
+    <string name="createApp_appNameHint">Application name</string>
+    <string name="createApp_title">Create IoT Central application</string>
+</resources>

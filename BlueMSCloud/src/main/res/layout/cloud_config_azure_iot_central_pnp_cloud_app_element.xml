@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/cloud_config_azure_iot_central_pnp_element_name"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadingEdge="horizontal"
+        android:singleLine="true"
+        android:text="Cloud Application Name"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/cloud_config_azure_iot_central_pnp_element_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Detailed long Description"
+        android:textStyle="italic"
+        android:visibility="invisible"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/cloud_config_azure_iot_central_pnp_element_expiration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fadingEdge="horizontal"
+        android:singleLine="true"
+        android:text="30/01/1972 08:00:00"
+        android:textStyle="italic"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>

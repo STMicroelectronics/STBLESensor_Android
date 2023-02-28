@@ -1,0 +1,129 @@
+{
+"description":"Pedometer",
+  "category": "Motion",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX"
+  ],
+"flows":[
+],
+"functions":[
+{
+"description":"Pedometer",
+"id":"F5",
+"inputs":[
+"S4",
+"S5"
+],
+"mandatoryInputs":[
+],
+"outputs":[
+"O1",
+"O2",
+"O3",
+"O4"
+],
+"parametersCount":1,
+"properties":[
+{
+"enumValues":[
+{
+"label":"Generic",
+"value":0
+},
+{
+"label":"Wrist",
+"value":1
+}
+],
+"label":"Carry Position",
+"type":"ENUM",
+"value":0
+},
+{
+"label":"TIMER",
+"type":"INT",
+"value":0.0
+}
+]
+}
+],
+"id":"52ecca62-6fc1-496f-9cba-5376e20c1c10",
+"notes":"The app is based on the pedometer software algorithm (MotionPM library) performed inside the SensorTile.box MCU, that uses the acceleration values of your body from 3-axis LSM6DSOX-accelerometer to count the steps and cadence of your walking/running activity and show the information.
+The pedometer is optimized for belt positioning.
+The steps data starts to change after 10 seconds of constant walk (debounce time).",
+"outputs":[
+{
+"description":"Stream to Bluetooth",
+"icon":"ic_bluetooth",
+"id":"O3",
+"properties":[
+]
+}
+],
+"sensors":[
+{
+"acquisitionTime":0.0,
+"bleMaxOdr":52.0,
+"configuration":{
+"acquisitionTime":0.0,
+"filters":{
+},
+"fullScale":4,
+"odr":52.0,
+"powerMode":"LOW_POWER"
+},
+"dataType":"Float vector x3",
+"datasheetLink":"https://www.st.com/resource/en/datasheet/lsm6dsox.pdf",
+"description":"IMU Accelerometer sensor",
+"fullScaleUm":"g",
+"fullScales":[
+2,
+4,
+8,
+16
+],
+"icon":"ic_inemo",
+"id":"S5",
+"model":"LSM6DSOX",
+"notes":"",
+"output":"Acceleration",
+"outputs":[
+"O1",
+"O2",
+"O3"
+],
+"powerModes":[
+{
+"label":"Low power",
+"mode":"LOW_POWER",
+"odrs":[
+1.6,
+12.5,
+26.0,
+52.0,
+104.0,
+208.0
+]
+},
+{
+"label":"High performance",
+"mode":"HIGH_PERFORMANCE",
+"odrs":[
+12.5,
+26.0,
+52.0,
+104.0,
+208.0,
+416.0,
+833.0,
+1666.0,
+3333.0,
+6666.0
+]
+}
+],
+"um":"mg"
+}
+],
+"version":1
+}

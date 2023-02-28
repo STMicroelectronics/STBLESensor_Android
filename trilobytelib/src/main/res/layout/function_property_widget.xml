@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/default_padding">
+
+    <TextView
+        android:id="@+id/property_label"
+        style="@style/Text.Subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Property description"/>
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/property_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="3.45"
+        tools:visibility="visible"/>
+
+    <RadioGroup
+        android:id="@+id/property_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
+    <Switch
+        android:id="@+id/property_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -1,0 +1,119 @@
+{
+  "description": "Level",
+  "category": "Motion",
+  "board_compatibility" : [
+    "SENSOR_TILE_BOX_PRO"
+  ],
+  "functions": [
+    {
+      "description": "Level",
+      "id": "F24",
+      "inputs": [
+        "S7"
+      ],
+      "mandatoryInputs": [],
+      "maxRepeatCount": 0,
+      "outputs": [
+        "O1",
+        "O2",
+        "O3",
+        "O4"
+      ],
+      "parametersCount": 1,
+      "properties": [
+        {
+          "label": "TIMER",
+          "type": "INT",
+          "value": 0.0
+        }
+      ]
+    }
+  ],
+  "id": "43ddcd57-a355-4c4d-abbd-3874c1f3ee96",
+  "notes": "The app uses the the LSM6DSV16X 3-axis accelerometer unit to show the level indication. The algorithm used converts the sensors data accelerometer as inputs (3-axis) to the Euler angles describing the inclination of the SensorTile.box represented by a level indication.",
+  "outputs": [
+    {
+      "description": "Stream to Bluetooth",
+      "icon": "ic_bluetooth",
+      "id": "O3",
+      "properties": []
+    }
+  ],
+  "sensors": [
+  {
+    "id": "S5",
+    "description": "Accelerometer sensor",
+    "icon": "ic_inemo",
+    "output": "Acceleration",
+    "outputs": [
+      "O1",
+      "O2",
+      "O3"
+    ],
+    "model": "LSM6DSV16X",
+   "board_compatibility" : [
+     "SENSOR_TILE_BOX_PRO"
+   ],
+    "um": "mg",
+    "fullScaleUm": "g",
+    "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+    "dataType": "Float vector x3",
+    "fullScales": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "powerModes": [
+      {
+        "mode": "LOW_POWER",
+        "label": "Low power",
+        "odrs": [
+          1.875,
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920
+        ]
+      },
+      {
+        "mode": "HIGH_PERFORMANCE",
+        "label": "High performance",
+        "odrs": [
+          7.5,
+          15,
+          30,
+		  60,
+          120,
+          240,
+		  480,
+		  960,
+		  1920,
+		  3840,
+		  7680
+        ]
+      }
+    ],
+    "acquisitionTime": 0,
+    "bleMaxOdr": 60,
+    "configuration": {
+      "powerMode": "LOW_POWER",
+      "odr": 60,
+      "filters": {
+        "lowPass": {
+            "label": "700",
+            "value": 1
+          }
+      },
+      "fullScale": 2,
+      "acquisitionTime": 0
+    }
+  }
+  ],
+  "version": 1
+}

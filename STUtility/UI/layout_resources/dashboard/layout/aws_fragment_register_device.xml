@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:layout_margin="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:layout_marginTop="8dp"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:id="@+id/registerDevice_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Device Id: XX:XX:XX:XX:XX" />
+
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/registerDevice_errorText"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/registerDevice_registrationError" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="8dp"
+        android:id="@+id/registerDevice_deviceNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerDevice_deviceNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/registerDevice_deviceNameHint"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ProgressBar
+        android:id="@+id/registerDevice_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_marginTop="8dp"
+        android:layout_gravity="end"
+        android:id="@+id/registerDevice_registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/registerDevice_registerButton" />
+</LinearLayout>

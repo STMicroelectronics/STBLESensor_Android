@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item android:id="@+id/demo_settings"
+        android:title="@string/demo_settings"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_settings"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        tools:visible="true"/>
+
+</menu>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cloud_azure_iot_central_pnp_application_name" translatable="false">Application Name</string>
+    <string name="cloud_azure_iot_central_pnp_application_help" translatable="false">Here you can configure your Azure Iot Central application. For more information click the help button</string>
+    <string name="cloud_azure_iot_central_pnp_application_shareable_title" translatable="false">SHAREABLE LINK</string>
+    <string name="cloud_azure_iot_central_pnp_application_shareable_app_name" translatable="false">APP NAME</string>
+    <string name="cloud_azure_iot_central_pnp_application_shareable_api_token" translatable="false">API TOKEN</string>
+    <string name="cloud_azure_iot_central_pnp_application_shareable_link" translatable="false">Application Shareable Link Not present</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_title" translatable="false">Help</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_summary" translatable="false">Follow the instructions below to configure Azure Iot Central application:</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_1" translatable="false">1. Send Sharable Link to your mail</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_2" translatable="false">2. Open the Link in a web browser on your PC</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_3" translatable="false">3. Sign in with your Microsoft account</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_4" translatable="false">4. Name the application you\'re replicating in your account and choose your plan</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_5" translatable="false">5. Create a new token:\n<br/><b><i>Administration -> Token API -> New</i></b></string>
+    <string name="cloud_azure_iot_central_pnp_application_help_6" translatable="false">6. Scan the QR code through the ST BLE Sensor app and enter in the field <b><i>APP NAME</i></b> the name you chose before</string>
+    <string name="cloud_azure_iot_central_pnp_application_help_close" translatable="false">Close</string>
+    <string name="cloud_azure_iot_central_pnp_application_shareable_app_azure_site_end" translatable="false">.azureiotcentral.com</string>
+    <string name="cloud_config_azure_iot_central_pnp_config_app_qr_code" translatable="false">Configure with QR code</string>
+
+    <string name="cloud_config_azure_iot_central_pnp_config_devices_not_available" translatable="false">You don\'t have any device\nTap the + button</string>
+    <string name="cloud_config_azure_iot_central_pnp_config_devices_available" translatable="false">Select one Available device</string>
+    <string name="cloud_config_azure_iot_central_pnp_no_app_textview" translatable="false">You don\'t have any Configured IoT Central\nTap the + button</string>
+    <string name="cloud_config_azure_iot_central_pnp_yes_app_textview" translatable="false">Select one Configured IoT Central App\nOr add a new one</string>
+    <string name="cloud_config_azure_iot_central_pnp_conf_device_no_dev_textview" translatable="false">You don\'t have any Configured Device\nTap the + button</string>
+    <string name="cloud_config_azure_iot_central_pnp_conf_device_yes_dev_textview" translatable="false">Select one Configured Device\nOr add a new one</string>
+    <string name="cloud_config_azure_iot_central_pnp_conf_device_selected_dev_textview" translatable="false">Device Selected\nPress Connect Button</string>
+</resources>

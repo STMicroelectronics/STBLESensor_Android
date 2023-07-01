@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/demoShowCase"
+        android:name="com.st.demo_showcase.ui.demo_show_case.DemoShowCase"
+        android:label="DemoShowCase" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.st.bluems.ui.home.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_homeFragment_to_profileNavGraph"
+            app:destination="@id/user_profiling_nav_graph" />
+        <action
+            android:id="@+id/action_homeFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_termsFragment"
+            app:destination="@id/termsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_demoShowCase"
+            app:destination="@id/demoShowCase">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+        <action
+            android:id="@+id/action_homeFragment_to_catalog"
+            app:destination="@id/catalog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.st.welcome.WelcomeFragment"
+        android:label="Welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_profileNavGraph"
+            app:destination="@id/user_profiling_nav_graph"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/termsFragment"
+        android:name="com.st.terms.TermsFragment"
+        android:label="Terms">
+        <action
+            android:id="@+id/action_termsFragment_to_profileNavGraph"
+            app:destination="@id/user_profiling_nav_graph"
+            app:popUpTo="@id/termsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_termsFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment"
+            app:popUpTo="@id/termsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/catalog"
+        android:name="com.st.catalog.CatalogFragment"
+        android:label="Catalog" />
+
+    <action
+        android:id="@+id/action_user_profiling_nav_graph_to_home_fragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_user_profiling_nav_graph_to_home_fragment_first_time"
+        app:destination="@id/homeFragment"/>
+
+    <include app:graph="@navigation/user_profiling_nav_graph" />
+
+</navigation>

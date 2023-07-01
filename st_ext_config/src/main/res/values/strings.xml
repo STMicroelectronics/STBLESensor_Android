@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<resources>
+    <string name="st_extConfig_boardSettings_cardTitle">Board Settings</string>
+    <string name="st_extConfig_boardSettings_setName">Set Name</string>
+    <string name="st_extConfig_boardSettings_setNameTitle">Set the Board Name</string>
+    <string name="st_extConfig_boardSettings_readCustomCommands">Read Custom Commands</string>
+    <string name="st_extConfig_boardSettings_setTime">Set Time</string>
+    <string name="st_extConfig_boardSettings_setDate">Set Date</string>
+    <string name="st_extConfig_boardSettings_sensorsConfiguration">Sensor Configuration</string>
+    <string name="st_extConfig_boardSettings_setWiFiCredentials">Set WiFi Credentials</string>
+    <string name="st_extConfig_boardSettings_wifiSecurityType">Security</string>
+    <string name="st_extConfig_boardSettings_wifiSsid">SSID</string>
+    <string name="st_extConfig_boardSettings_wifiPassword">Password</string>
+
+    <string name="st_extConfig_customCommands_cardTitle">Custom Commands</string>
+    <string name="st_extConfig_customCommands_info">Info</string>
+    <string name="st_extConfig_customCommands_error">Error</string>
+
+    <string name="st_extConfig_boardReport_cardTitle">Board Report</string>
+    <string name="st_extConfig_boardReport_uid">STM32 UID</string>
+    <string name="st_extConfig_boardReport_versionFirmware">Version Firmware</string>
+    <string name="st_extConfig_boardReport_info">Info</string>
+    <string name="st_extConfig_boardReport_help">Help</string>
+    <string name="st_extConfig_boardReport_powerStatus">Power Status</string>
+
+    <string name="st_extConfig_boardSecurity_cardTitle">Board Security</string>
+    <string name="st_extConfig_boardSecurity_changePin">Change Security PIN</string>
+    <string name="st_extConfig_boardSecurity_clearDb">Clear Security Database</string>
+    <string name="st_extConfig_boardSecurity_certRegistration">Certificate Registration</string>
+    <string name="st_extConfig_boardSecurity_certRequest">Certificate Request</string>
+    <string name="st_extConfig_boardSecurity_changePinDialogTitle">Change the PIN</string>
+    <string name="st_extConfig_boardSecurity_showCert">Show Certificate</string>
+    <string name="st_extConfig_boardSecurity_hideCert">Hide Certificate</string>
+    <string name="st_extConfig_boardSecurity_registerCert">Register</string>
+
+    <string name="st_extConfig_boardControl_cardTitle">Board Control</string>
+    <string name="st_extConfig_boardControl_dfu">Reboot on DFU mode</string>
+    <string name="st_extConfig_boardControl_off">Poweroff</string>
+    <string name="st_extConfig_boardControl_download">Firmware Download</string>
+    <string name="st_extConfig_boardControl_swap">Firmware Swap</string>
+    <string name="st_extConfig_boardControl_swapToast">The board will Reboot at disconnection</string>
+
+    <string name="st_extConfig_fwDownload_currentBankLabel">Current bank [%d]</string>
+    <string name="st_extConfig_fwDownload_currentFwLabel">Current Running Firmware:</string>
+    <string name="st_extConfig_fwDownload_otherBankLabel">Other Bank</string>
+    <string name="st_extConfig_fwDownload_otherFwLabel">Firmware Present:</string>
+    <string name="st_extConfig_fwDownload_noFwLabel">No Firmware Present</string>
+    <string name="st_extConfig_fwDownload_compatibleFwLabel">List of compatible Firmware:</string>
+    <string name="st_extConfig_fwDownload_descriptionLabel">Description:</string>
+    <string name="st_extConfig_fwDownload_installBtn">Install\n%s</string>
+    <string name="st_extConfig_fwDownload_swapBtn">Swap to this bank</string>
+    <string name="st_extConfig_fwDownload_updateAvailableTitle">Update Available</string>
+    <string name="st_extConfig_fwDownload_changeLogTitle">Change Log:</string>
+
+    <string name="st_extConfig_fwUpgrade_title">Firmware Update</string>
+    <string name="st_extConfig_fwUpgrade_progressFormatter">%d%%</string>
+    <string name="st_extConfig_fwUpgrade_successTitle">Upload completed</string>
+    <string name="st_extConfig_fwUpgrade_successText">Upload finished in %.2f seconds\nThe board is resetting, please restart the app.</string>
+    <string name="st_extConfig_fwUpgrade_errorFormatter">FwUploadError: %s</string>
+    <string name="st_extConfig_fwUpgrade_selectedLabel">Selected File:</string>
+    <string name="st_extConfig_fwUpgrade_nameLabel">Name: %s</string>
+    <string name="st_extConfig_fwUpgrade_versionLabel">Version: %s</string>
+    <string name="st_extConfig_fwUpgrade_mcuLabel">MCU Type: %s</string>
+    <string name="st_extConfig_fwUpgrade_versionFormatLabel" translatable="false">%d.%d.%d</string>
+    <string name="st_extConfig_fwUpgrade_loading">Loading firmware version…</string>
+    <string name="st_extConfig_fwUpgrade_unknown">Unknown</string>
+    <string name="st_extConfig_fwUpgrade_upgradeBtn">Upgrade</string>
+    <string name="st_extConfig_fwUpgrade_uploadFw">Upload\nFW</string>
+    <string name="st_extConfig_fwUpgrade_otaOpt1">Application</string>
+    <string name="st_extConfig_fwUpgrade_otaOpt2">Wireless</string>
+    <string name="st_extConfig_fwUpgrade_selectFileBtn">Select File</string>
+    <string name="st_extConfig_fwUpgrade_startUpload">Start upload</string>
+    <string name="st_extConfig_fwUpgrade_otaBoard1">STM32WB5x/WB3x</string>
+    <string name="st_extConfig_fwUpgrade_otaBoard2">STM32WB1x</string>
+</resources>

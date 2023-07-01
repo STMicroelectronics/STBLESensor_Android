@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accEvent_selectEventLabel">Event:</string>
+    <string name="accEvent_freeFall">FreeFall</string>
+    <string name="accEvent_wakeUp">Wake Up</string>
+    <string name="accEvent_tilt">Tilt</string>
+    <string name="accEvent_orientation">Orientation</string>
+    <string name="accEvent_pedometer">Pedometer</string>
+    <string name="accEvent_tap">Tap</string>
+    <string name="accEvent_double_tap">Double Tap</string>
+    <string name="stepCounterStringFormat">%1$d steps</string>
+    <string name="stepFrequencyStringFormat">%1$d %2$s</string>
+</resources>

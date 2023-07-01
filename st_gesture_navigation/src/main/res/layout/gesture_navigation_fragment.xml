@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal_navigation_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal_navigation_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.37" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal_navigation_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal_navigation_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical_navigation_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.32" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical_navigation_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.68" />
+
+    <TextView
+        android:id="@+id/gesture_navigation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:lines="3"
+        android:text="... Waiting ..."
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal_navigation_3"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVertical_navigation_2"
+        app:layout_constraintStart_toStartOf="@+id/guidelineVertical_navigation_1"
+        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal_navigation_2" />
+
+    <ImageView
+        android:id="@+id/gesture_navigation_up_arrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal_navigation_2"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVertical_navigation_2"
+        app:layout_constraintStart_toStartOf="@+id/guidelineVertical_navigation_1"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal_navigation_1"
+        app:srcCompat="@drawable/ic_arrow_rounded"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/gesture_navigation_down_arrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:rotation="180"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal_navigation_4"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVertical_navigation_2"
+        app:layout_constraintStart_toStartOf="@+id/guidelineVertical_navigation_1"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal_navigation_3"
+        app:srcCompat="@drawable/ic_arrow_rounded"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/gesture_navigation_left_arrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:rotation="-90"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal_navigation_3"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVertical_navigation_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal_navigation_2"
+        app:srcCompat="@drawable/ic_arrow_rounded"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/gesture_navigation_right_arrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:rotation="90"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal_navigation_3"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guidelineVertical_navigation_2"
+        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal_navigation_2"
+        app:srcCompat="@drawable/ic_arrow_rounded"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

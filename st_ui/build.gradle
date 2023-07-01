@@ -1,0 +1,132 @@
+/*
+ * Copyright (c) 2022(-0001) STMicroelectronics.
+ * All rights reserved.
+ * This software is licensed under terms that can be found in the LICENSE file in
+ * the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ */
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlinx-serialization'
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version"
+    id "org.jlleitschuh.gradle.ktlint" version "$ktlint_version"
+}
+
+apply from: file('publish.gradle')
+
+android {
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        getByName("debug") {
+
+        }
+        getByName("release") {
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler_version
+    }
+
+
+    namespace 'com.st.ui'
+}
+
+detekt {
+    config = files("../detekt-config-compose.yml")
+}
+
+ktlint {
+    version = "0.22.0"
+    verbose = true
+    android = true
+    disabledRules = ["no-wildcard-imports", "package-name"]
+}
+
+dependencies {
+    // Compose
+    def composeBom = platform("androidx.compose:compose-bom:$compose_bom_date")
+    api composeBom
+    androidTestApi composeBom
+    // Material Design 3
+    api "androidx.compose.material3:material3:$compose_material3_version"
+    // or Material Design 2
+    api "androidx.compose.material:material:$compose_material2_version"
+    api "androidx.compose.ui:ui"
+    // Android Studio Preview support
+    api "androidx.compose.ui:ui-tooling-preview"
+    debugApi "androidx.compose.ui:ui-tooling"
+    // UI Tests
+    androidTestApi "androidx.compose.ui:ui-test-junit4"
+    debugApi "androidx.compose.ui:ui-test-manifest"
+    // Optional - Add full set of material icons
+    api "androidx.compose.material:material-icons-extended"
+    // Optional - Add window size utils
+    api "androidx.compose.material3:material3-window-size-class"
+    // Optional - Integration with activities
+    api "androidx.activity:activity-compose:$activity_compose_version"
+    // Optional - Integration with ViewModels
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    api "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
+    // Optional - Integration with LiveData
+    api("androidx.compose.runtime:runtime-livedata")
+    // Optional - Integration with Hilt
+    api "androidx.hilt:hilt-navigation-compose:$hilt_compose_version"
+    // Optional - Integration with Navigation
+    api "androidx.navigation:navigation-compose:$navigation_compose_version"
+    // Optional - Integration with ViewBinding
+    api "androidx.compose.ui:ui-viewbinding"
+
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugaring_version"
+
+    // Core
+    api "androidx.core:core-ktx:$core_ktx_version"
+    api "com.google.android.material:material:$google_material_version"
+    api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    api "androidx.appcompat:appcompat:$appcompat_version"
+
+    // Hilt
+    implementation "androidx.hilt:hilt-navigation-fragment:$hilt_navigation_fragment_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Accompanist
+    api "com.google.accompanist:accompanist-insets:$accompanist_version"
+    api "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    api "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
+    api "com.google.accompanist:accompanist-permissions:$accompanist_version"
+
+    api "com.github.bumptech.glide:glide:$glide_version"
+
+    // Customize Splash screen
+    api "androidx.core:core-splashscreen:$splash_version"
+
+    // Tests
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$junit_ui_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+}

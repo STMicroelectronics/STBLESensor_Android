@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) 2022(-0001) STMicroelectronics.
+ * All rights reserved.
+ * This software is licensed under terms that can be found in the LICENSE file in
+ * the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ */
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version"
+    id "org.jlleitschuh.gradle.ktlint" version "$ktlint_version"
+    id 'com.appswithlove.loco'
+}
+
+apply from: file('publish.gradle')
+
+android {
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        getByName("release") {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler_version
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    namespace 'com.st.fitness'
+}
+
+detekt {
+    config = files("../detekt-config-compose.yml")
+}
+
+ktlint {
+    version = "0.22.0"
+    verbose = true
+    android = true
+    disabledRules = ["no-wildcard-imports", "package-name"]
+}
+
+Loco {
+    apiKey = stLocoApiKey
+    // lang = ["it", "en"] // add as many languages as you want, they need to exist on localise.biz
+    defLang = "en"
+    fallbackLang = "en"
+    tags = "st_fitness"
+    resDir = "$projectDir/src/main/res"
+}
+
+dependencies {
+    // Blue ST module:
+    // - UI
+    implementation project(path: ":st_ui")
+    // - Core
+    implementation project(path: ":st_core")
+
+    // Blue ST SDK
+    implementation "com.st.blue.sdk:st-blue-sdk:$st_version"
+
+    // Hilt
+    implementation "androidx.hilt:hilt-navigation-fragment:$hilt_navigation_fragment_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Tests
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$junit_ui_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+}

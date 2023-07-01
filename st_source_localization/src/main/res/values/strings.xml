@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="source_loc_sensitivity">Sensitivity</string>
+    <string name="source_loc_high_sens">High</string>
+    <string name="source_loc_low_sens">Low</string>
+    <string name="source_loc_bg_image">Board background image</string>
+    <string name="source_loc_fg_needle">Needle foreground image</string>
+    <string name="source_loc_angle_format">Angle: %1$d° </string>
+</resources>

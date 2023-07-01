@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<resources>
+
+    <!-- ST Official Colors -->
+    <color name="PrimaryBlue">#03234B</color>
+    <color name="PrimaryBlue2">#042E62</color>
+    <color name="PrimaryBlue3">#021B3B</color>
+
+    <color name="SecondaryBlue">#3CB4E6</color>
+    <color name="SecondaryBlue2">#2B8EC5</color>
+
+    <color name="Grey0">#FFFFFF</color>
+    <color name="Grey1">#F7F8FA</color>
+    <color name="Grey2">#EEEFF1</color>
+    <color name="Grey3">#DBDEE2</color>
+    <color name="Grey5">#A6ADB5</color>
+    <color name="Grey6">#767C84</color>
+    <color name="Grey7">#525A63</color>
+    <color name="Grey9">#0F182F</color>
+    <color name="Grey10">#000000</color>
+
+    <color name="PrimaryPink">#E6007E</color>
+    <color name="PrimaryYellow">#FFD200</color>
+
+    <color name="ErrorText">#A8251B</color>
+    <color name="ErrorHover">#8F1E17</color>
+    <color name="ErrorPressed">#D54C43</color>
+    <color name="ErrorBackground">#FEE7E6</color>
+
+    <color name="WarningText">#926C20</color>
+    <color name="WarningHover">#7D5D1C</color>
+    <color name="WarningPressed">#D5A443</color>
+    <color name="WarningBackground">#FEF8EB</color>
+
+    <color name="SuccessText">#1E8537</color>
+    <color name="SuccessHover">#1A7431</color>
+    <color name="SuccessPressed">#43D575</color>
+    <color name="SuccessBackground">#F0FEF4</color>
+
+    <color name="InfoText">#1B3AA8</color>
+    <color name="InfoHover">#17318F</color>
+    <color name="InfoBorder">#4363D5</color>
+    <color name="InfoBackground">#E6EBFE</color>
+
+    <!-- Alias -->
+    <color name="ic_launcher_background">@color/PrimaryBlue</color>
+    <color name="colorPrimary">@color/PrimaryBlue</color>
+
+    <color name="colorPrimaryDark">@color/PrimaryBlue3</color>
+    <color name="colorAccent">@color/PrimaryPink</color>
+    <color name="colorOnAccent">@color/Grey0</color>
+    <color name="colorGrey">@color/Grey5</color>
+    <color name="backgroundMainApp">@color/Grey0</color>
+    <color name="green">@color/SuccessText</color>
+    <color name="labelPlotContrast">@color/Grey10</color>
+    <color name="fabColorPrimaryDark">@color/SecondaryBlue2</color>
+    <color name="markerLoginLogo">@color/PrimaryBlue</color>
+    <color name="boxLoginLogo">@color/PrimaryBlue</color>
+</resources>

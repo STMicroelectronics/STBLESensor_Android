@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sensor_fusion_nav_graph"
+    app:startDestination="@id/sensorFusionFragment">
+
+    <fragment
+        android:id="@+id/sensorFusionFragment"
+        android:name="com.st.sensor_fusion.SensorFusionFragment"
+        android:label="SensorFusion">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_sensorFusionFragment_to_calibrationDialog"
+            app:destination="@id/sensorFusionCalibrationDialog">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+
+        <action
+            android:id="@+id/action_sensorFusionFragment_to_ResetDialog"
+            app:destination="@id/sensorFusionResetDialog">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+
+    </fragment>
+
+    <dialog
+        android:id="@+id/sensorFusionCalibrationDialog"
+        android:name="com.st.sensor_fusion.SensorFusionCalibrationDialogFragment"
+        android:label="SensorFusionCalibration" />
+
+    <dialog
+        android:id="@+id/sensorFusionResetDialog"
+        android:name="com.st.sensor_fusion.SensorFusionResetDialogFragment"
+        android:label="SensorFusionReset" />
+</navigation>

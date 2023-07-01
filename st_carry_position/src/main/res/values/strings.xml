@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="carryPositionStarted">Carry position started</string>
+    <string name="onDeskImageDesc">On Desk</string>
+    <string name="inHandImageDesc">In Hand</string>
+    <string name="nearHeadImageDesc">Near Head</string>
+    <string name="shirtPocketImageDesc">Shirt Pocket</string>
+    <string name="trousersPocketImageDesc">Trousers Pocket</string>
+    <string name="armSwingImageDesc">Arm Swing</string>
+</resources>

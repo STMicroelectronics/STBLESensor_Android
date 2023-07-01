@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Loco xml export: Android string resources
+ Project: BlueMS
+ Release: Working copy
+ Locale: en, English
+ Tagged: st_json_nfc
+ Exported by: st localise
+ Exported at: Wed, 12 Apr 2023 08:31:59 +0200
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="st_jsonNfc_text_textTitle">Text</string>
+    <string name="st_jsonNfc_text_insertText">Insert Text</string>
+    <string name="st_jsonNfc_action_writeToNfc">WRITE TO NFC</string>
+    <string name="st_jsonNfc_text_urlTitle">URL</string>
+    <string name="st_jsonNfc_text_insertUrl">Insert URL</string>
+    <string name="st_jsonNfc_url_http">http://www.</string>
+    <string name="st_jsonNfc_url_https">https://www.</string>
+    <string name="st_jsonNfc_text_wifiTitle">WiFi</string>
+    <string name="st_jsonNfc_text_ssid">SSID</string>
+    <string name="st_jsonNfc_text_password">Password</string>
+    <string name="st_jsonNfc_text_authenticationType">Authentication Type</string>
+    <string name="st_jsonNfc_text_encryptionType">Encryption Type</string>
+    <string name="st_jsonNfc_authentication_none">NONE</string>
+    <string name="st_jsonNfc_authentication_wpapsk">WPAPSK</string>
+    <string name="st_jsonNfc_authentication_shared">SHARED</string>
+    <string name="st_jsonNfc_authentication_wpa">WPA</string>
+    <string name="st_jsonNfc_authentication_wpa2">WPA2</string>
+    <string name="st_jsonNfc_authentication_wpatwopsk">WPA2PSK</string>
+    <string name="st_jsonNfc_encryption_none">NONE</string>
+    <string name="st_jsonNfc_encryption_wep">WEP</string>
+    <string name="st_jsonNfc_encryption_tkip">TKIP</string>
+    <string name="st_jsonNfc_encryption_aes">AES</string>
+    <string name="st_jsonNfc_text_vCardTitle">VCard</string>
+    <string name="st_jsonNfc_text_name">Name</string>
+    <string name="st_jsonNfc_text_formattedName">Formatted name</string>
+    <string name="st_jsonNfc_text_title">Title</string>
+    <string name="st_jsonNfc_text_organization">Organization</string>
+    <string name="st_jsonNfc_text_homeAddress">Home Address</string>
+    <string name="st_jsonNfc_text_workAddress">Work Address</string>
+    <string name="st_jsonNfc_text_address">Address</string>
+    <string name="st_jsonNfc_text_homePhone">Home Phone</string>
+    <string name="st_jsonNfc_text_workPhone">Work Phone</string>
+    <string name="st_jsonNfc_text_cellularPhone">Cellular Phone</string>
+    <string name="st_jsonNfc_text_homeEmail">Home Email</string>
+    <string name="st_jsonNfc_text_workEmail">Work Email</string>
+    <string name="st_jsonNfc_text_url">URL</string>
+    <string name="st_jsonNfc_text_demoTitle">NFC Writing</string>
+</resources>

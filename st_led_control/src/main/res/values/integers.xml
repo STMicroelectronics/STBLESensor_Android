@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="stm32wb_single_alarmBlinkDuration">500</integer>
+</resources>

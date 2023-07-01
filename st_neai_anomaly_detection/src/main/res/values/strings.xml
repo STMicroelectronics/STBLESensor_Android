@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Loco xml export: Android string resources
+ Project: BlueMS
+ Release: Working copy
+ Locale: en, English
+ Tagged: st_neai_anomaly_detection
+ Exported by: st localise
+ Exported at: Tue, 11 Apr 2023 15:13:36 +0200
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="st_neaiAnomalyDetection_text_title">Anomaly Detection</string>
+    <string name="st_neaiAnomalyDetection_text_commands">NEAI Commands</string>
+    <string name="st_neaiAnomalyDetection_text_learning">Learning</string>
+    <string name="st_neaiAnomalyDetection_text_resourceBusy">Resource busy</string>
+    <string name="st_neaiAnomalyDetection_text_detecting">Detecting</string>
+    <string name="st_neaiAnomalyDetection_action_resetKnowledge">Reset Knowledge</string>
+    <string name="st_neaiAnomalyDetection_action_start">START</string>
+    <string name="st_neaiAnomalyDetection_action_stop">STOP</string>
+    <string name="st_neaiAnomalyDetection_text_library">Library</string>
+    <string name="st_neaiAnomalyDetection_text_workingProgress">Work in progress...</string>
+    <string name="st_neaiAnomalyDetection_text_aiengineTitle">AI Engine</string>
+    <string name="st_neaiAnomalyDetection_text_phaseTitle">Phase:\u0020</string>
+    <string name="st_neaiAnomalyDetection_aiengine_phase_idle">IDLE</string>
+    <string name="st_neaiAnomalyDetection_aiengine_phase_learning">LEARNING</string>
+    <string name="st_neaiAnomalyDetection_aiengine_phase_detection">DETECTION</string>
+    <string name="st_neaiAnomalyDetection_aiengine_phase_idleTrained">IDLE TRAINED</string>
+    <string name="st_neaiAnomalyDetection_aiengine_phase_busy">BUSY</string>
+    <string name="st_neaiAnomalyDetection_aiengine_phase_null">NULL</string>
+    <string name="st_neaiAnomalyDetection_text_stateTilte">State:\u0020</string>
+    <string name="st_neaiAnomalyDetection_text_noValue">---</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_ok">OK</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_initNotCalled">KNOWLEDGE ERROR</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_boardError">KNOWLEDGE ERROR</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_knowledgeError">KNOWLEDGE ERROR</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_notEnoughLearning">NOT ENOUGH LEARNING</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_minimalLearningDone">MINIMAL LEARNING DONE</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_unknownError">UNKNOWN ERROR</string>
+    <string name="st_neaiAnomalyDetection_aiengine_state_null">NULL</string>
+    <string name="st_neaiAnomalyDetection_text_progressTitle">Progress:\u0020</string>
+    <string name="st_neaiAnomalyDetection_results_status_normal">ANOMALY</string>
+    <string name="st_neaiAnomalyDetection_results_status_anomaly">ANOMALY</string>
+    <string name="st_neaiAnomalyDetection_results_status_null">NULL</string>
+    <string name="st_neaiAnomalyDetection_text_resultsTitle">Results</string>
+    <string name="st_neaiAnomalyDetection_text_statusTitle">Status:\u0020</string>
+    <string name="st_neaiAnomalyDetection_text_similarityTitle">Similarity:\u0020</string>
+    <string name="st_neaiAnomalyDetection_text_titleTabBar">NEAI Anomaly Detection</string>
+</resources>

@@ -1,0 +1,147 @@
+/*
+ * Copyright (c) 2022(-0001) STMicroelectronics.
+ * All rights reserved.
+ * This software is licensed under terms that can be found in the LICENSE file in
+ * the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ */
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version"
+    id "org.jlleitschuh.gradle.ktlint" version "$ktlint_version"
+    id 'com.appswithlove.loco'
+}
+
+apply from: file('publish.gradle')
+
+apply from: 'st_dependencies.gradle'
+
+android {
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        getByName("release") {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        compose true
+        viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler_version
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    namespace 'com.st.demo_showcase'
+}
+
+detekt {
+    config = files("../detekt-config-compose.yml")
+}
+
+ktlint {
+    version = "0.22.0"
+    verbose = true
+    android = true
+    disabledRules = ["no-wildcard-imports", "package-name"]
+}
+
+Loco {
+    apiKey = stLocoApiKey
+    // lang = ["it", "en"] // add as many languages as you want, they need to exist on localise.biz
+    defLang = "en"
+    fallbackLang = "en"
+    tags = "st_demo_showcase"
+    resDir = "$projectDir/src/main/res"
+}
+
+dependencies {
+    // Blue ST module:
+    // - UI
+    implementation project(path: ":st_ui")
+    // - Core
+    implementation project(path: ":st_core")
+    // - Prefs
+    implementation project(path: ":st_preferences")
+    // - User Profiling
+    implementation project(path: ":st_user_profiling")
+    // - Demos
+    implementation project(path: ":st_compass")
+    implementation project(path: ":st_level")
+    implementation project(path: ":st_fitness")
+    implementation project(path: ":st_environmental")
+    implementation project(path: ":st_high_speed_data_log")
+    implementation project(path: ":st_blue_voice")
+    implementation project(path: ":st_gesture_navigation")
+    implementation project(path: ":st_neai_anomaly_detection")
+    implementation project(path: ":st_neai_classification")
+    implementation project(path: ":st_event_counter")
+    implementation project(path: ":st_piano")
+    implementation project(path: ":st_pnpl")
+    implementation project(path: ":st_plot")
+    implementation project(path: ":st_nfc_writing")
+    implementation project(path: ":st_binary_content")
+    implementation project(path: ":st_ext_config")
+    implementation project(path: ":st_tof_objects_detection")
+    implementation project(path: ":st_color_ambient_light")
+    implementation project(path: ":st_gnss")
+    implementation project(path: ":st_electric_charge_variation")
+    implementation project(path: ":st_motion_intensity")
+    implementation project(path: ":st_activity_recognition")
+    implementation project(path: ":st_carry_position")
+    implementation project(path: ":st_mems_gesture")
+    implementation project(path: ":st_motion_algorithms")
+    implementation project(path: ":st_pedometer")
+    implementation project(path: ":st_proximity_gesture_recognition")
+    implementation project(path: ":st_switch_demo")
+    implementation project(path: ":st_legacy_demo")
+    implementation project(path: ":st_registers_demo")
+    implementation project(path: ":st_acceleration_event")
+    implementation project(path: ":st_source_localization")
+    implementation project(path: ":st_audio_classification_demo")
+    implementation project(path: ":st_led_control")
+    implementation project(path: ":st_node_status")
+    implementation project(path: ":st_textual_monitor")
+    implementation project(path: ":st_heart_rate_demo")
+    implementation project(path: ":st_sensor_fusion")
+    implementation project(path: ":st_predicted_maintenance")
+    implementation project(path: ":st_fft_amplitude")
+    implementation project(path: ":st_multi_neural_network")
+    implementation project(path: ":st_working_in_progress")
+
+    // Blue ST SDK
+    implementation "com.st.blue.sdk:st-blue-sdk:$st_version"
+
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugaring_version"
+
+    // Hilt
+    implementation "androidx.hilt:hilt-navigation-fragment:$hilt_navigation_fragment_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Reorderable
+    implementation "org.burnoutcrew.composereorderable:reorderable:$reorderable_version"
+
+    // Tests
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$junit_ui_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+}

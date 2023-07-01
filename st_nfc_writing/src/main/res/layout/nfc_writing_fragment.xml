@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/json_nfc_text"
+                style="@style/STStyleCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_text_hide_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="8dp"
+                            android:text="@string/st_jsonNfc_text_textTitle"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_baseline_text_snippet_24"
+                            app:drawableTint="@color/colorPrimary" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:id="@+id/json_nfc_text_collaps"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_collaps_view"
+                            app:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_text_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_insertText"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_text_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <Button
+                            android:id="@+id/json_nfc_text_write_to_nfc"
+                            style="@style/STStyleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="@string/st_jsonNfc_action_writeToNfc" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/json_nfc_url"
+                style="@style/STStyleCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_url_hide_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="8dp"
+                            android:text="@string/st_jsonNfc_text_urlTitle"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_baseline_text_snippet_24"
+                            app:drawableTint="@color/colorPrimary" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:id="@+id/json_nfc_url_collaps"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_collaps_view"
+                            app:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_url_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_insertUrl"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:orientation="horizontal">
+
+
+                            <Spinner
+                                android:id="@+id/json_nfc_url_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textSize="12sp" />
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/json_nfc_url_input_text"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="4dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif"
+                                android:inputType="textUri"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/json_nfc_url_write_to_nfc"
+                            style="@style/STStyleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="@string/st_jsonNfc_action_writeToNfc" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/json_nfc_wifi"
+                style="@style/STStyleCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_wifi_hide_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="8dp"
+                            android:text="@string/st_jsonNfc_text_wifiTitle"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_baseline_text_snippet_24"
+                            app:drawableTint="@color/colorPrimary" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:id="@+id/json_nfc_wifi_collaps"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_collaps_view"
+                            app:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_wifi_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_ssid"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_wifi_ssid_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_password"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_wifi_passwd_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:layout_margin="8dp"
+                                android:text="@string/st_jsonNfc_text_authenticationType"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12sp" />
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
+                            <Spinner
+                                android:id="@+id/json_nfc_wifi_auth_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:text="@string/st_jsonNfc_text_encryptionType"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12sp" />
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
+                            <Spinner
+                                android:id="@+id/json_nfc_wifi_encr_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/json_nfc_wifi_write_to_nfc"
+                            style="@style/STStyleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="@string/st_jsonNfc_action_writeToNfc" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/json_nfc_vcard"
+                style="@style/STStyleCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_vcard_hide_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="8dp"
+                            android:text="@string/st_jsonNfc_text_vCardTitle"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_baseline_text_snippet_24"
+                            app:drawableTint="@color/colorPrimary" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:id="@+id/json_vcard_collaps"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_collaps_view"
+                            app:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/json_nfc_vcard_linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_name"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_name_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_formattedName"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_formatted_name_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_title"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_title_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_organization"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_org_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_homeAddress"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_home_address_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_workAddress"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_work_address_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_address"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_address_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textNoSuggestions"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_homePhone"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_home_phone_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="phone"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_workPhone"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_work_phone_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="phone"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_cellularPhone"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_cellular_phone_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="phone"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_homeEmail"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_home_email_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textEmailAddress"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_workEmail"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_work_email_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textEmailAddress"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/st_jsonNfc_text_url"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/json_nfc_vcard_url_input_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="sans-serif"
+                            android:inputType="textUri"
+                            android:textSize="12sp" />
+
+                        <Button
+                            android:id="@+id/json_nfc_vcard_write_to_nfc"
+                            style="@style/STStyleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="@string/st_jsonNfc_action_writeToNfc" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

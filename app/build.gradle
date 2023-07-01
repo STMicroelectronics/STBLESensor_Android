@@ -1,0 +1,122 @@
+/*
+ * Copyright (c) 2022(-0001) STMicroelectronics.
+ * All rights reserved.
+ * This software is licensed under terms that can be found in the LICENSE file in
+ * the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ */
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version"
+    id "org.jlleitschuh.gradle.ktlint" version "$ktlint_version"
+    id 'com.appswithlove.loco'
+}
+
+apply from: 'st_dependencies.gradle'
+
+android {
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        applicationId "com.st.bluems"
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
+        versionCode 153
+        versionName "5.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'stblesensor'
+        ]
+    }
+
+    buildTypes {
+        getByName("release") {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose true
+        viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler_version
+    }
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    namespace 'com.st.bluems'
+}
+
+detekt {
+    config = files("../detekt-config-compose.yml")
+}
+
+ktlint {
+    version = "0.22.0"
+    verbose = true
+    android = true
+    disabledRules = ["no-wildcard-imports", "package-name"]
+}
+
+Loco {
+    apiKey = stLocoApiKey
+    // lang = ["it", "en"] // add as many languages as you want, they need to exist on localise.biz
+    defLang = "en"
+    fallbackLang = "en"
+    tags = "st_bluems"
+    resDir = "$projectDir/src/main/res"
+}
+
+dependencies {
+    // Blue ST module:
+    // - Core
+    implementation project(path: ":st_core")
+    // - UI
+    implementation project(path: ":st_ui")
+    // - Preferences
+    implementation project(path: ":st_preferences")
+    // - User Profiling
+    implementation project(path: ":st_user_profiling")
+    // - Welcome
+    implementation project(path: ":st_welcome")
+    // - Terms
+    implementation project(path: ":st_terms")
+    // - Demos
+    implementation project(path: ":st_demo_showcase")
+    // - Discover Catalog
+    implementation project(path: ":st_catalog")
+
+    // Blue ST SDK
+    implementation "com.st.blue.sdk:st-blue-sdk:$st_version"
+
+    // Hilt
+    implementation "androidx.hilt:hilt-navigation-fragment:$hilt_navigation_fragment_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Tests
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$junit_ui_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+
+    // Debug
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+}

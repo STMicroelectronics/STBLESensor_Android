@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<resources>
+    <string name="subSensor_type_acc">Accelerometer</string>
+    <string name="subSensor_type_mag">Magnetometer</string>
+    <string name="subSensor_type_gyro">Gyroscope</string>
+    <string name="subSensor_type_temp">Temperature</string>
+    <string name="subSensor_type_hum">Humidity</string>
+    <string name="subSensor_type_press">Pressure</string>
+    <string name="subSensor_type_mic">Microphone</string>
+    <string name="subSensor_type_mlc">MLC</string>
+    <string name="subSensor_type_class">CLASS</string>
+    <string name="subSensor_type_stredl">STREDL</string>
+    <string name="subSensor_type_unknown">Unknown</string>
+
+    <string name="subSensor_previewType_acc">ACC</string>
+    <string name="subSensor_previewType_mag">MAG</string>
+    <string name="subSensor_previewType_gyro">GYRO</string>
+    <string name="subSensor_previewType_temp">TEMP</string>
+    <string name="subSensor_previewType_hum">HUM</string>
+    <string name="subSensor_previewType_press">PRESS</string>
+    <string name="subSensor_previewType_mic">MIC</string>
+    <string name="subSensor_previewType_mlc">MLC</string>
+    <string name="subSensor_previewType_class">CLASS</string>
+    <string name="subSensor_previewType_stredl">STREDL</string>
+    <string name="subSensor_previewType_unknown">N/A</string>
+
+    <string name="vector_x">x</string>
+    <string name="vector_y">y</string>
+    <string name="vector_z">z</string>
+
+    <string name="geo_lat">latitude</string>
+    <string name="geo_lon">longitude</string>
+    <string name="geo_alt">altitude</string>
+
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+
+    <string name="file_loaded">File loaded</string>
+    <string name="file_notLoaded">File not loaded</string>
+
+    <string name="command_btn">Send</string>
+    <string name="command_uploadBtn">Upload file</string>
+
+    <string name="map_addEntry">Add a map entry:</string>
+</resources>

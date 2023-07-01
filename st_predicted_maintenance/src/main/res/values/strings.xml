@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="predictive_statusView_good">Good</string>
+    <string name="predictive_statusView_warning">Warning</string>
+    <string name="predictive_statusView_bad">Alarm</string>
+    <string name="predictive_statusView_unknown">Unknown</string>
+
+    <string name="predictive_statusView_xStatusFormat">X: %s</string>
+    <string name="predictive_statusView_yStatusFormat">Y: %s</string>
+    <string name="predictive_statusView_zStatusFormat">Z: %s</string>
+
+    <string name="predictive_statusView_freqFormat">Frequency (Hz): %.2f</string>
+    <string name="predictive_statusView_defaultValueFormat">Peak: %.2f</string>
+
+    <string name="predictive_speedStatus_title">RMS Speed Status</string>
+    <string name="predictive_speedStatus_valueFormat">RMS Speed (mm/s): %.2f</string>
+
+    <string name="predictive_accelerationStatus_title">Acceleration Peak Status</string>
+    <string name="predictive_accelerationStatus_valueFormat">Acc Peak (m/s^2): %.2f</string>
+
+    <string name="predictive_frequencyDomainStatus_title">Frequency Domain Status</string>
+    <string name="predictive_frequencyDomainStatus_valueFormat">Max amplitude (m/s^2): %.2f</string>
+</resources>

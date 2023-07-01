@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2022(-0001) STMicroelectronics.
+ * All rights reserved.
+ * This software is licensed under terms that can be found in the LICENSE file in
+ * the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ */
+buildscript {
+    ext {
+        // Sdk and Tools
+        minSdk = 26
+        targetSdk = 33
+        compileSdk = 33
+        LIB_VERSION = '0.5.0-alpha2'
+
+        st_version = '0.5.0-alpha62'
+        st_opus_version = '1.0.0'
+
+        compose_bom_date = '2023.05.01'
+        compose_compiler_version = '1.4.7'
+        compose_material2_version = "1.4.3"
+        compose_material3_version = "1.1.0"
+
+        kotlin_version = '1.8.21'
+        hilt_navigation_fragment_version = '1.0.0'
+        hilt_version = '2.46.1'
+        junit_version = '4.13.2'
+        junit_ui_version = '1.1.5'
+        espresso_core_version = '3.5.1'
+        leakcanary_version = '2.10'
+        accompanist_version = '0.30.1'
+
+        activity_ktx_version = '1.7.1'
+        activity_compose_version = '1.7.1'
+        appcompat_version = '1.6.1'
+        constraintlayout_version = '2.1.4'
+        core_ktx_version = '1.10.1'
+        core_splashscreen_version = '1.0.1'
+        datastore_preferences_version = '1.0.0'
+        desugaring_version = '2.0.2'
+        detekt_version = '1.22.0'
+        exoplayer_version = '2.18.6'
+        fragment_ktx_version = '1.5.7'
+        glide_version = '4.13.2'
+        google_material_version = '1.9.0'
+        gradle_version = '8.0.2'
+        grid_layout = "1.0.0"
+        hilt_compose_version = '1.0.0'
+        kotlinx_coroutines_core_version = '1.6.4'
+        ktlint_version = '11.3.1'
+        legacy_support_v4_version = '1.0.0'
+        lifecycle_version = '2.6.0'
+        lifecycle_runtime_ktx_version = '2.6.1'
+        lifecycle_viewmodel_ktx_version = '2.6.0'
+        loco_version = '0.1.12'
+        material_version = '1.8.0'
+        mpchart_version = 'v3.1.0'
+        nav_version = '2.5.3'
+        navigation_compose_version = '2.5.3'
+        preference_version = '1.2.0'
+        reorderable_version = '0.9.6'
+        retrofit_version = '2.9.0'
+        room_version = '2.5.1'
+        splash_version = '1.0.1'
+        youtube_version = '12.0.0'
+    }
+
+    repositories {
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
+    }
+
+    dependencies {
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+        classpath "com.appswithlove.loco:loco:$loco_version"
+
+    }
+
+}
+
+plugins {
+    id 'com.android.application' version "$gradle_version" apply false
+    id 'com.android.library' version "$gradle_version" apply false
+    id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version" apply false
+    id 'com.google.devtools.ksp' version '1.8.21-1.0.11' apply false
+}

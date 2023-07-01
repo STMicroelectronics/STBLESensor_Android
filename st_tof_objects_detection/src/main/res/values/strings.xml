@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="distance_not_available" translatable="false">0000 mm</string>
+    <string name="tof_objects_not_found" translatable="false">Object Not Found</string>
+    <string name="tof_presence_not_found" translatable="false">Presence Not Found</string>
+    <string name="tof_presence_switch" translatable="false">Distance/Presence</string>
+</resources>

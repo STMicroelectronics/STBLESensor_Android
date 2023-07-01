@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ext_config_nav_graph"
+    app:startDestination="@id/extConfigFragment">
+
+    <fragment
+        android:id="@+id/extConfigFragment"
+        android:name="com.st.ext_config.ui.ext_config.ExtConfigFragment"
+        android:label="ExtConfig">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_extConfigFragment_to_fwDownload"
+            app:destination="@id/fwDownload">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+
+        <action
+            android:id="@+id/action_extConfigFragment_to_certRequest"
+            app:destination="@id/certRequest">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+
+        <action
+            android:id="@+id/action_extConfigFragment_to_certRegistration"
+            app:destination="@id/certRegistration">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fwDownload"
+        android:name="com.st.ext_config.ui.fw_download.FwDownloadFragment"
+        android:label="FwDownload">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_fwDownloadFragment_to_fwUpgrade"
+            app:destination="@id/fwUpgrade">
+            <argument
+                android:name="nodeId"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/certRequest"
+        android:name="com.st.ext_config.ui.cert.CertRequestFragment"
+        android:label="CertRequest">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/certRegistration"
+        android:name="com.st.ext_config.ui.cert.CertRegistrationFragment"
+        android:label="CertRegistration">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fwUpgrade"
+        android:name="com.st.ext_config.ui.fw_upgrade.FwUpgradeFragment"
+        android:label="FwUpgrade">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+</navigation>

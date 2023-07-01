@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+
+    <path
+        android:fillColor="#3CB4E6"
+        android:pathData="M46.3092,38.3293 C46.3092,47.5343,39.0036,55,29.9936,55
+C20.9958,55,13.6908,47.5343,13.6908,38.3293
+C13.6908,35.7139,14.2395,33.2238,15.3332,31.0249
+C16.4062,28.8828,16.5314,28.948,18.0318,26.6671
+C19.7549,24.044,22.0907,20.6159,24.0036,17.2219
+C27.5583,10.966,29.9936,5,29.9936,5 C29.9936,5,32.4023,10.9241,35.9686,17.2219
+C37.8822,20.5849,40.216,24.0234,41.9611,26.6671
+C43.4647,28.9654,43.5945,28.8828,44.6726,31.103
+C45.7682,33.269,46.3092,35.7404,46.3092,38.3293" />
+</vector>

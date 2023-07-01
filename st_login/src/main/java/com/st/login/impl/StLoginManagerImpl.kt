@@ -70,21 +70,22 @@ class StLoginManagerImpl @Inject constructor(
     }
 
     override suspend fun getStAuthData(): StAuthData? {
-        if (needsAccessTokenRefresh()) {
-            val refreshed = refreshAuthState()
-            if (!refreshed) {
-                return null
-            }
-        }
-
-        return authStateManager?.current?.let { authState ->
-            StAuthData(
-                authState.accessToken!!,
-                "SecretKey",
-                authState.idToken!!,
-                authState.accessTokenExpirationTime.toString()
-            )
-        }
+//        if (needsAccessTokenRefresh()) {
+//            val refreshed = refreshAuthState()
+//            if (!refreshed) {
+//                return null
+//            }
+//        }
+//
+//        return authStateManager?.current?.let { authState ->
+//            StAuthData(
+//                authState.accessToken!!,
+//                "SecretKey",
+//                authState.idToken!!,
+//                authState.accessTokenExpirationTime.toString()
+//            )
+//        }
+        return null
     }
 
     private fun needsAccessTokenRefresh(): Boolean {
@@ -115,51 +116,52 @@ class StLoginManagerImpl @Inject constructor(
     }
 
     private fun initAppAuth() {
-        configuration.acceptConfiguration()
-
-        authStateManager = AuthStateManager.getInstance(context, TAG)
-
-        val serviceConfig = AuthorizationServiceConfiguration(
-            configuration.authEndpointUri!!,
-            configuration.tokenEndpointUri!!,
-            configuration.registrationEndpointUri,
-            configuration.endSessionEndpoint
-        )
-
-        val authRequestBuilder = AuthorizationRequest.Builder(
-            serviceConfig,
-            configuration.clientId!!,
-            ResponseTypeValues.CODE,
-            configuration.redirectUri
-        )
-            .setScope(configuration.scope)
-            .setAdditionalParameters(mapOf("identity_provider" to configuration.identityProvider))
-
-        authRequest = authRequestBuilder.build()
-
-        val builder = AppAuthConfiguration.Builder()
-        builder.setBrowserMatcher(
-            BrowserDenyList(
-                VersionedBrowserMatcher(
-                    Browsers.SBrowser.PACKAGE_NAME,
-                    Browsers.SBrowser.SIGNATURE_SET,
-                    true,  // when this browser is used via a custom tab
-                    VersionRange.atMost("5.3")
-                )
-            )
-        )
-        builder.setConnectionBuilder(configuration.connectionBuilder)
-        authService = AuthorizationService(context, builder.build())
+//        configuration.acceptConfiguration()
+//
+//        authStateManager = AuthStateManager.getInstance(context, TAG)
+//
+//        val serviceConfig = AuthorizationServiceConfiguration(
+//            configuration.authEndpointUri!!,
+//            configuration.tokenEndpointUri!!,
+//            configuration.registrationEndpointUri,
+//            configuration.endSessionEndpoint
+//        )
+//
+//        val authRequestBuilder = AuthorizationRequest.Builder(
+//            serviceConfig,
+//            configuration.clientId!!,
+//            ResponseTypeValues.CODE,
+//            configuration.redirectUri
+//        )
+//            .setScope(configuration.scope)
+//            .setAdditionalParameters(mapOf("identity_provider" to configuration.identityProvider))
+//
+//        authRequest = authRequestBuilder.build()
+//
+//        val builder = AppAuthConfiguration.Builder()
+//        builder.setBrowserMatcher(
+//            BrowserDenyList(
+//                VersionedBrowserMatcher(
+//                    Browsers.SBrowser.PACKAGE_NAME,
+//                    Browsers.SBrowser.SIGNATURE_SET,
+//                    true,  // when this browser is used via a custom tab
+//                    VersionRange.atMost("5.3")
+//                )
+//            )
+//        )
+//        builder.setConnectionBuilder(configuration.connectionBuilder)
+//        authService = AuthorizationService(context, builder.build())
     }
 
     override suspend fun login(activityResultRegistry: ActivityResultRegistry): StAuthData? {
-        return if (isLoggedIn()) {
-            getStAuthData()
-        } else {
-            startFlow(activityResultRegistry = activityResultRegistry)
-
-            getStAuthData()
-        }
+//        return if (isLoggedIn()) {
+//            getStAuthData()
+//        } else {
+//            startFlow(activityResultRegistry = activityResultRegistry)
+//
+//            getStAuthData()
+//        }
+        return null
     }
 
     private suspend fun startFlow(activityResultRegistry: ActivityResultRegistry) {
@@ -255,84 +257,85 @@ class StLoginManagerImpl @Inject constructor(
     }
 
     override suspend fun logout(activityResultRegistry: ActivityResultRegistry) {
-        suspendCoroutine { continuation ->
-            authService?.let { authService ->
-
-                authStateManager?.current?.let { authState ->
-                    val serviceConfig = AuthorizationServiceConfiguration(
-                        configuration.authEndpointUri!!,
-                        configuration.tokenEndpointUri!!,
-                        configuration.registrationEndpointUri,
-                        configuration.endSessionEndpoint
-                    )
-
-
-                    endRequest = EndSessionRequest.Builder(serviceConfig)
-                        .setAdditionalParameters(
-                            mapOf(
-                                "client_id" to configuration.clientId,
-                                "response_type" to ResponseTypeValues.CODE,
-                                "redirect_uri" to configuration.redirectUri.toString(),
-                                "logout_uri" to configuration.redirectUri.toString(),
-                                "identity_provider" to configuration.identityProvider
-                            )
-                        )
-                        .setIdTokenHint(authState.idToken)
-                        .build()
-
-                    val intent = authService.getEndSessionRequestIntent(endRequest!!)
-
-                    val launcher: ActivityResultLauncher<Unit> =
-                        activityResultRegistry.register(
-                            "key2",
-                            object :
-                                ActivityResultContract<Unit, Pair<AuthorizationResponse?, AuthorizationException?>?>() {
-                                override fun createIntent(
-                                    context: Context,
-                                    input: Unit
-                                ): Intent =
-                                    intent
-
-                                override fun parseResult(
-                                    resultCode: Int,
-                                    intent: Intent?
-                                ): Pair<AuthorizationResponse?, AuthorizationException?>? {
-                                    intent?.let { data ->
-                                        if (resultCode != 0) {
-                                            val response = AuthorizationResponse.fromIntent(data)
-                                            val ex = AuthorizationException.fromIntent(data)
-
-                                            return Pair(response, ex)
-                                        }
-                                    }
-                                    return null
-                                }
-                            }
-                        ) { result ->
-                            result?.let {
-                                val response = it.first
-                                val ex = it.second
-
-                                ex?.let {
-                                    Log.w(TAG, it.localizedMessage)
-                                }
-                                val clearedState =
-                                    AuthState(authState.authorizationServiceConfiguration!!)
-                                if (authState.lastRegistrationResponse != null) {
-                                    clearedState.update(authState.lastRegistrationResponse)
-                                }
-                                authStateManager?.replace(clearedState)
-
-                                continuation.resume(Unit)
-                            }
-                        }
-
-                    launcher.launch(Unit)
-                }
-            }
-        }
+//        suspendCoroutine { continuation ->
+//            authService?.let { authService ->
+//
+//                authStateManager?.current?.let { authState ->
+//                    val serviceConfig = AuthorizationServiceConfiguration(
+//                        configuration.authEndpointUri!!,
+//                        configuration.tokenEndpointUri!!,
+//                        configuration.registrationEndpointUri,
+//                        configuration.endSessionEndpoint
+//                    )
+//
+//
+//                    endRequest = EndSessionRequest.Builder(serviceConfig)
+//                        .setAdditionalParameters(
+//                            mapOf(
+//                                "client_id" to configuration.clientId,
+//                                "response_type" to ResponseTypeValues.CODE,
+//                                "redirect_uri" to configuration.redirectUri.toString(),
+//                                "logout_uri" to configuration.redirectUri.toString(),
+//                                "identity_provider" to configuration.identityProvider
+//                            )
+//                        )
+//                        .setIdTokenHint(authState.idToken)
+//                        .build()
+//
+//                    val intent = authService.getEndSessionRequestIntent(endRequest!!)
+//
+//                    val launcher: ActivityResultLauncher<Unit> =
+//                        activityResultRegistry.register(
+//                            "key2",
+//                            object :
+//                                ActivityResultContract<Unit, Pair<AuthorizationResponse?, AuthorizationException?>?>() {
+//                                override fun createIntent(
+//                                    context: Context,
+//                                    input: Unit
+//                                ): Intent =
+//                                    intent
+//
+//                                override fun parseResult(
+//                                    resultCode: Int,
+//                                    intent: Intent?
+//                                ): Pair<AuthorizationResponse?, AuthorizationException?>? {
+//                                    intent?.let { data ->
+//                                        if (resultCode != 0) {
+//                                            val response = AuthorizationResponse.fromIntent(data)
+//                                            val ex = AuthorizationException.fromIntent(data)
+//
+//                                            return Pair(response, ex)
+//                                        }
+//                                    }
+//                                    return null
+//                                }
+//                            }
+//                        ) { result ->
+//                            result?.let {
+//                                val response = it.first
+//                                val ex = it.second
+//
+//                                ex?.let {
+//                                    Log.w(TAG, it.localizedMessage)
+//                                }
+//                                val clearedState =
+//                                    AuthState(authState.authorizationServiceConfiguration!!)
+//                                if (authState.lastRegistrationResponse != null) {
+//                                    clearedState.update(authState.lastRegistrationResponse)
+//                                }
+//                                authStateManager?.replace(clearedState)
+//
+//                                continuation.resume(Unit)
+//                            }
+//                        }
+//
+//                    launcher.launch(Unit)
+//                }
+//            }
+//        }
     }
 
     override fun isLoggedIn(): Boolean =
-        authStateManager?.current?.isAuthorized ?: false
+        //authStateManager?.current?.isAuthorized ?: false
+        false
 }

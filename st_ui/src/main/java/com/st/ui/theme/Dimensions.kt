@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 val regularDimension = AppDimension(
+    switchMinWidth = 100.dp,
     btnMinHeight = 40.dp,
     btnMinWidth = 120.dp,
     topAppBarHeight = 64.dp,
@@ -53,6 +54,7 @@ val LocalDimensions = staticCompositionLocalOf { regularDimension }
 
 @Immutable
 data class AppDimension(
+    val switchMinWidth: Dp,
     val btnMinWidth: Dp,
     val btnMinHeight: Dp,
     val topAppBarHeight: Dp,

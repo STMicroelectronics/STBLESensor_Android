@@ -20,10 +20,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
-import com.st.demo_showcase.R
 import com.st.demo_showcase.ui.DemoShowCaseViewModel
 import com.st.demo_showcase.ui.composable.DemoListScreen
 import com.st.ui.composables.JSON_FILE_TYPE
@@ -64,7 +61,7 @@ class DemoListFragment : Fragment() {
                     val isExpert by viewModel.isExpert.collectAsStateWithLifecycle()
                     val demos by viewModel.availableDemo.collectAsStateWithLifecycle()
                     val device by viewModel.device.collectAsStateWithLifecycle()
-                    val customDTMI by viewModel.customDTMI.collectAsStateWithLifecycle()
+                    val statusModelDTMI by viewModel.statusModelDTMI.collectAsStateWithLifecycle()
                     val pinnedDevices by viewModel.pinnedDevices.collectAsStateWithLifecycle(
                         emptyList()
                     )
@@ -114,7 +111,7 @@ class DemoListFragment : Fragment() {
                             val direction = DemoListFragmentDirections.actionDemoListToUserProfilingNavGraph()
                             findNavController().navigate(directions = direction)
                         },
-                        customDTMI = customDTMI,
+                        statusModelDTMI = statusModelDTMI,
                         onCustomDTMIClicked = { pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE))}
                     )
                 }

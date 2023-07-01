@@ -22,8 +22,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.st.ui.R
 import com.st.ui.theme.BlueMSTheme
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 
 @Composable
@@ -130,15 +132,24 @@ private fun Header(
         ) {
             Column(modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal)) {
                 Text(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    lineHeight = 22.68.sp,
+                    letterSpacing = 0.14.sp,
                     color = MaterialTheme.colorScheme.primary,
-                    text = title,
-                    fontWeight = FontWeight.Bold
+                    text = title
                 )
 
                 subtitle?.let {
                     Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-                    Text(text = it)
+                    Text(
+                        fontSize = 12.sp,
+                        lineHeight = 18.9.sp,
+                        letterSpacing = 0.24.sp,
+                        color = Grey6,
+                        text = it
+                    )
                 }
             }
 
@@ -148,7 +159,9 @@ private fun Header(
         }
 
         if (isOpen) {
-            Divider()
+            Divider(
+                modifier = Modifier.padding(vertical = LocalDimensions.current.paddingNormal)
+            )
         }
     }
 }

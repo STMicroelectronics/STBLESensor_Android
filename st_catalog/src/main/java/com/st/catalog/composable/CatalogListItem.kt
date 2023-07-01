@@ -20,11 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.st.blue_sdk.board_catalog.models.BoardStatus
 import com.st.ui.theme.*
 import com.st.ui.utils.asString
+import com.st.ui.utils.fadedEdgeMarquee
 import com.st.ui.utils.getBlueStBoardImages
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,6 +89,7 @@ fun CatalogListItem(
                     Text(
                         text = description,
                         maxLines = DESCRIPTION_MAX_LINES,
+                        overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
                     )

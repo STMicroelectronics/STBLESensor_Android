@@ -74,8 +74,10 @@
     <string name="st_extConfig_fwUpgrade_uploadFw">Upload\nFW</string>
     <string name="st_extConfig_fwUpgrade_otaOpt1">Application</string>
     <string name="st_extConfig_fwUpgrade_otaOpt2">Wireless</string>
+    <string name="st_extConfig_fwUpgrade_otaOpt2bis">User conf</string>
     <string name="st_extConfig_fwUpgrade_selectFileBtn">Select File</string>
     <string name="st_extConfig_fwUpgrade_startUpload">Start upload</string>
     <string name="st_extConfig_fwUpgrade_otaBoard1">STM32WB5x/WB3x</string>
     <string name="st_extConfig_fwUpgrade_otaBoard2">STM32WB1x</string>
+    <string name="st_extConfig_fwUpgrade_otaBoard3">STM32WBA</string>
 </resources>

@@ -81,6 +81,8 @@ dependencies {
     implementation project(path: ":st_core")
     // - Prefs
     implementation project(path: ":st_preferences")
+    // - Login
+    implementation project(path: ":st_login")
     // - User Profiling
     implementation project(path: ":st_user_profiling")
     // - Demos

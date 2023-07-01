@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -35,7 +36,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.st.high_speed_data_log.R
-import com.st.ui.theme.Grey5
+import com.st.ui.theme.Grey3
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 
@@ -53,13 +55,15 @@ fun VespucciHsdlTags(
             .padding(all = LocalDimensions.current.paddingNormal)
             .verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
         Description()
 
-        Spacer(modifier = Modifier.height(LocalDimensions.current.paddingNormal))
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
 
         AcquisitionInfo(acquisitionInfo = acquisitionInfo)
 
-        Spacer(modifier = Modifier.height(LocalDimensions.current.paddingNormal))
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
 
         TagsInfo(
             isLogging = isLogging,
@@ -76,11 +80,13 @@ fun Description(
     val style = SpanStyle(
         color = MaterialTheme.colorScheme.primary,
         fontSize = 14.sp,
+        letterSpacing = 0.25.sp
     )
     val emphasisStyle = SpanStyle(
         color = MaterialTheme.colorScheme.primary,
         fontSize = 14.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.25.sp
     )
     val annotatedString = buildAnnotatedString {
         withStyle(style = style) {
@@ -97,7 +103,9 @@ fun Description(
     }
 
     Text(
+        color = Grey6,
         modifier = modifier.fillMaxWidth(),
+        lineHeight = 20.sp,
         textAlign = TextAlign.Center,
         text = annotatedString
     )
@@ -136,10 +144,19 @@ fun AcquisitionInfo(
                     color = MaterialTheme.colorScheme.primary,
                     text = stringResource(id = R.string.st_hsdl_tags_acquisitionTitle),
                     fontWeight = FontWeight.Bold,
+                    lineHeight = 22.68.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    letterSpacing = 0.14.sp,
                     fontSize = 16.sp
                 )
                 Text(
-                    color = Grey5,
+                    color = Grey6,
+                    lineHeight = 24.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.15.sp,
                     text = acquisitionInfo,
                     fontSize = 14.sp
                 )
@@ -187,6 +204,10 @@ fun TagsInfo(
                         color = MaterialTheme.colorScheme.primary,
                         text = stringResource(id = R.string.st_hsdl_tags_tagsTitle),
                         fontWeight = FontWeight.Bold,
+                        lineHeight = 22.68.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        letterSpacing = 0.14.sp,
                         fontSize = 16.sp
                     )
                 }
@@ -227,16 +248,20 @@ fun TagListItem(
     ) {
         Icon(
             modifier = Modifier
-                .size(size = LocalDimensions.current.iconSmall),
+                .size(size = LocalDimensions.current.iconSmall)
+                .scale(scaleX = -1f, scaleY = 1f),
             imageVector = Icons.Default.Sell,
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = null
         )
 
-        Spacer(modifier = Modifier.width(LocalDimensions.current.paddingMedium))
+        Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingMedium))
 
         Text(
-            color = Grey5,
+            color = Grey6,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 24.sp,
+            letterSpacing = 0.1.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             text = tag,
@@ -248,7 +273,11 @@ fun TagListItem(
         Switch(
             enabled = isEnabled,
             checked = isChecked,
-            colors = SwitchDefaults.colors(uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary),
+            colors = SwitchDefaults.colors(
+                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                uncheckedTrackColor = Grey6,
+                disabledUncheckedTrackColor = Grey3
+            ),
             onCheckedChange = onCheckChange
         )
     }
@@ -262,9 +291,21 @@ fun TagListItem(
 private fun VespucciHsdlTagsPreview() {
     PreviewBlueMSTheme {
         VespucciHsdlTags(
-            acquisitionInfo = "prova",
+            acquisitionInfo = "Fri May 26 2023 13:47:27",
             isLogging = false,
-            vespucciTags = mapOf("prova" to true, "test" to false, "mock" to true)
+            vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VespucciHsdlTagsLoggingPreview() {
+    PreviewBlueMSTheme {
+        VespucciHsdlTags(
+            acquisitionInfo = "Fri May 26 2023 13:47:27",
+            isLogging = true,
+            vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
         )
     }
 }

@@ -46,8 +46,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,6 +66,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import com.st.ui.R
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
@@ -73,10 +74,9 @@ import com.st.ui.theme.toDouble
 import com.st.ui.theme.toFloat
 import com.st.ui.theme.toInt
 import com.st.ui.theme.toLong
-import com.st.ui.utils.*
+import com.st.ui.utils.Number
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoubleProperty(
     modifier: Modifier = Modifier,
@@ -105,7 +105,13 @@ fun DoubleProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -130,7 +136,6 @@ fun DoubleProperty(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FloatProperty(
     modifier: Modifier = Modifier,
@@ -159,9 +164,16 @@ fun FloatProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
@@ -201,7 +213,6 @@ fun <T : Comparable<T>> rememberIsValid(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntegerProperty(
     modifier: Modifier = Modifier,
@@ -234,7 +245,13 @@ fun IntegerProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -282,7 +299,6 @@ fun IntegerProperty(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LongProperty(
     modifier: Modifier = Modifier,
@@ -309,7 +325,13 @@ fun LongProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -359,7 +381,6 @@ fun rememberVectorProperty(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VectorProperty(
     modifier: Modifier = Modifier,
@@ -383,7 +404,13 @@ fun VectorProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -456,7 +483,6 @@ fun rememberGeoProperty(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeoProperty(
     modifier: Modifier = Modifier,
@@ -480,7 +506,13 @@ fun GeoProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 

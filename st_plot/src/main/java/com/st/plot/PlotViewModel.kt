@@ -128,10 +128,15 @@ class PlotViewModel
         mFirstNotificationTimeStamp = System.currentTimeMillis()
         _isPlotting.value = true
         mCurrentPlottingFeature = f
+        resetPlot()
 
         if (!mNotificationEnabled) {
             notificationStartStop()
         }
+    }
+
+    fun resetPlot() {
+        _lastPlotData.postValue(null)
     }
 
     fun stopPlotFeature() {
@@ -148,7 +153,6 @@ class PlotViewModel
             }
         }
         _isPlotting.value = false
-        _lastPlotData.postValue(null)
         mCurrentPlottingFeature = null
     }
 

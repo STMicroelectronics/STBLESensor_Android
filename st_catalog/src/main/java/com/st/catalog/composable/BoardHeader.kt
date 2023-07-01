@@ -8,7 +8,15 @@
 package com.st.catalog.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -16,21 +24,26 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.st.blue_sdk.board_catalog.models.BoardDescription
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.blue_sdk.board_catalog.models.BoardStatus
+import com.st.blue_sdk.board_catalog.models.FotaDetails
 import com.st.catalog.R
 import com.st.ui.theme.ErrorText
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
-import com.st.ui.theme.Grey6
 import com.st.ui.theme.SuccessText
 import com.st.ui.utils.getBlueStBoardImages
 
@@ -42,6 +55,7 @@ fun BoardHeader(
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ }
 ) {
+    val openComponentDialog = remember { mutableStateOf(false) }
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
@@ -55,7 +69,10 @@ fun BoardHeader(
                     .fillMaxWidth()
                     .padding(all = LocalDimensions.current.paddingNormal),
                 text = board.brdName,
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 24.sp,
+                letterSpacing = 0.15.sp,
                 color = MaterialTheme.colorScheme.primary
             )
             if(boardDescOrNull!=null) {
@@ -64,7 +81,9 @@ fun BoardHeader(
                         .fillMaxWidth()
                         .padding(all = LocalDimensions.current.paddingNormal),
                     text = "(${boardDescOrNull.friendlyName})",
-                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    letterSpacing = 0.25.sp,
                     color = Grey6,
                 )
             }
@@ -80,7 +99,10 @@ fun BoardHeader(
                         .padding(all = LocalDimensions.current.paddingNormal)
                         .size(size = LocalDimensions.current.imageLarge)
                         //.fillMaxHeight()
-                        .align(alignment = Alignment.Center),
+                        .align(alignment = Alignment.Center)
+                        .clickable {
+                            openComponentDialog.value = true
+                        },
                     painter = painterResource(id = getBlueStBoardImages(boardType = board.boardModel().name)),
                     contentDescription = null
                 )
@@ -88,23 +110,26 @@ fun BoardHeader(
 
             if(boardDescOrNull!=null) {
                 when(boardDescOrNull.status) {
-                    BoardStatus.ACTIVE ->
-                    Text(
+                    BoardStatus.ACTIVE -> Text(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(all = LocalDimensions.current.paddingNormal),
                         textAlign = TextAlign.Right,
-                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.25.sp,
                         color = SuccessText,
                         text = boardDescOrNull.status.name
                     )
-                    BoardStatus.NRND ->
-                        Text(
+
+                    BoardStatus.NRND -> Text(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(all = LocalDimensions.current.paddingNormal),
                             textAlign = TextAlign.Right,
-                            style = MaterialTheme.typography.bodySmall,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.25.sp,
                             color = ErrorText,
                             text = boardDescOrNull.status.name
                         )
@@ -114,27 +139,56 @@ fun BoardHeader(
             Divider()
 
             Row(modifier = Modifier.fillMaxWidth()) {
-                TextButton(onClick = goToFw) {
+                TextButton(
+                    modifier = Modifier.weight(0.5f), onClick = goToFw
+                ) {
                     Text(
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 16.sp,
+                        letterSpacing = 1.25.sp,
                         color = SecondaryBlue,
-                        text = stringResource(id = R.string.st_catalog_board_fwBtn)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = LocalDimensions.current.paddingNormal),
+                        textAlign = TextAlign.Left,
+                        text = stringResource(id = R.string.st_catalog_board_fwBtn).uppercase()
                     )
                 }
 
-                Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingNormal))
-
                 boardDescOrNull?.let {
                     if(boardDescOrNull.docURL!=null) {
-                        TextButton(onClick = goToDs) {
+                        TextButton(
+                            modifier = Modifier.weight(0.5f), onClick = goToDs
+                        ) {
                             Text(
-                                style = MaterialTheme.typography.bodyMedium,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 16.sp,
+                                letterSpacing = 1.25.sp,
                                 color = SecondaryBlue,
-                                text = stringResource(id = R.string.st_catalog_board_dsBtn)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = LocalDimensions.current.paddingNormal),
+                                textAlign = TextAlign.Right,
+                                text = stringResource(id = R.string.st_catalog_board_dsBtn).uppercase()
                             )
                         }
+                    } else {
+                        Spacer(modifier = Modifier.weight(05f))
                     }
                 }
+            }
+        }
+    }
+
+    if (openComponentDialog.value) {
+        if (boardDescOrNull != null) {
+            if (!boardDescOrNull.components.isNullOrEmpty()) {
+                DialogBoardComponents(compList = boardDescOrNull.components!!,
+                    onDismissRequest = {
+                        openComponentDialog.value = false
+                    })
             }
         }
     }
@@ -144,23 +198,66 @@ fun BoardHeader(
 
 @Preview(showBackground = true)
 @Composable
-private fun BoardHeaderPreview() {
+private fun BoardHeaderNrndPreview() {
     PreviewBlueMSTheme {
         BoardHeader(
-            board = BoardFirmware.mock()
-//            board = BoardFirmware(
-//                bleDevId = "0x0A",
-//                bleFwId = "0x0F",
-//                brdName = "STEVAL-BCNKT01V1",
-//                fwVersion = "1.0.1",
-//                fwName = "FP-SNS-FLIGHT1",
-//                cloudApps = emptyList(),
-//                characteristics = emptyList(),
-//                optionBytes = emptyList(),
-//                fwDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempor posuere enim, et imperdiet quam mattis at.",
-//                fota = FotaDetails(),
-//            )
+            board = BoardFirmware(
+                bleDevId = "0x0A",
+                bleFwId = "0x0F",
+                brdName = "STEVAL-BCNKT01V1",
+                fwVersion = "1.0.1",
+                fwName = "FP-SNS-FLIGHT1",
+                cloudApps = emptyList(),
+                characteristics = emptyList(),
+                optionBytes = emptyList(),
+                fwDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempor posuere enim, et imperdiet quam mattis at.",
+                fota = FotaDetails()
+            ), boardDescOrNull = BoardDescription(
+                bleDevId = "123",
+                usb_dev_id = "123",
+                usbDevId = "123",
+                uniqueDevId = 0,
+                boardName = "Lorem ipsum dolor sit amet",
+                friendlyName = "Lorem ipsum dolor sit amet",
+                status = BoardStatus.NRND,
+                description = "",
+                docURL = "www",
+                orderURL = "www",
+                videoURL = "www",
+            )
         )
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun BoardHeaderAcivePreview() {
+    PreviewBlueMSTheme {
+        BoardHeader(
+            board = BoardFirmware(
+                bleDevId = "0x0A",
+                bleFwId = "0x0F",
+                brdName = "STEVAL-BCNKT01V1",
+                fwVersion = "1.0.1",
+                fwName = "FP-SNS-FLIGHT1",
+                cloudApps = emptyList(),
+                characteristics = emptyList(),
+                optionBytes = emptyList(),
+                fwDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempor posuere enim, et imperdiet quam mattis at.",
+                fota = FotaDetails()
+            ), boardDescOrNull = BoardDescription(
+                bleDevId = "123",
+                usb_dev_id = "123",
+                usbDevId = "123",
+                uniqueDevId = 0,
+                boardName = "Lorem ipsum dolor sit amet",
+                friendlyName = "Lorem ipsum dolor sit amet",
+                status = BoardStatus.ACTIVE,
+                description = "",
+                docURL = "www",
+                orderURL = "www",
+                videoURL = "www",
+            )
+        )
+    }
+}

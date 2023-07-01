@@ -117,7 +117,9 @@ class AccelerationEventFragment : Fragment(){
             Boards.Model.STEVAL_STWINKIT1 -> stwinSupportedEvents
             Boards.Model.STEVAL_STWINKT1B -> stwinSupportedEvents
             Boards.Model.SENSOR_TILE_BOX_PRO -> sensorTileBoxSupportedEvents
+            Boards.Model.SENSOR_TILE_BOX_PROB -> sensorTileBoxSupportedEvents
             Boards.Model.STWIN_BOX -> stwinSupportedEvents
+            Boards.Model.STWIN_BOXB -> stwinSupportedEvents
             Boards.Model.PROTEUS -> proteusSupportedEvents
             Boards.Model.SENSOR_TILE -> nucleoSupportedEvents
             Boards.Model.BLUE_COIN -> nucleoSupportedEvents
@@ -143,7 +145,9 @@ class AccelerationEventFragment : Fragment(){
             Boards.Model.STEVAL_STWINKIT1 -> DetectableEventType.Orientation
             Boards.Model.STEVAL_STWINKT1B -> DetectableEventType.Orientation
             Boards.Model.SENSOR_TILE_BOX_PRO -> DetectableEventType.Orientation
+            Boards.Model.SENSOR_TILE_BOX_PROB -> DetectableEventType.Orientation
             Boards.Model.STWIN_BOX -> DetectableEventType.Orientation
+            Boards.Model.STWIN_BOXB -> DetectableEventType.Orientation
             Boards.Model.PROTEUS -> DetectableEventType.WakeUp
             Boards.Model.WB_BOARD -> DetectableEventType.Orientation
             Boards.Model.WBA_BOARD -> DetectableEventType.Orientation

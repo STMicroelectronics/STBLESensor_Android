@@ -36,12 +36,12 @@
   -->
 <resources>
     <array name="dataSetColor">
-        <item>#FF0000FF</item>  <!-- blue -->
-        <item>#FFFF0000</item>  <!-- red -->
-        <item>#FF00FF00</item>  <!-- green -->
-        <item>#FF000000</item>  <!-- black -->
-        <item>#FF00FFFF</item>  <!-- cyan -->
-        <item>#FFFF00FF</item>  <!-- pink -->
+        <item>#1B3AA8</item>  <!-- InfoText -->
+        <item>#A8251B</item>  <!-- ErrorText -->
+        <item>#1E8537</item>  <!-- SuccessText -->
+        <item>#000000</item>  <!-- Grey10 -->
+        <item>#3CB4E6</item>  <!-- SecondaryBlue -->
+        <item>#E6007E</item>  <!-- PrimaryPink -->
     </array>
 
     <string name="plotFeature_settings">Plot Settings</string>

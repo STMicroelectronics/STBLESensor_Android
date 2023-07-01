@@ -190,6 +190,8 @@ class ChartFragment : Fragment() {
         settingsViewModel.selectedFeature.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { selectedFeature ->
+                dataViewModel.resetPlot()
+
                 if (dataViewModel.isPlotting.value == true) {
                     settingsViewModel.startPlotSelectedFeature()
                     dataViewModel.startPlotFeature(selectedFeature)

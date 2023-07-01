@@ -1,5 +1,6 @@
 package com.st.ui.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,7 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
+import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 
 @Composable
@@ -33,10 +39,25 @@ fun BlueMsMenuActions(
         Row(modifier = modifier) {
             if (actions.size == 1) {
                 IconButton(onClick = actions[0].action) {
+                    if (actions[0].imageVector == null && actions[0].painter == null) {
+                        Icon(
+                            imageVector = menuIcon,
+                            contentDescription = actions[0].label
+                        )
+                    } else {
+                        actions[0].imageVector?.let {
+                            Icon(
+                                imageVector = it,
+                                contentDescription = actions[0].label
+                            )
+                        }
+                        actions[0].painter?.let {
                     Icon(
-                        imageVector = actions[0].imageVector ?: menuIcon,
+                                painter = it,
                         contentDescription = actions[0].label
                     )
+                        }
+                    }
                 }
             } else {
                 IconButton(onClick = { menuExpanded = true }) {
@@ -46,7 +67,9 @@ fun BlueMsMenuActions(
                     )
                 }
                 DropdownMenu(
-                    modifier = Modifier.fillMaxWidth(fraction = 0.5f),
+                    modifier = Modifier
+                        .background(Grey0)
+                        .fillMaxWidth(fraction = 0.5f),
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false }
                 ) {
@@ -70,7 +93,25 @@ fun BlueMsMenuActions(
                                             )
                                         )
                                     }
-                                    Text(text = action.label.uppercase())
+                                    action.painter?.let {
+                                        Icon(
+                                            painter = it,
+                                            contentDescription = action.label
+                                        )
+                                        Spacer(
+                                            modifier = Modifier.width(
+                                                width = LocalDimensions.current.paddingNormal
+                                            )
+                                        )
+                                    }
+                                    Text(
+                                        text = action.label.uppercase(),
+                                        maxLines = 1,
+                                        fontSize = 15.sp,
+                                        lineHeight = 24.sp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
                                 }
                             }
                         )
@@ -85,6 +126,7 @@ fun BlueMsMenuActions(
 
 data class ActionItem(
     val imageVector: ImageVector? = null,
+    val painter: Painter? = null,
     val label: String,
     val description: String = "",
     val action: () -> Unit = { /** NOOP **/ }

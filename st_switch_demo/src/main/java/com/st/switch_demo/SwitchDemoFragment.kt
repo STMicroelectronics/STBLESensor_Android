@@ -68,7 +68,7 @@ class SwitchDemoFragment : Fragment() {
         }
 
         val boardType = viewModel.getNode(nodeId)
-        if (boardType == Boards.Model.SENSOR_TILE_BOX || boardType == Boards.Model.SENSOR_TILE_BOX_PRO) {
+        if (boardType == Boards.Model.SENSOR_TILE_BOX || boardType == Boards.Model.SENSOR_TILE_BOX_PRO || boardType == Boards.Model.SENSOR_TILE_BOX_PROB) {
             mSwitchText.setText(R.string.switch_eventDescription)
         } else {
             mSwitchText.setText(R.string.switch_onOffDescription)

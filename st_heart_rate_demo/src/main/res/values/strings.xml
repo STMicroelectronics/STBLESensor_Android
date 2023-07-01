@@ -3,4 +3,10 @@
     <string name="heartRateDataFormat">%1$d %2$s</string>
     <string name="energyExpendedDataFormat">%1$d %2$s</string>
     <string name="rrIntervalDataFormat">%1$.2f %2$s</string>
+    <string name="skin_contact">Skin contact</string>
+    <string name="position">Position</string>
+    <string name="rr_interval">RR Interval</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="not_supported">Not supported</string>
 </resources>

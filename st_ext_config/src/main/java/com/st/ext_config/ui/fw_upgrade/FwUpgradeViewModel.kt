@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
+import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.services.ota.FirmwareType
 import com.st.blue_sdk.services.ota.FwFileDescriptor
 import com.st.blue_sdk.services.ota.FwUpdateListener
@@ -195,4 +196,7 @@ class FwUpgradeViewModel
 
     fun isWbOta(nodeId: String): Boolean =
         blueManager.getFwUpdateStrategy(nodeId = nodeId) == UpgradeStrategy.CHARACTERISTIC
+
+    fun isWbaBoard(nodeId: String): Boolean =
+        blueManager.getNode(nodeId = nodeId)?.boardType == Boards.Model.WBA_BOARD
 }

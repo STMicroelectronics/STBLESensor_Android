@@ -11,15 +11,31 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,9 +45,6 @@ import com.st.pnpl.composable.Component
 import com.st.ui.composables.JSON_FILE_TYPE
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.LocalDimensions
-import kotlinx.serialization.json.JsonObject
-
-val LocalLastStatus = compositionLocalOf { emptyList<JsonObject>() }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -151,7 +164,6 @@ fun BinaryScreenScreen(
 
 
         CompositionLocalProvider(
-            LocalLastStatus provides status,
             LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
         ) {
             Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {

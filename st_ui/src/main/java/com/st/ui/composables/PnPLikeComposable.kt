@@ -36,9 +36,11 @@
  */
 package com.st.ui.composables
 
+import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,9 +49,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -66,6 +70,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -92,11 +97,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.st.ui.R
 import com.st.ui.theme.ErrorText
+import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey3
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.toLocalDateTime
 import com.st.ui.theme.toLocalTime
@@ -136,14 +145,24 @@ fun BooleanProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Switch(
             enabled = enabled,
             checked = internalState,
-            colors = SwitchDefaults.colors(uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary),
+            colors = SwitchDefaults.colors(
+                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                uncheckedTrackColor = Grey6,
+                disabledUncheckedTrackColor = Grey3
+            ),
             onCheckedChange = {
                 internalState = it
                 onValueChange(internalState)
@@ -152,7 +171,6 @@ fun BooleanProperty(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StringProperty(
     modifier: Modifier = Modifier,
@@ -187,7 +205,13 @@ fun StringProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -266,7 +290,13 @@ fun DateTimeProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -440,7 +470,13 @@ fun TimeProperty(
     ) {
         val text = if (unit.isEmpty()) label else "$label [$unit]"
 
-        Text(text = text, fontWeight = FontWeight.Bold)
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = text
+        )
 
         Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
 
@@ -525,7 +561,7 @@ fun <T : Any> EnumProperty(
     onValueChange: (T) -> Unit
 ) {
     val lastStatusUpdatedAt = LocalLastStatusUpdatedAt.current
-    var internalState by rememberSaveable(initialValue, lastStatusUpdatedAt) {
+    var internalState by rememberSaveable(data, initialValue, lastStatusUpdatedAt) {
         mutableStateOf(value = data ?: initialValue)
     }
 
@@ -534,9 +570,16 @@ fun <T : Any> EnumProperty(
         verticalArrangement = Arrangement.Center
     ) {
         val propName = if (unit.isEmpty()) label else "$label [$unit]"
-        Text(text = propName, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingSmall))
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = propName
+        )
+
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
 
         var expanded by remember { mutableStateOf(value = false) }
         var fieldSize by remember { mutableStateOf(Size.Zero) }
@@ -544,7 +587,10 @@ fun <T : Any> EnumProperty(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(BorderStroke(1.dp, Grey3))
+                .border(
+                    border = BorderStroke(1.dp, Grey3),
+                    shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal)
+                )
                 .padding(LocalDimensions.current.paddingNormal)
         ) {
             Row(
@@ -559,19 +605,34 @@ fun <T : Any> EnumProperty(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val text = values.first { it.second == internalState }.first
-                Text(text = text)
+                Text(
+                    fontSize = 15.sp,
+                    lineHeight = 24.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    text = text
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = null)
+                Icon(
+                    tint = Grey6,
+                    imageVector = Icons.Filled.KeyboardArrowDown,
+                    contentDescription = null
+                )
 
                 DropdownMenu(
-                    modifier = Modifier.width(with(LocalDensity.current) { fieldSize.width.toDp() }),
+                    modifier = Modifier
+                        .background(Grey0)
+                        .width(with(LocalDensity.current) { fieldSize.width.toDp() }),
                     expanded = expanded, onDismissRequest = {
                         expanded = false
                     }) {
                     values.forEach {
                         DropdownMenuItem(
+                            colors = MenuDefaults.itemColors(
+                                textColor = MaterialTheme.colorScheme.primary,
+
+                                ),
                             onClick = {
                                 internalState = it.second
                                 if (enabled) {
@@ -580,7 +641,14 @@ fun <T : Any> EnumProperty(
                                 expanded = false
                             },
                             text = {
-                                Text(it.first)
+                                Text(
+                                    text = it.first,
+                                    maxLines = 1,
+                                    fontSize = 15.sp,
+                                    lineHeight = 24.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
                         )
                     }
@@ -608,7 +676,6 @@ fun HeaderEnabledProperty(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UploadFileResultProperty(
     modifier: Modifier = Modifier,
@@ -671,15 +738,16 @@ fun UCF(
                     val fileContent = stream.readBytes().toString(Charsets.UTF_8)
                     stream.close()
 
-//                    val fileName = context.contentResolver.query(fileUri, null, null, null, null)
-//                        ?.use { cursor ->
-//                            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-//                            cursor.moveToFirst()
-//
-//                            cursor.getString(nameIndex)
-//                        } ?: ""
-//                    val fileExt = fileName.split('.').last()
-                    val fileExt = fileContent.split('.').last()
+                    val fileName = context.contentResolver.query(fileUri, null, null, null, null)
+                        ?.use { cursor ->
+                            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                            cursor.moveToFirst()
+
+                            cursor.getString(nameIndex)
+                        } ?: ""
+                    val fileExt = fileName.split('.').last()
+
+                    //val fileExt = fileContent.split('.').last()
 
                     var postProcFile = fileContent
                     if (fileExt == FILE_UCF) {

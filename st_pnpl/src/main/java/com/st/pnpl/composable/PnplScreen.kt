@@ -7,15 +7,26 @@
  */
 package com.st.pnpl.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -24,9 +35,6 @@ import com.st.pnpl.PnplViewModel
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.LocalDimensions
-import kotlinx.serialization.json.JsonObject
-
-val LocalLastStatus = compositionLocalOf { emptyList<JsonObject>() }
 
 @Composable
 fun StPnplScreen(
@@ -75,7 +83,6 @@ fun PnplScreen(
 
     Column(modifier = modifier.fillMaxWidth()) {
         CompositionLocalProvider(
-            LocalLastStatus provides status,
             LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
         ) {
             Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {

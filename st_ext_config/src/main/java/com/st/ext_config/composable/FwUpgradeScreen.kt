@@ -60,6 +60,7 @@ fun FwUpgradeScreen(
         modifier = modifier,
         state = fwUpdateState,
         wbOta = viewModel.isWbOta(nodeId = nodeId),
+        isWbaBoard = viewModel.isWbaBoard(nodeId = nodeId),
         onDismissSuccessDialog = {
             viewModel.clearFwUpdateState()
         },
@@ -82,13 +83,14 @@ fun FwUpgradeScreen(
     modifier: Modifier = Modifier,
     state: FwUpdateState,
     wbOta: Boolean = false,
+    isWbaBoard: Boolean = false,
     onChangeFile: () -> Unit = { /** NOOP **/ },
     onDismissSuccessDialog: () -> Unit = { /** NOOP **/ },
     onDismissErrorDialog: () -> Unit = { /** NOOP **/ },
     onStartUploadFile: (WbOTAUtils.WBBoardType?, FirmwareType?) -> Unit = { _, _ -> /** NOOP **/ }
 ) {
     var radioSelection by remember { mutableStateOf(value = 0) }
-    var selectedBoardIndex by remember { mutableStateOf(value = 0) }
+    var selectedBoardIndex by remember { mutableStateOf(value = if(wbOta && isWbaBoard) 2 else 0) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         Surface(modifier = Modifier.fillMaxWidth()) {
@@ -126,7 +128,7 @@ fun FwUpgradeScreen(
 
                         val radioOptions = listOf(
                             stringResource(id = R.string.st_extConfig_fwUpgrade_otaOpt1),
-                            stringResource(id = R.string.st_extConfig_fwUpgrade_otaOpt2)
+                            stringResource(id = if(selectedBoardIndex == 2) R.string.st_extConfig_fwUpgrade_otaOpt2bis else R.string.st_extConfig_fwUpgrade_otaOpt2)
                         )
                         radioOptions.forEachIndexed { index, text ->
                             Row(
@@ -191,10 +193,10 @@ fun FwUpgradeScreen(
                 text = stringResource(id = R.string.st_extConfig_fwUpgrade_upgradeBtn),
                 onClick = {
                     if (wbOta) {
-                        val boardType = if (selectedBoardIndex == 0) {
-                            WbOTAUtils.WBBoardType.WB5xOrWB3x
-                        } else {
-                            WbOTAUtils.WBBoardType.WB1x
+                        val boardType = when(selectedBoardIndex) {
+                            0 -> WbOTAUtils.WBBoardType.WB5xOrWB3x
+                            1 -> WbOTAUtils.WBBoardType.WB1x
+                            else -> WbOTAUtils.WBBoardType.WBA
                         }
                         val firmwareType = if (radioSelection == 0) {
                             FirmwareType.BOARD_FW

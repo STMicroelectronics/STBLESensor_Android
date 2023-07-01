@@ -22,7 +22,8 @@ import com.st.blue_sdk.services.audio.AudioService
 import com.st.blue_sdk.services.debug.DebugMessage
 import com.st.core.api.ApplicationAnalyticsService
 import com.st.demo_showcase.models.Demo
-import com.st.demo_showcase.utils.CustomDTMI
+import com.st.demo_showcase.utils.DTMIModelLoadedStatus
+import com.st.login.api.StLoginManager
 import com.st.preferences.StPreferences
 import com.st.user_profiling.model.LevelProficiency
 import com.st.user_profiling.model.ProfileType
@@ -42,6 +43,7 @@ class DemoShowCaseViewModel @Inject constructor(
     private val blueManager: BlueManager,
     private val audioService: AudioService,
     private val stPreferences: StPreferences,
+    private val loginManager: StLoginManager,
     @ApplicationContext applicationContext: Context,
     private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : ViewModel() {
@@ -70,8 +72,8 @@ class DemoShowCaseViewModel @Inject constructor(
     private val _modelUpdates: MutableStateFlow<DtmiModel?> = MutableStateFlow(null)
     private val _device: MutableStateFlow<Node?> = MutableStateFlow(null)
     val device: StateFlow<Node?> = _device.asStateFlow()
-    private val _customDTMI: MutableStateFlow<CustomDTMI> = MutableStateFlow(CustomDTMI.NotNecessary)
-    val customDTMI: StateFlow<CustomDTMI> = _customDTMI.asStateFlow()
+    private val _statusModelDTMI: MutableStateFlow<DTMIModelLoadedStatus> = MutableStateFlow(DTMIModelLoadedStatus.NotNecessary)
+    val statusModelDTMI: StateFlow<DTMIModelLoadedStatus> = _statusModelDTMI.asStateFlow()
     val pinnedDevices: Flow<List<String>> = stPreferences.getFavouriteDevices()
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn = _isLoggedIn.asStateFlow()
@@ -159,14 +161,15 @@ class DemoShowCaseViewModel @Inject constructor(
             _modelUpdates.value = model
             if (model != null) {
                 if(model.customDTMI) {
-                    _customDTMI.value = CustomDTMI.Loaded
+                    _statusModelDTMI.value = DTMIModelLoadedStatus.CustomLoaded
                 } else {
-                    _customDTMI.value = CustomDTMI.NotNecessary
+                    _statusModelDTMI.value = DTMIModelLoadedStatus.Loaded
                 }
             } else {
+                _statusModelDTMI.value = DTMIModelLoadedStatus.NotNecessary
                 if ((firmwareInfo.advertiseInfo != null) && (firmwareInfo.catalogInfo != null)) {
                     if (firmwareInfo.catalogInfo!!.dtmi != null) {
-                        _customDTMI.value = CustomDTMI.NotLoaded
+                        _statusModelDTMI.value = DTMIModelLoadedStatus.CustomNotLoaded
                     }
                 }
             }
@@ -207,12 +210,12 @@ class DemoShowCaseViewModel @Inject constructor(
             _modelUpdates.value = model
             if (model != null) {
                 if(model.customDTMI) {
-                    _customDTMI.value = CustomDTMI.Loaded
+                    _statusModelDTMI.value = DTMIModelLoadedStatus.CustomLoaded
                 } else {
-                    _customDTMI.value = CustomDTMI.NotNecessary
+                    _statusModelDTMI.value = DTMIModelLoadedStatus.Loaded
                 }
             } else {
-                _customDTMI.value = CustomDTMI.NotLoaded
+                _statusModelDTMI.value = DTMIModelLoadedStatus.CustomNotLoaded
             }
             //Re-create the DemoList after Custom DTMI model
             buildDemoList(nodeId)
@@ -277,13 +280,13 @@ class DemoShowCaseViewModel @Inject constructor(
 
         //Add the Flow Demo only to SensorTile.box and SensorTile.box-Pro
         if (_device.value != null) {
-            if ((_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX) || (_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX_PRO)) {
+            if ((_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX) || (_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX_PRO) || (_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX_PROB)) {
                 buildDemoList.add(Demo.Flow)
             }
         }
 
         //Remove the PnP-L, HighSpeedDataLog and BinaryContent Demo if there is not a valid DTMI
-        if(_customDTMI.value==CustomDTMI.NotLoaded) {
+        if((_statusModelDTMI.value==DTMIModelLoadedStatus.CustomNotLoaded) || (_statusModelDTMI.value==DTMIModelLoadedStatus.NotNecessary)) {
             val match =
             buildDemoList.filter { it == Demo.Pnpl || it == Demo.HighSpeedDataLog2 || it == Demo.BinaryContentDemo}
             buildDemoList.removeAll(match.toSet())
@@ -342,19 +345,17 @@ class DemoShowCaseViewModel @Inject constructor(
         activity: Activity,
     ) {
         viewModelScope.launch {
-//            activityResultRegistryOwner = activity as ActivityResultRegistryOwner
-//            _isLoggedIn.value = loginManager.isLoggedIn()
-            _isLoggedIn.value = true
+            activityResultRegistryOwner = activity as ActivityResultRegistryOwner
+            _isLoggedIn.value = loginManager.isLoggedIn()
         }
     }
 
     fun login() {
         viewModelScope.launch {
-//            activityResultRegistryOwner?.let {
-//                loginManager.login(it.activityResultRegistry)
-//                _isLoggedIn.value = loginManager.isLoggedIn()
-//            }
-            _isLoggedIn.value = true
+            activityResultRegistryOwner?.let {
+                loginManager.login(it.activityResultRegistry)
+                _isLoggedIn.value = loginManager.isLoggedIn()
+            }
         }
     }
 }

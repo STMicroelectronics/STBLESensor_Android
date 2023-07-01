@@ -53,7 +53,8 @@ class CatalogViewModel
     fun getBoard(boardId: String) {
         viewModelScope.launch {
             _board.value = blueManager.getBoardCatalog().findLast { it.bleDevId == boardId }
-            _boardDescription.value = blueManager.getBoardsDescription().findLast { it.bleDevId == boardId }
+            _boardDescription.value =
+                blueManager.getBoardsDescription().findLast { it.bleDevId == boardId }
         }
     }
 
@@ -66,7 +67,12 @@ class CatalogViewModel
 
     init {
         viewModelScope.launch {
-            _boards.value = blueManager.getBoardCatalog()
+            _boards.value = blueManager.getBoardCatalog().filter {
+                if (StCatalogConfig.boardModelFilter.isNotEmpty())
+                    StCatalogConfig.boardModelFilter.contains(it.boardModel())
+                else
+                    true
+            }
             _boardsDescription.value = blueManager.getBoardsDescription()
         }
     }
@@ -115,7 +121,7 @@ fun BoardFirmware.availableDemos(): List<Demo> {
 
     return Demo.values().toList().filter { demo ->
         when (demo) {
-            Demo.Flow -> boardModel() == Boards.Model.SENSOR_TILE_BOX || boardModel() == Boards.Model.SENSOR_TILE_BOX_PRO
+            Demo.Flow -> boardModel() == Boards.Model.SENSOR_TILE_BOX || boardModel() == Boards.Model.SENSOR_TILE_BOX_PRO || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROB
             Demo.BlueVoiceFullDuplex -> false
             Demo.BlueVoiceFullBand -> false
             else -> {

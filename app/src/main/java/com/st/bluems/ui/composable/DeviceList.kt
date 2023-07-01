@@ -13,6 +13,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
@@ -30,12 +31,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.models.Node
 import com.st.bluems.R
 import com.st.bluems.ui.home.HomeFragmentDirections
@@ -66,6 +67,8 @@ fun DeviceListScreen(
     val canExploreCatalog by viewModel.canExploreCatalog.collectAsStateWithLifecycle()
 
     val isBetaRelease by viewModel.isBetaRelease.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
 
     var forceScan by rememberSaveable {
         mutableStateOf(false)
@@ -105,8 +108,8 @@ fun DeviceListScreen(
         goToAboutST = {
             viewModel.openAboutUsPage()
         },
-        goToSupport = {
-            viewModel.openSupportPage()
+        goToPrivacyPolicy = {
+            viewModel.openPrivacyPoliciPage()
         },
         switchVersionBetaRelease = {
             viewModel.switchVersionBetaRelease()
@@ -114,10 +117,12 @@ fun DeviceListScreen(
         readBetaCatalog = {
             forceScan = true
             viewModel.readBetaCatalog()
+            Toast.makeText(context, "Loaded Beta Catalog", Toast.LENGTH_SHORT).show()
         },
         readReleaseCatalog = {
             forceScan = true
             viewModel.readReleaseCatalog()
+            Toast.makeText(context, "Loaded Release Catalog", Toast.LENGTH_SHORT).show()
         },
         onPinChange = { id, isPin ->
             if (isPin) {
@@ -128,7 +133,8 @@ fun DeviceListScreen(
         },
         onNodeSelected = { node ->
             val nodeId = node.device.address
-            viewModel.connect(nodeId = nodeId) {
+            val maxPayloadSize = if(node.boardType == Boards.Model.WBA_BOARD) 240 else 248
+            viewModel.connect(nodeId = nodeId, maxPayloadSize = maxPayloadSize) {
                 navController.navigate(
                     HomeFragmentDirections.actionHomeFragmentToDemoShowCase(
                         nodeId
@@ -166,7 +172,7 @@ fun DeviceListWithPermissionsCheck(
     logout: () -> Unit = { /** NOOP**/ },
     goToCatalog: () -> Unit,
     goToSourceCode: () -> Unit,
-    goToSupport: () -> Unit,
+    goToPrivacyPolicy: () -> Unit,
     goToAboutST: () -> Unit,
     goToProfile: () -> Unit,
     readBetaCatalog: () -> Unit,
@@ -219,8 +225,8 @@ fun DeviceListWithPermissionsCheck(
                 goToProfile = goToProfile,
                 goToCatalog = goToCatalog,
                 goToSourceCode = goToSourceCode,
+                goToPrivacyPolicy = goToPrivacyPolicy,
                 goToAboutST = goToAboutST,
-                goToSupport = goToSupport,
                 readBetaCatalog = readBetaCatalog,
                 readReleaseCatalog = readReleaseCatalog,
                 switchVersionBetaRelease = switchVersionBetaRelease,
@@ -386,8 +392,8 @@ fun DeviceList(
     logout: () -> Unit = { /** NOOP**/ },
     goToCatalog: () -> Unit = { /** NOOP**/ },
     goToProfile: () -> Unit = { /** NOOP**/ },
+    goToPrivacyPolicy: () -> Unit = { /** NOOP**/ },
     goToSourceCode: () -> Unit = { /** NOOP**/ },
-    goToSupport: () -> Unit = { /** NOOP **/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
     readBetaCatalog: () -> Unit = { /** NOOP **/ },
     readReleaseCatalog: () -> Unit = { /** NOOP **/ },
@@ -448,8 +454,8 @@ fun DeviceList(
                 logout = logout,
                 goToProfile = goToProfile,
                 goToSourceCode = goToSourceCode,
-                goToSupport = goToSupport,
                 goToAboutST = goToAboutST,
+                goToPrivacyPolicy = goToPrivacyPolicy,
                 readBetaCatalog = readBetaCatalog,
                 readReleaseCatalog = readReleaseCatalog,
                 switchVersionBetaRelease = switchVersionBetaRelease

@@ -88,10 +88,6 @@ class HighSpeedDataLogViewModel @Inject constructor(
     val isLoading: StateFlow<Boolean>
         get() = _isLoading.asStateFlow()
 
-    private val _lastStatusUpdatedAt = MutableStateFlow(0L)
-    val lastStatusUpdatedAt: StateFlow<Long>
-        get() = _lastStatusUpdatedAt.asStateFlow()
-
     private val _isLogging = MutableStateFlow(false)
     val isLogging = _isLogging.asStateFlow()
 
@@ -292,7 +288,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     private suspend fun setTime(nodeId: String) {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         val timeInMillis = calendar.timeInMillis
-        val sdf = SimpleDateFormat("yyyyMMdd_hh_mm_ss", Locale.ROOT)
+        val sdf = SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.ROOT)
         val datetime = sdf.format(Date(timeInMillis))
 
         _sendCommand(
@@ -308,7 +304,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     private suspend fun setName(nodeId: String) {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         val timeInMillis = calendar.timeInMillis
-        val sdf = SimpleDateFormat("EEE MMM d yyyy hh:mm:ss", Locale.UK)
+        val sdf = SimpleDateFormat("EEE MMM d yyyy HH:mm:ss", Locale.UK)
         val datetime = sdf.format(Date(timeInMillis))
 
         _acquisitionName.emit(datetime)
@@ -439,7 +435,6 @@ class HighSpeedDataLogViewModel @Inject constructor(
 
                         json.find { it.containsKey(TAGS_INFO_JSON_KEY) }
                             ?.get(TAGS_INFO_JSON_KEY)?.jsonObject?.let { tags ->
-                                _lastStatusUpdatedAt.value = System.currentTimeMillis()
                                 _componentStatusUpdates.value = json
 
                                 val vespucciTagsMap = mutableMapOf<String, Boolean>()

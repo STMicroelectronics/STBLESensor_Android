@@ -104,8 +104,6 @@ class ElectricChargeVariationFragment : Fragment() {
         mFlagText = binding.qvarFlagText
         mParameterText = binding.qvarParamText
 
-        mFirstNotificationTimeStamp = System.currentTimeMillis()
-
         //Color for Plot Label and axes
         colorLabel = ContextCompat.getColor(requireContext(), R.color.labelPlotContrast)
         //Color for Limit Lines

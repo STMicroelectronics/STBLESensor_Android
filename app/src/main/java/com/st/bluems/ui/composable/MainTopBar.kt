@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material3.*
@@ -35,8 +36,8 @@ fun MainTopBar(
     modifier: Modifier = Modifier,
     goToProfile: () -> Unit = { /** NOOP **/ },
     goToSourceCode: () -> Unit = { /** NOOP **/ },
-    goToSupport: () -> Unit = { /** NOOP **/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
+    goToPrivacyPolicy: () -> Unit = { /** NOOP **/ },
     readBetaCatalog: () -> Unit = { /** NOOP **/ },
     readReleaseCatalog: () -> Unit = { /** NOOP **/ },
     switchVersionBetaRelease: () -> Unit = { /** NOOP **/ },
@@ -53,8 +54,8 @@ fun MainTopBar(
         login = login,
         logout = logout,
         goToProfile = goToProfile,
-        goToSupport = goToSupport,
         goToAboutST = goToAboutST,
+        goToPrivacyPolicy = goToPrivacyPolicy,
         goToSourceCode =  goToSourceCode,
         onAddCatalogEntryFromFile = onAddCatalogEntryFromFile
     )
@@ -82,21 +83,29 @@ fun MainTopBar(
                     Divider()
 
                     if(isBetaRelease) {
-                        Text(text = "v${BuildConfig.VERSION_NAME} [Beta]", modifier = Modifier.clickable {
-                            switchVersionBetaRelease()})
+                        Text(
+                            text = "v${BuildConfig.VERSION_NAME} ${BuildConfig.VERSION_CODE} [Beta]",
+                            modifier = Modifier.clickable {
+                                switchVersionBetaRelease()
+                            })
 
-                        Divider()
+                        Divider(modifier= Modifier.padding(bottom=LocalDimensions.current.paddingNormal))
 
                         Text(text = "Read Beta Catalog", modifier = Modifier.clickable {
-                            readBetaCatalog()})
+                            readBetaCatalog()
+                        })
 
                         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
                         Text(text = "Read Release Catalog", modifier = Modifier.clickable {
-                            readReleaseCatalog()})
+                            readReleaseCatalog()
+                        })
                     } else {
-                        Text(text = "v${BuildConfig.VERSION_NAME} [Stable]", modifier = Modifier.clickable {
-                            switchVersionBetaRelease()})
+                        Text(
+                            text = "v${BuildConfig.VERSION_NAME} [Stable]",
+                            modifier = Modifier.clickable {
+                                switchVersionBetaRelease()
+                            })
                     }
 
                     Divider()
@@ -113,8 +122,8 @@ fun rememberActions(
     login: () -> Unit = { /** NOOP **/ },
     goToProfile: () -> Unit = { /** NOOP **/ },
     goToSourceCode: () -> Unit = { /** NOOP **/ },
-    goToSupport: () -> Unit = { /** NOOP **/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
+    goToPrivacyPolicy: () -> Unit = { /** NOOP **/ },
     logout: () -> Unit = { /** NOOP **/ },
     onAddCatalogEntryFromFile: () -> Unit = { /** NOOP **/ }
 ): State<List<ActionItem>> {
@@ -132,14 +141,13 @@ fun rememberActions(
                         label = context.getString(R.string.st_home_menuActions_profile),
                         action = goToProfile
                     ),
-                    ActionItem(label = context.getString(R.string.st_home_menuActions_privacy)),
+                    ActionItem(
+                        label = context.getString(R.string.st_home_menuActions_privacy),
+                        action = goToPrivacyPolicy
+                    ),
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_appSourceCode),
                         action = goToSourceCode
-                    ),
-                    ActionItem(
-                        label = context.getString(R.string.st_home_menuActions_support),
-                        action = goToSupport
                     ),
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_about),
@@ -163,14 +171,13 @@ fun rememberActions(
                         label = context.getString(R.string.st_home_menuActions_profile),
                         action = goToProfile
                     ),
-                    ActionItem(label = context.getString(R.string.st_home_menuActions_privacy)),
+                    ActionItem(
+                        label = context.getString(R.string.st_home_menuActions_privacy),
+                        action = goToPrivacyPolicy
+                    ),
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_appSourceCode),
                         action = goToSourceCode
-                    ),
-                    ActionItem(
-                        label = context.getString(R.string.st_home_menuActions_support),
-                        action = goToSupport
                     ),
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_about),

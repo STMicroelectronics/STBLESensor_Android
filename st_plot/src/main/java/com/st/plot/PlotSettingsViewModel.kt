@@ -113,15 +113,4 @@ class PlotSettingsViewModel
             _plotBoundaries.postValue(PlotBoundary.getDefaultFor(feature.name))
         }
     }
-
-
-    fun startDemo(nodeId: String) {
-        if (feature == null) {
-            blueManager.nodeFeatures(nodeId).find {
-                "FEATURE_NAME_HERE" == it.name
-            }?.let { f ->
-                feature = f
-            }
-        }
-    }
 }

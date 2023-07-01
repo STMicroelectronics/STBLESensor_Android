@@ -53,6 +53,7 @@ class SensorFusionResetDialogFragment : DialogFragment() {
             Boards.Model.STEVAL_BCN002V1 -> R.drawable.ic_board_bluenrgtile
             Boards.Model.SENSOR_TILE_BOX -> R.drawable.ic_sensortile_box
             Boards.Model.SENSOR_TILE_BOX_PRO -> R.drawable.box_pro_case_top
+            Boards.Model.SENSOR_TILE_BOX_PROB -> R.drawable.box_pro_case_top
             Boards.Model.NUCLEO -> R.drawable.ic_board_nucleo_bg
             Boards.Model.NUCLEO_F401RE -> R.drawable.ic_board_nucleo_bg
             Boards.Model.NUCLEO_L476RG -> R.drawable.ic_board_nucleo_bg

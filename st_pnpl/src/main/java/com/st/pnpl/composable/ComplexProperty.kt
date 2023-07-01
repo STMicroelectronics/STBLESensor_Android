@@ -7,18 +7,35 @@
  */
 package com.st.pnpl.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.blue_sdk.utils.toMapOfAny
 import com.st.pnpl.R
@@ -26,7 +43,11 @@ import com.st.ui.composables.EnumProperty
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.utils.localizedDisplayName
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
 
 @Composable
 fun ComplexProperty(
@@ -198,7 +219,14 @@ fun MapProperty(
         modifier = modifier.fillMaxWidth()
     ) {
         val propName = if (unit.isEmpty()) label else "$label [$unit]"
-        Text(text = propName, fontWeight = FontWeight.Bold)
+
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = propName
+        )
 
         MapEntryProperty(
             map = internalStateMap
@@ -282,9 +310,16 @@ fun ObjectProperty(
         modifier = modifier.fillMaxWidth()
     ) {
         val propName = if (unit.isEmpty()) label else "$label [$unit]"
-        Text(text = propName, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+        Text(
+            fontSize = 12.sp,
+            lineHeight = 17.37.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = propName
+        )
+
+        Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingNormal))
 
         fields.forEach { content ->
             val defaultData = initValue?.get(content.name)

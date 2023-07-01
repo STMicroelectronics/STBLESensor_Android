@@ -1,0 +1,15 @@
+{
+  "title": "Keycloak",
+  "client_id": "",
+  "authorization_scope": "",
+  "discovery_uri": "",
+  "authorization_endpoint_uri": "",
+  "token_endpoint_uri": "",
+  "registration_endpoint_uri": "",
+  "user_info_endpoint_uri": "",
+  "https_required": true,
+  "identity_provider": "",
+  "api_gateway": "",
+  "web_dsh_endpoint": "",
+  "web_dsh_logout": ""
+}

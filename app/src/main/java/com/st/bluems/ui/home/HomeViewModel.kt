@@ -20,6 +20,8 @@ import com.st.blue_sdk.common.Status
 import com.st.blue_sdk.models.ConnectionStatus
 import com.st.blue_sdk.models.Node
 import com.st.blue_sdk.models.NodeState
+import com.st.internal.BuildConfig
+import com.st.login.api.StLoginManager
 import com.st.preferences.StPreferences
 import com.st.user_profiling.model.AuthorizedActions
 import com.st.user_profiling.model.LevelProficiency
@@ -38,6 +40,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val blueManager: BlueManager,
     private val stPreferences: StPreferences,
+    private val loginManager: StLoginManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -80,6 +83,7 @@ class HomeViewModel @Inject constructor(
     fun connect(
         nodeId: String,
         maxConnectionRetries: Int = MAX_RETRY_CONNECTION,
+        maxPayloadSize: Int = 248,
         onNodeReady: (() -> Unit)? = null
     ) {
         connectionJob?.cancel()
@@ -87,7 +91,7 @@ class HomeViewModel @Inject constructor(
             var retryCount = 0
             var callback = onNodeReady
 
-            blueManager.connectToNode(nodeId = nodeId).collect { node ->
+            blueManager.connectToNode(nodeId = nodeId, maxPayloadSize = maxPayloadSize).collect { node ->
                 _connectionStatus.value = node.connectionStatus
                 _boardName.value = node.boardType.name
 
@@ -130,10 +134,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun readBetaCatalog() {
-//        viewModelScope.launch {
-//            val url: String = BuildConfig.BLUESTSDK_DB_BASE_BETA_URL
-//            blueManager.reset(url)
-//        }
+        viewModelScope.launch {
+            val url: String = BuildConfig.BLUESTSDK_DB_BASE_BETA_URL
+            blueManager.reset(url)
+        }
     }
 
     fun readReleaseCatalog() {
@@ -167,9 +171,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun openSupportPage() {
+    fun openPrivacyPoliciPage() {
         Intent(Intent.ACTION_VIEW).also { intent ->
-            intent.data = Uri.parse("https://www.st.com/en/embedded-software/stblesensor.html")
+            intent.data = Uri.parse("https://www.st.com/content/st_com/en/common/privacy-portal/corporate-privacy-statement.html")
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
@@ -181,8 +185,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             activityResultRegistryOwner = activity as ActivityResultRegistryOwner
 
-            //_isLoggedIn.value = loginManager.isLoggedIn()
-            _isLoggedIn.value = true
+            _isLoggedIn.value = loginManager.isLoggedIn()
 
             val level = LevelProficiency.fromString(stPreferences.getLevelProficiency())
             val levelProficiency = level
@@ -211,20 +214,19 @@ class HomeViewModel @Inject constructor(
 
     fun login() {
         viewModelScope.launch {
-//            activityResultRegistryOwner?.let {
-//
-//                loginManager.login(it.activityResultRegistry)
-//                _isLoggedIn.value = loginManager.isLoggedIn()
-//            }
-            _isLoggedIn.value = true
+            activityResultRegistryOwner?.let {
+
+                loginManager.login(it.activityResultRegistry)
+                _isLoggedIn.value = loginManager.isLoggedIn()
+            }
         }
     }
 
     fun logout() {
         viewModelScope.launch {
-//            activityResultRegistryOwner?.let {
-//                loginManager.logout(it.activityResultRegistry)
-//            }
+            activityResultRegistryOwner?.let {
+                loginManager.logout(it.activityResultRegistry)
+            }
             _isLoggedIn.value = false
         }
     }

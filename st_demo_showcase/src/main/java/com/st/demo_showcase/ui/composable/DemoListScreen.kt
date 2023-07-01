@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.st.blue_sdk.models.Node
 import com.st.demo_showcase.models.Demo
-import com.st.demo_showcase.utils.CustomDTMI
+import com.st.demo_showcase.utils.DTMIModelLoadedStatus
 import com.st.demo_showcase.utils.isExpertRequired
 import com.st.demo_showcase.utils.isLoginRequired
 import com.st.ui.composables.BlueMsButton
@@ -49,7 +49,7 @@ fun DemoListScreen(
     device: Node?,
     isLoggedIn: Boolean,
     isExpert: Boolean,
-    customDTMI: CustomDTMI=CustomDTMI.NotNecessary,
+    statusModelDTMI: DTMIModelLoadedStatus=DTMIModelLoadedStatus.NotNecessary,
     pinnedDevices: List<String>,
     availableDemos: List<Demo>,
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ },
@@ -87,7 +87,7 @@ fun DemoListScreen(
                         name = device.device.name,
                         runningFw = device.runningFw,
                         onPinChange = onPinChange,
-                        customDTMI = customDTMI,
+                        statusModelDTMI = statusModelDTMI,
                         onCustomDTMIClicked = onCustomDTMIClicked,
                     )
                 } else {
@@ -97,7 +97,7 @@ fun DemoListScreen(
                         name = device.device.name,
                         runningFw = device.runningFw,
                         onPinChange = onPinChange,
-                        customDTMI = CustomDTMI.NotNecessary
+                        statusModelDTMI = DTMIModelLoadedStatus.NotNecessary
                     )
                 }
             }

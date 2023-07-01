@@ -1,23 +1,16 @@
-/*
- * Copyright (c) 2022(-0001) STMicroelectronics.
- * All rights reserved.
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- */
 package com.st.ext_config.composable
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.st.ext_config.R
-import com.st.ui.theme.Grey6
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardDropdown(
     modifier: Modifier = Modifier,
@@ -37,38 +30,61 @@ fun BoardDropdown(
     onSelection: (Int) -> Unit
 ) {
     var expanded by remember { mutableStateOf(value = false) }
+
     val items =
         listOf(
             stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard1),
-            stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2)
+            stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2),
+            stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard3)
         )
 
-    Box(
+    // remember the selected item
+    var selectedItem by remember {
+        mutableStateOf(items[selectedIndex])
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        },
         modifier = modifier
             .wrapContentSize(align = Alignment.TopStart)
             .padding(horizontal = 8.dp)
     ) {
-        Text(
-            items[selectedIndex],
+        // text field
+        TextField(
+            value = selectedItem,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(text = "Board type") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height = 60.dp)
                 .wrapContentHeight()
-                .clickable(onClick = { expanded = true })
+                .menuAnchor(),
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
-        DropdownMenu(
+        // menu
+        ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Grey6)
+            onDismissRequest = { expanded = false }
         ) {
-            items.forEachIndexed { index, s ->
+            // this is a column scope
+            // all the items are added vertically
+            items.forEachIndexed { index, selectedOption ->
+                // menu item
                 DropdownMenuItem(onClick = {
+                    selectedItem = selectedOption
                     onSelection(index)
                     expanded = false
                 }) {
-                    Text(text = s)
+                    Text(text = selectedOption)
                 }
             }
         }

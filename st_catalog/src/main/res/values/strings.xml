@@ -11,9 +11,9 @@
     <string name="st_catalog_fwList_title">Firmware</string>
     <string name="st_catalog_board_demoListLabel">Available demos:</string>
     <string name="st_catalog_board_videoLabel">Example video:</string>
-    <string name="st_catalog_board_readMoreBtn">Read more &amp; Order</string>
+    <string name="st_catalog_board_readMoreBtn">Order &amp; Buy</string>
     <string name="st_catalog_board_fwBtn">Firmware</string>
-    <string name="st_catalog_board_dsBtn">Datasheets</string>
+    <string name="st_catalog_board_dsBtn">Documentation</string>
     <string name="st_catalog_boardList_filterDialog_title">Filters</string>
     <string name="st_catalog_boardList_filterDialog_okBtn">Apply</string>
     <string name="st_catalog_fwList_description">Available firmware for %s:</string>

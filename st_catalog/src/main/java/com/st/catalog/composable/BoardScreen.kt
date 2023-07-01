@@ -9,7 +9,6 @@ package com.st.catalog.composable
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,6 +37,7 @@ import com.st.blue_sdk.board_catalog.models.BoardDescription
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.catalog.CatalogViewModel
 import com.st.catalog.R
+import com.st.catalog.StCatalogConfig
 import com.st.catalog.availableDemos
 import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.ui.composable.DemoListItem
@@ -149,6 +149,7 @@ fun BoardScreen(
                 )
             }
 
+            if (StCatalogConfig.showDemoList) {
             item {
                 Text(
                     style = MaterialTheme.typography.bodyMedium,
@@ -163,6 +164,7 @@ fun BoardScreen(
                     even = index % 2 == 0,
                     isLastOne = index == demos.lastIndex
                 )
+            }
             }
 
             boardDescOrNull?.let {

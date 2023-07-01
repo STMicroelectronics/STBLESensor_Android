@@ -15,11 +15,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -30,26 +27,20 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -58,16 +49,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.high_speed_data_log.R
+import com.st.hight_speed_data_log.composable.BottomAppBarItem
 import com.st.hight_speed_data_log.composable.HsdlSensors
 import com.st.hight_speed_data_log.composable.HsdlTags
+import com.st.hight_speed_data_log.composable.StopLoggingDialog
 import com.st.hight_speed_data_log.composable.VespucciHsdlTags
-import com.st.pnpl.composable.LocalLastStatus
-import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
-import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.Grey0
-import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.SecondaryBlue
 import kotlinx.serialization.json.JsonObject
@@ -86,7 +75,6 @@ fun HighSpeedDataLog(
         }
     }
     val isLogging by viewModel.isLogging.collectAsStateWithLifecycle()
-    val lastStatusUpdatedAt by viewModel.lastStatusUpdatedAt.collectAsStateWithLifecycle()
     val sensors by viewModel.sensors.collectAsStateWithLifecycle()
     val tags by viewModel.tags.collectAsStateWithLifecycle()
     val status by viewModel.componentStatusUpdates.collectAsStateWithLifecycle()
@@ -95,57 +83,52 @@ fun HighSpeedDataLog(
     val acquisitionName by viewModel.acquisitionName.collectAsStateWithLifecycle()
     val vespucciTags by viewModel.vespucciTags.collectAsStateWithLifecycle()
 
-    CompositionLocalProvider(
-        LocalLastStatus provides status,
-        LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
-    ) {
-        HighSpeedDataLog(
-            modifier = modifier,
-            sensors = sensors,
-            tags = tags,
-            status = status,
-            isSDCardInserted = isSDCardInserted,
-            isLogging = isLogging,
-            isLoading = isLoading,
-            vespucciTags = vespucciTags,
-            acquisitionName = acquisitionName,
-            onTagChangeState = { tag, newState ->
-                viewModel.onTagChangeState(nodeId, tag, newState)
-            },
-            onValueChange = { name, value ->
-                if (isLoading.not()) {
-                    viewModel.sendChange(
-                        nodeId = nodeId,
-                        name = name,
-                        value = value
-                    )
-                }
-            },
-            onSendCommand = { name, value ->
-                if (isLoading.not()) {
-                    viewModel.sendCommand(
-                        nodeId = nodeId,
-                        name = name,
-                        value = value
-                    )
-                }
-            },
-            onStartStopLog = {
-                if (it) {
-                    if (isLogging.not() && isLoading.not()) {
-                        viewModel.startLog(nodeId)
-                    }
-                } else {
-                    viewModel.stopLog(nodeId)
-                }
-            },
-            onRefresh = {
-                if (isLogging.not() && isLoading.not()) {
-                    viewModel.refresh(nodeId)
-                }
+    HighSpeedDataLog(
+        modifier = modifier,
+        sensors = sensors,
+        tags = tags,
+        status = status,
+        isSDCardInserted = isSDCardInserted,
+        isLogging = isLogging,
+        isLoading = isLoading,
+        vespucciTags = vespucciTags,
+        acquisitionName = acquisitionName,
+        onTagChangeState = { tag, newState ->
+            viewModel.onTagChangeState(nodeId, tag, newState)
+        },
+        onValueChange = { name, value ->
+            if (isLoading.not()) {
+                viewModel.sendChange(
+                    nodeId = nodeId,
+                    name = name,
+                    value = value
+                )
             }
-        )
-    }
+        },
+        onSendCommand = { name, value ->
+            if (isLoading.not()) {
+                viewModel.sendCommand(
+                    nodeId = nodeId,
+                    name = name,
+                    value = value
+                )
+            }
+        },
+        onStartStopLog = {
+            if (it) {
+                if (isLogging.not() && isLoading.not()) {
+                    viewModel.startLog(nodeId)
+                }
+            } else {
+                viewModel.stopLog(nodeId)
+            }
+        },
+        onRefresh = {
+            if (isLogging.not() && isLoading.not()) {
+                viewModel.refresh(nodeId)
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -239,7 +222,9 @@ fun HighSpeedDataLog(
                         }
                     }
                 )
+
                 Spacer(modifier = Modifier.weight(weight = 0.33f))
+
                 BottomAppBarItem(
                     modifier = Modifier.weight(weight = 0.33f),
                     painter = painterResource(id = R.drawable.ic_tags),
@@ -320,73 +305,8 @@ fun HighSpeedDataLog(
     }
 
     if (openStopDialog) {
-        Dialog(onDismissRequest = { openStopDialog = false }) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = LocalDimensions.current.paddingNormal)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(all = LocalDimensions.current.paddingNormal)
-                ) {
-                    Text(
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        text = stringResource(id = R.string.st_hsdl_datalog_stopDialogTitle)
-                    )
-
-                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
-
-                    Divider()
-
-                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
-
-                    Text(
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Grey6,
-                        text = stringResource(id = R.string.st_hsdl_datalog_stopDialogMessage)
-                    )
-
-                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
-
-                    BlueMsButton(
-                        modifier = Modifier.align(Alignment.End),
-                        text = stringResource(id = R.string.st_hsdl_datalog_stopDialogClose),
-                        onClick = { openStopDialog = false }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun BottomAppBarItem(
-    modifier: Modifier = Modifier,
-    painter: Painter,
-    label: String,
-    onClick: () -> Unit
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
-        color = MaterialTheme.colorScheme.primary,
-        contentColor = Grey0,
-        onClick = onClick
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                modifier = Modifier.size(LocalDimensions.current.iconSmall),
-                painter = painter,
-                contentDescription = label
-            )
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-            Text(
-                style = MaterialTheme.typography.labelSmall,
-                text = label
-            )
-        }
+        StopLoggingDialog(
+            onDismissRequest = { openStopDialog = false }
+        )
     }
 }

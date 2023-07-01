@@ -39,6 +39,7 @@
     <string name="st_demoShowcase_logSettings_shareEmailWithAttach">\n\nIn attach the log data files available from: %s.</string>
     <string name="st_demoShowcase_logSettings_shareEmailTitle">BlueSTSDK Log Data</string>
     <string name="st_debugConsole_hint">Send Debug Message</string>
+    <string name="st_demoShowcase_validDTMI">Valid DTMI</string>
     <string name="st_demoShowcase_customDTMI">Custom DTMI</string>
     <string name="st_demoShowcase_DTMI_notpresent">DTMI not present</string>
 </resources>

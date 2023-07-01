@@ -40,7 +40,6 @@
     <string name="st_home_menuActions_addCatalog">Add Custom Fw Db Entry</string>
     <string name="st_home_menuActions_privacy">Privacy Policy</string>
     <string name="st_home_menuActions_appSourceCode">Application Source Code</string>
-    <string name="st_home_menuActions_support">Support</string>
     <string name="st_home_menuActions_about">About ST</string>
     <string name="st_home_menuActions_login">Login</string>
     <string name="st_home_menuActions_logout">Logout</string>

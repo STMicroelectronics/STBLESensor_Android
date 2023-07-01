@@ -25,7 +25,7 @@ android {
         applicationId "com.st.bluems"
         minSdk rootProject.minSdk
         targetSdk rootProject.targetSdk
-        versionCode 153
+        versionCode 154
         versionName "5.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -102,6 +102,8 @@ dependencies {
     implementation project(path: ":st_demo_showcase")
     // - Discover Catalog
     implementation project(path: ":st_catalog")
+    // - Login
+    implementation project(path: ":st_login")
 
     // Blue ST SDK
     implementation "com.st.blue.sdk:st-blue-sdk:$st_version"

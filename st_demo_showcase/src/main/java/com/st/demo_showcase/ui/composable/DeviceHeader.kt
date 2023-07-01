@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.st.demo_showcase.R
-import com.st.demo_showcase.utils.CustomDTMI
+import com.st.demo_showcase.utils.DTMIModelLoadedStatus
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.PrimaryYellow
 import com.st.ui.theme.SuccessText
@@ -48,7 +48,7 @@ fun DeviceHeader(
     isPin: Boolean,
     name: String,
     runningFw: String?,
-    customDTMI: CustomDTMI = CustomDTMI.NotNecessary,
+    statusModelDTMI: DTMIModelLoadedStatus = DTMIModelLoadedStatus.NotNecessary,
     onCustomDTMIClicked: () -> Unit = { /** NOOP **/ },
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ }
 ) {
@@ -140,11 +140,31 @@ fun DeviceHeader(
                     text = runningFw
                 )
 
-                when (customDTMI) {
-                    CustomDTMI.NotNecessary -> {
+                when (statusModelDTMI) {
+
+                    DTMIModelLoadedStatus.NotNecessary -> {
                     }
 
-                    CustomDTMI.Loaded -> {
+                    DTMIModelLoadedStatus.Loaded -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = LocalDimensions.current.paddingNormal,
+                                    end = LocalDimensions.current.paddingSmall,
+                                    top = LocalDimensions.current.paddingSmall,
+                                    bottom = LocalDimensions.current.paddingSmall
+                                ),
+                            //color = SuccessText,
+                            textAlign = TextAlign.Left,
+                            style = MaterialTheme.typography.bodySmall,
+                            text = stringResource(
+                                id = R.string.st_demoShowcase_validDTMI
+                            )
+                        )
+                    }
+
+                    DTMIModelLoadedStatus.CustomLoaded -> {
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -164,7 +184,7 @@ fun DeviceHeader(
                         )
                     }
 
-                    CustomDTMI.NotLoaded -> {
+                    DTMIModelLoadedStatus.CustomNotLoaded -> {
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -212,8 +232,8 @@ private fun DeviceHeaderPinnedPreview() {
             isPin = true,
             boardTypeName = "ST Board",
             name = "Astra",
-            runningFw = null,
-            customDTMI = CustomDTMI.Loaded
+            runningFw = "Test with Custom",
+            statusModelDTMI = DTMIModelLoadedStatus.Loaded
         )
     }
 }

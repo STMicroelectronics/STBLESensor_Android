@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="asrSelect_title_engine">Select ASR Provider</string>
-    <string name="asrSelect_title_language">Select Language</string>
-</resources>

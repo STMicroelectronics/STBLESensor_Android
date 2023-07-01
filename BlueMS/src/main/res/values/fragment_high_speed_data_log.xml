@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="hsdl_config_menu">Config</string>
-    <string name="hsdl_tags_menu">Run</string>
-    <string name="hsdl_battery_charged">charged</string>
-    <string name="hsdl_battery_format">%.1f %%</string>
-    <string name="hsdl_cpu_format">%.0f %%</string>
-</resources>

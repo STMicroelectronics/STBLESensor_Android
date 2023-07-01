@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="nodeList_stbox_pinTitle">Pin Required</string>
-    <string name="nodeList_stbox_pinDesc">The default pin for the connection is 123456</string>
-</resources>

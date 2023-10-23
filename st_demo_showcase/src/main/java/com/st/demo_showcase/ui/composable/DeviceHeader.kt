@@ -46,8 +46,8 @@ fun DeviceHeader(
     modifier: Modifier = Modifier,
     boardTypeName: String,
     isPin: Boolean,
-    name: String,
-    runningFw: String?,
+    name: String?=null,
+    runningFw: String?=null,
     statusModelDTMI: DTMIModelLoadedStatus = DTMIModelLoadedStatus.NotNecessary,
     onCustomDTMIClicked: () -> Unit = { /** NOOP **/ },
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ }
@@ -71,14 +71,16 @@ fun DeviceHeader(
                     .padding(all = LocalDimensions.current.paddingNormal),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    modifier = Modifier
-                        .weight(weight = 1f)
-                        .padding(all = LocalDimensions.current.paddingNormal),
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                name?.let {
+                    Text(
+                        modifier = Modifier
+                            .weight(weight = 1f)
+                            .padding(all = LocalDimensions.current.paddingNormal),
+                        text = name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
 
                 IconButton(onClick = { onPinChange(isPin.not()) }) {
                     Icon(

@@ -8,7 +8,6 @@
 package com.st.bluems
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -28,11 +27,13 @@ import com.st.welcome.StWelcomeConfig
 import com.st.welcome.WelcomeFragmentDirections
 import com.st.welcome.model.WelcomePage
 import dagger.hilt.android.AndroidEntryPoint
+import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+    private val nfcViewModel: NFCConnectionViewModel  by viewModels()
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +51,20 @@ class MainActivity : AppCompatActivity() {
                 application,
                 this
             )
+        }
+
+        //for using NFC deep Link node autoconnect
+        val nfcIntent = intent
+        val appLinkData = nfcIntent.data
+        if (appLinkData != null) {
+
+            val sPairingPin: ByteArray? = appLinkData.getQueryParameter("Pin")?.toByteArray(
+                    StandardCharsets.UTF_8
+                )
+            nfcViewModel.setNFCPairingPin(sPairingPin)
+
+            val mNodeTag: String? = appLinkData.getQueryParameter("Add")
+            nfcViewModel.setNFCNodeId(mNodeTag)
         }
 
         viewModel.reportApplicationAnalytics(applicationContext)

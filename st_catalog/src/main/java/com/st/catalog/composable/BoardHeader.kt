@@ -51,7 +51,7 @@ import com.st.ui.utils.getBlueStBoardImages
 fun BoardHeader(
     modifier: Modifier = Modifier,
     board: BoardFirmware,
-    boardDescOrNull :BoardDescription?=null,
+    boardDescOrNull: BoardDescription? = null,
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ }
 ) {
@@ -75,7 +75,7 @@ fun BoardHeader(
                 letterSpacing = 0.15.sp,
                 color = MaterialTheme.colorScheme.primary
             )
-            if(boardDescOrNull!=null) {
+            if (boardDescOrNull != null) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -92,7 +92,7 @@ fun BoardHeader(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(height = LocalDimensions.current.imageMedium)
-                    //.background(color = MaterialTheme.colorScheme.surfaceVariant)
+                //.background(color = MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Image(
                     modifier = Modifier
@@ -108,8 +108,8 @@ fun BoardHeader(
                 )
             }
 
-            if(boardDescOrNull!=null) {
-                when(boardDescOrNull.status) {
+            if (boardDescOrNull != null) {
+                when (boardDescOrNull.status) {
                     BoardStatus.ACTIVE -> Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -123,16 +123,16 @@ fun BoardHeader(
                     )
 
                     BoardStatus.NRND -> Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(all = LocalDimensions.current.paddingNormal),
-                            textAlign = TextAlign.Right,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = LocalDimensions.current.paddingNormal),
+                        textAlign = TextAlign.Right,
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         letterSpacing = 0.25.sp,
-                            color = ErrorText,
-                            text = boardDescOrNull.status.name
-                        )
+                        color = ErrorText,
+                        text = boardDescOrNull.status.name
+                    )
                 }
             }
 
@@ -140,7 +140,7 @@ fun BoardHeader(
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 TextButton(
-                    modifier = Modifier.weight(0.5f), onClick = goToFw
+                    modifier = Modifier.weight(0.4f), onClick = goToFw
                 ) {
                     Text(
                         fontSize = 14.sp,
@@ -157,9 +157,9 @@ fun BoardHeader(
                 }
 
                 boardDescOrNull?.let {
-                    if(boardDescOrNull.docURL!=null) {
+                    if (boardDescOrNull.docURL != null) {
                         TextButton(
-                            modifier = Modifier.weight(0.5f), onClick = goToDs
+                            modifier = Modifier.weight(0.6f), onClick = goToDs
                         ) {
                             Text(
                                 fontSize = 14.sp,
@@ -174,8 +174,6 @@ fun BoardHeader(
                                 text = stringResource(id = R.string.st_catalog_board_dsBtn).uppercase()
                             )
                         }
-                    } else {
-                        Spacer(modifier = Modifier.weight(05f))
                     }
                 }
             }
@@ -218,6 +216,7 @@ private fun BoardHeaderNrndPreview() {
                 usbDevId = "123",
                 uniqueDevId = 0,
                 boardName = "Lorem ipsum dolor sit amet",
+                boardVariant = "Lorem ipsum dolor sit amet",
                 friendlyName = "Lorem ipsum dolor sit amet",
                 status = BoardStatus.NRND,
                 description = "",
@@ -251,6 +250,7 @@ private fun BoardHeaderAcivePreview() {
                 usbDevId = "123",
                 uniqueDevId = 0,
                 boardName = "Lorem ipsum dolor sit amet",
+                boardVariant = "Lorem ipsum dolor sit amet",
                 friendlyName = "Lorem ipsum dolor sit amet",
                 status = BoardStatus.ACTIVE,
                 description = "",

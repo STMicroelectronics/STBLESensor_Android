@@ -123,8 +123,7 @@ class AccelerationEventFragment : Fragment(){
             Boards.Model.PROTEUS -> proteusSupportedEvents
             Boards.Model.SENSOR_TILE -> nucleoSupportedEvents
             Boards.Model.BLUE_COIN -> nucleoSupportedEvents
-            Boards.Model.WB_BOARD -> nucleoSupportedEvents
-            Boards.Model.WBA_BOARD -> nucleoSupportedEvents
+            Boards.Model.WB55_NUCLEO_BOARD -> nucleoSupportedEvents
             Boards.Model.NUCLEO -> nucleoSupportedEvents
             Boards.Model.NUCLEO_F401RE -> nucleoSupportedEvents
             Boards.Model.NUCLEO_L476RG -> nucleoSupportedEvents
@@ -149,8 +148,7 @@ class AccelerationEventFragment : Fragment(){
             Boards.Model.STWIN_BOX -> DetectableEventType.Orientation
             Boards.Model.STWIN_BOXB -> DetectableEventType.Orientation
             Boards.Model.PROTEUS -> DetectableEventType.WakeUp
-            Boards.Model.WB_BOARD -> DetectableEventType.Orientation
-            Boards.Model.WBA_BOARD -> DetectableEventType.Orientation
+            Boards.Model.WB55_NUCLEO_BOARD -> DetectableEventType.Orientation
             Boards.Model.NUCLEO -> DetectableEventType.Orientation
             Boards.Model.NUCLEO_F401RE -> DetectableEventType.Orientation
             Boards.Model.NUCLEO_L476RG -> DetectableEventType.Orientation

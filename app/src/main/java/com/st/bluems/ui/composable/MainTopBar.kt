@@ -41,8 +41,10 @@ fun MainTopBar(
     readBetaCatalog: () -> Unit = { /** NOOP **/ },
     readReleaseCatalog: () -> Unit = { /** NOOP **/ },
     switchVersionBetaRelease: () -> Unit = { /** NOOP **/ },
+    switchServerForced: () -> Unit = { /** NOOP **/ },
     isLoggedIn: Boolean = false,
     isExpert: Boolean = false,
+    isServerForced: Boolean = false,
     isBetaRelease: Boolean = false,
     login: () -> Unit = { /** NOOP **/ },
     logout: () -> Unit = { /** NOOP **/ },
@@ -51,23 +53,25 @@ fun MainTopBar(
     val actions by rememberActions(
         isLoggedIn = isLoggedIn,
         isExpert = isExpert,
+        isServerForced = isServerForced,
         login = login,
         logout = logout,
         goToProfile = goToProfile,
         goToAboutST = goToAboutST,
         goToPrivacyPolicy = goToPrivacyPolicy,
-        goToSourceCode =  goToSourceCode,
-        onAddCatalogEntryFromFile = onAddCatalogEntryFromFile
+        goToSourceCode = goToSourceCode,
+        onAddCatalogEntryFromFile = onAddCatalogEntryFromFile,
+        switchServerForced = switchServerForced
     )
 
     TopAppBar(
         modifier = modifier.fillMaxWidth(),
         colors = topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        scrolledContainerColor =MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-    ),
+            containerColor = MaterialTheme.colorScheme.primary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        ),
         title = {
             Text(text = stringResource(id = R.string.st_home_deviceList_screenTitle))
         },
@@ -82,14 +86,14 @@ fun MainTopBar(
                 ) {
                     Divider()
 
-                    if(isBetaRelease) {
+                    if (isBetaRelease) {
                         Text(
                             text = "v${BuildConfig.VERSION_NAME} ${BuildConfig.VERSION_CODE} [Beta]",
                             modifier = Modifier.clickable {
                                 switchVersionBetaRelease()
                             })
 
-                        Divider(modifier= Modifier.padding(bottom=LocalDimensions.current.paddingNormal))
+                        Divider(modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal))
 
                         Text(text = "Read Beta Catalog", modifier = Modifier.clickable {
                             readBetaCatalog()
@@ -119,16 +123,18 @@ fun MainTopBar(
 fun rememberActions(
     isLoggedIn: Boolean,
     isExpert: Boolean,
+    isServerForced: Boolean,
     login: () -> Unit = { /** NOOP **/ },
     goToProfile: () -> Unit = { /** NOOP **/ },
     goToSourceCode: () -> Unit = { /** NOOP **/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
     goToPrivacyPolicy: () -> Unit = { /** NOOP **/ },
     logout: () -> Unit = { /** NOOP **/ },
-    onAddCatalogEntryFromFile: () -> Unit = { /** NOOP **/ }
+    onAddCatalogEntryFromFile: () -> Unit = { /** NOOP **/ },
+    switchServerForced: () -> Unit = { /** NOOP **/ }
 ): State<List<ActionItem>> {
     val context = LocalContext.current
-    return remember(key1 = isLoggedIn, key2=isExpert) {
+    return remember(key1 = isLoggedIn, key2 = isExpert, key3 = isServerForced) {
         if (isExpert) {
             mutableStateOf(
                 value =
@@ -160,10 +166,18 @@ fun rememberActions(
                             context.getString(R.string.st_home_menuActions_login)
                         },
                         action = if (isLoggedIn) logout else login
+                    ),
+                    ActionItem(
+                        label = if (isServerForced) {
+                            context.getString(R.string.st_home_menuAction_no_force_server)
+                        } else {
+                            context.getString(R.string.st_home_menuAction_force_server)
+                        },
+                        action = switchServerForced
                     )
                 )
             )
-    } else {
+        } else {
             mutableStateOf(
                 value =
                 listOf(

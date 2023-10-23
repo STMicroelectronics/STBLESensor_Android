@@ -33,6 +33,7 @@ import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.utils.DTMIModelLoadedStatus
 import com.st.demo_showcase.utils.isExpertRequired
 import com.st.demo_showcase.utils.isLoginRequired
+import com.st.demo_showcase.utils.isPnPLMandatory
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.theme.LocalDimensions
@@ -49,7 +50,7 @@ fun DemoListScreen(
     device: Node?,
     isLoggedIn: Boolean,
     isExpert: Boolean,
-    statusModelDTMI: DTMIModelLoadedStatus=DTMIModelLoadedStatus.NotNecessary,
+    statusModelDTMI: DTMIModelLoadedStatus = DTMIModelLoadedStatus.NotNecessary,
     pinnedDevices: List<String>,
     availableDemos: List<Demo>,
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ },
@@ -62,6 +63,7 @@ fun DemoListScreen(
     var openDeniedLoginDemoDialog by rememberSaveable { mutableStateOf(value = false) }
     var openDeniedExpertDemoDialog by rememberSaveable { mutableStateOf(value = false) }
     var openDeniedExpertLoginDemoDialog by rememberSaveable { mutableStateOf(value = false) }
+    var openDeniedPnPLDemoDialog by rememberSaveable { mutableStateOf(value = false) }
     val haptic = LocalHapticFeedback.current
     val state = rememberReorderableLazyListState(onMove = { from, to ->
         if (from.index > 0 && to.index > 1) {
@@ -115,12 +117,14 @@ fun DemoListScreen(
                     item = item,
                     isLoginLock = item.isLoginRequired() && !isLoggedIn,
                     isExpertLock = item.isExpertRequired() && !isExpert,
+                    isPnPLlock = item.isPnPLMandatory() && ((statusModelDTMI == DTMIModelLoadedStatus.CustomNotLoaded) || (statusModelDTMI == DTMIModelLoadedStatus.NotNecessary)),
                     even = availableDemos.indexOf(item) % 2 == 0,
                     isLastOne = availableDemos.indexOf(item) == availableDemos.lastIndex,
                     onDemoSelected = onDemoSelected,
                     onLoginRequired = { openDeniedLoginDemoDialog = true },
                     onExpertRequired = { openDeniedExpertDemoDialog = true },
-                    onExpertLoginRequired = {openDeniedExpertLoginDemoDialog = true}
+                    onPnPLRequired = { openDeniedPnPLDemoDialog = true },
+                    onExpertLoginRequired = { openDeniedExpertLoginDemoDialog = true }
                 )
             }
         }
@@ -140,9 +144,15 @@ fun DemoListScreen(
         )
     }
 
-    if(openDeniedExpertLoginDemoDialog) {
+    if (openDeniedPnPLDemoDialog) {
+        PnPLRestrictionDialog(
+            onDismiss = { openDeniedPnPLDemoDialog = false }
+        )
+    }
+
+    if (openDeniedExpertLoginDemoDialog) {
         ExpertLoginRestrictionDialog(
-            onOk = {openDeniedExpertLoginDemoDialog = false}
+            onOk = { openDeniedExpertLoginDemoDialog = false }
         )
     }
 }
@@ -211,6 +221,32 @@ fun ExpertRestrictionDialog(
         }
     )
 }
+
+
+@Composable
+fun PnPLRestrictionDialog(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Demo Locked")
+        },
+        text = {
+            Text(
+                "Not able to reach the models repository\nThis functionality is available only with a Internet connection\nCheck the connection or Load a Custom Model"
+            )
+        },
+        confirmButton = {
+            BlueMsButton(
+                text = stringResource(id = android.R.string.ok),
+                onClick = onDismiss
+            )
+        }
+    )
+}
+
+
 @SuppressLint("MissingPermission")
 @Composable
 fun ExpertLoginRestrictionDialog(

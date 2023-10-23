@@ -7,4 +7,6 @@ object StCatalogConfig {
     var showDemoList: Boolean = true
 
     var boardModelFilter: List<Boards.Model> = emptyList()
+
+    var firmwareFilter: List<Boards.Model> = emptyList()
 }

@@ -5,7 +5,7 @@ Application ST BLE Sensors
 
 # Compilation
 
-Code compiled using gradle 8.1.1 and JDK 11
+Code compiled using gradle  8.2.1 and JDK jbr-17
 
 set on Gradle properties the Github Login name and SSO authentication
 Example:
@@ -16,7 +16,7 @@ GPR_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXX
 For using this application is necessary to downlaod the Android BlueST-SDK from:
 https://github.com/STMicroelectronics/BlueSTSDK_Android
 
-tag BlueST-SDK_V1.0.0
+tag BlueST-SDK_V1.0.10
 
 and follow the instruction for compiling and publish on local maven repository the 2 libraries necessary for this application:
 * st-blue-sdk
@@ -24,16 +24,20 @@ and follow the instruction for compiling and publish on local maven repository t
 
 
 
-## Install Bash4 on Mac
+brew install gnu-sed 
 
-brew install bash
+Set the PATH (first on Intel, second on Apple Silicon)
+    PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"  
 
-## Using the script for creating a new demo
+    PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"  
 
-brew install gnu-sed  
-PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"  
-cd extra
-/usr/local/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
+cd extra 
+
+Run the command (first on Intel, second on Apple Silicon)
+
+    /usr/local/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
+
+    /opt/homebrew/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
 
 ## License
 

@@ -9,6 +9,6 @@
     <string name="st_pnpl_uploadDtmiFile">Upload\nCustom DTMI</string>
     <string name="st_loadFromFile">Load\nfrom File</string>
     <string name="st_saveToFile">Save\nto File</string>
-    <string name="st_readyToSend">Ready\nto Send</string>
+    <string name="st_sendToBoard">Send\nto Board</string>
     <string name="st_pnpl_addMapEntryBtn">Add a map entry:</string>
 </resources>

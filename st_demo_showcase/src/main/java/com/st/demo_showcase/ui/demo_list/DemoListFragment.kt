@@ -101,7 +101,8 @@ class DemoListFragment : Fragment() {
 
                             selectedDemo.navigateTo(
                                 navController = findNavController(),
-                                nodeId = nodeId
+                                nodeId = nodeId,
+                                isExpert = isExpert
                             )
                         },
                         onLoginRequired = {

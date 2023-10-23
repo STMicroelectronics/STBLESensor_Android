@@ -15,6 +15,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.runtime.derivedStateOf
@@ -28,21 +29,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.st.core.ARG_NODE_ID
 import com.st.demo_showcase.DemoShowCaseConfig
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
 import com.st.demo_showcase.R
 import com.st.demo_showcase.databinding.DemoShowcaseBinding
 import com.st.demo_showcase.models.Demo
-import com.st.demo_showcase.models.LOG_SETTINGS
 import com.st.demo_showcase.models.SERIAL_CONSOLE
 import com.st.demo_showcase.ui.DemoShowCaseViewModel
 import com.st.demo_showcase.ui.composable.DemoShowCaseTopBar
+import com.st.demo_showcase.ui.composable.ShowFwDBModel
 import com.st.demo_showcase.ui.composable.UpdateAvailableDialog
 import com.st.demo_showcase.ui.demo_list.DemoListFragmentDirections
 import com.st.demo_showcase.utils.toActions
-import com.st.plot.PlotFragmentDirections
-import com.st.plot.utils.PLOT_SETTINGS
 import com.st.ui.composables.ActionItem
 import com.st.ui.composables.JSON_FILE_TYPE
 import com.st.ui.theme.BlueMSTheme
@@ -58,6 +58,7 @@ class DemoShowCase : Fragment() {
     var navController: NavController? = null
     private lateinit var binding: DemoShowcaseBinding
     private val viewModel: DemoShowCaseViewModel by activityViewModels()
+
 
     private val onDestinationChangedListener: (controller: NavController, destination: NavDestination, arguments: Bundle?) -> Unit =
         { controller, destination, _ ->
@@ -75,6 +76,8 @@ class DemoShowCase : Fragment() {
             ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
 
         viewModel.setNodeId(nodeId)
+
+        viewModel.onBack = {findNavController().popBackStack()}
 
         binding.composeViewDialog.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -103,6 +106,11 @@ class DemoShowCase : Fragment() {
             }
         }
 
+//        findNavController().navigate(
+//            directions = DemoShowcaseNavGraphDirections.action
+//            //directions = HomeFragmentDirections.actionUserProfilingNavGraphToHomeFragment(), navOptions  = navOptions
+//        )
+
         binding.composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -117,6 +125,8 @@ class DemoShowCase : Fragment() {
                     val currentDemoSelected by viewModel.currentDemo.collectAsStateWithLifecycle()
                     val hasPnplSettings by viewModel.hasPnplSettings.collectAsStateWithLifecycle()
                     val isExpert by viewModel.isExpert.collectAsStateWithLifecycle()
+                    val device by viewModel.device.collectAsStateWithLifecycle()
+                    val openFwDBModelDialog = remember { mutableStateOf(false) }
 
                     val demoActions = currentDemoSelected?.settings.toActions(
                         navController = navController,
@@ -136,7 +146,7 @@ class DemoShowCase : Fragment() {
                         )
                     } else {
                         emptyList()
-                    } + if (isExpert && (currentDemoSelected!=Demo.TextualMonitor))  {
+                    } + if (isExpert && (currentDemoSelected != Demo.TextualMonitor) && (currentDemoSelected != Demo.Plot)) {
                         listOf(
                             ActionItem(
                                 label = SERIAL_CONSOLE,
@@ -154,7 +164,13 @@ class DemoShowCase : Fragment() {
                         )
                     } else {
                         emptyList()
-                    }
+                    } + ActionItem(
+                        label = "Disconnect",
+                        imageVector = Icons.Default.Logout,
+                        action = {
+                            viewModel.exitFromDemoShowCase(nodeId)
+                        }
+                    )
 
                     val pickFileLauncher = rememberLauncherForActivityResult(
                         ActivityResultContracts.OpenDocument()
@@ -164,31 +180,36 @@ class DemoShowCase : Fragment() {
                         }
                     }
 
-                    val boardActions by remember (key1 = isExpert) {
+                    val boardActions by remember(key1 = isExpert) {
                         derivedStateOf {
-                            if(isExpert) {
-                                listOf(
+                            val currentAction = mutableListOf<ActionItem>()
+                            if (isExpert) {
+                                if (device?.catalogInfo != null) {
+                                    currentAction.add(
+                                        ActionItem(
+                                            label = context.getString(R.string.st_demoShowcase_menuAction_showFwDbEntry),
+                                            action = {
+                                                openFwDBModelDialog.value = true
+                                            })
+                                    )
+                                }
+                                currentAction.add(
                                     ActionItem(
                                         label = context.getString(R.string.st_demoShowcase_menuAction_addDtmi),
                                         action = {
                                             pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE))
-                                        }),
+                                        })
+                                )
+                                currentAction.add(
                                     ActionItem(
                                         label = context.getString(R.string.st_demoShowcase_menuAction_debug),
                                         action = {
                                             navController?.navigate(
                                                 DemoShowcaseNavGraphDirections.globalActionToDebugConsole()
                                             )
-                                        }),
-                                    ActionItem(
-                                        label =
-                                        context.getString(R.string.st_demoShowcase_menuAction_logSettings),
-                                        action = {
-                                            navController?.navigate(
-                                                DemoShowcaseNavGraphDirections.globalActionToLogSettings()
-                                            )
-                                        }
-                                    ),
+                                        })
+                                )
+                                currentAction.add(
                                     ActionItem(
                                         label = context.getString(R.string.st_demoShowcase_menuAction_fwUpdate),
                                         action = {
@@ -199,19 +220,25 @@ class DemoShowCase : Fragment() {
                                             )
                                         })
                                 )
-                            } else {
-                                listOf(
-                                    ActionItem(
-                                        label =
-                                        context.getString(R.string.st_demoShowcase_menuAction_logSettings),
-                                        action = {
-                                            navController?.navigate(
-                                                DemoShowcaseNavGraphDirections.globalActionToLogSettings()
-                                            )
-                                        }
-                                    )
-                                )
+
                             }
+                            currentAction.add(ActionItem(
+                                label =
+                                context.getString(R.string.st_demoShowcase_menuAction_logSettings),
+                                action = {
+                                    navController?.navigate(
+                                        DemoShowcaseNavGraphDirections.globalActionToLogSettings()
+                                    )
+                                }
+                            ))
+                            currentAction.toList()
+                        }
+                    }
+
+                    if (openFwDBModelDialog.value) {
+                        if (device?.catalogInfo != null) {
+                            ShowFwDBModel(catalogInfo = device?.catalogInfo!!,
+                                onDismissRequest = { openFwDBModelDialog.value = false })
                         }
                     }
 

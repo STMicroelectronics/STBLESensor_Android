@@ -150,21 +150,21 @@ fun BoardScreen(
             }
 
             if (StCatalogConfig.showDemoList) {
-            item {
-                Text(
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    text = stringResource(id = R.string.st_catalog_board_demoListLabel)
-                )
-            }
+                item {
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        text = stringResource(id = R.string.st_catalog_board_demoListLabel)
+                    )
+                }
 
-            itemsIndexed(items = demos) { index, demo ->
-                DemoListItem(
-                    item = demo,
-                    even = index % 2 == 0,
-                    isLastOne = index == demos.lastIndex
-                )
-            }
+                itemsIndexed(items = demos) { index, demo ->
+                    DemoListItem(
+                        item = demo,
+                        even = index % 2 == 0,
+                        isLastOne = index == demos.lastIndex
+                    )
+                }
             }
 
             boardDescOrNull?.let {

@@ -27,17 +27,19 @@ import com.st.ext_config.R
 fun BoardDropdown(
     modifier: Modifier = Modifier,
     selectedIndex: Int = 0,
+    wbOnly: Boolean = false,
     onSelection: (Int) -> Unit
 ) {
     var expanded by remember { mutableStateOf(value = false) }
 
     val items =
-        listOf(
+        mutableListOf(
             stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard1),
             stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2),
-            stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard3)
         )
-
+    if(!wbOnly) {
+        items.add(stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard3))
+        }
     // remember the selected item
     var selectedItem by remember {
         mutableStateOf(items[selectedIndex])

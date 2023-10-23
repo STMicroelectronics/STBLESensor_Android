@@ -1,0 +1,181 @@
+{
+  "description": "Vibration monitor - Compare",
+  "category": "Vibration Monitor",
+  "board_compatibility": [
+    "SENSOR_TILE_BOX"
+  ],
+  "flows": [],
+  "functions": [
+    {
+      "description": "FFT (DFT- Discrete Fourier Transform)",
+      "id": "F2",
+      "inputs": [
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8",
+        "S9"
+      ],
+      "mandatoryInputs": [],
+      "maxRepeatCount": 0,
+      "outputs": [
+        "O1",
+        "O2",
+        "O3",
+        "O4"
+      ],
+      "parametersCount": 1,
+      "properties": [
+        {
+          "label": "Frequencies to produce",
+          "type": "ENUM",
+          "value": 1024,
+          "enumValues": [
+            {
+              "label": "16",
+              "value": 16
+            },
+            {
+              "label": "64",
+              "value": 64
+            },
+            {
+              "label": "256",
+              "value": 256
+            },
+            {
+              "label": "1024",
+              "value": 1024
+            }
+          ]
+        },
+        {
+          "label": "Acquisition Time (minutes)",
+          "type": "INT",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "description": "FFT Compare",
+      "id": "F26",
+      "inputs": [
+        "F2"
+      ],
+      "mandatoryInputs": [
+        [
+          "F2"
+        ]
+      ],
+      "maxRepeatCount": 0,
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "parametersCount": 1,
+      "properties": [
+        {
+          "label": "Name file FFT to compare",
+          "type": "STRING",
+          "value": "gold_vibration_pattern"
+        },
+        {
+          "label": "Number of lines to compare",
+          "type": "INT",
+          "value": 511
+        },
+        {
+          "label": "Threshold",
+          "type": "FLOAT",
+          "value": 25
+        }
+      ]
+    }
+  ],
+  "id": "653a3afd-7375-4820-a5fc-1568389f931b",
+  "notes": "The Vibration monitoring app demonstrates how engines, electric motor, etc. are monitored to detect potential problems by their mechanical vibration.\nThe sensor used is the LSM6DSOX vibrometer accelerometer. The accelerometer is configured in high performance mode with an output data rate of 6666 Hz.\nStep 1 Training App: Can read the vibration pattern of correctly functioning equipment by SensorTile.box strongly placed close the motor, calculates the Fast Fourier Transform (FFT), and store in the sd-card.\nStep 2 Compare App: Can compare the vibration under test with the vibration previously acquired by Training-app, if the difference between the vibrations exceeds a previously set delta parameter, the green LED of SensorTile.box turns on.",
+  "outputs": [
+    {
+      "description": "Stream to Bluetooth",
+      "icon": "ic_bluetooth",
+      "id": "O3",
+      "properties": []
+    }
+  ],
+  "sensors": [
+    {
+      "acquisitionTime": 0,
+      "bleMaxOdr": 52,
+      "configuration": {
+        "acquisitionTime": 0,
+        "filters": {
+          "highPass": {
+            "label": "ODR/800",
+            "value": 10
+          },
+          "lowPass": {
+            "label": "ORD/2",
+            "value": 2
+          }
+        },
+        "fullScale": 2,
+        "odr": 6666,
+        "powerMode": "HIGH_PERFORMANCE"
+      },
+      "dataType": "Float vector x3",
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dso.pdf",
+      "description": "Vibrometer Accelerometer sensor",
+      "fullScaleUm": "g",
+      "fullScales": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "icon": "ic_inemo",
+      "id": "S5",
+      "model": "LSM6DSOX",
+      "notes": "",
+      "output": "Acceleration",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "powerModes": [
+        {
+          "label": "Low power",
+          "mode": "LOW_POWER",
+          "odrs": [
+            1.6,
+            12.5,
+            26,
+            52,
+            104,
+            208
+          ]
+        },
+        {
+          "label": "High performance",
+          "mode": "HIGH_PERFORMANCE",
+          "odrs": [
+            12.5,
+            26,
+            52,
+            104,
+            208,
+            416,
+            833,
+            1666,
+            3333,
+            6666
+          ]
+        }
+      ],
+      "um": "mg"
+    }
+  ],
+  "version": 1
+}

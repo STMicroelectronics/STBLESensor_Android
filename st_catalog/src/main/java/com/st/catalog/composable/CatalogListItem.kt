@@ -11,7 +11,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,17 +25,17 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.st.blue_sdk.board_catalog.models.BoardStatus
 import com.st.ui.theme.*
 import com.st.ui.utils.asString
-import com.st.ui.utils.fadedEdgeMarquee
 import com.st.ui.utils.getBlueStBoardImages
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogListItem(
     modifier: Modifier = Modifier,
     boardName: String,
+    boardVariant: String?=null,
     friendlyName: String? = null,
     boardStatus: BoardStatus? = null,
     description: String? = null,
+    releaseDate: String? = null,
     boardTypeName: String,
     onClickItem: () -> Unit = { /** NOOP **/ }
 ) {
@@ -67,6 +66,7 @@ fun CatalogListItem(
                     .fillMaxHeight()
                     .background(color = MaterialTheme.colorScheme.background)
                     .padding(all = LocalDimensions.current.paddingNormal)
+                    .padding(start = LocalDimensions.current.paddingMedium)
             ) {
                 Text(
                     modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
@@ -75,15 +75,37 @@ fun CatalogListItem(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
+
+                if(boardVariant!=null) {
+                    Text(
+                        modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
+                        text = boardVariant,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
                 if (friendlyName != null) {
                     Text(
                         modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
                         text = friendlyName,
                         maxLines = SUBTITLE_MAX_LINES,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
+
+                if (releaseDate != null) {
+                    Text(
+                        modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
+                        text = releaseDate,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
 
                 if (description != null) {
                     Text(
@@ -122,6 +144,7 @@ fun CatalogListItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = ErrorText
                     )
+
                     else -> {}
                 }
             }
@@ -137,10 +160,12 @@ private fun CatalogListItemPreview() {
     PreviewBlueMSTheme {
         CatalogListItem(
             boardName = "BlueCoin Starter Kit",
+            boardVariant = "Variant2",
             friendlyName = "STEVAL-BCNKT01V1",
             boardStatus = BoardStatus.NRND,
             description = LoremIpsum(words = 20).asString(),
-            boardTypeName = "BLUE_COIN"
+            boardTypeName = "BLUE_COIN",
+            releaseDate = "2022_Q1"
         )
     }
 }

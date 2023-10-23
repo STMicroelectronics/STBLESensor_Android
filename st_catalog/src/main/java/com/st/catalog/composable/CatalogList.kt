@@ -50,24 +50,36 @@ import com.st.ui.theme.SecondaryBlue
 @Composable
 fun CatalogList(
     modifier: Modifier = Modifier,
+    nodeId: String? = null,
     navController: NavController,
     onBack: () -> Unit = { /** NOOP **/ },
     viewModel: CatalogViewModel = hiltViewModel()
 ) {
-    val boards by viewModel.boards.collectAsStateWithLifecycle()
-    val boardsDescription by viewModel.boardsDescription.collectAsStateWithLifecycle()
-    CatalogList(
-        modifier = modifier,
-        boards = boards.distinctBy { it.bleDevId },
-        allBoards = boards,
-        boardsDescription = boardsDescription.distinctBy { it.bleDevId },
-        onBack = onBack,
-        onBoardSelected = { board ->
-            navController.navigate(
-                "detail/${board.bleDevId}"
+    if (nodeId != null) {
+        //remove the catalog list fragment before to navigate to board details
+        navController.popBackStack()
+        navController.navigate(
+            "detail/${nodeId}"
+        )
+    } else {
+        val boards by viewModel.boards.collectAsStateWithLifecycle()
+        val boardsDescription by viewModel.boardsDescription.collectAsStateWithLifecycle()
+
+        if (boards.isNotEmpty() && boardsDescription.isNotEmpty()) {
+            CatalogList(
+                modifier = modifier,
+                boards = boards.distinctBy { it.bleDevId },
+                allBoards = boards,
+                boardsDescription = boardsDescription.distinctBy { it.bleDevId },
+                onBack = onBack,
+                onBoardSelected = { bleDevId ->
+                    navController.navigate(
+                        "detail/${bleDevId}"
+                    )
+                }
             )
         }
-    )
+    }
 }
 
 @Composable
@@ -77,23 +89,43 @@ fun CatalogList(
     allBoards: List<BoardFirmware>,
     boardsDescription: List<BoardDescription>,
     onBack: () -> Unit = { /** NOOP **/ },
-    onBoardSelected: (BoardFirmware) -> Unit = { /** NOOP **/ }
+    onBoardSelected: (String) -> Unit = { /** NOOP **/ }
 ) {
     var openFilter by remember { mutableStateOf(value = false) }
+    var boardOrder by remember { mutableStateOf(value = BoardOrder.NONE) }
     var filters by remember { mutableStateOf(value = CatalogFilter()) }
-    val filteredBoards by remember(key1 = filters, boards) {
+    val filteredBoardDescriptions by remember(filters, boards, boardOrder) {
         derivedStateOf {
-            if (filters.demoGroups.isEmpty()) {
-                boards
-            } else {
-                allBoards.filter {board ->
-                    filters.demoGroups.firstOrNull { group ->
-                        board.availableDemos().flatMap { it.group }.map { it.name }.contains(group)
-                    } != null
-                }.distinctBy { it.bleDevId }
+            val filteredBoards =
+                if (filters.demoGroups.isEmpty()) {
+                    boards.map {
+                        boardsDescription.first { board ->
+                            board.bleDevId == it.bleDevId
+                        }
+                    }
+                } else {
+                    allBoards.filter { board ->
+                        filters.demoGroups.firstOrNull { group ->
+                            board.availableDemos().flatMap { it.group }.map { it.name }
+                                .contains(group)
+                        } != null
+                    }.distinctBy { it.bleDevId }.map {
+                        boardsDescription.first { board ->
+                            board.bleDevId == it.bleDevId
+                        }
+                    }
+                }
+
+            when (boardOrder) {
+                BoardOrder.NONE -> filteredBoards
+                BoardOrder.ALPHABETICAL -> filteredBoards.sortedBy { it.boardName }
+                BoardOrder.RELEASE_DATE -> filteredBoards.sortedByDescending { it.releaseDate }
             }
         }
     }
+
+    val releaseDatesPresent = boardsDescription.firstOrNull { it.releaseDate != null } != null
+
     Scaffold(modifier = modifier.fillMaxSize(),
         floatingActionButtonPosition = FabPosition.Center,
         isFloatingActionButtonDocked = true,
@@ -131,28 +163,30 @@ fun CatalogList(
             contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
         ) {
-            items(filteredBoards) {
-                val boardDescription = boardsDescription.firstOrNull { board->
-                    board.bleDevId == it.bleDevId
-                }
-
-                if(boardDescription!=null) {
+            items(filteredBoardDescriptions) {
+                if (boardOrder == BoardOrder.RELEASE_DATE) {
                     CatalogListItem(
-                        boardName = boardDescription.boardName,
-                        friendlyName = "(${boardDescription.friendlyName})",
-                        boardStatus = boardDescription.status,
-                        description = boardDescription.description,
+                        boardName = it.boardName,
+                        boardVariant = it.boardVariant,
+                        friendlyName = it.friendlyName,
+                        boardStatus = it.status,
+                        description = it.description,
                         boardTypeName = it.boardModel().name,
+                        releaseDate = it.releaseDate,
                         onClickItem = {
-                            onBoardSelected(it)
+                            onBoardSelected(it.bleDevId)
                         }
                     )
                 } else {
                     CatalogListItem(
-                        boardName = it.brdName,
+                        boardName = it.boardName,
+                        boardVariant = it.boardVariant,
+                        friendlyName = it.friendlyName,
+                        boardStatus = it.status,
+                        description = it.description,
                         boardTypeName = it.boardModel().name,
                         onClickItem = {
-                            onBoardSelected(it)
+                            onBoardSelected(it.bleDevId)
                         }
                     )
                 }
@@ -163,13 +197,22 @@ fun CatalogList(
     if (openFilter) {
         Dialog(onDismissRequest = { openFilter = false }) {
             CatalogFilterDialog(
-                filters = filters
-            ) {
-                filters = it
+                boardOrder = boardOrder,
+                filters = filters,
+                releaseDatesPresent = releaseDatesPresent
+            ) { catalogFilter, boardOrdering ->
+                filters = catalogFilter
+                boardOrder = boardOrdering
                 openFilter = false
             }
         }
     }
+}
+
+enum class BoardOrder {
+    NONE,
+    RELEASE_DATE,
+    ALPHABETICAL
 }
 
 /** ----------------------- PREVIEW --------------------------------------- **/
@@ -184,7 +227,7 @@ private fun CatalogListPreview() {
                 BoardFirmware.mock(),
                 BoardFirmware.mock()
             ),
-            allBoards =  listOf(
+            allBoards = listOf(
                 BoardFirmware.mock(),
                 BoardFirmware.mock(),
                 BoardFirmware.mock()

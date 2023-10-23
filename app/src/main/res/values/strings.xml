@@ -44,7 +44,10 @@
     <string name="st_home_menuActions_login">Login</string>
     <string name="st_home_menuActions_logout">Logout</string>
 
-    <string name="st_home_missingPermission_goToSettingsBtn">O1pen Settings</string>
+    <string name="st_home_menuAction_force_server">Force Audio Server</string>
+    <string name="st_home_menuAction_no_force_server">No Force Audio Server</string>
+
+    <string name="st_home_missingPermission_goToSettingsBtn">Open Settings</string>
 
     <string name="st_home_deviceListItem_fwCustomLabel">Custom FW</string>
     <string name="st_home_deviceListItem_rssiFormatter">%d dBm</string>
@@ -60,5 +63,6 @@
     <string name="profile_restricted_dialog_body_text">Change the Profile selection in order to be able to enable the explore the boards catalog for finding the best STMicroelectronics board that fits your necessities</string>
     <string name="missing_ble_dialog_title">Bluetooth required</string>
     <string name="missing_ble_dialog_body_text">It\'s necessary to enable the Bluetooth for connecting one STMicroelectronics board</string>
-
+    <string name="missing_location_dialog_title">Location required</string>
+    <string name="missing_location_dialog_body_text">It\'s necessary to enable the Location for searching the boards</string>
 </resources>

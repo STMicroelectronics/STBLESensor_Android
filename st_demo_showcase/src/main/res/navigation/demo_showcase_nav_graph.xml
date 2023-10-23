@@ -24,6 +24,13 @@
     <action
         android:id="@+id/global_action_to_debugConsole"
         app:destination="@id/debugConsole" />
+
+    <action
+        android:id="@+id/global_action_to_homeFragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true"/>
+
     <action
         android:id="@+id/global_action_to_logSettings"
         app:destination="@id/logSettings" />
@@ -42,7 +49,7 @@
         android:label="DemoList">
         <action
             android:id="@+id/action_demoList_to_user_profiling_nav_graph"
-            app:destination="@id/user_profiling_nav_graph"/>
+            app:destination="@id/user_profiling_nav_graph" />
         <action
             android:id="@+id/action_demoList_to_environmentalDemoFragment"
             app:destination="@id/environmentalDemoFragment" />
@@ -198,6 +205,9 @@
         <action
             android:id="@+id/action_demoList_to_workingInProgressFragment"
             app:destination="@id/workingInProgressFragment" />
+        <action
+            android:id="@+id/action_demoList_to_flowDemoFragment"
+            app:destination="@id/flowDemoFragment" />
         <!-- *** NEW_DEMO_TEMPLATE ANCHOR3 *** -->
     </fragment>
     <fragment
@@ -221,7 +231,7 @@
     <dialog
         android:id="@+id/serialConsole"
         android:name="com.st.demo_showcase.ui.serial_console.SerialConsole"
-        android:label="SerialConsole"/>
+        android:label="SerialConsole" />
 
     <fragment
         android:id="@+id/debugConsole"
@@ -349,6 +359,9 @@
         <argument
             android:name="nodeId"
             app:argType="string" />
+        <argument
+            android:name="isExpert"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_demoPlot_to_plotSettingsFragment"
             app:destination="@id/plotSettingsFragment" />
@@ -565,6 +578,14 @@
         android:id="@+id/workingInProgressFragment"
         android:name="com.st.working_in_progress.WorkingInProgressFragment"
         android:label="WorkingInProgressFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/flowDemoFragment"
+        android:name="com.st.flow_demo.FlowDemoFragment"
+        android:label="FlowDemoFragment">
         <argument
             android:name="nodeId"
             app:argType="string" />

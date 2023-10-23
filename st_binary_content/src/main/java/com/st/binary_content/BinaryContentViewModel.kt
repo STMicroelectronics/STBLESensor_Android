@@ -22,6 +22,7 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
+import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -40,10 +41,13 @@ import javax.inject.Inject
 class BinaryContentViewModel @Inject constructor(
     private val blueManager: BlueManager,
     private val coroutineScope: CoroutineScope,
+    private val stPreferences: StPreferences,
     private val application: Application
 ) : ViewModel() {
 
     private var observeFeaturePnPLJob: Job? = null
+
+    var maxPayloadSize:Int=20
 
     private val _modelUpdates =
         mutableStateOf<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>(
@@ -85,6 +89,14 @@ class BinaryContentViewModel @Inject constructor(
 
     var fileOperationResult: String? = null
 
+    private val _bytesRec = mutableStateOf(value = 0)
+    val bytesRec: State<Int>
+        get() = _bytesRec
+
+    private val _numberPackets = mutableStateOf(value = 0)
+    val numberPackets: State<Int>
+        get() = _numberPackets
+
     private fun sendGetAllCommand(nodeId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -116,7 +128,7 @@ class BinaryContentViewModel @Inject constructor(
             _isLoading.value = true
 
             _modelUpdates.value =
-                blueManager.getDtmiModel(nodeId = nodeId)?.extractComponent(compName = compName)
+                blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())?.extractComponent(compName = compName)
                     ?: emptyList()
 
             _enableCollapse.value = false
@@ -249,6 +261,9 @@ class BinaryContentViewModel @Inject constructor(
                 it.name == BinaryContent.NAME
             }?.let {
                 val feature = it as BinaryContent
+                //Set the MaxPayloadSize to the node
+                //20 byte is the default size
+                feature.setMaxPayLoadSize(maxPayloadSize)
                 viewModelScope.launch(Dispatchers.IO) {
                     blueManager.writeFeatureCommand(
                         nodeId = nodeId,
@@ -258,6 +273,9 @@ class BinaryContentViewModel @Inject constructor(
                         )
                     )
                     byteArrayContentToBoard = null
+                    _binaryContentReadyForSending.value = false
+                    _numberPackets.value=0
+                    _bytesRec.value=0
                 }
             }
         }
@@ -265,6 +283,17 @@ class BinaryContentViewModel @Inject constructor(
 
     fun startDemo(nodeId: String) {
         observeFeaturePnPLJob?.cancel()
+        _numberPackets.value=0
+        _bytesRec.value=0
+
+        //Set the maxPayload size used for writing to node..
+//        val node = blueManager.getNode(nodeId)
+//        node?.let {
+//            blueManager.nodeFeatures(nodeId).find { it.name == BinaryContent.NAME }
+//                .let { feature ->
+//                    (feature as BinaryContent).setMaxPayLoadSize(node.maxPayloadSize)
+//                }
+//        }
 
         blueManager.nodeFeatures(nodeId)
             .filter { it.name == PnPL.NAME || it.name == BinaryContent.NAME }.let { feature ->
@@ -278,7 +307,7 @@ class BinaryContentViewModel @Inject constructor(
                             _isLoading.value = true
 
                             _modelUpdates.value =
-                                blueManager.getDtmiModel(nodeId = nodeId)
+                                blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())
                                     ?.extractComponent(compName = "control") ?: emptyList()
 
                             _enableCollapse.value = false
@@ -318,8 +347,14 @@ class BinaryContentViewModel @Inject constructor(
                             _isLoading.value = false
                         }
                     } else if (data is RawData) {
-                        byteArrayContentFromBoard = data.data.value
-                        _binaryContentReceived.value = true
+                        if(data.data.value!=null) {
+                            //EOS received
+                            byteArrayContentFromBoard = data.data.value
+                            _binaryContentReceived.value = true
+                        }
+                        _numberPackets.value = data.numberPackets.value
+                        _bytesRec.value = data.bytesRec.value
+
                     }
                 }.launchIn(viewModelScope)
             }

@@ -25,8 +25,8 @@ android {
         applicationId "com.st.bluems"
         minSdk rootProject.minSdk
         targetSdk rootProject.targetSdk
-        versionCode 154
-        versionName "5.0.0"
+        versionCode 168
+        versionName "5.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -120,5 +120,5 @@ dependencies {
 
     // Debug
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect"
 }

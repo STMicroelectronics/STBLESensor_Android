@@ -89,6 +89,8 @@ class DemoShowCaseViewModel @Inject constructor(
         "LogSettings"
     )
 
+    var onBack: () -> Unit = { /** NOOP**/ }
+
     fun onDestinationChanged(
         prevDestination: NavDestination?,
         destination: NavDestination
@@ -157,7 +159,7 @@ class DemoShowCaseViewModel @Inject constructor(
                     }
                 }
             }
-            val model = blueManager.getDtmiModel(nodeId = nodeId)
+            val model = blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())
             _modelUpdates.value = model
             if (model != null) {
                 if(model.customDTMI) {
@@ -206,7 +208,7 @@ class DemoShowCaseViewModel @Inject constructor(
                 contentResolver = contentResolver
             )?.extractComponents() ?: emptyList()
 
-            val model = blueManager.getDtmiModel(nodeId = nodeId)
+            val model = blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())
             _modelUpdates.value = model
             if (model != null) {
                 if(model.customDTMI) {
@@ -246,6 +248,8 @@ class DemoShowCaseViewModel @Inject constructor(
 //                                currentFirmwareInfo.advertiseInfo?.getProtocolVersion() == 2.toShort() && currentFirmwareInfo.catalogInfo?.fota?.type == BoardFotaType.WB_READY
                         }
                     }
+                } else {
+                    _showFwUpdate.value = false
                 }
             }
         }
@@ -278,19 +282,32 @@ class DemoShowCaseViewModel @Inject constructor(
             buildDemoList.add(Demo.Cloud)
         }
 
-        //Add the Flow Demo only to SensorTile.box and SensorTile.box-Pro
+        //Add the Flow Demo only to Firmwares that have the flowEnable flag ==1
         if (_device.value != null) {
-            if ((_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX) || (_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX_PRO) || (_device.value!!.boardType == Boards.Model.SENSOR_TILE_BOX_PROB)) {
-                buildDemoList.add(Demo.Flow)
+            if(_device.value!!.catalogInfo!=null) {
+                if (_device.value!!.catalogInfo!!.flowEnable != null) {
+                    if (device.value!!.catalogInfo!!.flowEnable == 1) {
+                        buildDemoList.add(Demo.Flow)
+                    }
+                }
+            }
+        }
+
+        //Change PnPL-Demo name
+        if (_device.value != null) {
+            if (_device.value!!.catalogInfo != null) {
+                buildDemoList.firstOrNull { it ->
+                    it == Demo.Pnpl
+                }?.displayName = _device.value!!.catalogInfo!!.fwName
             }
         }
 
         //Remove the PnP-L, HighSpeedDataLog and BinaryContent Demo if there is not a valid DTMI
-        if((_statusModelDTMI.value==DTMIModelLoadedStatus.CustomNotLoaded) || (_statusModelDTMI.value==DTMIModelLoadedStatus.NotNecessary)) {
-            val match =
-            buildDemoList.filter { it == Demo.Pnpl || it == Demo.HighSpeedDataLog2 || it == Demo.BinaryContentDemo}
-            buildDemoList.removeAll(match.toSet())
-        }
+//        if((_statusModelDTMI.value==DTMIModelLoadedStatus.CustomNotLoaded) || (_statusModelDTMI.value==DTMIModelLoadedStatus.NotNecessary)) {
+//            val match =
+//            buildDemoList.filter { it == Demo.Pnpl || it == Demo.HighSpeedDataLog2 || it == Demo.BinaryContentDemo}
+//            buildDemoList.removeAll(match.toSet())
+//        }
 
         _availableDemo.value = buildDemoList
 
@@ -357,6 +374,11 @@ class DemoShowCaseViewModel @Inject constructor(
                 _isLoggedIn.value = loginManager.isLoggedIn()
             }
         }
+    }
+
+    fun exitFromDemoShowCase(nodeId: String) {
+        disconnect(nodeId)
+        onBack()
     }
 }
 

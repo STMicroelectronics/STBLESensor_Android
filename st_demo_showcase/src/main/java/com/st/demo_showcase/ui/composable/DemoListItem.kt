@@ -32,9 +32,11 @@ fun DemoListItem(
     even: Boolean,
     isLoginLock: Boolean = false,
     isExpertLock: Boolean = false,
+    isPnPLlock: Boolean = false,
     isLastOne: Boolean,
     onLoginRequired: () -> Unit = { /** NOOP **/ },
     onExpertRequired: () -> Unit = { /** NOOP **/ },
+    onPnPLRequired: () -> Unit = { /** NOOP **/ },
     onExpertLoginRequired: () -> Unit = { /** NOOP **/ },
     onDemoSelected: (Demo) -> Unit = { /** NOOP **/ }
 ) {
@@ -51,13 +53,17 @@ fun DemoListItem(
                     if (isExpertLock) {
                         onExpertRequired()
                     } else {
-                        onDemoSelected(item)
+                        if(isPnPLlock) {
+                            onPnPLRequired()
+                        } else {
+                            onDemoSelected(item)
+                        }
                     }
                 }
             }
         }
     ) {
-        val alpha = if (isLoginLock || isExpertLock) 0.4f else 1f
+        val alpha = if (isLoginLock || isExpertLock || isPnPLlock) 0.4f else 1f
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
@@ -104,7 +110,7 @@ fun DemoListItem(
                     )
                 }
 
-                if (isLoginLock || isExpertLock) {
+                if (isLoginLock || isExpertLock || isPnPLlock) {
                     Icon(
                         modifier = Modifier.size(size = LocalDimensions.current.iconSmall),
                         tint = Grey6,

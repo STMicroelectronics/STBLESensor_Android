@@ -60,7 +60,13 @@ class CatalogViewModel
 
     fun getFirmwareList(boardId: String) {
         viewModelScope.launch {
-            _firmwareList.value = blueManager.getBoardCatalog().filter { it.bleDevId == boardId }
+            _firmwareList.value =
+                blueManager.getBoardCatalog().filter { it.bleDevId == boardId }.filter {
+                    if (StCatalogConfig.firmwareFilter.isNotEmpty())
+                        StCatalogConfig.firmwareFilter.contains(it.boardModel())
+                    else
+                        true
+                }
         }
     }
 

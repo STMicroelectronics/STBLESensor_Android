@@ -16,13 +16,14 @@ import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
+import com.st.blue_sdk.board_catalog.models.BoardDescription
 import com.st.blue_sdk.common.Status
 import com.st.blue_sdk.models.ConnectionStatus
 import com.st.blue_sdk.models.Node
 import com.st.blue_sdk.models.NodeState
+import com.st.internal.BuildConfig
 import com.st.login.api.StLoginManager
 import com.st.preferences.StPreferences
-import com.st.user_profiling.model.AuthorizedActions
 import com.st.user_profiling.model.LevelProficiency
 import com.st.user_profiling.model.ProfileType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,12 +50,14 @@ class HomeViewModel @Inject constructor(
     val scanBleDevices = _scanBleDevices.asStateFlow()
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
-    private val _canExploreCatalog = MutableStateFlow(false)
-    val canExploreCatalog = _canExploreCatalog.asStateFlow()
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn = _isLoggedIn.asStateFlow()
     private val _isExpert = MutableStateFlow(false)
     val isExpert = _isExpert.asStateFlow()
+
+    private val _isServerForced = MutableStateFlow(false)
+    val isServerForced = _isServerForced.asStateFlow()
+
     private val _isBetaRelease = MutableStateFlow(false)
     val isBetaRelease = _isBetaRelease.asStateFlow()
     private val _connectionStatus = MutableStateFlow(ConnectionStatus())
@@ -61,6 +65,10 @@ class HomeViewModel @Inject constructor(
     private val _boardName = MutableStateFlow("")
     val boardName = _boardName.asStateFlow()
     val pinnedDevices = stPreferences.getFavouriteDevices()
+
+    private val _boardsDescription = MutableStateFlow(emptyList<BoardDescription>())
+    val boardsDescription = _boardsDescription.asStateFlow()
+
     private var connectionJob: Job? = null
 
     private var numberCheckedTimes = 0
@@ -83,44 +91,54 @@ class HomeViewModel @Inject constructor(
         nodeId: String,
         maxConnectionRetries: Int = MAX_RETRY_CONNECTION,
         maxPayloadSize: Int = 248,
-        onNodeReady: (() -> Unit)? = null
+        enableServer: Boolean,
+        onNodeReady: (() -> Unit)? = null,
     ) {
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
             var retryCount = 0
             var callback = onNodeReady
 
-            blueManager.connectToNode(nodeId = nodeId, maxPayloadSize = maxPayloadSize).collect { node ->
-                _connectionStatus.value = node.connectionStatus
-                _boardName.value = node.boardType.name
+            blueManager.connectToNode(nodeId = nodeId, maxPayloadSize = maxPayloadSize,enableServer = enableServer)
+                .collect { node ->
+                    _connectionStatus.value = node.connectionStatus
+                    _boardName.value = node.boardType.name
 
-                val previousNodeState = node.connectionStatus.prev
-                val currentNodeState = node.connectionStatus.current
+                    val previousNodeState = node.connectionStatus.prev
+                    val currentNodeState = node.connectionStatus.current
 
-                Log.d(
-                    TAG,
-                    "Node state (prev: $previousNodeState - current: $currentNodeState) retryCount: $retryCount"
-                )
+                    Log.d(
+                        TAG,
+                        "Node state (prev: $previousNodeState - current: $currentNodeState) retryCount: $retryCount"
+                    )
 
-                if (previousNodeState == NodeState.Connecting && currentNodeState == NodeState.Disconnected) {
-                    retryCount += 1
+                    if (previousNodeState == NodeState.Connecting && currentNodeState == NodeState.Disconnected) {
+                        retryCount += 1
 
-                    if (retryCount > maxConnectionRetries) {
-                        return@collect
+                        if (retryCount > maxConnectionRetries) {
+                            return@collect
+                        }
+
+                        Log.d(TAG, "Retry connection...")
+                        blueManager.connectToNode(nodeId,enableServer = enableServer)
                     }
 
-                    Log.d(TAG, "Retry connection...")
-                    blueManager.connectToNode(nodeId)
+                    if (currentNodeState == NodeState.Ready) {
+                        //Adding a Delay for allowing the subscription to exported BLE char for BlueVoice FullDuplex and FullBand
+                        delay(500)
+                        callback?.invoke()
+                        callback = null
+                    }
                 }
-
-                if (currentNodeState == NodeState.Ready) {
-                    //Adding a Delay for allowing the subscription to exported BLE char for BlueVoice FullDuplex and FullBand
-                    delay(500)
-                    callback?.invoke()
-                    callback = null
-                }
-            }
         }
+    }
+
+    fun getNodeFromNodeId(nodeId: String): Node? {
+        var node: Node?
+        runBlocking {
+            node = blueManager.getNode(nodeId)
+        }
+        return node
     }
 
     fun setLocalBoardCatalog(fileUri: Uri) {
@@ -134,15 +152,25 @@ class HomeViewModel @Inject constructor(
 
     fun readBetaCatalog() {
         viewModelScope.launch {
-            val url: String = ""
+            val url: String = BuildConfig.BLUESTSDK_DB_BASE_BETA_URL
             blueManager.reset(url)
+            _boardsDescription.value = blueManager.getBoardsDescription()
+            //Log.i("DB","readBetaCatalog checkBoardsCatalogPresence = ${ _boardsDescription.value.size}")
+
         }
+        //checkBoardsCatalogPresence()
     }
 
     fun readReleaseCatalog() {
         viewModelScope.launch {
             blueManager.reset()
+            _boardsDescription.value = blueManager.getBoardsDescription()
+            Log.i(
+                "DB",
+                "readReleaseCatalog checkBoardsCatalogPresence = ${_boardsDescription.value.size}"
+            )
         }
+        //checkBoardsCatalogPresence()
     }
 
     fun addToPinnedDevices(nodeId: String) {
@@ -170,9 +198,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun openPrivacyPoliciPage() {
+    fun openPrivacyPolicyPage() {
         Intent(Intent.ACTION_VIEW).also { intent ->
-            intent.data = Uri.parse("https://www.st.com/content/st_com/en/common/privacy-portal/corporate-privacy-statement.html")
+            intent.data =
+                Uri.parse("https://www.st.com/content/st_com/en/common/privacy-portal/corporate-privacy-statement.html")
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
@@ -187,12 +216,7 @@ class HomeViewModel @Inject constructor(
             _isLoggedIn.value = loginManager.isLoggedIn()
 
             val level = LevelProficiency.fromString(stPreferences.getLevelProficiency())
-            val levelProficiency = level
-                ?.isAuthorizedTo(AuthorizedActions.EXPLORE_CATALOG) ?: false
-            val profileType = ProfileType.fromString(stPreferences.getProfileType())
-                ?.isAuthorizedTo(AuthorizedActions.EXPLORE_CATALOG) ?: false
 
-            _canExploreCatalog.value = levelProficiency && profileType
             _isExpert.value = level == LevelProficiency.EXPERT
         }
     }
@@ -201,11 +225,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
 
             val level = LevelProficiency.fromString(stPreferences.getLevelProficiency())
-            val levelProficiency = level?.isAuthorizedTo(AuthorizedActions.EXPLORE_CATALOG) ?: false
-            val profileType = ProfileType.fromString(stPreferences.getProfileType())
-                ?.isAuthorizedTo(AuthorizedActions.EXPLORE_CATALOG) ?: false
-
-            _canExploreCatalog.value = levelProficiency && profileType
+//            val levelProficiency = level?.isAuthorizedTo(AuthorizedActions.EXPLORE_CATALOG) ?: false
+//            val profileType = ProfileType.fromString(stPreferences.getProfileType())
+//                ?.isAuthorizedTo(AuthorizedActions.EXPLORE_CATALOG) ?: false
+//
+//            _canExploreCatalog.value = levelProficiency && profileType
 
             _isExpert.value = level == LevelProficiency.EXPERT
         }
@@ -234,12 +258,34 @@ class HomeViewModel @Inject constructor(
         _isBetaRelease.value = stPreferences.isBetaApplication()
     }
 
+    fun checkServerForced() {
+        _isServerForced.value = stPreferences.isServerForced()
+    }
+
+    fun switchServerForced() {
+        val isServerForced = stPreferences.isServerForced()
+        if(isServerForced) {
+            stPreferences.setServerForcedFlag(false)
+            _isServerForced.value = false
+        } else {
+            stPreferences.setServerForcedFlag(true)
+            _isServerForced.value = true
+        }
+    }
+
+    fun checkBoardsCatalogPresence() {
+        viewModelScope.launch {
+            _boardsDescription.value = blueManager.getBoardsDescription()
+            Log.i("DB", "checkBoardsCatalogPresence = ${_boardsDescription.value.size}")
+        }
+    }
+
     fun switchVersionBetaRelease() {
         numberCheckedTimes++
         if (numberCheckedTimes == 7) {
             numberCheckedTimes = 0
             val isBetaVersion = stPreferences.isBetaApplication()
-            if(isBetaVersion) {
+            if (isBetaVersion) {
                 //Move to Release Version
                 stPreferences.setBetaApplicationFlag(false)
                 //Load the Release Catalog

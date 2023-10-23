@@ -8,14 +8,11 @@
 package com.st.bluems.ui.composable
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.SignalCellular4Bar
@@ -25,20 +22,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.blue_sdk.models.Node
 import com.st.ui.theme.*
 import com.st.ui.utils.getBlueStBoardImages
 import com.st.ui.utils.getBlueStIcon
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -47,7 +39,9 @@ fun DeviceListItem(
     item: Node,
     isPin: Boolean = false,
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
+    isExpert: Boolean = false,
+    onInfoClick: (Node) -> Unit = { /** NOOP**/ },
 ) {
     DeviceListItem(
         modifier = modifier,
@@ -64,7 +58,9 @@ fun DeviceListItem(
         isSleeping = item.isSleeping,
         isCustomFw = item.isCustomFw,
         hasGeneralPurpose = item.hasGeneralPurpose,
-        onNodeSelected = { onNodeSelected(item) }
+        onNodeSelected = { onNodeSelected(item) },
+        isExpert = isExpert,
+        onInfoClick = { onInfoClick(item) },
     )
 }
 
@@ -73,37 +69,38 @@ fun DeviceListItem(
 fun DeviceListItem(
     modifier: Modifier = Modifier,
     boardTypeName: String,
-    name: String,
+    name: String? = null,
     isPin: Boolean,
     rssi: Int?,
     address: String,
-    runningFw: String?,
-    catalogInfo: BoardFirmware?=null,
+    runningFw: String? = null,
+    catalogInfo: BoardFirmware? = null,
     displayMessages: List<String>,
     icons: List<Int>,
     isCustomFw: Boolean,
     isSleeping: Boolean,
     hasGeneralPurpose: Boolean,
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
-    onNodeSelected: () -> Unit = { /** NOOP**/ }
+    onNodeSelected: () -> Unit = { /** NOOP**/ },
+    isExpert: Boolean = false,
+    onInfoClick: () -> Unit = { /** NOOP**/ }
 ) {
     val haptics = LocalHapticFeedback.current
-    val context = LocalContext.current
-
-    val openFwDBModelDialog = remember { mutableStateOf(false) }
 
     Surface(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .combinedClickable(
                 onClick = onNodeSelected,
                 onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    openFwDBModelDialog.value = true
+                    if (isExpert) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onInfoClick()
+                    }
                 }
             ),
         shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
-        shadowElevation = LocalDimensions.current.elevationNormal//,
-        //onClick = onNodeSelected
+        shadowElevation = LocalDimensions.current.elevationNormal
     ) {
         Column(
             modifier = Modifier
@@ -121,12 +118,14 @@ fun DeviceListItem(
                 )
 
                 Column(modifier = Modifier.weight(weight = 1f)) {
-                    Text(
-                        modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
-                        text = name,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    name?.let {
+                        Text(
+                            modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
+                            text = name,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     runningFw?.let {
                         Text(
                             modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
@@ -226,59 +225,7 @@ fun DeviceListItem(
             }
         }
     }
-
-    if(openFwDBModelDialog.value) {
-        if(catalogInfo!=null) {
-            FwDBModelComponents(catalogInfo=catalogInfo,
-            onDismissRequest = {openFwDBModelDialog.value=false})
-        } else {
-            Toast.makeText(context, "Fw DB model not present", Toast.LENGTH_SHORT).show()
-            openFwDBModelDialog.value = false
-        }
-    }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FwDBModelComponents(
-    catalogInfo: BoardFirmware,
-    onDismissRequest: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-    ) {
-        val format = Json { prettyPrint = true }
-        Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight()
-                .verticalScroll(rememberScrollState()),
-            shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
-        ) {
-            Column(modifier = Modifier.padding(all= LocalDimensions.current.paddingMedium)){
-                Text(
-                    text = "Fw DB Entry:",
-                    modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 24.sp,
-                    letterSpacing = 0.15.sp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                val model: String = format.encodeToString(catalogInfo)
-                Text(
-                    text = model,
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    letterSpacing = 0.25.sp,
-                    color = Grey6,
-                )
-            }
-
-        }
-    }
-}
-
 
 /** ----------------------- PREVIEW --------------------------------------- **/
 

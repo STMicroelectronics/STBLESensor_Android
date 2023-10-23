@@ -36,8 +36,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.st.blue_sdk.bt.advertise.getFwInfo
 import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.models.Node
+import com.st.bluems.NFCConnectionViewModel
 import com.st.bluems.R
 import com.st.bluems.ui.home.HomeFragmentDirections
 import com.st.bluems.ui.home.HomeViewModel
@@ -47,7 +49,6 @@ import com.st.ui.composables.JSON_FILE_TYPE
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Grey6
-import com.st.ui.utils.asString
 import androidx.compose.material.FloatingActionButton as Material2FloatingActionButton
 import androidx.compose.material.Scaffold as Material2Scaffold
 
@@ -56,15 +57,22 @@ fun DeviceListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: HomeViewModel,
+    nfcViewModel: NFCConnectionViewModel,
     isBleEnabled: Boolean,
-    onEnableBle: () -> Unit
+    onEnableBle: () -> Unit,
+    isLocationEnable: Boolean,
+    onEnableLocation: () -> Unit
 ) {
     val devices by viewModel.scanBleDevices.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val isExpert by viewModel.isExpert.collectAsStateWithLifecycle()
+    val isServerForced by viewModel.isServerForced.collectAsStateWithLifecycle()
     val pinnedDevices by viewModel.pinnedDevices.collectAsStateWithLifecycle(emptyList())
-    val canExploreCatalog by viewModel.canExploreCatalog.collectAsStateWithLifecycle()
+    val boardsDescription by viewModel.boardsDescription.collectAsStateWithLifecycle()
+
+
+    val nfcNodeId by nfcViewModel.nfcNodeId.collectAsStateWithLifecycle()
 
     val isBetaRelease by viewModel.isBetaRelease.collectAsStateWithLifecycle()
 
@@ -79,11 +87,13 @@ fun DeviceListScreen(
         devices = devices,
         forceScan = forceScan,
         isBleEnabled = isBleEnabled,
+        isLocationEnable = isLocationEnable,
+        nfcNodeId = nfcNodeId,
         pinnedDevices = pinnedDevices,
         isLoading = isLoading,
-        canExploreCatalog = canExploreCatalog,
         isLoggedIn = isLoggedIn,
         isExpert = isExpert,
+        isServerForced = isServerForced,
         isBetaRelease = isBetaRelease,
         login = {
             viewModel.login()
@@ -92,15 +102,20 @@ fun DeviceListScreen(
             viewModel.logout()
         },
         onEnableBle = onEnableBle,
+        onEnableLocation = onEnableLocation,
         goToProfile = {
             navController.navigate(
                 HomeFragmentDirections.actionHomeFragmentToProfileNavGraph()
             )
         },
         goToCatalog = {
-            navController.navigate(
-                HomeFragmentDirections.actionHomeFragmentToCatalog()
-            )
+            if (boardsDescription.isEmpty()) {
+                Toast.makeText(context, "Boards Catalog not Available", Toast.LENGTH_SHORT).show()
+            } else {
+                navController.navigate(
+                    HomeFragmentDirections.actionHomeFragmentToCatalog()
+                )
+            }
         },
         goToSourceCode = {
             viewModel.openGitHubSourceCode()
@@ -109,10 +124,13 @@ fun DeviceListScreen(
             viewModel.openAboutUsPage()
         },
         goToPrivacyPolicy = {
-            viewModel.openPrivacyPoliciPage()
+            viewModel.openPrivacyPolicyPage()
         },
         switchVersionBetaRelease = {
             viewModel.switchVersionBetaRelease()
+        },
+        switchServerForced = {
+            viewModel.switchServerForced()
         },
         readBetaCatalog = {
             forceScan = true
@@ -133,13 +151,34 @@ fun DeviceListScreen(
         },
         onNodeSelected = { node ->
             val nodeId = node.device.address
-            val maxPayloadSize = if(node.boardType == Boards.Model.WBA_BOARD) 240 else 248
-            viewModel.connect(nodeId = nodeId, maxPayloadSize = maxPayloadSize) {
+            val maxPayloadSize = if (node.familyType == Boards.Family.WBA_FAMILY) 240 else 248
+            val enableServer = if (isServerForced) {
+                true
+            } else {
+                !((node.boardType == Boards.Model.SENSOR_TILE_BOX_PRO) || (node.boardType == Boards.Model.SENSOR_TILE_BOX_PROB))
+            }
+
+            nfcViewModel.setNFCNodeId(null)
+            viewModel.connect(
+                nodeId = nodeId,
+                maxPayloadSize = maxPayloadSize,
+                enableServer = enableServer
+            ) {
                 navController.navigate(
                     HomeFragmentDirections.actionHomeFragmentToDemoShowCase(
                         nodeId
                     )
                 )
+            }
+        },
+        onInfoClick = { node ->
+            if (boardsDescription.isNotEmpty()) {
+                val deviceId = node.advertiseInfo?.getFwInfo()?.deviceId
+                deviceId?.let {
+                    navController.navigate(
+                        HomeFragmentDirections.actionHomeFragmentToCatalogBoard(deviceId)
+                    )
+                }
             }
         },
         onStartScan = {
@@ -160,10 +199,12 @@ fun DeviceListWithPermissionsCheck(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     isBleEnabled: Boolean,
-    canExploreCatalog: Boolean,
+    isLocationEnable: Boolean,
+    nfcNodeId: String?,
     forceScan: Boolean = false,
     isLoggedIn: Boolean = false,
     isExpert: Boolean = false,
+    isServerForced: Boolean = false,
     isBetaRelease: Boolean = false,
     devices: List<Node>,
     pinnedDevices: List<String>,
@@ -178,9 +219,12 @@ fun DeviceListWithPermissionsCheck(
     readBetaCatalog: () -> Unit,
     readReleaseCatalog: () -> Unit,
     switchVersionBetaRelease: () -> Unit,
+    switchServerForced: () -> Unit,
     onStartScan: () -> Unit,
     onEnableBle: () -> Unit,
+    onEnableLocation: () -> Unit,
     onNodeSelected: (Node) -> Unit,
+    onInfoClick: (Node) -> Unit,
     onAddCatalogEntryFromFile: (Uri) -> Unit
 ) {
     val context = LocalContext.current
@@ -205,37 +249,48 @@ fun DeviceListWithPermissionsCheck(
     )
 
     if (locationPermissionState.allPermissionsGranted) {
-        if (isBleEnabled) {
+        if (isBleEnabled && isLocationEnable) {
             LaunchedEffect(key1 = forceScan) {
                 onStartScan()
             }
 
-            DeviceList(
-                modifier = modifier,
-                devices = devices,
-                isLoading = isLoading,
-                canExploreCatalog = canExploreCatalog,
-                pinnedDevices = pinnedDevices,
-                onPinChange = onPinChange,
-                isLoggedIn = isLoggedIn,
-                isExpert = isExpert,
-                isBetaRelease = isBetaRelease,
-                login = login,
-                logout = logout,
-                goToProfile = goToProfile,
-                goToCatalog = goToCatalog,
-                goToSourceCode = goToSourceCode,
-                goToPrivacyPolicy = goToPrivacyPolicy,
-                goToAboutST = goToAboutST,
-                readBetaCatalog = readBetaCatalog,
-                readReleaseCatalog = readReleaseCatalog,
-                switchVersionBetaRelease = switchVersionBetaRelease,
-                onStartScan = onStartScan,
-                onNodeSelected = onNodeSelected,
-                onAddCatalogEntryFromFile = onAddCatalogEntryFromFile
-            )
-        } else {
+            if (nfcNodeId != null) {
+                val node = devices.firstOrNull { it.device.address.equals(nfcNodeId.uppercase()) }
+                if (node != null) {
+                    onNodeSelected(node)
+                }
+            } else {
+                DeviceList(
+                    modifier = modifier,
+                    devices = devices,
+                    isLoading = isLoading,
+                    pinnedDevices = pinnedDevices,
+                    onPinChange = onPinChange,
+                    isLoggedIn = isLoggedIn,
+                    isExpert = isExpert,
+                    isServerForced = isServerForced,
+                    isBetaRelease = isBetaRelease,
+                    login = login,
+                    logout = logout,
+                    goToProfile = goToProfile,
+                    goToCatalog = goToCatalog,
+                    goToSourceCode = goToSourceCode,
+                    goToPrivacyPolicy = goToPrivacyPolicy,
+                    goToAboutST = goToAboutST,
+                    readBetaCatalog = readBetaCatalog,
+                    readReleaseCatalog = readReleaseCatalog,
+                    switchVersionBetaRelease = switchVersionBetaRelease,
+                    switchServerForced = switchServerForced,
+                    onStartScan = onStartScan,
+                    onNodeSelected = onNodeSelected,
+                    onInfoClick = onInfoClick,
+                    onAddCatalogEntryFromFile = onAddCatalogEntryFromFile
+                )
+            }
+        } else if (!isBleEnabled) {
             MissingBleDialog(onEnable = onEnableBle)
+        } else if (!isLocationEnable) {
+            MissingLocationDialog(onEnable = onEnableLocation)
         }
     } else {
         MissingPermissionDialog(
@@ -320,34 +375,6 @@ fun MissingPermissionDialog(
     )
 }
 
-@SuppressLint("MissingPermission")
-@Composable
-fun ProfileRestrictionDialog(
-    onDismiss: () -> Unit,
-    onChangeProfile: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(text = stringResource(R.string.profile_restricted_dialog_title))
-        },
-        text = {
-            Text(text = stringResource(R.string.profile_restricted_dialog_body_text))
-        },
-        dismissButton = {
-            BlueMsButtonOutlined(
-                text = stringResource(id = android.R.string.cancel),
-                onClick = onDismiss
-            )
-        },
-        confirmButton = {
-            BlueMsButton(
-                text = stringResource(id = android.R.string.ok),
-                onClick = onChangeProfile
-            )
-        }
-    )
-}
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -378,13 +405,40 @@ fun MissingBleDialog(
 }
 
 @Composable
+fun MissingLocationDialog(
+    onEnable: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { /** NOOP **/ },
+        title = {
+            Text(text = stringResource(R.string.missing_location_dialog_title))
+        },
+        text = {
+            Text(text = stringResource(R.string.missing_location_dialog_body_text))
+        },
+        dismissButton = {
+            BlueMsButtonOutlined(
+                text = stringResource(id = android.R.string.cancel),
+                onClick = { /** NOOP **/ }
+            )
+        },
+        confirmButton = {
+            BlueMsButton(
+                text = stringResource(id = android.R.string.ok),
+                onClick = onEnable
+            )
+        }
+    )
+}
+
+@Composable
 fun DeviceList(
     modifier: Modifier = Modifier,
     devices: List<Node> = emptyList(),
     isLoggedIn: Boolean = false,
-    isExpert: Boolean  = false,
+    isExpert: Boolean = false,
+    isServerForced: Boolean = false,
     isBetaRelease: Boolean = false,
-    canExploreCatalog: Boolean = false,
     isLoading: Boolean = false,
     pinnedDevices: List<String>,
     onPinChange: (String, Boolean) -> Unit,
@@ -398,13 +452,14 @@ fun DeviceList(
     readBetaCatalog: () -> Unit = { /** NOOP **/ },
     readReleaseCatalog: () -> Unit = { /** NOOP **/ },
     switchVersionBetaRelease: () -> Unit = { /** NOOP **/ },
+    switchServerForced: () -> Unit = { /** NOP **/ },
     onStartScan: () -> Unit = { /** NOOP**/ },
     onAddCatalogEntryFromFile: (Uri) -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
+    onInfoClick: (Node) -> Unit = { /** NOOP**/ }
 ) {
     var filters by remember { mutableStateOf(value = DeviceListFilter()) }
     var openFilterDialog by rememberSaveable { mutableStateOf(value = false) }
-    var openDeniedCatalogDialog by rememberSaveable { mutableStateOf(value = false) }
     val pickFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { fileUri ->
@@ -439,9 +494,7 @@ fun DeviceList(
         },
         bottomBar = {
             MainBottomBar(
-                openCatalog = {
-                    if (canExploreCatalog) goToCatalog() else openDeniedCatalogDialog = true
-                },
+                openCatalog = goToCatalog,
                 openFilter = { openFilterDialog = true }
             )
         },
@@ -449,6 +502,7 @@ fun DeviceList(
             MainTopBar(
                 isLoggedIn = isLoggedIn,
                 isExpert = isExpert,
+                isServerForced = isServerForced,
                 isBetaRelease = isBetaRelease,
                 login = login,
                 logout = logout,
@@ -458,7 +512,8 @@ fun DeviceList(
                 goToPrivacyPolicy = goToPrivacyPolicy,
                 readBetaCatalog = readBetaCatalog,
                 readReleaseCatalog = readReleaseCatalog,
-                switchVersionBetaRelease = switchVersionBetaRelease
+                switchVersionBetaRelease = switchVersionBetaRelease,
+                switchServerForced = switchServerForced
             ) {
                 pickFileLauncher.launch(
                     arrayOf(
@@ -476,7 +531,9 @@ fun DeviceList(
             pinnedDevices = pinnedDevices,
             onPinChange = onPinChange,
             goToCatalog = goToCatalog,
-            onNodeSelected = onNodeSelected
+            onNodeSelected = onNodeSelected,
+            isExpert = isExpert,
+            onInfoClick = onInfoClick
         )
     }
 
@@ -488,13 +545,6 @@ fun DeviceList(
             }
         }
     }
-
-    if (openDeniedCatalogDialog) {
-        ProfileRestrictionDialog(
-            onChangeProfile = goToProfile,
-            onDismiss = { openDeniedCatalogDialog = false }
-        )
-    }
 }
 
 @Composable
@@ -504,7 +554,9 @@ fun DeviceList(
     pinnedDevices: List<String>,
     onPinChange: (String, Boolean) -> Unit,
     goToCatalog: () -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
+    isExpert: Boolean = false,
+    onInfoClick: (Node) -> Unit = { /** NOOP**/ }
 ) {
     Column(
         modifier = modifier
@@ -540,16 +592,20 @@ fun DeviceList(
                         onNodeSelected = onNodeSelected,
                         onPinChange = { change ->
                             onPinChange(item.device.address, change)
-                        }
+                        },
+                        isExpert = isExpert,
+                        onInfoClick = onInfoClick
                     )
                 }
 
-                item {
-                    BlueMsButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.st_home_deviceList_discoverBtn),
-                        onClick = goToCatalog
-                    )
+                if (filteredDevices.isEmpty()) {
+                    item {
+                        BlueMsButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.st_home_deviceList_discoverBtn),
+                            onClick = goToCatalog
+                        )
+                    }
                 }
             }
         }

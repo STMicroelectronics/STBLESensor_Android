@@ -1,0 +1,39 @@
+{
+  "description": "NFC Writer",
+  "category": "Connectivity",
+  "board_compatibility": [
+    "SENSOR_TILE_BOX_PRO"
+  ],
+  "flows": [],
+  "functions": [],
+  "id": "f24bde7f-fbae-4ae8-86d1-468a562c88a7",
+  "notes": "This app lets the user write the NFC chip inside the SensorTile.boxPRO. The NFC tag can then be read through the phone, via any nfc reader application",
+  "outputs": [
+    {
+      "description": "Stream to Bluetooth",
+      "icon": "ic_bluetooth",
+      "id": "O3",
+      "properties": []
+    }
+  ],
+  "sensors": [
+    {
+      "id": "S15",
+      "description": "NFC",
+      "output": "NFC Output",
+      "outputs": [
+        "O3"
+      ],
+      "configuration": {},
+      "icon": "connectivity_nfc",
+      "dataType": "uint8_t scalar",
+      "model": "ST25DV04K",
+      "board_compatibility": [
+        "SENSOR_TILE_BOX_PRO"
+      ],
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/st25dv04k.pdf",
+      "um": ""
+    }
+  ],
+  "version": 1
+}

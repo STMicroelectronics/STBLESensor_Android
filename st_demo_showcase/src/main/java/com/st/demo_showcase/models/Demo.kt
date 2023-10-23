@@ -77,7 +77,7 @@ val DEFAULT_MENU_ACTIONS = listOf(
 @Keep
 enum class Demo(
     @DrawableRes val icon: Int,
-    val displayName: String,
+    var displayName: String,
     val group: List<DemoGroup> = emptyList(),
     val features: List<String>,
     val featuresNotAllowed: List<String>? = null,
@@ -291,7 +291,7 @@ enum class Demo(
     Flow(
         displayName = "Flow",
         group = listOf(DemoGroup.Control),
-        icon = com.st.ui.R.drawable.flow_icon,
+        icon = com.st.flow_demo.R.drawable.flow_icon,
         couldBeEnabledOutside = true,
         features = emptyList()
     ),
@@ -435,9 +435,9 @@ enum class Demo(
         group = listOf(DemoGroup.Status),
         icon = com.st.node_status.R.drawable.node_status_icon,
         features = listOf(Battery.NAME)
-    ),
+    )
     // *** NEW_DEMO_TEMPLATE ANCHOR1 ***\
-    SdLoggingDemo(
+    ,SdLoggingDemo(
         displayName = "SD Logging",
         group = listOf(DemoGroup.DataLog),
         icon = com.st.ui.R.drawable.multiple_log_icon,
@@ -467,10 +467,10 @@ enum class Demo(
         navController?.navigate(directions = direction)
     }
 
-    fun navigateTo(navController: NavController, nodeId: String) {
+    fun navigateTo(navController: NavController, nodeId: String, isExpert: Boolean=false) {
 
         val direction = when (this) {
-            Flow -> DemoListFragmentDirections.actionDemoListToWorkingInProgressFragment(nodeId)
+            Flow -> DemoListFragmentDirections.actionDemoListToFlowDemoFragment(nodeId)
             Cloud -> DemoListFragmentDirections.actionDemoListToWorkingInProgressFragment(nodeId)
             BeamFormingDemo -> DemoListFragmentDirections.actionDemoListToBeamFormingFragment(
                 nodeId
@@ -527,7 +527,7 @@ enum class Demo(
             )
 
             Pnpl -> DemoListFragmentDirections.actionDemoListToPnplFragment(nodeId)
-            Plot -> DemoListFragmentDirections.actionDemoListToPlotFragment(nodeId)
+            Plot -> DemoListFragmentDirections.actionDemoListToPlotFragment(nodeId,isExpert)
             NfcWriting -> DemoListFragmentDirections.actionDemoListToNfcWritingFragment(nodeId)
             BinaryContentDemo -> DemoListFragmentDirections.actionDemoListToBinaryContentFragment(
                 nodeId

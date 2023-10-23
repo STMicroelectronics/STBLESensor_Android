@@ -128,6 +128,7 @@ dependencies {
     implementation project(path: ":st_fft_amplitude")
     implementation project(path: ":st_multi_neural_network")
     implementation project(path: ":st_working_in_progress")
+    implementation project(path: ':st_flow_demo')
 
     // Blue ST SDK
     implementation "com.st.blue.sdk:st-blue-sdk:$st_version"

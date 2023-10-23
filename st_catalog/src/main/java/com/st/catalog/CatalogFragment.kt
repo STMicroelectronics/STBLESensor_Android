@@ -12,6 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +29,7 @@ import androidx.navigation.navArgument
 import com.st.catalog.composable.BoardScreen
 import com.st.catalog.composable.CatalogList
 import com.st.catalog.composable.FirmwareList
+import com.st.core.ARG_BOARD_ID
 import com.st.ui.theme.BlueMSTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,11 +41,13 @@ class CatalogFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val directNodeId = arguments?.getString(ARG_BOARD_ID)
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 BlueMSTheme {
-                    CatalogScreen {
+                    CatalogScreen(nodeId = directNodeId) {
                         findNavController().popBackStack()
                     }
                 }
@@ -51,18 +58,31 @@ class CatalogFragment : Fragment() {
 
 @Composable
 fun CatalogScreen(
+    nodeId: String? = null,
     onCloseCatalog: () -> Unit = { /** NOOP**/ }
 ) {
+    var jumpDirectFirstTime by remember { mutableStateOf(true) }
+
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = "list"
     ) {
         composable(route = "list") {
-            CatalogList(
-                navController = navController,
-                onBack = onCloseCatalog
-            )
+            if (jumpDirectFirstTime) {
+                jumpDirectFirstTime = false
+                CatalogList(
+                    nodeId = nodeId,
+                    navController = navController,
+                    onBack = onCloseCatalog
+                )
+            } else {
+                CatalogList(
+                    //nodeId = nodeId,
+                    navController = navController,
+                    onBack = onCloseCatalog
+                )
+            }
         }
 
         composable(

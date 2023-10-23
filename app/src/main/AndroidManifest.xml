@@ -47,6 +47,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "stapplication://connect” -->
+                <data android:scheme="stapplication"
+                    android:host="connect" />
+            </intent-filter>
+
         </activity>
     </application>
 

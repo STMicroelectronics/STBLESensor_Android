@@ -38,6 +38,7 @@
     <string name="st_extConfig_boardSecurity_showCert">Show Certificate</string>
     <string name="st_extConfig_boardSecurity_hideCert">Hide Certificate</string>
     <string name="st_extConfig_boardSecurity_registerCert">Register</string>
+    <string name="st_extConfig_boardSecurity_clearDbToast">Board Security Database will be cleared at disconnection</string>
 
     <string name="st_extConfig_boardControl_cardTitle">Board Control</string>
     <string name="st_extConfig_boardControl_dfu">Reboot on DFU mode</string>
@@ -80,4 +81,11 @@
     <string name="st_extConfig_fwUpgrade_otaBoard1">STM32WB5x/WB3x</string>
     <string name="st_extConfig_fwUpgrade_otaBoard2">STM32WB1x</string>
     <string name="st_extConfig_fwUpgrade_otaBoard3">STM32WBA</string>
+    <string name="st_extConfig_fwUpgrade_selectFile">Select a file to calculate</string>
+    <string name="st_extConfig_fwUpgrade_address">Address</string>
+    <string name="st_extConfig_fwUpgrade_nbSectors">Number of sectors to erase</string>
+    <string name="st_extConfig_fwUpgrade_errorMessage0">Error: The chosen address should be a hex number starting with 0x</string>
+    <string name="st_extConfig_fwUpgrade_errorMessage1">Error: The chosen number of sectors to erase should be a decimal number</string>
+    <string name="st_extConfig_fwUpgrade_errorMessage2">Error: The chosen address is not in the range of valid addresses</string>
+    <string name="st_extConfig_fwUpgrade_errorMessage3">Error: The chosen number of sectors is too high</string>
 </resources>

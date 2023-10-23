@@ -14,7 +14,8 @@
     <string name="st_catalog_board_readMoreBtn">Order &amp; Buy</string>
     <string name="st_catalog_board_fwBtn">Firmware</string>
     <string name="st_catalog_board_dsBtn">Documentation</string>
-    <string name="st_catalog_boardList_filterDialog_title">Filters</string>
+    <string name="st_catalog_boardList_orderDialog_title">Ordering by</string>
+    <string name="st_catalog_boardList_filterDialog_title">Filter by</string>
     <string name="st_catalog_boardList_filterDialog_okBtn">Apply</string>
     <string name="st_catalog_fwList_description">Available firmware for %s:</string>
 </resources>

@@ -10,7 +10,6 @@ package com.st.demo_showcase.utils
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AreaChart
-import androidx.compose.material.icons.filled.ScatterPlot
 import androidx.compose.material.icons.filled.Settings
 import androidx.navigation.NavController
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
@@ -71,10 +70,17 @@ fun Demo.isExpertRequired(): Boolean = when (this) {
     else -> false
 }
 
+fun Demo.isPnPLMandatory(): Boolean = when (this) {
+    Demo.Pnpl -> true
+    Demo.HighSpeedDataLog2 -> true
+    Demo.BinaryContentDemo -> true
+    else -> false
+}
+
 @Suppress("UNUSED_PARAMETER")
 fun Demo.getDescription(context: Context): String =
     when (this) {
-        Demo.Flow -> "Create a new application"
+        Demo.Flow -> "Deploy one application to the board"
         Demo.Cloud -> "Connect the board to different cloud providers"
         Demo.Environmental -> "Display available temperature, pressure, humidity and Lux sensors values"
         Demo.Level -> "Show Level and Pitch&Roll"

@@ -1,0 +1,69 @@
+{
+  "description": "Q-Touch",
+  "category": "User Interface",
+  "board_compatibility": [
+    "SENSOR_TILE_BOX_PRO",
+    "SENSOR_TILE_BOX_PROB"
+  ],
+  "flows": [],
+  "functions": [],
+  "id": "f24bde7f-fbae-4ae8-86d1-468b562c88a7",
+  "notes": "This application uses the Qvar which is an embedded feature of the LSM6DSV16X that can estimate the variation of the electrostatic field. Together with the FSM, it allows to recognize different gestures when the user touches the electrodes",
+  "outputs": [
+    {
+      "description": "Stream to Bluetooth",
+      "icon": "ic_bluetooth",
+      "id": "O3",
+      "properties": []
+    }
+  ],
+  "sensors": [
+    {
+      "id": "S13",
+      "description": "FSM Virtual Sensor",
+      "output": "FSM Output",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "configuration": {
+        "regConfig": "",
+        "fsmLabels": "",
+        "ucfFilename": ""
+      },
+      "icon": "ic_accelerometer",
+      "dataType": "uint8_t vector x8",
+      "model": "LSM6DSV16X",
+      "board_compatibility": [
+        "SENSOR_TILE_BOX_PRO",
+        "SENSOR_TILE_BOX_PROB"
+      ],
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+      "um": ""
+    },
+    {
+      "id": "S14",
+      "description": "Qvar",
+      "output": "Qvar Output",
+      "outputs": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "configuration": {
+        "acquisitionTime": 0
+      },
+      "icon": "ic_qvar_demo",
+      "dataType": "uint8_t scalar",
+      "model": "LSM6DSV16X",
+      "board_compatibility": [
+        "SENSOR_TILE_BOX_PRO",
+        "SENSOR_TILE_BOX_PROB"
+      ],
+      "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
+      "um": ""
+    }
+  ],
+  "version": 1
+}

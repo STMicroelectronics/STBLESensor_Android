@@ -28,8 +28,11 @@ fun CatalogFilterDialog(
     modifier: Modifier = Modifier,
     demoGroups: List<DemoGroup> = DemoGroup.values().toList(),
     filters: CatalogFilter,
-    onFilterChange: (CatalogFilter) -> Unit = { /** NOOP**/ }
+    boardOrder:BoardOrder = BoardOrder.NONE,
+    releaseDatesPresent: Boolean = false,
+    onFilterChange: (CatalogFilter,BoardOrder) -> Unit = { _: CatalogFilter, _: BoardOrder -> /** NOOP**/ }
 ) {
+    var internalBoardOrder by remember { mutableStateOf(value = boardOrder) }
     var internalFilters by remember(key1 = filters) { mutableStateOf(value = filters) }
     Surface(
         modifier = modifier.fillMaxWidth()
@@ -39,6 +42,39 @@ fun CatalogFilterDialog(
                 .fillMaxWidth()
                 .padding(all = LocalDimensions.current.paddingNormal)
         ) {
+            Text(
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                text = stringResource(id = R.string.st_catalog_boardList_orderDialog_title)
+            )
+
+            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
+            Divider()
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = LocalDimensions.current.paddingNormal)
+            ) {
+                DemoGroupChip(
+                    groupName = "None",
+                    checked = internalBoardOrder == BoardOrder.NONE,
+                    onCheckedChange = { internalBoardOrder = BoardOrder.NONE })
+                DemoGroupChip(
+                    groupName = "Alphabetical",
+                    checked = internalBoardOrder == BoardOrder.ALPHABETICAL,
+                    onCheckedChange = { internalBoardOrder = BoardOrder.ALPHABETICAL })
+                if(releaseDatesPresent) {
+                    DemoGroupChip(
+                        groupName = "Release Date",
+                        checked = internalBoardOrder == BoardOrder.RELEASE_DATE,
+                        onCheckedChange = { internalBoardOrder = BoardOrder.RELEASE_DATE })
+                }
+            }
+
+            Divider()
+
             Text(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary,
@@ -77,7 +113,7 @@ fun CatalogFilterDialog(
             ) {
                 BlueMsButton(
                     text = stringResource(id = R.string.st_catalog_boardList_filterDialog_okBtn),
-                    onClick = { onFilterChange(internalFilters) }
+                    onClick = { onFilterChange(internalFilters,internalBoardOrder) }
                 )
             }
         }

@@ -48,6 +48,7 @@ class FwUpgradeViewModel
         const val TAG = "FwDownloadViewModel"
         private const val SEC_IN_MILLIS = 1000f
         private const val BUFFER_ARRAY_SIZE = 4 * 1024
+        private const val OTA_NODE_ID: Byte = 0x86.toByte()
     }
 
     private val contentResolver = context.contentResolver
@@ -55,6 +56,13 @@ class FwUpgradeViewModel
 
     private val _fwUpdateState: MutableStateFlow<FwUpdateState> = MutableStateFlow(FwUpdateState())
     val fwUpdateState: StateFlow<FwUpdateState> = _fwUpdateState.asStateFlow()
+
+    private val _errorMessageCode: MutableStateFlow<Int> = MutableStateFlow(-1)
+    val errorMessageCode: StateFlow<Int> = _errorMessageCode.asStateFlow()
+
+    fun changeErrorMessageCode(newErrorMessageCode: Int) {
+        _errorMessageCode.value = newErrorMessageCode
+    }
 
     private val otaListener = object : FwUpdateListener {
         private var time: Long? = null
@@ -106,7 +114,9 @@ class FwUpgradeViewModel
     fun startUpgradeFW(
         nodeId: String,
         boardType: WbOTAUtils.WBBoardType?,
-        fwType: FirmwareType?
+        fwType: FirmwareType?,
+        address: String?,
+        nbSectorsToErase: String?
     ) {
         viewModelScope.launch {
             _fwUpdateState.value = _fwUpdateState.value.copy(isInProgress = true)
@@ -115,11 +125,13 @@ class FwUpgradeViewModel
                 val fileDescriptor =
                     FwFileDescriptor(fileUri = it, resolver = contentResolver)
 
-                val params = if (boardType != null && fwType != null) {
+                val params = if (boardType != null && fwType != null && address != null && nbSectorsToErase != null) {
                     CharacteristicFwUpgrade.buildFwUpgradeParams(
                         firmwareType = fwType,
                         boardType = boardType,
-                        fileDescriptor = fileDescriptor
+                        fileDescriptor = fileDescriptor,
+                        address = address,
+                        nbSectorsToErase = nbSectorsToErase
                     )
                 } else {
                     null
@@ -127,7 +139,7 @@ class FwUpgradeViewModel
 
                 blueManager.upgradeFw(nodeId = nodeId)?.launchFirmwareUpgrade(
                     nodeId = nodeId,
-                    fwType = FirmwareType.BOARD_FW,
+                    fwType = fwType ?: FirmwareType.BOARD_FW,
                     fileDescriptor = fileDescriptor,
                     params = params,
                     fwUpdateListener = otaListener
@@ -197,6 +209,11 @@ class FwUpgradeViewModel
     fun isWbOta(nodeId: String): Boolean =
         blueManager.getFwUpdateStrategy(nodeId = nodeId) == UpgradeStrategy.CHARACTERISTIC
 
-    fun isWbaBoard(nodeId: String): Boolean =
-        blueManager.getNode(nodeId = nodeId)?.boardType == Boards.Model.WBA_BOARD
+    fun boardModel(nodeId: String): Boards.Model? =
+        blueManager.getNode(nodeId = nodeId)?.boardType
+
+    fun isRebootedYet(nodeId: String): Boolean {
+        val node = blueManager.getNode(nodeId = nodeId)
+        return (node?.advertiseInfo != null && (node.advertiseInfo!!.getDeviceId() == OTA_NODE_ID || node.familyType == Boards.Family.WBA_FAMILY))
+    }
 }

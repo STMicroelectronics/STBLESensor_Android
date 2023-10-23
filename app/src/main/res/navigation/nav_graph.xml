@@ -38,6 +38,15 @@
         <action
             android:id="@+id/action_homeFragment_to_catalog"
             app:destination="@id/catalog" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_catalog_board"
+            app:destination="@id/catalog">
+            <argument
+                android:name="boardId"
+                app:argType="string" />
+        </action>
+
     </fragment>
 
     <fragment
@@ -80,7 +89,7 @@
 
     <action
         android:id="@+id/action_user_profiling_nav_graph_to_home_fragment_first_time"
-        app:destination="@id/homeFragment"/>
+        app:destination="@id/homeFragment" />
 
     <include app:graph="@navigation/user_profiling_nav_graph" />
 

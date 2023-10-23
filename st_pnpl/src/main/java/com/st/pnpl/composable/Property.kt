@@ -39,6 +39,7 @@ import kotlinx.serialization.json.longOrNull
 fun Property(
     modifier: Modifier = Modifier,
     data: JsonElement?,
+    enabled: Boolean,
     content: DtmiContent.DtmiPropertyContent,
     onValueChange: (Pair<String, Any>) -> Unit,
     commandBehavior: Boolean = false
@@ -55,7 +56,7 @@ fun Property(
         val comment = content.comment
         val color = content.color
         val unit = displayUnit.ifEmpty { content.unit }
-        val enabled = content.writable
+        val propEnabled = content.writable && enabled
 
         when (content) {
             is DtmiContent.DtmiPropertyContent.DtmiBooleanPropertyContent -> {
@@ -75,7 +76,7 @@ fun Property(
                     falseLabel = content.falseName.localizedDisplayName,
                     value = booleanData,
                     unit = unit,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
@@ -99,7 +100,7 @@ fun Property(
                     description = description,
                     color = color,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     minLength = minLength,
                     maxLength = maxLength,
                     trimWhitespace = trimWhitespace,
@@ -128,7 +129,7 @@ fun Property(
                     comment = comment,
                     minValue = minValue,
                     maxValue = maxValue,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { value, _ -> onValueChange(content.name to value) }
                 )
@@ -154,7 +155,7 @@ fun Property(
                     comment = comment,
                     minValue = minValue,
                     maxValue = maxValue,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
@@ -182,7 +183,7 @@ fun Property(
                     decimalPlaces = decimalPlaces,
                     minValue = minValue,
                     maxValue = maxValue,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
@@ -208,7 +209,7 @@ fun Property(
                     decimalPlaces = decimalPlaces,
                     minValue = minValue,
                     maxValue = maxValue,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
@@ -228,7 +229,7 @@ fun Property(
                     description = description,
                     color = color,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { value, _ -> onValueChange(content.name to value) }
                 )
@@ -251,7 +252,7 @@ fun Property(
                     color = color,
                     description = description,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { x, y, z ->
                         onValueChange(content.name to listOf(x, y, z))
@@ -276,7 +277,7 @@ fun Property(
                     description = description,
                     color = color,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     hideTime = hideTime,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
@@ -297,7 +298,7 @@ fun Property(
                     description = description,
                     color = color,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     hideTime = true,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
@@ -318,7 +319,7 @@ fun Property(
                     description = description,
                     color = color,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
@@ -340,7 +341,7 @@ fun Property(
                     color = color,
                     description = description,
                     comment = comment,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     commandBehavior = commandBehavior,
                     onValueChange = { lat, lon, alt ->
                         onValueChange(content.name to listOf(lat, lon, alt))
@@ -358,7 +359,7 @@ fun Property(
                     comment = comment,
                     color = color,
                     unit = unit,
-                    enabled = enabled,
+                    enabled = propEnabled,
                     schema = schema,
                     commandBehavior = commandBehavior,
                     onValueChange = { value -> onValueChange(content.name to value) }

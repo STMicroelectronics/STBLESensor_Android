@@ -48,6 +48,7 @@ fun Component(
     name: String,
     data: JsonElement?,
     enableCollapse: Boolean,
+    enabled: Boolean,
     isOpen: Boolean,
     interfaceModel: DtmiContent.DtmiInterfaceContent,
     componentModel: DtmiContent.DtmiComponentContent,
@@ -116,7 +117,7 @@ fun Component(
                             HeaderEnabledProperty(
                                 value = booleanData,
                                 name = enableProperty.name,
-                                enabled = enableProperty.writable,
+                                enabled = enableProperty.writable && enabled,
                                 onValueChange = onValueChange
                             )
                         }
@@ -140,6 +141,7 @@ fun Component(
                             contentData = data[content.name]
                         }
                         Content(
+                            enabled = enabled,
                             content = content,
                             data = contentData,
                             onValueChange = onValueChange,

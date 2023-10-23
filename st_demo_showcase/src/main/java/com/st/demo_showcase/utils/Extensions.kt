@@ -58,7 +58,7 @@ fun List<String>?.toActions(
 fun Demo.isLoginRequired(): Boolean = when (this) {
 //    Demo.Flow -> true
 //    Demo.Cloud -> true
-    Demo.ExtConfig -> true
+//    Demo.ExtConfig -> true
     else -> false
 }
 

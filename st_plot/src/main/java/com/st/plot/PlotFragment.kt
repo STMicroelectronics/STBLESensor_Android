@@ -42,6 +42,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.st.core.ARG_IS_EXPERT
 import com.st.core.ARG_NODE_ID
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,6 +52,7 @@ class PlotFragment : Fragment() {
     private val viewModel: PlotViewModel by viewModels()
     private val settingsViewModel: PlotSettingsViewModel by viewModels()
     private lateinit var nodeId: String
+    private var isExpert: Boolean=false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,7 +64,10 @@ class PlotFragment : Fragment() {
         nodeId = arguments?.getString(ARG_NODE_ID)
             ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
 
-        settingsViewModel.init(nodeId = nodeId)
+        isExpert = arguments?.getBoolean(ARG_IS_EXPERT)
+            ?: throw IllegalArgumentException("Missing string $ARG_IS_EXPERT arguments")
+
+        settingsViewModel.init(nodeId = nodeId, isExpert = isExpert)
 
         val fm = childFragmentManager
         if (fm.findFragmentByTag(PLOT_TAG) == null) {

@@ -18,6 +18,7 @@ import kotlinx.serialization.json.JsonElement
 fun Content(
     modifier: Modifier = Modifier,
     data: JsonElement?,
+    enabled: Boolean,
     content: DtmiContent,
     onValueChange: (Pair<String, Any>) -> Unit,
     onSendCommand: (CommandRequest?) -> Unit
@@ -25,6 +26,7 @@ fun Content(
     when (content) {
         is DtmiContent.DtmiPropertyContent -> Property(
             modifier = modifier.fillMaxWidth(),
+            enabled = enabled,
             data = data,
             content = content,
             onValueChange = onValueChange
@@ -32,6 +34,7 @@ fun Content(
 
         is DtmiContent.DtmiCommandContent -> Command(
             modifier = modifier.fillMaxWidth(),
+            enabled = enabled,
             data = data,
             content = content,
             onSendCommand = onSendCommand

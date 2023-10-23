@@ -42,9 +42,11 @@ class RegistersDemoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         nodeId = arguments?.getString(ARG_NODE_ID)
+            ?: MlcConfig.nodeId
             ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
 
         val demoTypeString = arguments?.getString(ARG_DEMO_TYPE)
+            ?: MlcConfig.demoType
             ?: throw IllegalArgumentException("Missing string $ARG_DEMO_TYPE arguments")
 
         try {

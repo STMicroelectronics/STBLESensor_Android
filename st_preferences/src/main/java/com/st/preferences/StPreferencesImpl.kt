@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.st.core.api.ApplicationAnalyticsService
 import com.st.preferences.di.PreferencesScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +26,8 @@ import javax.inject.Singleton
 @Singleton
 class StPreferencesImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-    @PreferencesScope private val coroutineScope: CoroutineScope
+    @PreferencesScope private val coroutineScope: CoroutineScope,
+    private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : StPreferences {
 
     init {
@@ -55,11 +57,25 @@ class StPreferencesImpl @Inject constructor(
     }
 
     override fun getLevelProficiency(): String {
-        return runBlocking { dataStore.data.first()[LEVEL_KEY] ?: "" }
+        val retValue: String = runBlocking { dataStore.data.first()[LEVEL_KEY] ?: "" }
+
+        if(retValue.isNotEmpty()) {
+            appAnalyticsService.forEach {
+                it.reportLevel(retValue)
+            }
+        }
+        return retValue
     }
 
     override fun getProfileType(): String {
-        return runBlocking { dataStore.data.first()[TYPE_KEY] ?: "" }
+        val retValue: String = runBlocking { dataStore.data.first()[TYPE_KEY] ?: "" }
+
+        if(retValue.isNotEmpty()) {
+            appAnalyticsService.forEach {
+                it.reportProfile(retValue)
+            }
+        }
+        return retValue
     }
 
     override fun setTermsFlag(accepted: Boolean) {
@@ -72,11 +88,21 @@ class StPreferencesImpl @Inject constructor(
         coroutineScope.launch {
             dataStore.edit { prefs -> prefs[LEVEL_KEY] = level }
         }
+
+
+        appAnalyticsService.forEach {
+            it.reportLevel(level)
+        }
     }
 
     override fun setProfileType(profile: String) {
         coroutineScope.launch {
             dataStore.edit { prefs -> prefs[TYPE_KEY] = profile }
+        }
+
+
+        appAnalyticsService.forEach {
+            it.reportProfile(profile)
         }
     }
 
@@ -101,9 +127,20 @@ class StPreferencesImpl @Inject constructor(
         }
     }
 
+    override fun setServerForcedFlag(serverForced: Boolean) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs[SERVER_FORCED_KEY] = serverForced }
+        }
+    }
+
     override fun isBetaApplication(): Boolean {
         return runBlocking { dataStore.data.first()[BETA_KEY] ?: false }
     }
+
+    override fun isServerForced(): Boolean {
+        return runBlocking { dataStore.data.first()[SERVER_FORCED_KEY] ?: false }
+    }
+
 
     override fun profilePrefsUpdates() = dataStore.data
         .map { preferences ->
@@ -167,5 +204,6 @@ class StPreferencesImpl @Inject constructor(
         private val LEVEL_KEY = stringPreferencesKey("level_key")
         private val TYPE_KEY = stringPreferencesKey("type_key")
         private val BETA_KEY = booleanPreferencesKey("beta_key")
+        private val SERVER_FORCED_KEY = booleanPreferencesKey("server_forced_key")
     }
 }

@@ -49,7 +49,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.high_speed_data_log.R
-import com.st.hight_speed_data_log.composable.BottomAppBarItem
+import com.st.ui.composables.BottomAppBarItem
 import com.st.hight_speed_data_log.composable.HsdlSensors
 import com.st.hight_speed_data_log.composable.HsdlTags
 import com.st.hight_speed_data_log.composable.StopLoggingDialog
@@ -165,7 +165,7 @@ fun HighSpeedDataLog(
         modifier = modifier,
         isFloatingActionButtonDocked = true,
         topBar = {
-            HsdlConfig.hsdlTabBar?.invoke(currentTitle)
+            HsdlConfig.hsdlTabBar?.invoke(currentTitle, isLoading)
         },
         floatingActionButtonPosition = androidx.compose.material.FabPosition.Center,
         floatingActionButton = {
@@ -258,6 +258,7 @@ fun HighSpeedDataLog(
                         HsdlSensors(
                             sensors = sensors,
                             status = status,
+                            isLoading = isLoading,
                             onValueChange = onValueChange,
                             onSendCommand = onSendCommand
                         )
@@ -281,6 +282,7 @@ fun HighSpeedDataLog(
                         HsdlTags(
                             tags = tags,
                             status = status,
+                            isLoading = isLoading,
                             onValueChange = onValueChange,
                             onSendCommand = onSendCommand
                         )
@@ -288,6 +290,7 @@ fun HighSpeedDataLog(
                         VespucciHsdlTags(
                             acquisitionInfo = acquisitionName,
                             vespucciTags = vespucciTags,
+                            isLoading = isLoading,
                             isLogging = isLogging,
                             onTagChangeState = onTagChangeState
                         )

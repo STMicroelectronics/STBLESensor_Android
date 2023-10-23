@@ -15,6 +15,7 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
+import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PnplViewModel @Inject constructor(
     private val blueManager: BlueManager,
+    private val stPreferences: StPreferences,
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
@@ -82,7 +84,7 @@ class PnplViewModel @Inject constructor(
             _isLoading.value = true
 
             _modelUpdates.value =
-                blueManager.getDtmiModel(nodeId = nodeId)?.extractComponents(demoName = demoName)
+                blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())?.extractComponents(demoName = demoName)
                     ?: emptyList()
 
             _enableCollapse.value = demoName.isNullOrEmpty()

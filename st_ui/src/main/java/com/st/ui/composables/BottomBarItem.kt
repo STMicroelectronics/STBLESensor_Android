@@ -1,4 +1,4 @@
-package com.st.hight_speed_data_log.composable
+package com.st.ui.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

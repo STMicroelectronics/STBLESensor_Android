@@ -82,6 +82,7 @@ dependencies {
     // Hilt
     implementation "androidx.hilt:hilt-navigation-fragment:$hilt_navigation_fragment_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation project(path: ':st_preferences')
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Tests

@@ -52,10 +52,10 @@ fun BlueMsMenuActions(
                             )
                         }
                         actions[0].painter?.let {
-                    Icon(
+                            Icon(
                                 painter = it,
-                        contentDescription = actions[0].label
-                    )
+                                contentDescription = actions[0].label
+                            )
                         }
                     }
                 }
@@ -105,12 +105,26 @@ fun BlueMsMenuActions(
                                         )
                                     }
                                     Text(
+//                                        text = buildAnnotatedString {
+//                                            append(
+//                                                AnnotatedString(
+//                                                    action.label.uppercase(),
+//                                                    paragraphStyle = ParagraphStyle(
+//                                                        textIndent = TextIndent(
+//                                                            firstLine = 0.sp,
+//                                                            restLine = 20.sp
+//                                                        )
+//                                                    )
+//                                                )
+//                                            )
+//                                        },
                                         text = action.label.uppercase(),
-                                        maxLines = 1,
+                                        maxLines = 2,
                                         fontSize = 15.sp,
                                         lineHeight = 24.sp,
                                         color = MaterialTheme.colorScheme.primary,
                                         overflow = TextOverflow.Ellipsis
+                                        //modifier = Modifier.basicMarquee()
                                     )
                                 }
                             }

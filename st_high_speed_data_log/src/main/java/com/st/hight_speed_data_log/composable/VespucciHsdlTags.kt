@@ -45,6 +45,7 @@ import com.st.ui.theme.PreviewBlueMSTheme
 fun VespucciHsdlTags(
     modifier: Modifier = Modifier,
     acquisitionInfo: String,
+    isLoading: Boolean,
     isLogging: Boolean,
     vespucciTags: Map<String, Boolean>,
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ }
@@ -66,6 +67,7 @@ fun VespucciHsdlTags(
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
 
         TagsInfo(
+            isLoading = isLoading,
             isLogging = isLogging,
             vespucciTags = vespucciTags,
             onTagChangeState = onTagChangeState
@@ -168,6 +170,7 @@ fun AcquisitionInfo(
 @Composable
 fun TagsInfo(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     isLogging: Boolean,
     vespucciTags: Map<String, Boolean> = emptyMap(),
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ }
@@ -222,7 +225,7 @@ fun TagsInfo(
             vespucciTags.forEach { tag ->
                 TagListItem(
                     tag = tag.key,
-                    isEnabled = isLogging,
+                    isEnabled = isLogging && isLoading.not(),
                     isChecked = tag.value,
                     onCheckChange = { checked ->
                         onTagChangeState(tag.key, checked)
@@ -293,6 +296,7 @@ private fun VespucciHsdlTagsPreview() {
         VespucciHsdlTags(
             acquisitionInfo = "Fri May 26 2023 13:47:27",
             isLogging = false,
+            isLoading = false,
             vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
         )
     }
@@ -305,6 +309,20 @@ private fun VespucciHsdlTagsLoggingPreview() {
         VespucciHsdlTags(
             acquisitionInfo = "Fri May 26 2023 13:47:27",
             isLogging = true,
+            isLoading = false,
+            vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VespucciHsdlTagsLoadingPreview() {
+    PreviewBlueMSTheme {
+        VespucciHsdlTags(
+            acquisitionInfo = "Fri May 26 2023 13:47:27",
+            isLogging = false,
+            isLoading = true,
             vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
         )
     }

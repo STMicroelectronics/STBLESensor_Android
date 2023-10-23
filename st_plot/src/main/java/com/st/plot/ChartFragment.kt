@@ -44,9 +44,14 @@ import android.view.ViewGroup
 import android.widget.AbsSpinner
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -57,6 +62,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.LinkedList
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -74,6 +80,9 @@ class ChartFragment : Fragment() {
     private lateinit var mFeatureSelector: AbsSpinner
     private lateinit var mStartPlotButton: MaterialButton
     private lateinit var mFeatureValue: TextView
+    private lateinit var buttonViewSerialConsole: Button
+    private lateinit var scrollViewSerialConsole: ScrollView
+    private lateinit var textViewSerialConsole: TextView
 
     private val dataViewModel: PlotViewModel by viewModels({ requireParentFragment() })
     private val settingsViewModel: PlotSettingsViewModel by viewModels({ requireParentFragment() })
@@ -81,6 +90,7 @@ class ChartFragment : Fragment() {
     private lateinit var mLineColors: IntArray
 
     private var mFirstTimeRestore: Boolean = true
+    private var serialConsoleIsRunning = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,7 +121,30 @@ class ChartFragment : Fragment() {
                 settingsViewModel.onSelectedIndex(selectedIndex)
             }
         }
+
+        buttonViewSerialConsole = view.findViewById(R.id.plotFeature_demo_button_serial_console)
+        buttonViewSerialConsole.setOnClickListener { startStopSerialConsole() }
+        if(settingsViewModel.isExpert) {
+            buttonViewSerialConsole.visibility=View.VISIBLE
+        }
+
+        scrollViewSerialConsole = view.findViewById(R.id.plotFeature_serial_console_scrollview)
+        textViewSerialConsole = view.findViewById(R.id.plotFeature_serial_console_text)
+
         return view
+    }
+
+    private fun startStopSerialConsole() {
+        if(serialConsoleIsRunning) {
+            serialConsoleIsRunning = false
+            scrollViewSerialConsole.visibility = View.GONE
+            dataViewModel.stopReceiveDebugMessage()
+            textViewSerialConsole.text="Serial Console Output:\n"
+        } else {
+            serialConsoleIsRunning = true
+            scrollViewSerialConsole.visibility = View.VISIBLE
+            dataViewModel.startReceiveDebugMessage()
+        }
     }
 
     private fun initializePlot(chart: LineChart) {
@@ -251,6 +284,18 @@ class ChartFragment : Fragment() {
                 mStartPlotButton.setIconResource(com.st.ui.R.drawable.ic_stop)
             } else {
                 mStartPlotButton.setIconResource(com.st.ui.R.drawable.ic_play)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                dataViewModel.debugMessages.collect {
+                    if (!it.isNullOrEmpty()) {
+                        val string = textViewSerialConsole.text.toString() + it
+                        textViewSerialConsole.text = string
+                        scrollViewSerialConsole.post { scrollViewSerialConsole.fullScroll(View.FOCUS_DOWN) }
+                    }
+                }
             }
         }
     }

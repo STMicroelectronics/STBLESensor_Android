@@ -17,6 +17,7 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
+import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -46,7 +47,9 @@ private typealias ComponentWithInterface = Pair<DtmiContent.DtmiComponentContent
 
 @HiltViewModel
 class HighSpeedDataLogViewModel @Inject constructor(
-    private val blueManager: BlueManager, private val coroutineScope: CoroutineScope
+    private val blueManager: BlueManager,
+    private val stPreferences: StPreferences,
+    private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
     private var observeFeatureJob: Job? = null
@@ -245,7 +248,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
         _isLoading.value = true
 
         val componentWithInterface =
-            blueManager.getDtmiModel(nodeId = nodeId)?.extractComponents(demoName = null)
+            blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())?.extractComponents(demoName = null)
                 ?: emptyList()
 
         _sensors.value = componentWithInterface.hsdl2SensorsFilter()
@@ -304,7 +307,8 @@ class HighSpeedDataLogViewModel @Inject constructor(
     private suspend fun setName(nodeId: String) {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         val timeInMillis = calendar.timeInMillis
-        val sdf = SimpleDateFormat("EEE MMM d yyyy HH:mm:ss", Locale.UK)
+        val nameFormatter = HsdlConfig.datalogNameFormat ?: "EEE MMM d yyyy HH:mm:ss"
+        val sdf = SimpleDateFormat(nameFormatter, Locale.UK)
         val datetime = sdf.format(Date(timeInMillis))
 
         _acquisitionName.emit(datetime)

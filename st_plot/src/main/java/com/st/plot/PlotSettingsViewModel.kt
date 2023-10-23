@@ -32,6 +32,7 @@ class PlotSettingsViewModel
     }
 
     private var feature: Feature<*>? = null
+    var isExpert: Boolean = false
 
     private var _selectedFeature = MutableLiveData<Feature<*>>()
     val selectedFeature: LiveData<Feature<*>>
@@ -57,7 +58,8 @@ class PlotSettingsViewModel
     val plotBoundary: MutableLiveData<PlotBoundary>
         get() = _plotBoundaries
 
-    fun init(nodeId: String) {
+    fun init(nodeId: String, isExpert: Boolean) {
+        this.isExpert = isExpert
         viewModelScope.launch {
             plottableFeature =
                 blueManager.nodeFeatures(nodeId = nodeId).filter {

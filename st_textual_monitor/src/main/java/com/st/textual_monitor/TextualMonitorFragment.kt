@@ -80,7 +80,7 @@ class TextualMonitorFragment : Fragment() {
             serialConsoleIsRunning = false
             scrollViewSerialConsole.visibility = View.GONE
             viewModel.stopReceiveDebugMessage()
-            textViewSerialConsole.text=""
+            textViewSerialConsole.text="Serial Console Output:\n"
         } else {
             serialConsoleIsRunning = true
             scrollViewSerialConsole.visibility = View.VISIBLE
@@ -133,7 +133,7 @@ class TextualMonitorFragment : Fragment() {
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
-                    view: View,
+                    view: View?,
                     position: Int,
                     id: Long
                 ) {

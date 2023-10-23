@@ -39,6 +39,10 @@ interface StPreferences {
 
     fun isBetaApplication() : Boolean
 
+    fun isServerForced() : Boolean
+
+    fun setServerForcedFlag(serverForced: Boolean)
+
     fun profilePrefsUpdates(): Flow<Boolean>
 
     fun hasSelectedProfile(): Boolean

@@ -21,6 +21,9 @@ import com.st.plot.utils.toPlotEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,13 +38,16 @@ class PlotViewModel
         const val TAG = "PlotViewModel"
     }
 
-    private var _nodeId: String = ""
+    private var nodeId: String = ""
     private var featureUpdates: Flow<FeatureUpdate<*>> = emptyFlow()
     private var plottableFeatures: MutableList<Feature<*>> = mutableListOf()
 
+    private val _debugMessages = MutableStateFlow<String?>(null)
+    val debugMessages: StateFlow<String?> = _debugMessages.asStateFlow()
+
     fun startDemo(nodeId: String) {
         Log.d(TAG, "startDemo")
-        _nodeId = nodeId
+        this.nodeId = nodeId
         viewModelScope.launch {
             plottableFeatures.addAll(
                 blueManager.nodeFeatures(nodeId = nodeId)
@@ -103,13 +109,13 @@ class PlotViewModel
             mNotificationEnabled = if (mNotificationEnabled) {
                 Log.d(TAG, "mNotificationEnabled")
                 blueManager.disableFeatures(
-                    nodeId = _nodeId, listOf(this)
+                    nodeId = nodeId, listOf(this)
                 )
                 false
             } else {
                 Log.d(TAG, "not mNotificationEnabled")
                 blueManager.enableFeatures(
-                    nodeId = _nodeId, listOf(this)
+                    nodeId = nodeId, listOf(this)
                 )
                 true
             }
@@ -169,6 +175,19 @@ class PlotViewModel
     fun onResumePauseButtonPressed() {
         viewModelScope.launch {
             notificationStartStop()
+        }
+    }
+
+    fun stopReceiveDebugMessage() {
+        _debugMessages.value = null
+    }
+
+    fun startReceiveDebugMessage() {
+        viewModelScope.launch {
+            blueManager.getDebugMessages(nodeId)?.collect {
+                val message = it.payload
+                _debugMessages.value = message
+            }
         }
     }
 }

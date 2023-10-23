@@ -22,6 +22,7 @@ import kotlinx.serialization.json.JsonObject
 @Composable
 fun HsdlSensors(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     sensors: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
     status: List<JsonObject>,
     onValueChange: (String, Pair<String, Any>) -> Unit,
@@ -39,6 +40,7 @@ fun HsdlSensors(
             Component(
                 name = name,
                 data = data,
+                enabled = isLoading.not(),
                 enableCollapse = true,
                 isOpen = isOpen == name,
                 componentModel = componentWithInterface.first,

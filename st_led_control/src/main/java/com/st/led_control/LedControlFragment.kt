@@ -79,13 +79,8 @@ class LedControlFragment : Fragment() {
 
         mLedImage.setOnClickListener {
             if(mCurrentDevice!=null) {
-                mLedStatus = if (mLedStatus) {
-                    mLedImage.setImageResource(R.drawable.stm32wb_led_off)
-                    false
-                } else {
-                    mLedImage.setImageResource(R.drawable.stm32wb_led_on)
-                    true
-                }
+                mLedStatus = mLedStatus==false
+                changeLedStatusImage(mLedStatus)
                 viewModel.writeSwitchCommand(nodeId, mCurrentDevice!!,mLedStatus)
             }
         }
@@ -93,6 +88,13 @@ class LedControlFragment : Fragment() {
         mRssiText = binding.stm32wbSingleRssiText
 
         return binding.root
+    }
+
+    private fun changeLedStatusImage(newState: Boolean) {
+        when(newState) {
+            true -> mLedImage.setImageResource(R.drawable.stm32wb_led_on)
+            false -> mLedImage.setImageResource(R.drawable.stm32wb_led_off)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -172,9 +174,13 @@ class LedControlFragment : Fragment() {
         val node = viewModel.getNode(nodeId)
 
         if(node!=null) {
-            mCurrentDevice =
-                node.advertiseInfo?.getDeviceId()
-                    ?.let { P2PConfiguration.getDeviceIdByBoardId(it.toInt()) }
+            mCurrentDevice = node.advertiseInfo?.let {
+                val deviceId = it.getDeviceId().toInt()
+                val sdkVersion = it.getProtocolVersion().toInt()
+                P2PConfiguration.getDeviceIdByBoardId(deviceId,sdkVersion)
+            }
+//                node.advertiseInfo?.getDeviceId()
+//                    ?.let { P2PConfiguration.getDeviceIdByBoardId(it.toInt()) }
         }
 
         if (mCurrentDevice != null) {
@@ -182,7 +188,7 @@ class LedControlFragment : Fragment() {
         }
 
         if (node != null) {
-            if (node.boardType == Boards.Model.WBA_BOARD) { // there is no notion of P2PServer 1, P2PServer 2, etc. for WBA
+            if (node.familyType == Boards.Family.WBA_FAMILY) { // there is no notion of P2PServer 1, P2PServer 2, etc. for WBA
                 showDeviceDetected(P2PConfiguration.DeviceId.Device1)
             }
 
@@ -190,6 +196,8 @@ class LedControlFragment : Fragment() {
                 mRssiText.text = getString(R.string.stm32wb_rssiFormat, node.rssi!!.rssi)
             }
         }
+
+        changeLedStatusImage(mLedStatus)
     }
 
     override fun onPause() {

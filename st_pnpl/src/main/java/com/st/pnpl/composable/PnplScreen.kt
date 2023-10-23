@@ -97,6 +97,7 @@ fun PnplScreen(
                         Component(
                             name = name,
                             data = data,
+                            enabled = isLoading.not(),
                             enableCollapse = enableCollapse,
                             isOpen = isOpen == name,
                             componentModel = componentWithInterface.first,

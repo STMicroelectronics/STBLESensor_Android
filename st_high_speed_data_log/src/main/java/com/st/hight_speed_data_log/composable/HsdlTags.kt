@@ -18,6 +18,7 @@ import kotlinx.serialization.json.JsonObject
 @Composable
 fun HsdlTags(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     tags: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
     status: List<JsonObject>,
     onValueChange: (String, Pair<String, Any>) -> Unit,
@@ -32,6 +33,7 @@ fun HsdlTags(
             val name = componentWithInterface.first.name
             val data = (status.find { it.containsKey(name) })?.get(name)
             Component(
+                enabled = isLoading.not(),
                 name = name,
                 data = data,
                 enableCollapse = false,

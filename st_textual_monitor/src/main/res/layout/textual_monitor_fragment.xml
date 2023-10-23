@@ -81,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:text="Serial Console Output:\n"
             android:textSize="12sp" />
     </ScrollView>
 </LinearLayout>

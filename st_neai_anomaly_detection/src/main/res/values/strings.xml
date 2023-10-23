@@ -38,7 +38,7 @@
     <string name="st_neaiAnomalyDetection_aiengine_state_unknownError">UNKNOWN ERROR</string>
     <string name="st_neaiAnomalyDetection_aiengine_state_null">NULL</string>
     <string name="st_neaiAnomalyDetection_text_progressTitle">Progress:\u0020</string>
-    <string name="st_neaiAnomalyDetection_results_status_normal">ANOMALY</string>
+    <string name="st_neaiAnomalyDetection_results_status_normal">NORMAL</string>
     <string name="st_neaiAnomalyDetection_results_status_anomaly">ANOMALY</string>
     <string name="st_neaiAnomalyDetection_results_status_null">NULL</string>
     <string name="st_neaiAnomalyDetection_text_resultsTitle">Results</string>

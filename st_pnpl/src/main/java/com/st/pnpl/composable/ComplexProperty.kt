@@ -243,6 +243,7 @@ fun MapProperty(
             data = initValue,
             content = mapKeys,
             commandBehavior = true,
+            enabled = true,
             onValueChange = {
                 internalStateNewKey = it.second as String
             }
@@ -254,6 +255,7 @@ fun MapProperty(
             modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
             data = initValue,
             content = mapValues,
+            enabled = enabled,
             commandBehavior = true,
             onValueChange = {
                 internalStateNewValue = it.second
@@ -333,6 +335,7 @@ fun ObjectProperty(
                     .fillMaxWidth()
                     .padding(start = LocalDimensions.current.paddingNormal),
                 content = content as DtmiContent.DtmiPropertyContent,
+                enabled = enabled,
                 commandBehavior = commandBehavior,
                 onValueChange = { newValue ->
                     if (enabled) {

@@ -6,10 +6,11 @@ object HsdlConfig {
 
     var tags: List<String> = emptyList()
 
-    var hsdlTabBar: (@Composable (title: String) -> Unit)? = null
+    var hsdlTabBar: (@Composable (title: String, isLoading: Boolean) -> Unit)? = null
 
     var showStopDialog: Boolean = false
 
     var isLogging: Boolean = false
 
+    var datalogNameFormat: String? = null
 }

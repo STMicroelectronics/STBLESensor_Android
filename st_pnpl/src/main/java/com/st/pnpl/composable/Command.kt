@@ -33,6 +33,7 @@ import kotlinx.serialization.json.JsonElement
 fun Command(
     modifier: Modifier = Modifier,
     data: JsonElement?,
+    enabled: Boolean,
     content: DtmiContent.DtmiCommandContent,
     onSendCommand: (CommandRequest?) -> Unit
 ) {
@@ -62,6 +63,7 @@ fun Command(
                     content.request?.let { contentRequest ->
                         Property(
                             data = data,
+                            enabled = enabled,
                             content = contentRequest as DtmiContent.DtmiPropertyContent,
                             commandBehavior = true,
                             onValueChange = { newValue ->
@@ -77,6 +79,7 @@ fun Command(
 
                 BlueMsButtonOutlined(
                     text = stringResource(id = R.string.st_pnpl_sendCommandBtn),
+                    enabled = enabled,
                     onClick = {
                         onSendCommand(
                             CommandRequest(

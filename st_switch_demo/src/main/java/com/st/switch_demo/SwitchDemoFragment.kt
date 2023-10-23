@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -26,6 +28,7 @@ import com.st.switch_demo.databinding.SwitchDemoFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class SwitchDemoFragment : Fragment() {
 
@@ -36,7 +39,12 @@ class SwitchDemoFragment : Fragment() {
     private lateinit var mSwitchImage: ImageView
     private lateinit var mSwitchText: TextView
 
-    private lateinit var currentSwitchValue: SwitchStatusType
+    private var currentSwitchValue: SwitchStatusType=SwitchStatusType.Off
+
+    private lateinit var firstAnimOnToOff: Animation
+    private lateinit var secondAnimOnToOff: Animation
+    private lateinit var firstAnimOffToOn: Animation
+    private lateinit var secondAnimOffToOn: Animation
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +60,37 @@ class SwitchDemoFragment : Fragment() {
         mSwitchText = binding.switchTitle
 
         mSwitchImage.setOnClickListener { viewModel.writeSwitchCommand(nodeId, currentSwitchValue) }
+
+        firstAnimOnToOff = AlphaAnimation(1f, 0f)
+        firstAnimOnToOff.duration = 1000
+
+        secondAnimOnToOff = AlphaAnimation(0f, 1f)
+        secondAnimOnToOff.duration = 200
+
+        firstAnimOffToOn =  AlphaAnimation(1f, 0f)
+        firstAnimOffToOn.duration = 200
+
+        secondAnimOffToOn = AlphaAnimation(0f, 1f)
+        secondAnimOffToOn.duration = 1000
+
+        firstAnimOnToOff.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+            override fun onAnimationRepeat(animation: Animation?) {}
+            override fun onAnimationEnd(animation: Animation?) {
+                mSwitchImage.setImageResource(R.drawable.switch_off)
+                mSwitchImage.startAnimation(secondAnimOnToOff)
+            }
+        })
+
+        firstAnimOffToOn.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+            override fun onAnimationRepeat(animation: Animation?) {}
+            override fun onAnimationEnd(animation: Animation?) {
+                mSwitchImage.setImageResource(R.drawable.switch_on)
+                mSwitchImage.startAnimation(secondAnimOffToOn)
+            }
+        })
+
 
         return binding.root
     }
@@ -78,13 +117,61 @@ class SwitchDemoFragment : Fragment() {
     private fun updateView(it: SwitchFeatureInfo) {
         val value = it.status.value
         if (value == SwitchStatusType.Off) {
-            mSwitchImage.setImageResource(R.drawable.switch_off)
+            if(currentSwitchValue != SwitchStatusType.Off) {
+                mSwitchImage.startAnimation(firstAnimOnToOff)
             currentSwitchValue = SwitchStatusType.Off
+            }
         } else {
-            mSwitchImage.setImageResource(R.drawable.switch_on)
+            if(currentSwitchValue != SwitchStatusType.On) {
+                mSwitchImage.startAnimation(firstAnimOffToOn)
             currentSwitchValue = SwitchStatusType.On
         }
     }
+    }
+
+
+//    private fun animateImageViewChangeOnToOff() {
+//
+//        val firstAnimOnToOff: Animation = TranslateAnimation(0f,
+//            mSwitchImage.drawable.intrinsicWidth.toFloat(),0f,0f)
+//        firstAnimOnToOff.duration = 300
+//
+//        val secondAnimOnToOff: Animation = TranslateAnimation(
+//            -mSwitchImage.drawable.intrinsicWidth.toFloat(),0f,0f,0f)
+//        secondAnimOnToOff.duration = 300
+//
+//        firstAnimOnToOff.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationStart(animation: Animation?) {}
+//            override fun onAnimationRepeat(animation: Animation?) {}
+//            override fun onAnimationEnd(animation: Animation?) {
+//                mSwitchImage.setImageResource(R.drawable.switch_off)
+//                mSwitchImage.startAnimation(secondAnimOnToOff)
+//            }
+//        })
+//        mSwitchImage.startAnimation(firstAnimOnToOff)
+//    }
+
+
+//    private fun animateImageViewChangeOffToOn() {
+//
+//        val firstAnimOffToOn: Animation = TranslateAnimation(0f,
+//            -mSwitchImage.drawable.intrinsicWidth.toFloat(),0f,0f)
+//        firstAnimOffToOn.duration = 300
+//
+//        val secondAnimOffToOn: Animation = TranslateAnimation(
+//            mSwitchImage.drawable.intrinsicWidth.toFloat(),0f,0f,0f)
+//        secondAnimOffToOn.duration = 300
+//
+//        firstAnimOffToOn.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationStart(animation: Animation?) {}
+//            override fun onAnimationRepeat(animation: Animation?) {}
+//            override fun onAnimationEnd(animation: Animation?) {
+//                mSwitchImage.setImageResource(R.drawable.switch_on)
+//                mSwitchImage.startAnimation(secondAnimOffToOn)
+//            }
+//        })
+//        mSwitchImage.startAnimation(firstAnimOffToOn)
+//    }
 
 
     override fun onResume() {

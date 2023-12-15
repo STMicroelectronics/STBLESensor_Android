@@ -12,20 +12,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,10 +29,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.sp
 import com.st.blue_sdk.board_catalog.models.BoardDescription
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.blue_sdk.board_catalog.models.BoardStatus
+import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
 import com.st.blue_sdk.board_catalog.models.FotaDetails
 import com.st.catalog.R
 import com.st.ui.theme.ErrorText
@@ -44,7 +42,9 @@ import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
+import com.st.ui.theme.Shapes
 import com.st.ui.theme.SuccessText
+import com.st.ui.utils.asString
 import com.st.ui.utils.getBlueStBoardImages
 
 @Composable
@@ -55,10 +55,10 @@ fun BoardHeader(
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ }
 ) {
-    val openComponentDialog = remember { mutableStateOf(false) }
+    //val openComponentDialog = remember { mutableStateOf(false) }
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal
     ) {
         Column(
@@ -100,9 +100,10 @@ fun BoardHeader(
                         .size(size = LocalDimensions.current.imageLarge)
                         //.fillMaxHeight()
                         .align(alignment = Alignment.Center)
-                        .clickable {
-                            openComponentDialog.value = true
-                        },
+//                        .clickable {
+//                            openComponentDialog.value = true
+//                        },
+                       ,
                     painter = painterResource(id = getBlueStBoardImages(boardType = board.boardModel().name)),
                     contentDescription = null
                 )
@@ -180,16 +181,16 @@ fun BoardHeader(
         }
     }
 
-    if (openComponentDialog.value) {
-        if (boardDescOrNull != null) {
-            if (!boardDescOrNull.components.isNullOrEmpty()) {
-                DialogBoardComponents(compList = boardDescOrNull.components!!,
-                    onDismissRequest = {
-                        openComponentDialog.value = false
-                    })
-            }
-        }
-    }
+//    if (openComponentDialog.value) {
+//        if (boardDescOrNull != null) {
+//            if (!boardDescOrNull.components.isNullOrEmpty()) {
+//                DialogBoardComponents(compList = boardDescOrNull.components!!,
+//                    onDismissRequest = {
+//                        openComponentDialog.value = false
+//                    })
+//            }
+//        }
+//    }
 }
 
 /** ----------------------- PREVIEW --------------------------------------- **/
@@ -208,16 +209,17 @@ private fun BoardHeaderNrndPreview() {
                 cloudApps = emptyList(),
                 characteristics = emptyList(),
                 optionBytes = emptyList(),
-                fwDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempor posuere enim, et imperdiet quam mattis at.",
-                fota = FotaDetails()
+                fwDesc = LoremIpsum(words = 15).asString(),
+                fota = FotaDetails(),
+                maturity = FirmwareMaturity.RELEASE
             ), boardDescOrNull = BoardDescription(
                 bleDevId = "123",
                 usb_dev_id = "123",
                 usbDevId = "123",
                 uniqueDevId = 0,
-                boardName = "Lorem ipsum dolor sit amet",
-                boardVariant = "Lorem ipsum dolor sit amet",
-                friendlyName = "Lorem ipsum dolor sit amet",
+                boardName = LoremIpsum(words = 5).asString(),
+                boardVariant = LoremIpsum(words = 5).asString(),
+                friendlyName = LoremIpsum(words = 5).asString(),
                 status = BoardStatus.NRND,
                 description = "",
                 docURL = "www",
@@ -230,7 +232,7 @@ private fun BoardHeaderNrndPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun BoardHeaderAcivePreview() {
+private fun BoardHeaderActivePreview() {
     PreviewBlueMSTheme {
         BoardHeader(
             board = BoardFirmware(
@@ -242,16 +244,17 @@ private fun BoardHeaderAcivePreview() {
                 cloudApps = emptyList(),
                 characteristics = emptyList(),
                 optionBytes = emptyList(),
-                fwDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempor posuere enim, et imperdiet quam mattis at.",
-                fota = FotaDetails()
+                fwDesc = LoremIpsum(words = 15).asString(),
+                fota = FotaDetails(),
+                maturity = FirmwareMaturity.RELEASE
             ), boardDescOrNull = BoardDescription(
                 bleDevId = "123",
                 usb_dev_id = "123",
                 usbDevId = "123",
                 uniqueDevId = 0,
-                boardName = "Lorem ipsum dolor sit amet",
-                boardVariant = "Lorem ipsum dolor sit amet",
-                friendlyName = "Lorem ipsum dolor sit amet",
+                boardName = LoremIpsum(words = 5).asString(),
+                boardVariant = LoremIpsum(words = 5).asString(),
+                friendlyName = LoremIpsum(words = 5).asString(),
                 status = BoardStatus.ACTIVE,
                 description = "",
                 docURL = "www",

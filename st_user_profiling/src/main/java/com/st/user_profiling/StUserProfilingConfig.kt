@@ -11,6 +11,7 @@ import com.st.user_profiling.model.LevelProficiency
 import com.st.user_profiling.model.ProfileType
 
 object StUserProfilingConfig {
+    var showAiDeveloper: Boolean = false
     var defaultLevelProficiency: LevelProficiency = LevelProficiency.BEGINNER
     var defaultProfileType: ProfileType = ProfileType.DEVELOPER
     lateinit var onDone: (LevelProficiency, ProfileType) -> Unit

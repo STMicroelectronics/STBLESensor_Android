@@ -17,6 +17,7 @@ import kotlinx.serialization.json.JsonElement
 @Composable
 fun Content(
     modifier: Modifier = Modifier,
+    hideProperties: Array<String>?=null,
     data: JsonElement?,
     enabled: Boolean,
     content: DtmiContent,
@@ -25,6 +26,7 @@ fun Content(
 ) {
     when (content) {
         is DtmiContent.DtmiPropertyContent -> Property(
+            hideProperties = hideProperties,
             modifier = modifier.fillMaxWidth(),
             enabled = enabled,
             data = data,

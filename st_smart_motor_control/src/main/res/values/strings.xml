@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="st_motor_control">Motor Control</string>
+    <string name="st_motor_control_configuration" tools:ignore="ExtraTranslation">Configuration</string>
+    <string name="st_motor_control_tags">Tags</string>
+    <string name="st_motor_control_logging">Device is logging</string>
+    <string name="st_motor_control_missingSdCard">Missing SD Card</string>
+    <string name="st_motor_control_tags_description1">To</string>
+    <string name="st_motor_control_tags_description2">enable</string>
+    <string name="st_motor_control_tags_description3">is necessary to start\nthe acquisition using the Play button.</string>
+    <string name="st_motor_control_tags_acquisitionTitle">Acquisition Information</string>
+    <string name="st_motor_control_tags_tagsTitle">Tags Information</string>
+    <string name="st_motor_control_datalog_stopDialogTitle">Data Logging completed</string>
+    <string name="st_motor_control_datalog_stopDialogMessage">You can start another acquisition using the Play button or decide to upload the data to Vespucci using the button with the upload icon</string>
+    <string name="st_motor_control_datalog_stopDialogClose">Close</string>
+</resources>

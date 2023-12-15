@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,17 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.st.ui.theme.Grey5
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @Composable
 fun FlowDemoInputFunctionOutputListItem(@DrawableRes iconId: Int, label: String) {
     Surface(
-        //shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
         modifier = Modifier
             .fillMaxWidth()
             .padding(
                 end = LocalDimensions.current.paddingSmall
             )
-            .border(1.dp, Grey5,shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal))
+            .border(1.dp, Grey5,shape = Shapes.small)
     ) {
         Row(
             modifier = Modifier

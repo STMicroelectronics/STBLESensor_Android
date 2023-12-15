@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Scaffold
@@ -33,12 +35,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
@@ -49,17 +54,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.high_speed_data_log.R
-import com.st.ui.composables.BottomAppBarItem
 import com.st.hight_speed_data_log.composable.HsdlSensors
 import com.st.hight_speed_data_log.composable.HsdlTags
 import com.st.hight_speed_data_log.composable.StopLoggingDialog
 import com.st.hight_speed_data_log.composable.VespucciHsdlTags
+import com.st.ui.composables.BottomAppBarItem
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.Grey0
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.SecondaryBlue
 import kotlinx.serialization.json.JsonObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun HighSpeedDataLog(
@@ -160,6 +168,12 @@ fun HighSpeedDataLog(
         onRefresh = onRefresh
     )
 
+    var selectedIndex by remember {
+        mutableIntStateOf(0)
+    }
+
+    val haptic = LocalHapticFeedback.current
+
     val context = LocalContext.current
     Scaffold(
         modifier = modifier,
@@ -197,50 +211,71 @@ fun HighSpeedDataLog(
             }
         },
         bottomBar = {
-            BottomAppBar(
+            BottomNavigation(
                 modifier = Modifier.fillMaxWidth(),
                 backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = Grey0,
-                cutoutShape = CircleShape,
-                contentPadding =
-                PaddingValues(all = LocalDimensions.current.paddingNormal)
+                contentColor = Grey0
             ) {
-                BottomAppBarItem(
-                    modifier = Modifier.weight(weight = 0.33f),
-                    painter = painterResource(id = R.drawable.ic_sensors),
-                    label = stringResource(id = R.string.st_hsdl_sensors),
+                BottomNavigationItem(
+                    selectedContentColor = Grey0,
+                    unselectedContentColor = Grey6,
+                    selected = 0 == selectedIndex,
                     onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        selectedIndex = 0
                         currentTitle = sensorsTitle
                         navController.navigate("Sensors") {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
+                            navController.graph.startDestinationRoute?.let { screenRoute ->
+                                popUpTo(screenRoute) {
                                     saveState = true
                                 }
                             }
                             launchSingleTop = true
                             restoreState = true
                         }
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_sensors),
+                            contentDescription = stringResource(id = R.string.st_hsdl_sensors),
+                            tint =  if(0 == selectedIndex) {Grey0 } else {
+                                Grey6
                     }
                 )
+                    },
+                    label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_hsdl_sensors)) },
+                    enabled = !isLoading
+                )
 
-                Spacer(modifier = Modifier.weight(weight = 0.33f))
-
-                BottomAppBarItem(
-                    modifier = Modifier.weight(weight = 0.33f),
-                    painter = painterResource(id = R.drawable.ic_tags),
-                    label = stringResource(id = R.string.st_hsdl_tags),
+                BottomNavigationItem(
+                    selectedContentColor = Grey0,
+                    unselectedContentColor = Grey6,
+                    selected = 1 == selectedIndex,
                     onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        selectedIndex = 1
                         currentTitle = tagsTitle
                         navController.navigate("Tags") {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
+                            navController.graph.startDestinationRoute?.let { screenRoute ->
+                                popUpTo(screenRoute) {
                                     saveState = true
                                 }
                             }
                             launchSingleTop = true
                             restoreState = true
                         }
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_tags),
+                            contentDescription = stringResource(id = R.string.st_hsdl_tags),
+                            tint =  if(1 == selectedIndex) {Grey0 } else {
+                                Grey6
                     }
+                        )
+                    },
+                    label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_hsdl_tags)) },
+                    enabled = !isLoading
                 )
             }
         }
@@ -288,7 +323,7 @@ fun HighSpeedDataLog(
                         )
                     } else {
                         VespucciHsdlTags(
-                            acquisitionInfo = acquisitionName,
+                            acquisitionInfo = acquisitionName.formatDate(),
                             vespucciTags = vespucciTags,
                             isLoading = isLoading,
                             isLogging = isLogging,
@@ -312,4 +347,12 @@ fun HighSpeedDataLog(
             onDismissRequest = { openStopDialog = false }
         )
     }
+}
+
+
+fun String.formatDate(): String {
+    val inputSdf = SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.ROOT)
+    val date = inputSdf.parse(this)
+    val sdf = SimpleDateFormat("EEE MMM d yyyy HH:mm:ss", Locale.UK)
+    return sdf.format(date)
 }

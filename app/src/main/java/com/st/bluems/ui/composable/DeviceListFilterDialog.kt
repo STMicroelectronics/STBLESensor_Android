@@ -32,6 +32,7 @@ import com.st.bluems.R
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
+import com.st.ui.theme.Shapes
 import kotlin.math.roundToInt
 
 @Composable
@@ -42,7 +43,8 @@ fun DeviceListFilterDialog(
 ) {
     var internalFilters by remember(key1 = filters) { mutableStateOf(value = filters) }
     Surface(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        shape = Shapes.medium
     ) {
         Column(
             modifier = Modifier

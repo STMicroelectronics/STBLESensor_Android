@@ -1,6 +1,7 @@
 {
   "description": "Baby Crying Detector",
   "category": "AI & MLC",
+  "ex_app" : 8,
   "board_compatibility": [
     "SENSOR_TILE_BOX",
     "SENSOR_TILE_BOX_PRO"

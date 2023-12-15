@@ -52,6 +52,7 @@ import kotlinx.serialization.json.intOrNull
 @Composable
 fun ComplexProperty(
     modifier: Modifier = Modifier,
+    hideProperties: Array<String>?=null,
     schema: DtmiContent,
     data: JsonElement?,
     label: String,
@@ -67,6 +68,12 @@ fun ComplexProperty(
         is DtmiContent.DtmiEnumContent<*> -> {
             when (schema.enumType) {
                 DtmiContent.DtmiEnumContent.EnumType.INTEGER -> {
+
+                    var mustBeShowed = true
+                    if(hideProperties!=null) {
+                        mustBeShowed = !hideProperties.contains(schema.name)
+                    }
+                    if(mustBeShowed) {
                     var enumData: Int? = null
                     if (data is JsonPrimitive) {
                         enumData = data.intOrNull
@@ -90,8 +97,14 @@ fun ComplexProperty(
                         onValueChange = onValueChange
                     )
                 }
+                }
 
                 DtmiContent.DtmiEnumContent.EnumType.STRING -> {
+                    var mustBeShowed = true
+                    if(hideProperties!=null) {
+                        mustBeShowed = !hideProperties.contains(schema.name)
+                    }
+                    if(mustBeShowed) {
                     var enumData: String? = null
                     if (data is JsonPrimitive) {
                         enumData = data.contentOrNull
@@ -117,9 +130,11 @@ fun ComplexProperty(
                 }
             }
         }
+        }
 
         is DtmiContent.DtmiObjectContent -> ObjectProperty(
             modifier = modifier,
+            hideProperties = hideProperties,
             data = data,
             label = label,
             unit = unit,
@@ -287,6 +302,7 @@ fun MapProperty(
 @Composable
 fun ObjectProperty(
     modifier: Modifier = Modifier,
+    hideProperties: Array<String>?=null,
     data: JsonElement?,
     initValue: JsonObject?,
     label: String,
@@ -330,6 +346,7 @@ fun ObjectProperty(
                 contentData = data[content.name] ?: defaultData
             }
             Property(
+                hideProperties = hideProperties,
                 data = contentData,
                 modifier = Modifier
                     .fillMaxWidth()

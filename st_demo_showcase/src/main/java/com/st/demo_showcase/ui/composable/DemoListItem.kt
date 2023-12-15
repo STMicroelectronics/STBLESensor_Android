@@ -8,7 +8,6 @@
 package com.st.demo_showcase.ui.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
@@ -75,7 +74,7 @@ fun DemoListItem(
                         .size(size = LocalDimensions.current.iconMedium)
                         .padding(all = LocalDimensions.current.paddingSmall)
                         .alpha(alpha),
-                    shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+                    shape = Shapes.small,
                     color = if (even) SecondaryBlue else PrimaryYellow
                 ) {
                     Icon(

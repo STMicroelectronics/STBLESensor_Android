@@ -14,7 +14,7 @@
  Exported by: st localise
  Exported at: Fri, 27 May 2022 07:38:17 +0200
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="st_home_deviceList_screenTitle">Available Boards</string>
     <string name="st_home_deviceList_discoverBtn">Discover our products</string>
     <string name="st_home_deviceList_emptyTitle">Don’t have an ST Board?</string>
@@ -44,8 +44,8 @@
     <string name="st_home_menuActions_login">Login</string>
     <string name="st_home_menuActions_logout">Logout</string>
 
-    <string name="st_home_menuAction_force_server">Force Audio Server</string>
-    <string name="st_home_menuAction_no_force_server">No Force Audio Server</string>
+    <string name="st_home_menuAction_force_server" tools:ignore="ExtraTranslation">Force Audio Server</string>
+    <string name="st_home_menuAction_no_force_server" tools:ignore="ExtraTranslation">No Force Audio Server</string>
 
     <string name="st_home_missingPermission_goToSettingsBtn">Open Settings</string>
 
@@ -63,6 +63,6 @@
     <string name="profile_restricted_dialog_body_text">Change the Profile selection in order to be able to enable the explore the boards catalog for finding the best STMicroelectronics board that fits your necessities</string>
     <string name="missing_ble_dialog_title">Bluetooth required</string>
     <string name="missing_ble_dialog_body_text">It\'s necessary to enable the Bluetooth for connecting one STMicroelectronics board</string>
-    <string name="missing_location_dialog_title">Location required</string>
-    <string name="missing_location_dialog_body_text">It\'s necessary to enable the Location for searching the boards</string>
+    <string name="missing_location_dialog_title" tools:ignore="ExtraTranslation">Location required</string>
+    <string name="missing_location_dialog_body_text" tools:ignore="ExtraTranslation">It\'s necessary to enable the Location for searching the boards</string>
 </resources>

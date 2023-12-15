@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +24,7 @@ import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey5
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.Shapes
 
 @Composable
 fun FlowDemoInputFunctionOutputConfigurationListItem(
@@ -36,7 +36,6 @@ fun FlowDemoInputFunctionOutputConfigurationListItem(
     onDelete: () -> Unit = { /** NOOP**/ }
 ) {
     Surface(
-        //shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
         modifier = Modifier
             .fillMaxWidth()
             .padding(
@@ -45,7 +44,7 @@ fun FlowDemoInputFunctionOutputConfigurationListItem(
             .border(
                 1.dp,
                 Grey5,
-                shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal)
+                shape = Shapes.small
             )
     ) {
         Row(

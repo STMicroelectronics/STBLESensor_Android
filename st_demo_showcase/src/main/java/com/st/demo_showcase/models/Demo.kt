@@ -38,6 +38,7 @@ import com.st.blue_sdk.features.extended.predictive.PredictiveAccelerationStatus
 import com.st.blue_sdk.features.extended.predictive.PredictiveFrequencyStatus
 import com.st.blue_sdk.features.extended.predictive.PredictiveSpeedStatus
 import com.st.blue_sdk.features.extended.qvar.QVAR
+import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
 import com.st.blue_sdk.features.extended.registers_feature.RegistersFeature
 import com.st.blue_sdk.features.extended.tof_multi_object.ToFMultiObject
 import com.st.blue_sdk.features.external.std.HeartRate
@@ -48,6 +49,8 @@ import com.st.blue_sdk.features.humidity.Humidity
 import com.st.blue_sdk.features.logging.sd.SDLoggingFeature
 import com.st.blue_sdk.features.mems_gesture.MemsGesture
 import com.st.blue_sdk.features.motion_intensity.MotionIntensity
+import com.st.blue_sdk.features.ota.stm32wb.OTAControl
+import com.st.blue_sdk.features.ota.stm32wb.OTAReboot
 import com.st.blue_sdk.features.pedometer.Pedometer
 import com.st.blue_sdk.features.pressure.Pressure
 import com.st.blue_sdk.features.proximity_gesture.ProximityGesture
@@ -57,6 +60,7 @@ import com.st.blue_sdk.features.switchfeature.SwitchFeature
 import com.st.blue_sdk.features.temperature.Temperature
 import com.st.blue_sdk.services.audio.AudioService
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
+import com.st.demo_showcase.R
 import com.st.demo_showcase.ui.demo_list.DemoListFragmentDirections
 import com.st.plot.utils.PLOTTABLE_FEATURE
 import com.st.plot.utils.PLOT_SETTINGS
@@ -218,16 +222,20 @@ enum class Demo(
         group = listOf(DemoGroup.Audio),
         icon = com.st.blue_voice.R.drawable.beamforming_icon,
         requireAllFeatures=true,
-        features = listOf(AudioOpusFeature.NAME,
-            AudioOpusConfFeature.NAME, BeamForming.NAME)
+        features = listOf(
+            AudioOpusFeature.NAME,
+            AudioOpusConfFeature.NAME, BeamForming.NAME
+        )
     ),
     BeamFormingDemoADPCM(
         displayName = "BeamForming ADPCM",
         group = listOf(DemoGroup.Audio),
         icon = com.st.blue_voice.R.drawable.beamforming_icon,
         requireAllFeatures=true,
-        features = listOf(AudioADPCMFeature.NAME,
-            AudioADPCMSyncFeature.NAME, BeamForming.NAME)
+        features = listOf(
+            AudioADPCMFeature.NAME,
+            AudioADPCMSyncFeature.NAME, BeamForming.NAME
+        )
     ),
     SourceLocalization(
         displayName = "Source Localization",
@@ -240,16 +248,20 @@ enum class Demo(
         group = listOf(DemoGroup.Audio, DemoGroup.Cloud),
         icon = com.st.blue_voice.R.drawable.blue_voice_icon,
         requireAllFeatures=true,
-        features = listOf(AudioOpusFeature.NAME,
-            AudioOpusConfFeature.NAME)
+        features = listOf(
+            AudioOpusFeature.NAME,
+            AudioOpusConfFeature.NAME
+        )
     ),
     SpeechToTextDemoAPDCM(
         displayName = "SpeechToText ADPCM",
         group = listOf(DemoGroup.Audio, DemoGroup.Cloud),
         icon = com.st.blue_voice.R.drawable.blue_voice_icon,
         requireAllFeatures=true,
-        features = listOf(AudioADPCMFeature.NAME,
-            AudioADPCMSyncFeature.NAME)
+        features = listOf(
+            AudioADPCMFeature.NAME,
+            AudioADPCMSyncFeature.NAME
+        )
     ),
     AudioClassificationDemo(
         displayName = "Audio Classification",
@@ -435,9 +447,30 @@ enum class Demo(
         group = listOf(DemoGroup.Status),
         icon = com.st.node_status.R.drawable.node_status_icon,
         features = listOf(Battery.NAME)
+    ),
+    RawPnpl(
+        displayName = "Raw PnPL Controlled",
+        icon = com.st.raw_pnpl.R.drawable.ic_rule,
+        features = listOf(PnPL.NAME, RawPnPLControlled.NAME),
+        requireAllFeatures = true,
+        group = listOf(DemoGroup.Control)
+    ),
+    SmartMotorControl(
+        displayName = "Smart Motor Control",
+        icon = com.st.smart_motor_control.R.drawable.smart_motor_control_icon,
+        features = listOf(PnPL.NAME, RawPnPLControlled.NAME),
+        requireAllFeatures = true,
+        group = listOf(DemoGroup.Control, DemoGroup.DataLog)
+    ),
+    WbsOtaFUOTA(
+        displayName = "FUOTA",
+        icon = R.drawable.wbs_ota_config,
+        group = listOf(DemoGroup.Fota),
+        features = listOf(OTAControl.NAME,OTAReboot.NAME)
     )
     // *** NEW_DEMO_TEMPLATE ANCHOR1 ***\
-    ,SdLoggingDemo(
+    ,
+    SdLoggingDemo(
         displayName = "SD Logging",
         group = listOf(DemoGroup.DataLog),
         icon = com.st.ui.R.drawable.multiple_log_icon,
@@ -641,16 +674,27 @@ enum class Demo(
             SpeechToTextDemoAPDCM -> DemoListFragmentDirections.actionDemoListToLegacyDemoFragment(
                 nodeId
             )
+
+            RawPnpl -> DemoListFragmentDirections.actionDemoListToRawPnplFragment(nodeId)
+            SmartMotorControl -> DemoListFragmentDirections.actionDemoListToSmartMotorControlFragment(
+                nodeId
+            )
             // *** NEW_DEMO_TEMPLATE ANCHOR2 ***
             BlueVoiceFullBand -> DemoListFragmentDirections.actionDemoListToLegacyDemoFragment(
                 nodeId
             )
+
+            WbsOtaFUOTA -> DemoListFragmentDirections.actionDemoListToFwUpgrade(nodeId)
         }
 
         direction.let { navController.navigate(directions = it) }
     }
 
     companion object {
+
+        private val map = Demo.values().associateBy { it.displayName }
+        infix fun from(name: String) = map[name]
+
         fun buildDemoList(
             blueManager: BlueManager,
             audioService: AudioService,

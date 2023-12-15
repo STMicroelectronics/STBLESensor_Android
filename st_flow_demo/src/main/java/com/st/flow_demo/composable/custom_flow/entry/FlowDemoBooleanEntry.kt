@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material3.Surface
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @Composable
 fun FlowDemoBooleanEntry(
@@ -33,7 +33,7 @@ fun FlowDemoBooleanEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(LocalDimensions.current.paddingSmall),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationSmall
     ) {
         Column(

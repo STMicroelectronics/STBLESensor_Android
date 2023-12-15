@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +23,7 @@ import com.st.flow_demo.helpers.getOutputIconResourceByName
 import com.st.flow_demo.models.Flow
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.Shapes
 
 @Composable
 fun FlowDemoFlowListItem(
@@ -33,7 +33,7 @@ fun FlowDemoFlowListItem(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal,
         onClick = onFlowSelected
     ) {

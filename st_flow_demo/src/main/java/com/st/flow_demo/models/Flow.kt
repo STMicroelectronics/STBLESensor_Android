@@ -4,15 +4,17 @@ import androidx.documentfile.provider.DocumentFile
 import com.st.blue_sdk.board_catalog.models.Sensor
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.io.File
 import java.util.Objects
 import java.util.UUID
 
 @Serializable
 data class Flow(
+    @SerialName(value = "version")
     val version: Int = FLOW_VERSION,
     @SerialName(value = "id")
     var id: String,
+    @SerialName(value = "ex_app")
+    var ex_app: Int = FLOW_CUSTOM,
     @SerialName(value = "category")
     var category: String? = null,
     @SerialName(value = "expression")
@@ -41,6 +43,7 @@ data class Flow(
 
     companion object {
         var FLOW_VERSION = 1
+        var FLOW_CUSTOM  = 0
     }
 
     fun generateId() {
@@ -98,6 +101,7 @@ data class Flow(
                 ", functions=" + functions +
                 ", flows=" + flows +
                 ", outputs=" + outputs +
+                ", ex_app=" + ex_app +
                 '}'
     }
 }

@@ -1,6 +1,7 @@
 {
   "description": "Vibration monitor - Training",
   "category": "Vibration Monitor",
+  "ex_app" : 15,
   "board_compatibility": [
     "SENSOR_TILE_BOX"
   ],

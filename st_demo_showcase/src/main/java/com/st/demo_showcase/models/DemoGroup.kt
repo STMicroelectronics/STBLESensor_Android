@@ -24,5 +24,6 @@ enum class DemoGroup(
     Cloud("Cloud"),
     PredictiveMaintenance("Predictive Maintenance"),
     Graphs("Graphs"),
-    Status("Status")
+    Status("Status"),
+    Fota("FOTA")
 }

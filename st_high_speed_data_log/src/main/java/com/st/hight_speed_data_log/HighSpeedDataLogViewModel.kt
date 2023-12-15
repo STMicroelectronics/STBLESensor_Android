@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.booleanOrNull
@@ -40,7 +41,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 import javax.inject.Inject
 
 private typealias ComponentWithInterface = Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>
@@ -248,7 +248,8 @@ class HighSpeedDataLogViewModel @Inject constructor(
         _isLoading.value = true
 
         val componentWithInterface =
-            blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())?.extractComponents(demoName = null)
+            blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())
+                ?.extractComponents(demoName = null)
                 ?: emptyList()
 
         _sensors.value = componentWithInterface.hsdl2SensorsFilter()
@@ -262,6 +263,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
         _isLoading.value = true
 
         blueManager.writeFeatureCommand(
+            responseTimeout = 0,
             nodeId = nodeId,
             featureCommand = PnPLCommand(feature = pnplFeatures.first(), cmd = PnPLCmd.ALL)
         )
@@ -271,6 +273,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
         _isLoading.value = true
 
         blueManager.writeFeatureCommand(
+            responseTimeout = 0,
             nodeId = nodeId, featureCommand = PnPLCommand(
                 feature = pnplFeatures.first(), cmd = PnPLCmd.LOG_CONTROLLER
             )
@@ -281,6 +284,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
         _isLoading.value = true
 
         blueManager.writeFeatureCommand(
+            responseTimeout = 0,
             nodeId = nodeId, featureCommand = PnPLCommand(
                 feature = pnplFeatures.first(),
                 cmd = PnPLCmd.TAGS_INFO
@@ -289,7 +293,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     }
 
     private suspend fun setTime(nodeId: String) {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val calendar = Calendar.getInstance()
         val timeInMillis = calendar.timeInMillis
         val sdf = SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.ROOT)
         val datetime = sdf.format(Date(timeInMillis))
@@ -305,7 +309,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     }
 
     private suspend fun setName(nodeId: String) {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val calendar = Calendar.getInstance()
         val timeInMillis = calendar.timeInMillis
         val nameFormatter = HsdlConfig.datalogNameFormat ?: "EEE MMM d yyyy HH:mm:ss"
         val sdf = SimpleDateFormat(nameFormatter, Locale.UK)
@@ -337,6 +341,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
             setName(nodeId)
 
             blueManager.writeFeatureCommand(
+                responseTimeout = 0,
                 nodeId = nodeId, featureCommand = PnPLCommand(
                     feature = pnplFeatures.first(), cmd = PnPLCmd.START_LOG
                 )
@@ -349,6 +354,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     fun stopLog(nodeId: String) {
         viewModelScope.launch {
             blueManager.writeFeatureCommand(
+                responseTimeout = 0,
                 nodeId = nodeId,
                 featureCommand = PnPLCommand(feature = pnplFeatures.first(), cmd = PnPLCmd.STOP_LOG)
             )
@@ -371,6 +377,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
             _isLoading.value = true
 
             blueManager.writeFeatureCommand(
+                responseTimeout = 0,
                 nodeId = nodeId, featureCommand = PnPLCommand(
                     feature = pnplFeatures.first(), cmd = PnPLCmd(
                         component = name, command = it.commandName, fields = it.request
@@ -392,6 +399,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 )
 
                 blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
                     nodeId = nodeId, featureCommand = featureCommand
                 )
 
@@ -490,6 +498,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                                             )
 
                                             blueManager.writeFeatureCommand(
+                                                responseTimeout = 0,
                                                 nodeId = nodeId, featureCommand = renameCommand
                                             )
 
@@ -503,9 +512,10 @@ class HighSpeedDataLogViewModel @Inject constructor(
                                                 )
                                             )
 
-                                            delay(50L)
+                                            //delay(50L)
 
                                             blueManager.writeFeatureCommand(
+                                                responseTimeout = 0,
                                                 nodeId = nodeId, featureCommand = enableCommand
                                             )
                                         } else {
@@ -519,13 +529,14 @@ class HighSpeedDataLogViewModel @Inject constructor(
                                             )
 
                                             blueManager.writeFeatureCommand(
+                                                responseTimeout = 0,
                                                 nodeId = nodeId, featureCommand = disableCommand
                                             )
                                         }
 
-                                        delay(50L)
+                                        //delay(50L)
                                     }
-                                    delay(100L)
+                                    //delay(100L)
                                 }
                                 sendGetAllCommand(nodeId)
                             }
@@ -545,11 +556,19 @@ class HighSpeedDataLogViewModel @Inject constructor(
         shouldInitDemo = true
         shouldRenameTags = true
 
-        coroutineScope.launch {
+//        val job = coroutineScope.launch {
+//            blueManager.disableFeatures(
+//                nodeId = nodeId, features = pnplFeatures
+//            )
+//        }
+        //Not optimal... but in this way... I am not able to see the get status if demo is customized
+        runBlocking {
+            launch {
             blueManager.disableFeatures(
                 nodeId = nodeId, features = pnplFeatures
             )
         }
+    }
     }
 
     fun refresh(nodeId: String) {
@@ -564,7 +583,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 feature = pnplFeatures.first(),
                 cmd = PnPLCmd(
                     command = TAGS_INFO_JSON_KEY,
-                    request = "$TAG_JSON_KEY$tag",
+                    request = "$TAG_JSON_KEY${HsdlConfig.tags.indexOf(tag)}",
                     fields = mapOf(STATUS_JSON_KEY to newState)
                 )
             )
@@ -574,9 +593,10 @@ class HighSpeedDataLogViewModel @Inject constructor(
 
             _vespucciTags.emit(oldTagsStatus)
 
-            delay(50L)
+            //delay(50L)
 
             blueManager.writeFeatureCommand(
+                responseTimeout = 0,
                 nodeId = nodeId,
                 featureCommand = enableCommand
             )

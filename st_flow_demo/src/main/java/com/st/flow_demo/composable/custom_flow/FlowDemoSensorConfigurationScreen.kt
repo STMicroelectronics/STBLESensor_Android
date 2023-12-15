@@ -1,6 +1,5 @@
 package com.st.flow_demo.composable.custom_flow
 
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
@@ -66,6 +64,7 @@ import com.st.blue_sdk.board_catalog.models.SensorConfiguration
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 import com.st.ui.theme.toDouble
 
 @Composable
@@ -187,7 +186,7 @@ fun FlowDemoSensorConfigurationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(LocalDimensions.current.paddingSmall),
-                        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+                        shape = Shapes.small,
                         shadowElevation = LocalDimensions.current.elevationSmall
                     ) {
 
@@ -486,7 +485,7 @@ fun FlowDemoSensorConfigurationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(LocalDimensions.current.paddingSmall),
-                        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+                        shape = Shapes.small,
                         shadowElevation = LocalDimensions.current.elevationSmall
                     ) {
 

@@ -60,7 +60,7 @@
         android:layout_margin="8dp"
         android:gravity="center"
         android:lines="3"
-        android:text="... Waiting ..."
+        android:text="Waiting for gesture"
         android:textStyle="bold"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal_navigation_3"

@@ -1,6 +1,7 @@
 {
   "description": "NFC Writer",
   "category": "Connectivity",
+  "ex_app" : 12,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO"
   ],

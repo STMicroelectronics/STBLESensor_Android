@@ -25,10 +25,12 @@
     <string name="st_userProfiling_levelProficiency_expertName">I’m an expert</string>
     <string name="st_userProfiling_levelProficiency_expertDescription">I have already used the app and I am interested in the most advanced features</string>
 
+    <string name="st_userProfiling_profileSelection_aiName">AI Developer</string>
     <string name="st_userProfiling_profileSelection_developerName">Firmware Developer</string>
     <string name="st_userProfiling_profileSelection_developerDescription">Interested in low-level board communication</string>
     <string name="st_userProfiling_profileSelection_studentName">University Researcher</string>
     <string name="st_userProfiling_profileSelection_studentDescription">Interested in sensor measurements and datalogging</string>
+    <string name="st_userProfiling_profileSelection_aiDescription">Interested in AI algorithms development</string>
     <string name="st_userProfiling_profileSelection_salesName">FAE or Sales Person</string>
     <string name="st_userProfiling_profileSelection_salesDescription">Interesting in general board features</string>
     <string name="st_userProfiling_profileSelection_otherName">Other</string>

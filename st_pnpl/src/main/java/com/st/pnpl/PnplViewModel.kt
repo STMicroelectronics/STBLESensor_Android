@@ -72,6 +72,7 @@ class PnplViewModel @Inject constructor(
 
             if (feature is PnPL) {
                 blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
                     nodeId = nodeId,
                     featureCommand = PnPLCommand(feature = feature, cmd = PnPLCmd.ALL)
                 )
@@ -106,6 +107,7 @@ class PnplViewModel @Inject constructor(
             if (feature is PnPL) {
                 value?.let {
                     blueManager.writeFeatureCommand(
+                        responseTimeout = 0,
                         nodeId = nodeId, featureCommand = PnPLCommand(
                             feature = feature,
                             cmd = PnPLCmd(
@@ -141,6 +143,7 @@ class PnplViewModel @Inject constructor(
                     )
 
                     blueManager.writeFeatureCommand(
+                        responseTimeout = 0,
                         nodeId = nodeId,
                         featureCommand = featureCommand
                     )

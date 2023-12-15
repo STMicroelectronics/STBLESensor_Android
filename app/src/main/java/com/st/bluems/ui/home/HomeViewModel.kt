@@ -158,7 +158,6 @@ class HomeViewModel @Inject constructor(
 //
 //        }
         //checkBoardsCatalogPresence()
-        readReleaseCatalog()
     }
 
     fun readReleaseCatalog() {

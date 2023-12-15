@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.st.flow_demo.DestinationFlowDemoFlowUploadScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.flow_demo.composable.common.ClickableTest
@@ -127,8 +128,8 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                     onClick = { openAddSavedExprDialog = true })
             } else {
                 FlowDemoInputFunctionOutputConfigurationListItem(
-                    iconId = getOutputIconResourceByName(expressionSelected!!.outputs[0].icon),
-                    label = expressionSelected!!.description,
+                    iconId = getOutputIconResourceByName(expressionSelected.outputs[0].icon),
+                    label = expressionSelected.description,
                     hasSettings = false,
                 )
 
@@ -213,7 +214,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                 enabled = (viewModel.expressionSelected!=null) &&  (viewModel.flowSelected!=null),
                 onClick = {
                     navController.navigate(
-                        "flowUpload"
+                        DestinationFlowDemoFlowUploadScreen.route
                     )
                 }
             )

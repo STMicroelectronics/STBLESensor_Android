@@ -56,17 +56,17 @@ fun List<String>?.toActions(
 }
 
 fun Demo.isLoginRequired(): Boolean = when (this) {
-//    Demo.Flow -> true
 //    Demo.Cloud -> true
-//    Demo.ExtConfig -> true
+    Demo.ExtConfig -> true
     else -> false
 }
 
 fun Demo.isExpertRequired(): Boolean = when (this) {
-    //Demo.Flow -> true
     Demo.ExtConfig -> true
     Demo.Pnpl -> true
     Demo.TextualMonitor -> true
+    Demo.RawPnpl -> true
+    Demo.WbsOtaFUOTA -> true
     else -> false
 }
 
@@ -74,6 +74,14 @@ fun Demo.isPnPLMandatory(): Boolean = when (this) {
     Demo.Pnpl -> true
     Demo.HighSpeedDataLog2 -> true
     Demo.BinaryContentDemo -> true
+    Demo.RawPnpl -> true
+    Demo.SmartMotorControl -> true
+    else -> false
+}
+
+fun Demo.isBetaRequired(): Boolean = when (this) {
+//    Demo.RawPnpl -> true
+//    Demo.SmartMotorControl -> true
     else -> false
 }
 
@@ -135,4 +143,7 @@ fun Demo.getDescription(context: Context): String =
         Demo.BeamFormingDemoADPCM -> "Combine signals from multiple omnidirectional microphones to synthesize a virtual microphone that captures sound from a specific direction"
         Demo.BlueVoiceFullBand -> "\"BlueVoice\" audio bluetooth streaming Music"
         Demo.SpeechToTextDemoAPDCM -> "Speech to Text conversion from \"Bluevoice\" audio bluetooth streaming"
+        Demo.RawPnpl -> "Raw Feature Controlled using PnP-Like messages defined by a DTDL-Model"
+        Demo.SmartMotorControl -> "Motor Control integration with high speed sensors data log configuration, control and tagging"
+        Demo.WbsOtaFUOTA -> "Firmware Update Over the Air for WB/WBA boards"
     }

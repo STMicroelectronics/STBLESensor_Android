@@ -41,6 +41,10 @@ import com.st.flow_demo.models.Flow
 import com.st.flow_demo.models.Function
 import com.st.flow_demo.models.Output
 import com.st.blue_sdk.board_catalog.models.Sensor
+import com.st.flow_demo.DestinationFlowDemoFlowSaveScreen
+import com.st.flow_demo.DestinationFlowDemoFunctionConfigurationScreen
+import com.st.flow_demo.DestinationFlowDemoOutputConfigurationScreen
+import com.st.flow_demo.DestinationFlowDemoSensorConfigurationScreen
 import com.st.flow_demo.models.createNewFlow
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.LocalDimensions
@@ -148,7 +152,7 @@ fun FlowDemoFlowExpertEditingScreen(
                     flow!!.outputs = outputs
                     viewModel.flowOnCreation = flow
                     navController.navigate(
-                        "sensorConfiguration"
+                        DestinationFlowDemoSensorConfigurationScreen.route
                     )
 
                 })
@@ -211,7 +215,7 @@ fun FlowDemoFlowExpertEditingScreen(
                     flow!!.outputs = outputs
                     viewModel.flowOnCreation = flow
                     navController.navigate(
-                        "functionConfiguration"
+                        DestinationFlowDemoFunctionConfigurationScreen.route
                     )
                 },
                 onDelete = {
@@ -269,7 +273,7 @@ fun FlowDemoFlowExpertEditingScreen(
                 flow!!.outputs = outputs
                 viewModel.flowOnCreation = flow
                 navController.navigate(
-                    "outputConfiguration"
+                    DestinationFlowDemoOutputConfigurationScreen.route
                 )
             })
 
@@ -315,7 +319,7 @@ fun FlowDemoFlowExpertEditingScreen(
                         }
                         viewModel.flowSelected = flow
                         navController.navigate(
-                            "flowSaving"
+                            DestinationFlowDemoFlowSaveScreen.route
                         )
 //                    } else {
 //                        Toast.makeText(context, "Flow Could not be saved", Toast.LENGTH_SHORT)

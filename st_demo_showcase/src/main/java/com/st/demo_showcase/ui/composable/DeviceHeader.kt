@@ -10,7 +10,6 @@ package com.st.demo_showcase.ui.composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
@@ -39,6 +38,7 @@ import com.st.ui.theme.SuccessText
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.Shapes
 import com.st.ui.utils.getBlueStBoardImages
 
 @Composable
@@ -59,7 +59,7 @@ fun DeviceHeader(
 
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal
     ) {
         Column(

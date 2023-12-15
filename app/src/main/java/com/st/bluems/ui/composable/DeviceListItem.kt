@@ -12,7 +12,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.SignalCellular4Bar
@@ -27,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
+import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
 import com.st.blue_sdk.models.Node
 import com.st.ui.theme.*
 import com.st.ui.utils.getBlueStBoardImages
@@ -99,7 +99,7 @@ fun DeviceListItem(
                     }
                 }
             ),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal
     ) {
         Column(
@@ -150,12 +150,23 @@ fun DeviceListItem(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
+
                 if (isCustomFw) {
                     Text(
                         modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
                         color = ErrorText,
                         text = stringResource(id = com.st.bluems.R.string.st_home_deviceListItem_fwCustomLabel)
                     )
+                } else {
+                    catalogInfo?.maturity?.let { maturity ->
+                        if(maturity!=FirmwareMaturity.RELEASE) {
+                            Text(
+                                modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
+                                color = ErrorText,
+                                text = "$maturity FW"
+                            )
+                        }
+                    }
                 }
 
                 displayMessages.forEach { msg ->

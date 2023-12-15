@@ -200,7 +200,7 @@ fun <T : Comparable<T>> rememberIsValid(
     value: T,
     minValue: T?,
     maxValue: T?
-) = remember {
+) = remember (key1=value){
     derivedStateOf {
         when {
             minValue != null && maxValue != null ->
@@ -292,7 +292,17 @@ fun IntegerProperty(
                 internalState = it
 
                 if (commandBehavior) {
-                    onValueChange(internalState.toInt(), isValid)
+                    internalState.toIntOrNull()?.let {currentValue->
+                        val valid =  when {
+                            minValue != null && maxValue != null ->
+                                minValue <= currentValue && currentValue <= maxValue
+
+                            minValue != null -> minValue <= currentValue
+                            maxValue != null -> currentValue <= maxValue
+                            else -> true
+                        }
+                        onValueChange(currentValue, valid)
+                    }
                 }
             }
         )

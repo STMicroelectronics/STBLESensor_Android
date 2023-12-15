@@ -11,6 +11,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.st.blue_sdk.BlueManager
 import com.st.core.api.ApplicationAnalyticsService
 import com.st.preferences.StPreferences
 import com.st.user_profiling.model.LevelProficiency
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val preferences: StPreferences,
+    private val blueManager: BlueManager,
     private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : ViewModel() {
 
@@ -54,5 +56,9 @@ class MainViewModel @Inject constructor(
         preferences.setProfileFlag(selected = true)
         preferences.setLevelProficiency(level = level.name)
         preferences.setProfileType(profile = type.name)
+    }
+
+    fun disconnect(nodeId: String) {
+        blueManager.disconnect(nodeId = nodeId)
     }
 }

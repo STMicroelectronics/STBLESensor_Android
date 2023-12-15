@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,8 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
-import androidx.navigation.navOptions
+import com.st.core.GlobalConfig
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.helpers.gzip
 import com.st.flow_demo.uploader.DeviceFlow
@@ -50,7 +50,8 @@ fun FlowDemoFlowUploadScreen(
 
     var openConfirmationDialog by remember { mutableStateOf(value = false) }
     var flowLoaded by remember { mutableStateOf(false) }
-    var currentProgress by remember { mutableStateOf(0f) }
+    var flowReceived by remember { mutableStateOf(false) }
+    var currentProgress by remember { mutableFloatStateOf(0f) }
     var loading by remember { mutableStateOf(false) }
 
     var isError by remember {
@@ -97,18 +98,20 @@ fun FlowDemoFlowUploadScreen(
                     isError = false
                     loading = false
                     flowLoaded = true
+                    flowReceived = true
                 }
 
                 CommunicationError.FLOW_RECEIVED -> {
                     isError = false
                     loading = false
                     flowLoaded = false
+                    flowReceived = true
 
                 }
-
                 else -> {
                     isError = true
                     loading = false
+                    flowReceived = false
                 }
             }
 
@@ -147,7 +150,7 @@ fun FlowDemoFlowUploadScreen(
                 text = "Size Compressed Flow =${dataCompressed.size} Bytes"
             )
 
-            if (!flowLoaded) {
+            if ((!flowLoaded) && (!flowReceived)) {
                 BlueMsButton(
                     modifier = Modifier.padding(
                         start = LocalDimensions.current.paddingNormal,
@@ -207,12 +210,15 @@ fun FlowDemoFlowUploadScreen(
                     text = "Done",
                     enabled = true,
                     onClick = {
-//                        viewModel.disconnectNode()
-                        val navOptions: NavOptions = navOptions {
-                            popUpTo("categoriesExample") { inclusive = true }
+                        val nodeId = viewModel.getNodeId()
+                        nodeId?.let {
+                            GlobalConfig.navigateBack?.let { it(nodeId)}
                         }
-
-                        navController.navigate("categoriesExample", navOptions)
+//                        val navOptions: NavOptions = navOptions {
+//                            popUpTo("categoriesExample") { inclusive = true }
+//                        }
+//
+//                        navController.navigate("categoriesExample", navOptions)
                     }
                 )
             }

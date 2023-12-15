@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
@@ -54,6 +53,7 @@ import com.st.environmental.model.EnvironmentalValues
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -162,7 +162,8 @@ fun EnvironmentalDemoScreen(
                 },
                 topWidget = {
                     Row(
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "°C/°F")
                         Switch(
@@ -239,7 +240,7 @@ fun EnvironmentalWidget(
             .fillMaxWidth()
             .height(intrinsicSize = IntrinsicSize.Min)
             .padding(all = LocalDimensions.current.paddingSmall),
-        shape = RoundedCornerShape(size = 8.dp)
+        shape = Shapes.small
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),

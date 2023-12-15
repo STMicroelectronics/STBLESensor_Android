@@ -9,7 +9,13 @@ package com.st.welcome.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -23,14 +29,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
-import com.st.ui.composables.BlueMsButtonOutlined
+import com.st.ui.composables.BlueMsButton
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
-import com.st.ui.theme.Grey6
 import com.st.ui.utils.asString
 import com.st.welcome.R
+import com.st.welcome.StWelcomeConfig
 import com.st.welcome.model.WelcomePage
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -40,7 +48,7 @@ fun WelcomeScreen(
     welcomePages: List<WelcomePage> = emptyList(),
     onSkip: () -> Unit = { /** NOOP **/ }
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { welcomePages.size }
 
     Column(
         modifier = modifier
@@ -50,8 +58,7 @@ fun WelcomeScreen(
         HorizontalPager(
             modifier = Modifier.weight(weight = 0.1f),
             verticalAlignment = Alignment.Top,
-            state = pagerState,
-            pageCount = welcomePages.size
+            state = pagerState
         ) { pageIndex ->
             val imageId = welcomePages[pageIndex].drawableRes
             val title = welcomePages[pageIndex].title
@@ -73,10 +80,14 @@ fun WelcomeScreen(
             pagerState = pagerState
         )
 
-        BlueMsButtonOutlined(
+        BlueMsButton(
             modifier = Modifier
                 .align(alignment = Alignment.End),
-            text = stringResource(id = R.string.st_welcome_skipButtonLabel),
+            text =
+            if (pagerState.currentPage == pagerState.pageCount - 1)
+                stringResource(id = R.string.st_welcome_closeButtonLabel)
+            else
+                stringResource(id = R.string.st_welcome_skipButtonLabel),
             onClick = onSkip
         )
     }
@@ -109,7 +120,8 @@ fun WelcomePageContent(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge,
-            maxLines =1,
+            maxLines = StWelcomeConfig.maxLinesTitle,
+            overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.primary,
             text = title
         )
@@ -117,10 +129,13 @@ fun WelcomePageContent(
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.spacerSmall))
 
         Text(
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,
-            maxLines =2,
+            maxLines = StWelcomeConfig.maxLinesDescription,
+            overflow = TextOverflow.Ellipsis,
             color = Grey6,
             text = description
         )

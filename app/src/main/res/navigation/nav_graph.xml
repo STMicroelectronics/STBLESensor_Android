@@ -82,6 +82,12 @@
         android:label="Catalog" />
 
     <action
+        android:id="@+id/action_to_home_fragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_user_profiling_nav_graph_to_home_fragment"
         app:destination="@id/homeFragment"
         app:popUpTo="@id/homeFragment"

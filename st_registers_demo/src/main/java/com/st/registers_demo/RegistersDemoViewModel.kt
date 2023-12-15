@@ -79,6 +79,8 @@ class RegistersDemoViewModel
             }
         }
 
+        if (MlcConfig.registerValueToLabelMap == null) {
+
         viewModelScope.launch {
             val buffer = StringBuffer()
             blueManager.getDebugMessages(nodeId = nodeId)?.collect {
@@ -93,6 +95,11 @@ class RegistersDemoViewModel
             }
         }
         askLabelsToNode(nodeId, demoType)
+
+        }
+        else {
+            valueMapper = buildRegisterMapperFromString(MlcConfig.registerValueToLabelMap!!.removeSuffix("\n"))
+        }
 
         feature?.let {
             viewModelScope.launch {

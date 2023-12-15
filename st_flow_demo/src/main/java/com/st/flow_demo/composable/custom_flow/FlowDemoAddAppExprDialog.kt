@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +20,7 @@ import com.st.flow_demo.R
 import com.st.flow_demo.composable.custom_flow.entry.FlowDemoRadioButtonGroupEntry
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +47,7 @@ fun FlowDemoAddAppExprDialog(
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
+            shape = Shapes.medium
         ) {
             Column(
                 modifier = Modifier

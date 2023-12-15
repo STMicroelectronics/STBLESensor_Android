@@ -7,16 +7,20 @@
  */
 package com.st.textual_monitor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.board_catalog.models.BleCharacteristic
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
+import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.blue_sdk.utils.NumberConversion
 import com.st.blue_sdk.features.Feature
 import com.st.blue_sdk.features.FeatureUpdate
 import com.st.blue_sdk.board_catalog.models.Field
+import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
+import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlledInfo
 import com.st.blue_sdk.features.general_purpose.GeneralPurposeInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -40,7 +44,7 @@ class TextualMonitorViewModel
 
     private var observeFeatureJob: Job? = null
 
-    var currentDesc: BleCharacteristic? = null
+    private var currentDesc: BleCharacteristic? = null
 
     private val _dataFeature = MutableSharedFlow<String>()
     val dataFeature: Flow<String>
@@ -48,6 +52,8 @@ class TextualMonitorViewModel
 
     private val _debugMessages = MutableStateFlow<String?>(null)
     val debugMessages: StateFlow<String?> = _debugMessages.asStateFlow()
+
+//    private var componentsDTMI: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>?=null
 
     fun getNodeFwModel(nodeId: String): BoardFirmware? {
         var model: BoardFirmware?
@@ -70,11 +76,24 @@ class TextualMonitorViewModel
         observeFeatureJob?.cancel()
         feature?.let {
             observeFeatureJob = viewModelScope.launch {
+
+//                componentsDTMI = blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())?.filterComponentsByProperty(propName = "st_ble_stream")
+
                 blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
                     if (feature!!.type != Feature.Type.GENERAL_PURPOSE) {
-                        val data = it.data
-                        _dataFeature.emit("\nTS =${it.timeStamp}:\n")
-                        _dataFeature.emit(data.toString())
+                        if(feature!!.name != RawPnPLControlled.NAME) {
+                            val data = it.data
+                            _dataFeature.emit("\nTS =${it.timeStamp}:\n")
+                            _dataFeature.emit(data.toString())
+                        } else {
+                            val data = it.data
+                            _dataFeature.emit("\nTS =${it.timeStamp}:\n")
+
+                            //Decode the Raw Controlled PnPL Feature
+//                            val featureDataString = rawPnPLControlledFeatureDataString(it)
+//                            _dataFeature.emit(featureDataString)
+                            _dataFeature.emit(data.toString())
+                        }
                     } else {
                         _dataFeature.emit("\nTS =${it.timeStamp}:\n")
                         val featureDataString = generalPurposeFeatureDataString(it)
@@ -83,6 +102,31 @@ class TextualMonitorViewModel
                 }
             }
         }
+    }
+
+    private fun rawPnPLControlledFeatureDataString(it: FeatureUpdate<*>): String {
+//    if(componentsDTMI!=null) {
+//        // find streamId
+//
+//        val streamId = (it.data as RawPnPLControlledInfo).data[0].value
+//
+//        //List of contents that have st_ble_stream
+//        val contents =  componentsDTMI!!.forEach {
+//            it.second.contents.forEach { content->
+//                if( content.name == "st_ble_stream") {
+//                    if(content is DtmiContent.DtmiPropertyContent.DtmiComplexPropertyContent) {
+//                        if(content.schema is DtmiContent.DtmiObjectContent) {
+//                            val fields = (content.schema as DtmiContent.DtmiObjectContent).fields
+//                            if(fields[0].name=="id") {
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
+        return "Sample raw data size=${it.rawData.size}\n"
     }
 
     private fun generalPurposeFeatureDataString(it: FeatureUpdate<*>): String {

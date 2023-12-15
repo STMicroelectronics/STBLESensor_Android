@@ -16,4 +16,5 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="st_welcome_skipButtonLabel">Skip</string>
+    <string name="st_welcome_closeButtonLabel">Close</string>
 </resources>

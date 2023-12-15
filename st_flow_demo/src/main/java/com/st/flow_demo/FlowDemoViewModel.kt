@@ -225,7 +225,7 @@ class FlowDemoViewModel
     }
 
 
-    fun stopDemo(nodeId: String) {
+    fun stopDemo() {
 
         observeFeaturePnPLJob?.cancel()
 
@@ -581,6 +581,7 @@ class FlowDemoViewModel
     fun getMountedDil24FromOptionBytes(): String? {
         if (node != null) {
             if ((node!!.advertiseInfo != null) && (node!!.catalogInfo != null)) {
+                if(node!!.catalogInfo!!.optionBytes.isNotEmpty()) {
                 val optionByte = node!!.catalogInfo!!.optionBytes[0]
                 if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
                     val optionByteValue =
@@ -592,12 +593,14 @@ class FlowDemoViewModel
                 }
             }
         }
+        }
         return null
     }
 
     fun getRunningFlowFromOptionBytes(): String? {
         if (node != null) {
             if ((node!!.advertiseInfo != null) && (node!!.catalogInfo != null)) {
+                if(node!!.catalogInfo!!.optionBytes.size>1) {
                 val optionByte = node!!.catalogInfo!!.optionBytes[1]
                 if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
                     val optionByteValue =
@@ -608,6 +611,7 @@ class FlowDemoViewModel
                     }
                 }
             }
+        }
         }
         return null
     }
@@ -667,7 +671,7 @@ class FlowDemoViewModel
 
                 //Set Date Command
                 featureCommand = ExtendedFeatureCommand(
-                    feature = it as ExtConfiguration,
+                    feature = it,
                     extendedCommand = ExtConfigCommands.buildConfigCommand(
                         command = ExtConfigCommands.SET_DATE,
                         argString = Date().dateToString()

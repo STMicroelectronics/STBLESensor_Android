@@ -10,7 +10,6 @@ package com.st.catalog.composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -43,7 +42,7 @@ fun CatalogListItem(
         modifier = modifier
             .fillMaxWidth()
             .height(height = LocalDimensions.current.catalogCardHeight),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal,
         onClick = onClickItem
     ) {

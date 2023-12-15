@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +29,8 @@ import com.st.ui.composables.BlueMsButton
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.rotate
+import com.st.flow_demo.DestinationFlowDemoFlowExpertEditingScreen
+import com.st.flow_demo.DestinationFlowDemoFlowUploadScreen
 import com.st.flow_demo.helpers.canBeUsedAsExp
 import com.st.flow_demo.helpers.getFunctionIconResourceByName
 import com.st.flow_demo.helpers.getOutputIconResourceByName
@@ -37,6 +38,7 @@ import com.st.flow_demo.helpers.getSensorIconResourceByName
 import com.st.flow_demo.helpers.isAlsoExp
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @Composable
 fun FlowDemoFlowDetailScreen(
@@ -91,7 +93,7 @@ fun FlowDemoFlowDetailScreen(
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+                shape = Shapes.small,
                 shadowElevation = LocalDimensions.current.elevationNormal
             ) {
                 Column(
@@ -114,7 +116,7 @@ fun FlowDemoFlowDetailScreen(
                                 viewModel.flowOnCreation = flow.copy()
                                 viewModel.resetSavedFlowState()
                                 navController.navigate(
-                                    "flowEditing"
+                                    DestinationFlowDemoFlowExpertEditingScreen.route
                                 )
                             }
                         )
@@ -134,7 +136,7 @@ fun FlowDemoFlowDetailScreen(
                                     viewModel.expressionSelected = null
                                 }
                                 navController.navigate(
-                                    "flowUpload"
+                                    DestinationFlowDemoFlowUploadScreen.route
                                 )
                             }
                         )

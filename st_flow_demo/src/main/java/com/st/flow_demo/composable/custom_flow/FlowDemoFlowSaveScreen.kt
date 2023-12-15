@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.st.flow_demo.DestinationFlowDemoFlowsExpertScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.flow_demo.helpers.FlowSaveDeleteState
@@ -170,8 +171,8 @@ fun FlowDemoFlowSaveScreen(
             ).show()
             //}
             viewModel.resetSavedFlowState()
-            navController.popBackStack(route = "flowsExpert", inclusive = false)
-            navController.navigate("flowsExpert")
+            navController.popBackStack(route = DestinationFlowDemoFlowsExpertScreen.route, inclusive = false)
+            navController.navigate(DestinationFlowDemoFlowsExpertScreen.route)
         }
         FlowSaveDeleteState.DELETED -> {
             Toast.makeText(

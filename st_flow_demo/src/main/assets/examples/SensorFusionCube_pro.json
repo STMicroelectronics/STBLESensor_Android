@@ -1,6 +1,7 @@
 {
   "description": "Sensor Fusion - Quaternion",
   "category": "Motion",
+  "ex_app" : 5,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO"
   ],

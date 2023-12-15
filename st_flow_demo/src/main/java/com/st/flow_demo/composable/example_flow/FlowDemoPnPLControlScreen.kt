@@ -33,7 +33,7 @@ fun FlowDemoPnPLControlScreen(
 ) {
 
     val nodeId = viewModel.getNodeId()
-    val pnplComponentName = (viewModel.getRunningFlowFromOptionBytes() ?: "control").lowercase()
+    val pnplComponentName = (viewModel.getRunningFlowFromOptionBytes() ?: "control").lowercase().replace(' ','_')
     ComposableLifecycle { _, event ->
         when (event) {
             Lifecycle.Event.ON_START -> {

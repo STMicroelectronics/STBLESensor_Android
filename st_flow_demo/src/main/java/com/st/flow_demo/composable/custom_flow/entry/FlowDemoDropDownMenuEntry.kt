@@ -3,7 +3,6 @@ package com.st.flow_demo.composable.custom_flow.entry
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +39,7 @@ fun FlowDemoDropDownMenuEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(LocalDimensions.current.paddingSmall),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationSmall
     ) {
         Column(

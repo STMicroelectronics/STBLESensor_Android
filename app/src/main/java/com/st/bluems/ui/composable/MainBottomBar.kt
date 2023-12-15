@@ -9,7 +9,6 @@ package com.st.bluems.ui.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FilterList
@@ -24,6 +23,7 @@ import com.st.bluems.R
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
+import com.st.ui.theme.Shapes
 import androidx.compose.material.BottomAppBar as Material2BottomAppBar
 
 @Composable
@@ -66,7 +66,7 @@ fun BottomAppBarItem(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         color = MaterialTheme.colorScheme.primary,
         contentColor = Grey0,
         onClick = onClick

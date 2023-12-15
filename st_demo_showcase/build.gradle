@@ -129,6 +129,8 @@ dependencies {
     implementation project(path: ":st_multi_neural_network")
     implementation project(path: ":st_working_in_progress")
     implementation project(path: ':st_flow_demo')
+    implementation project(path: ':st_raw_pnpl')
+    implementation project(path: ':st_smart_motor_control')
 
     // Blue ST SDK
     implementation "com.st.blue.sdk:st-blue-sdk:$st_version"

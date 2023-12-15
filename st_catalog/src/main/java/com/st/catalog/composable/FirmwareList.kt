@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
+import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
 import com.st.catalog.CatalogViewModel
 import com.st.catalog.R
 import com.st.catalog.availableDemos
@@ -80,6 +81,7 @@ fun FirmwareList(
                     version = it.fwVersion,
                     boardName = it.brdName,
                     description = it.fwDesc,
+                    fwMaturity = it.maturity ?: FirmwareMaturity.RELEASE,
                     listOfDemos = it.availableDemos().map{ it2 -> it2.displayName}.toString().removePrefix("[").removeSuffix("]")
                 )
             }

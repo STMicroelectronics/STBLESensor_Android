@@ -32,6 +32,10 @@ import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.st.flow_demo.DestinationFlowDemoFlowDetailScreen
+import com.st.flow_demo.DestinationFlowDemoFlowExpertEditingScreen
+import com.st.flow_demo.DestinationFlowDemoFlowIfApplicationCreationScreen
+import com.st.flow_demo.DestinationFlowDemoFlowUploadScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.flow_demo.composable.common.FlowDemoAlertDialog
@@ -103,7 +107,7 @@ fun FlowDemoFlowsExpertScreen(
                     viewModel.flowOnCreation = null
                     viewModel.resetSavedFlowState()
                     navController.navigate(
-                        "flowEditing"
+                        DestinationFlowDemoFlowExpertEditingScreen.route
                     )
                 }
             )
@@ -117,7 +121,7 @@ fun FlowDemoFlowsExpertScreen(
                     viewModel.flowSelected = null
                     viewModel.flowOnCreation = null
                     navController.navigate(
-                        "flowIfEditing"
+                        DestinationFlowDemoFlowIfApplicationCreationScreen.route
                     )
                 }
             )
@@ -163,7 +167,7 @@ fun FlowDemoFlowsExpertScreen(
                     onFlowSelected = {
                         viewModel.flowSelected = flow
                         navController.navigate(
-                            "flowDetails"
+                            DestinationFlowDemoFlowDetailScreen.route
                         )
                     },
                     onPlayFlow = {
@@ -175,7 +179,7 @@ fun FlowDemoFlowsExpertScreen(
                         viewModel.reportExpertAppOutputAnalytics(flow)
 
                         navController.navigate(
-                            "flowUpload"
+                            DestinationFlowDemoFlowUploadScreen.route
                         )
                     },
                     onDeleteFlow = {

@@ -63,7 +63,7 @@ class CatalogViewModel
             _firmwareList.value =
                 blueManager.getBoardCatalog().filter { it.bleDevId == boardId }.filter {
                     if (StCatalogConfig.firmwareFilter.isNotEmpty())
-                        StCatalogConfig.firmwareFilter.contains(it.boardModel())
+                        StCatalogConfig.firmwareFilter.contains(it.bleFwId)
                     else
                         true
                 }

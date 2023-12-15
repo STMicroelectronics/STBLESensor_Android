@@ -70,7 +70,7 @@ fun FlowDemoScreen(
             Lifecycle.Event.ON_START -> {
                 viewModel.startDemo(nodeId = nodeId, context = context)
             }
-            Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
+            Lifecycle.Event.ON_STOP -> viewModel.stopDemo()
             else -> Unit
         }
     }

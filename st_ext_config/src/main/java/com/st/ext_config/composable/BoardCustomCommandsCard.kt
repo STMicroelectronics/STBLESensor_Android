@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.*
@@ -29,6 +28,7 @@ import com.st.ui.composables.*
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.Shapes
 import com.st.ui.utils.fadedEdgeMarquee
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +45,7 @@ fun BoardCustomCommandsCard(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(all = LocalDimensions.current.paddingNormal),
-            shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+            shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal,
             onClick = { isOpen = !isOpen }
         ) {
@@ -81,8 +81,7 @@ fun BoardCustomCommandsCard(
 
     if (openCommandDialog != null) {
         var args: Any? by remember { mutableStateOf(value = null) }
-        var isValid: Boolean by remember { mutableStateOf(value = true) }
-
+        var isValid: Boolean by remember { mutableStateOf(value = false) }
         AlertDialog(
             onDismissRequest = { openCommandDialog = null },
             title = {
@@ -90,11 +89,12 @@ fun BoardCustomCommandsCard(
             },
             text = {
                 CustomCommandInput(
-                    command = openCommandDialog
-                ) { arg, valid ->
+                    command = openCommandDialog,
+                    onChangeValue = {arg, valid ->
                     args = arg
                     isValid = valid
                 }
+                )
             },
             dismissButton = {
                 BlueMsButtonOutlined(
@@ -129,7 +129,7 @@ fun CustomCommandInput(
             val initialValue = command.default ?: 0
 
             LaunchedEffect(key1 = command) {
-                onChangeValue(initialValue, true)
+                onChangeValue(initialValue, false)
             }
 
             IntegerProperty(
@@ -147,12 +147,12 @@ fun CustomCommandInput(
             val initialValue = ""
 
             LaunchedEffect(key1 = command) {
-                onChangeValue(initialValue, true)
+                onChangeValue(initialValue, false)
             }
 
             StringProperty(
                 value = initialValue,
-                minLength = 0,
+                minLength = command.min,
                 maxLength = command.max,
                 commandBehavior = true,
                 onValueChange = { value, valid ->
@@ -237,10 +237,10 @@ fun BoardCustomCommandsContentCard(
             .padding(all = LocalDimensions.current.paddingNormal)
     ) {
         commands.forEachIndexed { index, command ->
-            Text(
-                modifier = Modifier.clickable {
+            Column(modifier = Modifier.clickable {
                     onSendCommand(command)
-                },
+            }) {
+                Text(
                 color = Grey6,
                 style = MaterialTheme.typography.bodyMedium,
                 text = command.name ?: ""
@@ -257,6 +257,7 @@ fun BoardCustomCommandsContentCard(
             }
         }
     }
+}
 }
 
 /** ----------------------- PREVIEW --------------------------------------- **/

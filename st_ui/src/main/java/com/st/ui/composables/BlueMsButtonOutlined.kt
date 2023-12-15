@@ -9,7 +9,6 @@ package com.st.ui.composables
 
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -25,6 +24,7 @@ import com.st.ui.R
 import com.st.ui.theme.BTN_MAX_LINES
 import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @Composable
 fun BlueMsButtonOutlined(
@@ -35,7 +35,7 @@ fun BlueMsButtonOutlined(
     onClick: () -> Unit = { /** NOOP **/ }
 ) {
     OutlinedButton(
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         modifier = modifier
             .defaultMinSize(minWidth = 120.dp, minHeight = 40.dp),
         onClick = onClick,

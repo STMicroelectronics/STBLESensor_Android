@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,6 +32,7 @@ import com.st.ui.composables.HeaderEnabledProperty
 import com.st.ui.composables.LOAD_FILE_COMMAND_NAME
 import com.st.ui.composables.LOAD_FILE_RESPONSE_PROPERTY_NAME
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 import com.st.ui.utils.localizedDisplayName
 import com.st.ui.utils.localizedDisplayNameSensor
 import kotlinx.serialization.json.JsonElement
@@ -41,10 +40,10 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Component(
     modifier: Modifier = Modifier,
+    hideProperties: Array<String>?=null,
     name: String,
     data: JsonElement?,
     enableCollapse: Boolean,
@@ -58,7 +57,7 @@ fun Component(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal,
         onClick = { onOpenComponent(name) }
     ) {
@@ -74,6 +73,9 @@ fun Component(
 
                 DtmiContent.DtmiComponentContent.ContentType.ALGORITHM ->
                     R.drawable.sensor_type_class
+
+                DtmiContent.DtmiComponentContent.ContentType.ACTUATORS ->
+                    R.drawable.actuator_type_class
 
                 DtmiContent.DtmiComponentContent.ContentType.OTHER,
                 DtmiContent.DtmiComponentContent.ContentType.NONE ->
@@ -141,6 +143,7 @@ fun Component(
                             contentData = data[content.name]
                         }
                         Content(
+                            hideProperties = hideProperties,
                             enabled = enabled,
                             content = content,
                             data = contentData,

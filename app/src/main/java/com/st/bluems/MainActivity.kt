@@ -16,6 +16,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
 import com.st.bluems.ui.home.HomeFragmentDirections
+import com.st.core.GlobalConfig
 import com.st.core.api.ApplicationAnalyticsService.ApplicationNameEtna
 import com.st.demo_showcase.DemoShowCaseConfig
 import com.st.terms.StTermsConfig
@@ -73,6 +74,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        GlobalConfig.navigateBack = { nodeId ->
+            navController.navigate(HomeFragmentDirections.actionToHomeFragment())
+            viewModel.disconnect(nodeId = nodeId)
+        }
 
         setUpDemoShowCase()
         setUpTerms()

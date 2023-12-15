@@ -27,8 +27,8 @@
 
     <action
         android:id="@+id/global_action_to_homeFragment"
-        app:destination="@id/homeFragment"
-        app:popUpTo="@id/homeFragment"
+        app:destination="@+id/homeFragment"
+        app:popUpTo="@+id/homeFragment"
         app:popUpToInclusive="true"/>
 
     <action
@@ -208,6 +208,12 @@
         <action
             android:id="@+id/action_demoList_to_flowDemoFragment"
             app:destination="@id/flowDemoFragment" />
+        <action
+            android:id="@+id/action_demoList_to_rawPnplFragment"
+            app:destination="@id/rawPnplFragment" />
+        <action
+            android:id="@+id/action_demoList_to_smartMotorControlFragment"
+            app:destination="@id/smartMotorControlFragment" />
         <!-- *** NEW_DEMO_TEMPLATE ANCHOR3 *** -->
     </fragment>
     <fragment
@@ -586,6 +592,22 @@
         android:id="@+id/flowDemoFragment"
         android:name="com.st.flow_demo.FlowDemoFragment"
         android:label="FlowDemoFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/rawPnplFragment"
+        android:name="com.st.raw_pnpl.RawPnplFragment"
+        android:label="RawPnplFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/smartMotorControlFragment"
+        android:name="com.st.smart_motor_control.SmartMotorControlFragment"
+        android:label="SmartMotorControlFragment">
         <argument
             android:name="nodeId"
             app:argType="string" />

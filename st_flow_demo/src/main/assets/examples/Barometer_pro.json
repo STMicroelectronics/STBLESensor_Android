@@ -1,6 +1,7 @@
 {
   "description": "Barometer",
   "category": "Environmental",
+  "ex_app" : 6,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO"
   ],

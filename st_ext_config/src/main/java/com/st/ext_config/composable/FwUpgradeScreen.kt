@@ -12,26 +12,22 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.st.blue_sdk.board_catalog.models.BoardFotaType
-import com.st.blue_sdk.bt.advertise.getFwInfo
 import com.st.blue_sdk.models.Boards
-import com.st.blue_sdk.models.Node
-import com.st.blue_sdk.models.OTAMemoryAddress
 import com.st.blue_sdk.services.ota.FirmwareType
-import com.st.blue_sdk.services.ota.characteristic.CharacteristicFwUpgrade
 import com.st.blue_sdk.utils.WbOTAUtils
+import com.st.core.GlobalConfig
 import com.st.ext_config.R
 import com.st.ext_config.model.FwUpdateState
 import com.st.ext_config.ui.fw_upgrade.FwUpgradeViewModel
@@ -41,6 +37,7 @@ import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.Shapes
 
 @Composable
 fun FwUpgradeScreen(
@@ -77,6 +74,7 @@ fun FwUpgradeScreen(
         boardModel = viewModel.boardModel(nodeId = nodeId),
         onDismissSuccessDialog = {
             viewModel.clearFwUpdateState()
+            GlobalConfig.navigateBack?.let { it(nodeId) }
         },
         onDismissErrorDialog = {
             viewModel.clearFwUpdateState()
@@ -119,6 +117,9 @@ fun FwUpgradeScreen(
 
         //Boards.Model.WB_BOARD,
         Boards.Model.WB55_NUCLEO_BOARD,
+        Boards.Model.ASTRA1,
+        Boards.Model.PROTEUS,
+        Boards.Model.STDES_CBMLORABLE,
         Boards.Model.WB5M_DISCOVERY_BOARD,
         Boards.Model.WB55_USB_DONGLE_BOARD,
         Boards.Model.WB15_NUCLEO_BOARD,
@@ -130,11 +131,22 @@ fun FwUpgradeScreen(
 
         Boards.Model.NUCLEO_WB09KE)
 
+    val supportedBoardModelsWB = listOf(
+
+        Boards.Model.WB55_NUCLEO_BOARD,
+        Boards.Model.ASTRA1,
+        Boards.Model.PROTEUS,
+        Boards.Model.STDES_CBMLORABLE,
+        Boards.Model.WB5M_DISCOVERY_BOARD,
+        Boards.Model.WB55_USB_DONGLE_BOARD,
+        Boards.Model.WB15_NUCLEO_BOARD,
+        Boards.Model.WB1M_DISCOVERY_BOARD)
+
 
 
 
     fun getDefaultAddress(boardModel: Boards.Model?, radioSelection: Int, selectedBoardIndex: Int): String {
-        val currentBoard = if(boardModel != null && supportedBoardModels.contains(boardModel)) {
+        val currentBoard = if(boardModel != null && supportedBoardModels.contains(boardModel) && !supportedBoardModelsWB.contains(boardModel)) {
             boardModel
         } else {
             when(selectedBoardIndex) {
@@ -149,6 +161,9 @@ fun FwUpgradeScreen(
         return when(currentBoard) {
             //Boards.Model.WB_BOARD -> if(radioSelection == 0) "0x007000" else "0x000000"
             Boards.Model.WB55_NUCLEO_BOARD,
+            Boards.Model.ASTRA1,
+            Boards.Model.PROTEUS,
+            Boards.Model.STDES_CBMLORABLE,
             Boards.Model.WB5M_DISCOVERY_BOARD,
             Boards.Model.WB55_USB_DONGLE_BOARD -> if(radioSelection == 0) "0x007000" else "0x011000"
 
@@ -172,10 +187,15 @@ fun FwUpgradeScreen(
     var lastFileSize: Long? = null // this allows to update the number of sectors to erase each time the file changes while still being able to change it manually (textfield)
     var isUploadStarted by remember { mutableStateOf(value = false) }
 
+    val haptic = LocalHapticFeedback.current
+
     fun getCurrentBoardType(): WbOTAUtils.WBBoardType {
         //return if(boardModel == null || !supportedBoardModels.contains(boardModel) || boardModel == Boards.Model.WB_BOARD) {
 
         val isWB = (boardModel == Boards.Model.WB55_NUCLEO_BOARD) ||
+                (boardModel == Boards.Model.ASTRA1) ||
+                (boardModel == Boards.Model.PROTEUS) ||
+                (boardModel == Boards.Model.STDES_CBMLORABLE) ||
                 (boardModel == Boards.Model.WB5M_DISCOVERY_BOARD) ||
                 (boardModel == Boards.Model.WB55_USB_DONGLE_BOARD) ||
                 (boardModel == Boards.Model.WB15_NUCLEO_BOARD) ||
@@ -249,6 +269,9 @@ fun FwUpgradeScreen(
                         val isNotSupportedBoard = (boardModel == null || !supportedBoardModels.contains(boardModel))
                         //val isWb = boardModel == Boards.Model.WB_BOARD
                         val isWb = (boardModel == Boards.Model.WB55_NUCLEO_BOARD) ||
+                                (boardModel == Boards.Model.ASTRA1) ||
+                                (boardModel == Boards.Model.PROTEUS) ||
+                                (boardModel == Boards.Model.STDES_CBMLORABLE) ||
                                 (boardModel == Boards.Model.WB5M_DISCOVERY_BOARD) ||
                                 (boardModel == Boards.Model.WB55_USB_DONGLE_BOARD) ||
                                 (boardModel == Boards.Model.WB15_NUCLEO_BOARD) ||
@@ -258,7 +281,7 @@ fun FwUpgradeScreen(
                                 (boardModel == Boards.Model.WBA_DISCOVERY_BOARD)
 
                         if(isNotSupportedBoard || isWb) {
-                            BoardDropdown(selectedIndex = selectedBoardIndex, wbOnly = isWb) { boardIndex ->
+                            BoardDropdown(selectedIndex = selectedBoardIndex, wbOnly = isWb,boardModel = boardModel) { boardIndex ->
                                 selectedBoardIndex = boardIndex
                                 address = getDefaultAddress(boardModel, radioSelection, selectedBoardIndex)
                             }
@@ -331,7 +354,7 @@ fun FwUpgradeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = LocalDimensions.current.paddingNormal),
-            shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+            shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal,
             onClick = onChangeFile
         ) {
@@ -356,6 +379,7 @@ fun FwUpgradeScreen(
             1 ->  stringResource(id = R.string.st_extConfig_fwUpgrade_errorMessage1)
             2 -> stringResource(id = R.string.st_extConfig_fwUpgrade_errorMessage2)
             3 -> stringResource(id = R.string.st_extConfig_fwUpgrade_errorMessage3)
+            4 -> stringResource(id = R.string.st_extConfig_fwUpgrade_errorMessage4)
             else -> ""
         }
 
@@ -369,6 +393,8 @@ fun FwUpgradeScreen(
                 text = stringResource(id = R.string.st_extConfig_fwUpgrade_upgradeBtn),
                 onClick = {
                     isUploadStarted = true
+
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     if (wbOta) {
                         val boardType = getCurrentBoardType()
                         val firmwareType = getCurrentFwType()

@@ -1,6 +1,7 @@
 {
   "description": "Vibration monitor - Compare",
   "category": "Vibration Monitor",
+  "ex_app" : 14,
   "board_compatibility": [
     "SENSOR_TILE_BOX"
   ],

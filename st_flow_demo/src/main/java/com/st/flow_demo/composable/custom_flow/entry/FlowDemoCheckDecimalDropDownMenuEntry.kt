@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material3.Checkbox
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +60,7 @@ fun FlowDemoCheckDecimalDropDownMenuEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(LocalDimensions.current.paddingSmall),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationSmall
     ) {
         Column(

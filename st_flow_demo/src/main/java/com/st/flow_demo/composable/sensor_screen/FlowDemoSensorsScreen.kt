@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.st.flow_demo.DestinationFlowDemoSensorDetailScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.Grey6
@@ -44,40 +45,39 @@ fun FlowDemoSensorsScreen(
 
     val mountedModel = viewModel.getMountedDil24FromOptionBytes()
 
-    val sensorListOrdered = expansionSensorsList.sortedBy { it.model != mountedModel}.sortedBy { it.model }
+    val sensorListOrdered =
+        expansionSensorsList.sortedBy { it.model != mountedModel }.sortedBy { it.model }
 
     Column(
         modifier = Modifier.padding(paddingValues)
     ) {
+        Text(
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.primary,
+            text = "Sensors"
+        )
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+
+        Text(
+            fontSize = 16.sp,
+            color = Grey6,
+            text = "Available sensors"
+        )
+
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
+
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
         ) {
             if (sensorsList.isNotEmpty()) {
-                item {
-                    Text(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                        text = "Sensors"
-                    )
-                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-
-                    Text(
-                        fontSize = 16.sp,
-                        color = Grey6,
-                        text = "Available sensors"
-                    )
-
-                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
-                }
-
                 items(sensorsList) { sensor ->
                     FlowDemoSensorListItem(sensor = sensor,
                         onSensorSelected = {
                             navController.navigate(
-                                "detail/${sensor.id}/sensor"
+                                DestinationFlowDemoSensorDetailScreen.route + sensor.id
                             )
                         }
                     )
@@ -110,7 +110,7 @@ fun FlowDemoSensorsScreen(
                         sensor = sensor,
                         onSensorSelected = {
                             navController.navigate(
-                                "detail/${sensor.id}/sensor"
+                                DestinationFlowDemoSensorDetailScreen.route + sensor.id
                             )
                         }
                     )

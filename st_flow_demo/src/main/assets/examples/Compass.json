@@ -1,6 +1,7 @@
 {
   "description": "Compass",
   "category": "Motion",
+  "ex_app" : 1,
   "board_compatibility": [
     "SENSOR_TILE_BOX"
   ],

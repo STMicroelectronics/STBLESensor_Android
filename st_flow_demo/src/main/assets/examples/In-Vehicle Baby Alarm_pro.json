@@ -1,6 +1,7 @@
 {
   "description": "In-Vehicle Baby Alarm",
   "category": "AI & MLC",
+  "ex_app" : 10,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO"
   ],

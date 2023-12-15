@@ -106,8 +106,30 @@ class BinaryContentViewModel @Inject constructor(
 
             if (feature is PnPL) {
                 blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
                     nodeId = nodeId,
                     featureCommand = PnPLCommand(feature = feature, cmd = PnPLCmd.ALL)
+                )
+            }
+        }
+    }
+
+    private fun sendGetComponentStatus(nodeId: String, compName: String) {
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            val feature =
+                blueManager.nodeFeatures(nodeId = nodeId).find { it.name == PnPL.NAME }
+                    ?: return@launch
+
+            if (feature is PnPL) {
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
+                    nodeId = nodeId,
+                    featureCommand = PnPLCommand(
+                        feature = feature,
+                        cmd = PnPLCmd(command = "get_status", request = compName)
+                    )
                 )
             }
         }
@@ -150,6 +172,7 @@ class BinaryContentViewModel @Inject constructor(
             if (feature is PnPL) {
                 value?.let {
                     blueManager.writeFeatureCommand(
+                        responseTimeout = 0,
                         nodeId = nodeId,
                         featureCommand = PnPLCommand(
                             feature = feature,
@@ -161,7 +184,8 @@ class BinaryContentViewModel @Inject constructor(
                         )
                     )
 
-                    sendGetAllCommand(nodeId = nodeId)
+                    //sendGetAllCommand(nodeId = nodeId)
+                    sendGetComponentStatus(nodeId = nodeId,compName = name)
                 }
             }
         }
@@ -186,11 +210,13 @@ class BinaryContentViewModel @Inject constructor(
                     )
 
                     blueManager.writeFeatureCommand(
+                        responseTimeout = 0,
                         nodeId = nodeId,
                         featureCommand = featureCommand
                     )
 
-                    sendGetAllCommand(nodeId = nodeId)
+                    //sendGetAllCommand(nodeId = nodeId)
+                    sendGetComponentStatus(nodeId = nodeId,compName = name)
                 }
             }
         }
@@ -266,6 +292,7 @@ class BinaryContentViewModel @Inject constructor(
                 feature.setMaxPayLoadSize(maxPayloadSize)
                 viewModelScope.launch(Dispatchers.IO) {
                     blueManager.writeFeatureCommand(
+                        responseTimeout = 0,
                         nodeId = nodeId,
                         featureCommand = BinaryContentCommand(
                             feature = feature,
@@ -326,6 +353,7 @@ class BinaryContentViewModel @Inject constructor(
 
                             if (featurePnPL is PnPL) {
                                 blueManager.writeFeatureCommand(
+                                    responseTimeout = 0,
                                     nodeId = nodeId,
                                     featureCommand = PnPLCommand(
                                         feature = featurePnPL,

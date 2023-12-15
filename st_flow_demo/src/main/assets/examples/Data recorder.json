@@ -1,6 +1,7 @@
 {
   "description": "Data recorder",
   "category": "Log",
+  "ex_app" : 7,
   "board_compatibility": [
     "SENSOR_TILE_BOX"
   ],

@@ -2,19 +2,27 @@ package com.st.welcome.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.st.ui.theme.Grey1
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.SecondaryBlue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -26,9 +34,9 @@ fun HorizontalPagerIndicator(
     val listState = rememberLazyListState()
     val indicatorSize = LocalDimensions.current.paddingNormal
     val space = LocalDimensions.current.paddingSmall
-    val activeColor = MaterialTheme.colorScheme.primary
+    val activeColor = SecondaryBlue
     val indicatorShape = CircleShape
-    val inActiveColor = Grey1
+    val inActiveColor = Grey6
 
     val totalWidth: Dp = indicatorSize * indicatorCount + space * (indicatorCount - 1)
     val widthInPx = LocalDensity.current.run { indicatorSize.toPx() }

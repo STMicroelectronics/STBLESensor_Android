@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.st.flow_demo.DestinationFlowDemoFlowCategoryExampleScreen
+import com.st.flow_demo.DestinationFlowDemoFlowsExpertScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.ui.composables.BlueMsButton
@@ -66,7 +68,7 @@ fun FlowDemoFlowCategoriesExampleScreen(
                 items(categoriesList.toList()) { category ->
                     FlowDemoCategoryListItem(category = category, onCategorySelected = {
                         navController.navigate(
-                            "detail/${category}/category"
+                                    DestinationFlowDemoFlowCategoryExampleScreen.route+category
                         )
                     })
                 }
@@ -87,7 +89,7 @@ fun FlowDemoFlowCategoriesExampleScreen(
                         text = stringResource(id = R.string.expert_view),
                         onClick = {
                             navController.navigate(
-                                "flowsExpert"
+                                DestinationFlowDemoFlowsExpertScreen.route
                             )
                         }
                     )

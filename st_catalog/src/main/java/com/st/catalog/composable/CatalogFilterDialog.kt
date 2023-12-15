@@ -8,7 +8,6 @@
 package com.st.catalog.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,6 +20,7 @@ import com.st.ui.theme.Grey1
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
+import com.st.ui.theme.Shapes
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -35,7 +35,8 @@ fun CatalogFilterDialog(
     var internalBoardOrder by remember { mutableStateOf(value = boardOrder) }
     var internalFilters by remember(key1 = filters) { mutableStateOf(value = filters) }
     Surface(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        shape = Shapes.medium
     ) {
         Column(
             modifier = Modifier
@@ -135,7 +136,7 @@ fun DemoGroupChip(
     Surface(
         modifier = modifier.padding(horizontal = LocalDimensions.current.paddingSmall),
         onClick = { onCheckedChange(checked.not()) },
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium),
+        shape = Shapes.medium,
         color = if (checked) SecondaryBlue else Grey1,
         contentColor = MaterialTheme.colorScheme.primary,
     ) {

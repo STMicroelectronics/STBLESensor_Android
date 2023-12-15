@@ -10,6 +10,9 @@ package com.st.user_profiling.model
 enum class ProfileType(
     val permissions: List<AuthorizedActions>
 ) {
+    AI_DEVELOPER(
+        permissions = AuthorizedActions.values().toList()
+    ),
     DEVELOPER(
         permissions = AuthorizedActions.values().toList()
     ),

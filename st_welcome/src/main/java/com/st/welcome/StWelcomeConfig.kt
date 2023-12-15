@@ -11,6 +11,9 @@ import com.st.welcome.model.WelcomePage
 
 object StWelcomeConfig {
 
+    var maxLinesDescription: Int = 2
+    var maxLinesTitle: Int = 1
+
     lateinit var onSkip: () -> Unit
 
     var welcomePages: List<WelcomePage> = emptyList()

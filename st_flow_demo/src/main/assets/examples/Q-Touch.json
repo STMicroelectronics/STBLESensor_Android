@@ -1,6 +1,7 @@
 {
   "description": "Q-Touch",
   "category": "User Interface",
+  "ex_app" : 11,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",
     "SENSOR_TILE_BOX_PROB"

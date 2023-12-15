@@ -1,6 +1,7 @@
 {
   "description": "Level",
   "category": "Motion",
+  "ex_app" : 3,
   "board_compatibility": [
     "SENSOR_TILE_BOX"
   ],

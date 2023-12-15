@@ -10,6 +10,7 @@ package com.st.demo_showcase.ui
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,9 +21,11 @@ import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.models.Node
 import com.st.blue_sdk.services.audio.AudioService
 import com.st.blue_sdk.services.debug.DebugMessage
+import com.st.blue_voice.full_duplex.BlueVoiceFullDuplexFragment
 import com.st.core.api.ApplicationAnalyticsService
 import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.utils.DTMIModelLoadedStatus
+import com.st.demo_showcase.utils.isBetaRequired
 import com.st.login.api.StLoginManager
 import com.st.preferences.StPreferences
 import com.st.user_profiling.model.LevelProficiency
@@ -72,13 +75,17 @@ class DemoShowCaseViewModel @Inject constructor(
     private val _modelUpdates: MutableStateFlow<DtmiModel?> = MutableStateFlow(null)
     private val _device: MutableStateFlow<Node?> = MutableStateFlow(null)
     val device: StateFlow<Node?> = _device.asStateFlow()
-    private val _statusModelDTMI: MutableStateFlow<DTMIModelLoadedStatus> = MutableStateFlow(DTMIModelLoadedStatus.NotNecessary)
+    private val _statusModelDTMI: MutableStateFlow<DTMIModelLoadedStatus> =
+        MutableStateFlow(DTMIModelLoadedStatus.NotNecessary)
     val statusModelDTMI: StateFlow<DTMIModelLoadedStatus> = _statusModelDTMI.asStateFlow()
     val pinnedDevices: Flow<List<String>> = stPreferences.getFavouriteDevices()
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn = _isLoggedIn.asStateFlow()
     private val _isExpert = MutableStateFlow(false)
     val isExpert = _isExpert.asStateFlow()
+
+
+    private var familyType: Boards.Family = Boards.Family.OTHER_FAMILY
 
     private var activityResultRegistryOwner: ActivityResultRegistryOwner? = null
 
@@ -136,6 +143,9 @@ class DemoShowCaseViewModel @Inject constructor(
             val firmwareInfo = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
             _device.value = firmwareInfo
 
+
+            familyType = firmwareInfo.familyType
+
             checkFwUpdate()
 
             appAnalyticsService.forEach {
@@ -159,7 +169,10 @@ class DemoShowCaseViewModel @Inject constructor(
                     }
                 }
             }
-            val model = blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())
+            val model = blueManager.getDtmiModel(
+                nodeId = nodeId,
+                isBeta = stPreferences.isBetaApplication()
+            )
             _modelUpdates.value = model
             if (model != null) {
                 if(model.customDTMI) {
@@ -208,7 +221,10 @@ class DemoShowCaseViewModel @Inject constructor(
                 contentResolver = contentResolver
             )?.extractComponents() ?: emptyList()
 
-            val model = blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())
+            val model = blueManager.getDtmiModel(
+                nodeId = nodeId,
+                isBeta = stPreferences.isBetaApplication()
+            )
             _modelUpdates.value = model
             if (model != null) {
                 if(model.customDTMI) {
@@ -282,18 +298,7 @@ class DemoShowCaseViewModel @Inject constructor(
             buildDemoList.add(Demo.Cloud)
         }
 
-        //Add the Flow Demo only to Firmwares that have the flowEnable flag ==1
-        if (_device.value != null) {
-            if(_device.value!!.catalogInfo!=null) {
-                if (_device.value!!.catalogInfo!!.flowEnable != null) {
-                    if (device.value!!.catalogInfo!!.flowEnable == 1) {
-                        buildDemoList.add(Demo.Flow)
-                    }
-                }
-            }
-        }
-
-        //Change PnPL-Demo name
+        //Change PnPL-Demo name if it's present
         if (_device.value != null) {
             if (_device.value!!.catalogInfo != null) {
                 buildDemoList.firstOrNull { it ->
@@ -302,10 +307,66 @@ class DemoShowCaseViewModel @Inject constructor(
             }
         }
 
+        if (_device.value != null) {
+            if (_device.value!!.catalogInfo != null) {
+                //if there is the section for adding/removing/Renaming Demos
+                if (_device.value!!.catalogInfo!!.demoDecorator != null) {
+                    //Add  demo
+                    _device.value!!.catalogInfo!!.demoDecorator!!.add.forEach { demoName ->
+                        Log.i("DemoShowCaseViewModel", "try to Add Demo: $demoName")
+                        try {
+                            val demoFound = Demo from demoName
+                            demoFound?.let {
+                                Log.i("DemoShowCaseViewModel", "Added Demo: $demoName")
+                                buildDemoList.add(demoFound)
+                            }
+                        } catch (ex: Exception) {
+                            Log.e("DemoShowCaseViewModel", ex.message, ex)
+                        }
+                    }
+
+                    //Remove demo
+                    _device.value!!.catalogInfo!!.demoDecorator!!.remove.forEach { demoName ->
+                        val match =
+                            buildDemoList.firstOrNull { it.displayName == demoName }
+
+                        Log.i("DemoShowCaseViewModel", "try to Remove Demo: $demoName")
+                        match?.let {
+                            Log.i("DemoShowCaseViewModel", "Removed Demo: $demoName")
+                            buildDemoList.remove(match)
+                        }
+                    }
+
+                    //Rename demo
+                    _device.value!!.catalogInfo!!.demoDecorator!!.rename.forEach { renameDemo ->
+                        val match =
+                            buildDemoList.firstOrNull { renameDemo.old == it.displayName }
+                        Log.i("DemoShowCaseViewModel", "try to Rename Demo: ${renameDemo.old}")
+                        match?.let { demo ->
+                            demo.displayName = renameDemo.new
+                            Log.i("DemoShowCaseViewModel", "Renamed Demo: ${renameDemo.new} -> ")
+                        }
+                    }
+                }
+            }
+        }
+
+        //Add the FoTA only to WB/WBA boards
+        if ((familyType != Boards.Family.WB_FAMILY) && (familyType != Boards.Family.WBA_FAMILY)) {
+            buildDemoList.remove(Demo.WbsOtaFUOTA)
+        }
+
+        //Remove applications in Beta
+        if (!stPreferences.isBetaApplication()) {
+            val match =
+                buildDemoList.filter { it.isBetaRequired() }
+            buildDemoList.removeAll(match.toSet())
+        }
+
         //Remove the PnP-L, HighSpeedDataLog and BinaryContent Demo if there is not a valid DTMI
 //        if((_statusModelDTMI.value==DTMIModelLoadedStatus.CustomNotLoaded) || (_statusModelDTMI.value==DTMIModelLoadedStatus.NotNecessary)) {
 //            val match =
-//            buildDemoList.filter { it == Demo.Pnpl || it == Demo.HighSpeedDataLog2 || it == Demo.BinaryContentDemo}
+//            buildDemoList.filter { it == Demo.Pnpl || it == Demo.HighSpeedDataLog2 || .....}
 //            buildDemoList.removeAll(match.toSet())
 //        }
 

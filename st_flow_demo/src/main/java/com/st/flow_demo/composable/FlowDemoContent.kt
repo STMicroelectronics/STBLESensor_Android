@@ -7,10 +7,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -19,7 +30,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.st.flow_demo.DestinationFlowDemoSensorsScree
+import com.st.flow_demo.DestinationFlowDemoFlowCategoriesExampleScreen
 import com.st.flow_demo.FlowConfig
+import com.st.flow_demo.DestinationFlowDemoFlowCategoryExampleScreen
+import com.st.flow_demo.DestinationFlowDemoFlowDetailScreen
+import com.st.flow_demo.DestinationFlowDemoFlowExpertEditingScreen
+import com.st.flow_demo.DestinationFlowDemoFlowIfApplicationCreationScreen
+import com.st.flow_demo.DestinationFlowDemoFlowSaveScreen
+import com.st.flow_demo.DestinationFlowDemoFlowUploadScreen
+import com.st.flow_demo.DestinationFlowDemoFlowsExpertScreen
+import com.st.flow_demo.DestinationFlowDemoFunctionConfigurationScreen
+import com.st.flow_demo.DestinationFlowDemoMoreInfoScreen
+import com.st.flow_demo.DestinationFlowDemoOutputConfigurationScreen
+import com.st.flow_demo.DestinationFlowDemoPnPLControlScreen
+import com.st.flow_demo.DestinationFlowDemoSensorConfigurationScreen
+import com.st.flow_demo.DestinationFlowDemoSensorDetailScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.flow_demo.composable.common.FlowDemoFlowDetailScreen
@@ -39,6 +65,7 @@ import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorsScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorDetailScreen
 import com.st.ui.composables.BottomAppBarItem
 import com.st.ui.theme.Grey0
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 
 @Composable
@@ -47,25 +74,30 @@ fun FlowDemoContent(
     viewModel: FlowDemoViewModel,
     navController: NavHostController = rememberNavController()
 ) {
+    var selectedIndex by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
+    val haptic = LocalHapticFeedback.current
     Scaffold(
         modifier = modifier,
         topBar = {
             FlowConfig.FlowTabBar?.invoke("Flow creation")
         },
         bottomBar = {
-            BottomAppBar(
+            BottomNavigation(
                 modifier = Modifier.fillMaxWidth(),
                 backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = Grey0,
-                cutoutShape = CircleShape,
-                contentPadding =
-                PaddingValues(all = LocalDimensions.current.paddingNormal)
+                contentColor = Grey0
             ) {
-                BottomAppBarItem(
-                    painter = painterResource(id = R.drawable.ic_flows),
-                    label = stringResource(id = R.string.navigation_tab_flows),
+                BottomNavigationItem(
+                    selectedContentColor = Grey0,
+                    unselectedContentColor = Grey6,
+                    selected = 0 == selectedIndex,
                     onClick = {
-                        navController.navigate("categoriesExample") {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        selectedIndex = 0
+                        navController.navigate(DestinationFlowDemoFlowCategoriesExampleScreen.route) {
                             navController.graph.startDestinationRoute?.let { screen_route ->
                                 popUpTo(screen_route) {
                                     saveState = false
@@ -74,18 +106,25 @@ fun FlowDemoContent(
                             launchSingleTop = true
                             restoreState = false
                         }
-                    }
+
+                    },
+                    icon = {
+                        Icon(
+                    painter = painterResource(id = R.drawable.ic_flows),
+                            contentDescription = stringResource(id = R.string.navigation_tab_flows)
                 )
+                    },
+                    label = { Text(text = stringResource(id = R.string.navigation_tab_flows)) })
 
                 if (viewModel.isPnPLExported()) {
-                    Spacer(modifier = Modifier.weight(weight = 0.15f))
-
-                    BottomAppBarItem(
-                        painter = painterResource(id = R.drawable.pnpl_icon),
-                        label = viewModel.getRunningFlowFromOptionBytes()
-                            ?: stringResource(id = R.string.navigation_tab_control),
+                    BottomNavigationItem(
+                        selectedContentColor = Grey0,
+                        unselectedContentColor = Grey6,
+                        selected = 1 == selectedIndex,
                         onClick = {
-                            navController.navigate("pnpLControl") {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedIndex = 1
+                            navController.navigate(DestinationFlowDemoPnPLControlScreen.route) {
                                 navController.graph.startDestinationRoute?.let { screen_route ->
                                     popUpTo(screen_route) {
                                         saveState = false
@@ -94,17 +133,55 @@ fun FlowDemoContent(
                                 launchSingleTop = true
                                 restoreState = false
                             }
-                        }
-                    )
+
+                        },
+                        icon = {
+                            Icon(
+                        painter = painterResource(id = R.drawable.pnpl_icon),
+                                contentDescription = "Control"
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = viewModel.getRunningFlowFromOptionBytes()
+                                    ?: stringResource(id = R.string.navigation_tab_control)
+                            )
+                        })
                 }
 
-                Spacer(modifier = Modifier.weight(weight = 0.15f))
 
-                BottomAppBarItem(
+                BottomNavigationItem(
+                    selectedContentColor = Grey0,
+                    unselectedContentColor = Grey6,
+                    selected = 2 == selectedIndex,
+                        onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        selectedIndex = 2
+                        navController.navigate(DestinationFlowDemoSensorsScree.route) {
+                                navController.graph.startDestinationRoute?.let { screen_route ->
+                                    popUpTo(screen_route) {
+                                        saveState = false
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = false
+                            }
+
+                    },
+                    icon = {
+                        Icon(
                     painter = painterResource(id = R.drawable.ic_sensor),
-                    label = stringResource(id = R.string.navigation_tab_sensors),
+                            contentDescription = stringResource(id = R.string.navigation_tab_sensors)
+                        )
+                    },
+                    label = { Text(text = stringResource(id = R.string.navigation_tab_sensors)) })
+
+
+                BottomNavigationItem(selected = 3 == selectedIndex,
                     onClick = {
-                        navController.navigate("boardSensors") {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        selectedIndex = 3
+                        navController.navigate(DestinationFlowDemoMoreInfoScreen.route) {
                             navController.graph.startDestinationRoute?.let { screen_route ->
                                 popUpTo(screen_route) {
                                     saveState = false
@@ -113,26 +190,17 @@ fun FlowDemoContent(
                             launchSingleTop = true
                             restoreState = false
                         }
-                    }
-                )
 
-                Spacer(modifier = Modifier.weight(weight = 0.15f))
-
-                BottomAppBarItem(
+                    },
+                    icon = {
+                        Icon(
                     painter = painterResource(id = R.drawable.ic_more),
-                    label = stringResource(id = R.string.navigation_tab_more),
-                    onClick = {
-                        navController.navigate("moreInfo") {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = false
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-                    }
+                            contentDescription = stringResource(id = R.string.navigation_tab_more)
                 )
+                    },
+                    label = { Text(text = stringResource(id = R.string.navigation_tab_more)) })
+
+
             }
         }
     ) { paddingValues ->
@@ -140,10 +208,10 @@ fun FlowDemoContent(
             NavHost(
                 modifier = Modifier.padding(paddingValues),
                 navController = navController,
-                startDestination = "categoriesExample",
+                startDestination = DestinationFlowDemoFlowCategoriesExampleScreen.route,
             ) {
                 composable(
-                    route = "boardSensors"
+                    route = DestinationFlowDemoSensorsScree.route
                 ) {
                     FlowDemoSensorsScreen(
                         viewModel = viewModel,
@@ -153,7 +221,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "pnpLControl"
+                    route = DestinationFlowDemoPnPLControlScreen.route
                 ) {
                     FlowDemoPnPLControlScreen(
                         viewModel = viewModel,
@@ -163,7 +231,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "categoriesExample"
+                    route = DestinationFlowDemoFlowCategoriesExampleScreen.route
                 ) {
                     FlowDemoFlowCategoriesExampleScreen(
                         viewModel = viewModel,
@@ -173,7 +241,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "flowsExpert"
+                    route = DestinationFlowDemoFlowsExpertScreen.route
                 ) {
                     FlowDemoFlowsExpertScreen(
                         viewModel = viewModel,
@@ -183,7 +251,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "moreInfo"
+                    route = DestinationFlowDemoMoreInfoScreen.route
                 ) {
                     FlowDemoMoreInfoScreen(
                         viewModel = viewModel,
@@ -192,7 +260,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "flowUpload"
+                    route = DestinationFlowDemoFlowUploadScreen.route
                 ) {
                     FlowDemoFlowUploadScreen(
                         viewModel = viewModel,
@@ -202,7 +270,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "flowEditing"
+                    route = DestinationFlowDemoFlowExpertEditingScreen.route
                 ) {
                     FlowDemoFlowExpertEditingScreen(
                         viewModel = viewModel,
@@ -212,7 +280,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "flowDetails"
+                    route = DestinationFlowDemoFlowDetailScreen.route
                 ) {
                     FlowDemoFlowDetailScreen(
                         viewModel = viewModel,
@@ -222,7 +290,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "flowIfEditing"
+                    route = DestinationFlowDemoFlowIfApplicationCreationScreen.route
                 ) {
                     FlowDemoFlowIfApplicationCreationScreen(
                         viewModel = viewModel,
@@ -232,7 +300,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "flowSaving"
+                    route = DestinationFlowDemoFlowSaveScreen.route
                 ) {
                     FlowDemoFlowSaveScreen(
                         viewModel = viewModel,
@@ -242,7 +310,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "sensorConfiguration"
+                    route = DestinationFlowDemoSensorConfigurationScreen.route
                 ) {
                     FlowDemoSensorConfigurationScreen(
                         paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -252,7 +320,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "functionConfiguration"
+                    route = DestinationFlowDemoFunctionConfigurationScreen.route
                 ) {
                     FlowDemoFunctionConfigurationScreen(
                         paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -262,7 +330,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "outputConfiguration"
+                    route = DestinationFlowDemoOutputConfigurationScreen.route
                 ) {
                     FlowDemoOutputConfigurationScreen(
                         paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -272,7 +340,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "detail/{sensorId}/sensor",
+                    route = DestinationFlowDemoSensorDetailScreen.route + "{${DestinationFlowDemoSensorDetailScreen.sensorId}}",
                     arguments = listOf(navArgument(name = "sensorId") { type = NavType.StringType })
                 ) { backStackEntry ->
                     backStackEntry.arguments?.getString("sensorId")?.let { sensorId ->
@@ -286,7 +354,7 @@ fun FlowDemoContent(
                 }
 
                 composable(
-                    route = "detail/{categoryType}/category",
+                    route = DestinationFlowDemoFlowCategoryExampleScreen.route + "{${DestinationFlowDemoFlowCategoryExampleScreen.categoryType}}",
                     arguments = listOf(navArgument(name = "categoryType") {
                         type = NavType.StringType
                     })

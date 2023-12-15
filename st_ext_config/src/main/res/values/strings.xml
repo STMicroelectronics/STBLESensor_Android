@@ -79,6 +79,9 @@
     <string name="st_extConfig_fwUpgrade_selectFileBtn">Select File</string>
     <string name="st_extConfig_fwUpgrade_startUpload">Start upload</string>
     <string name="st_extConfig_fwUpgrade_otaBoard1">STM32WB5x/WB3x</string>
+    <string name="st_extConfig_fwUpgrade_astra1">STEVAL-ASTRA1B</string>
+    <string name="st_extConfig_fwUpgrade_proteus1">STEVAL-PROTEUS1</string>
+    <string name="st_extConfig_fwUpgrade_cbmlorable">STDES-CBMLoRaBLE</string>
     <string name="st_extConfig_fwUpgrade_otaBoard2">STM32WB1x</string>
     <string name="st_extConfig_fwUpgrade_otaBoard3">STM32WBA</string>
     <string name="st_extConfig_fwUpgrade_selectFile">Select a file to calculate</string>
@@ -88,4 +91,5 @@
     <string name="st_extConfig_fwUpgrade_errorMessage1">Error: The chosen number of sectors to erase should be a decimal number</string>
     <string name="st_extConfig_fwUpgrade_errorMessage2">Error: The chosen address is not in the range of valid addresses</string>
     <string name="st_extConfig_fwUpgrade_errorMessage3">Error: The chosen number of sectors is too high</string>
+    <string name="st_extConfig_fwUpgrade_errorMessage4">Error: The chosen address should be a multiple of the sector size</string>
 </resources>

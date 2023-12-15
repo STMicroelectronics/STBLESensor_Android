@@ -38,6 +38,7 @@ import kotlinx.serialization.json.longOrNull
 @Composable
 fun Property(
     modifier: Modifier = Modifier,
+    hideProperties: Array<String>?=null,
     data: JsonElement?,
     enabled: Boolean,
     content: DtmiContent.DtmiPropertyContent,
@@ -60,6 +61,12 @@ fun Property(
 
         when (content) {
             is DtmiContent.DtmiPropertyContent.DtmiBooleanPropertyContent -> {
+
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val initData = content.initValue
                 var booleanData = initData
                 if (data is JsonPrimitive) {
@@ -80,8 +87,15 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiStringPropertyContent -> {
+
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var stringData = defaultData
                 if (data is JsonPrimitive) {
@@ -108,8 +122,15 @@ fun Property(
                     onValueChange = { value, _ -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiIntegerPropertyContent -> {
+
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var intData = defaultData
                 if (data is JsonPrimitive) {
@@ -134,8 +155,15 @@ fun Property(
                     onValueChange = { value, _ -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiLongPropertyContent -> {
+
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var intData = defaultData
                 if (data is JsonPrimitive) {
@@ -160,8 +188,14 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiDoublePropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var doubleData = defaultData
                 if (data is JsonPrimitive) {
@@ -188,8 +222,14 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiFloatPropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var floatData = defaultData
                 if (data is JsonPrimitive) {
@@ -214,8 +254,14 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiDurationPropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 var stringData = ""
                 if (data is JsonPrimitive) {
                     stringData = data.contentOrNull ?: ""
@@ -234,8 +280,14 @@ fun Property(
                     onValueChange = { value, _ -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiVectorPropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var vectorData = defaultData
                 if (data is JsonObject) {
@@ -259,8 +311,14 @@ fun Property(
                     }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiDateTimePropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var stringData = defaultData
                 if (data is JsonPrimitive) {
@@ -282,8 +340,14 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiDatePropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var stringData = defaultData
                 if (data is JsonPrimitive) {
@@ -303,8 +367,14 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiTimePropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var stringData = defaultData
                 if (data is JsonPrimitive) {
@@ -323,8 +393,14 @@ fun Property(
                     onValueChange = { value -> onValueChange(content.name to value) }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiGeoPropertyContent -> {
+                var mustBeShowed = true
+                if(hideProperties!=null) {
+                    mustBeShowed = !hideProperties.contains(content.name)
+                }
+                if(mustBeShowed) {
                 val defaultData = content.initValue
                 var geoData = defaultData
                 if (data is JsonObject) {
@@ -348,11 +424,13 @@ fun Property(
                     }
                 )
             }
+            }
 
             is DtmiContent.DtmiPropertyContent.DtmiComplexPropertyContent -> {
                 val schema = content.schema
                 ComplexProperty(
                     modifier = modifier,
+                    hideProperties = hideProperties,
                     data = data,
                     label = label,
                     description = description,

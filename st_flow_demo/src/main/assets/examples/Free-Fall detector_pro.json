@@ -1,6 +1,7 @@
 {
   "id": "caf75cc8-fe2d-43f0-a8fa-6edfac3DEAD",
   "description": "Free-Fall Detection",
+  "ex_app" : 2,
   "category": "Motion",
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",

@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,6 +58,7 @@ import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.POPUP_DEFAULT_TIMEOUT
 import com.st.ui.theme.POPUP_IN_TRANSITION_DURATION
 import com.st.ui.theme.POPUP_OUT_TRANSITION_DURATION
+import com.st.ui.theme.Shapes
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
@@ -157,9 +157,7 @@ fun PopupContent(
                     popupHeight.value = coordinates.size.height
                 },
                 shadowElevation = currentDimensions.elevationNormal,
-                shape = RoundedCornerShape(
-                    corner = CornerSize(size = currentDimensions.cornerNormal)
-                ),
+                shape = Shapes.small,
                 color = MaterialTheme.colorScheme.primary
             ) {
                 Text(

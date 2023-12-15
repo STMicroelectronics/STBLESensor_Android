@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +25,7 @@ import com.st.blue_sdk.board_catalog.models.Sensor
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.Shapes
 import com.st.ui.theme.WarningText
 
 @Composable
@@ -36,7 +36,7 @@ fun FlowDemoSensorListItem(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal),
+        shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal,
         onClick = onSensorSelected
     ) {

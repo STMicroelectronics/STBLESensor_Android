@@ -22,6 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.st.flow_demo.DestinationFlowDemoFlowDetailScreen
+import com.st.flow_demo.DestinationFlowDemoFlowUploadScreen
+import com.st.flow_demo.DestinationFlowDemoFlowsExpertScreen
 import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.ui.composables.BlueMsButton
@@ -71,19 +74,21 @@ fun FlowDemoFlowCategoryExampleScreen(
                     FlowDemoFlowListItem(flow, onFlowSelected = {
                         viewModel.flowSelected = flow
                         navController.navigate(
-                            "flowDetails"
+                            DestinationFlowDemoFlowDetailScreen.route
                         )
                     }, onPlayFlow = {
                         if((flow.expression!=null) && (flow.statements.isNotEmpty())){
                             viewModel.flowSelected = flow.statements[0]
+                            viewModel.flowSelected!!.ex_app = flow.ex_app
                             viewModel.expressionSelected = flow.expression!!.flows[0]
+                            viewModel.expressionSelected!!.ex_app = flow.ex_app
                         } else {
                             viewModel.flowSelected = flow
                             viewModel.expressionSelected = null
                         }
                         viewModel.reportExampleAppAnalytics(viewModel.flowSelected!!)
                         navController.navigate(
-                            "flowUpload"
+                            DestinationFlowDemoFlowUploadScreen.route
                         )
                     })
                 }
@@ -104,7 +109,7 @@ fun FlowDemoFlowCategoryExampleScreen(
                         text = stringResource(id = R.string.expert_view),
                         onClick = {
                             navController.navigate(
-                                "flowsExpert"
+                                DestinationFlowDemoFlowsExpertScreen.route
                             )
                         }
                     )

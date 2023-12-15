@@ -33,7 +33,19 @@ val levels = listOf(
     )
 )
 
-val profileTypes = listOf(
+val aiDeveloperItemList = if (StUserProfilingConfig.showAiDeveloper) listOf(
+    RadioButtonItem(
+        data = ProfileType.AI_DEVELOPER,
+        name = R.string.st_userProfiling_profileSelection_aiName,
+        description = R.string.st_userProfiling_profileSelection_aiDescription,
+        image = R.drawable.ai
+    )
+)
+else
+    emptyList()
+
+val profileTypes = aiDeveloperItemList +
+        listOf(
     RadioButtonItem(
         data = ProfileType.DEVELOPER,
         name = R.string.st_userProfiling_profileSelection_developerName,

@@ -53,7 +53,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -107,6 +106,7 @@ import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey3
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 import com.st.ui.theme.toLocalDateTime
 import com.st.ui.theme.toLocalTime
 import java.time.Instant
@@ -195,8 +195,8 @@ fun StringProperty(
 
     val isValid by rememberIsValid(
         value = internalState.length,
-        maxValue = minLength,
-        minValue = maxLength
+        maxValue = maxLength,
+        minValue = minLength
     )
 
     Row(
@@ -223,9 +223,11 @@ fun StringProperty(
                 imeAction = ImeAction.Send
             ),
             supportingText = {
-                maxLength?.let { max ->
+                if ((maxLength != null) || (minLength != null)) {
+                    val maxText = maxLength?.let { max -> " ≤$max" } ?: ""
+                    val minText = minLength?.let { min -> "$min≤ " } ?: ""
                     Text(
-                        text = "${value.length} / $max",
+                        text = minText + "${internalState.length}" + maxText,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.End,
                         color = if (isValid.not()) ErrorText else Color.Unspecified
@@ -245,7 +247,15 @@ fun StringProperty(
                 internalState = it
 
                 if (commandBehavior) {
-                    onValueChange(internalState, isValid)
+                    val valid =  when {
+                        minLength != null && maxLength != null ->
+                            minLength <= it.length && it.length <= maxLength
+
+                        minLength != null -> minLength <= it.length
+                        maxLength != null -> it.length <= maxLength
+                        else -> true
+                    }
+                    onValueChange(internalState, valid)
                 }
             },
             keyboardActions = KeyboardActions(onSend = {
@@ -589,7 +599,7 @@ fun <T : Any> EnumProperty(
                 .fillMaxWidth()
                 .border(
                     border = BorderStroke(1.dp, Grey3),
-                    shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal)
+                    shape = Shapes.small
                 )
                 .padding(LocalDimensions.current.paddingNormal)
         ) {
@@ -604,7 +614,7 @@ fun <T : Any> EnumProperty(
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val text = values.first { it.second == internalState }.first
+                val text = values.firstOrNull { it.second == internalState }?.first ?: ""
                 Text(
                     fontSize = 15.sp,
                     lineHeight = 24.sp,

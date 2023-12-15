@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -37,7 +37,7 @@ fun ShowFwDBModel(
                 .wrapContentWidth()
                 .wrapContentHeight()
                 .verticalScroll(rememberScrollState()),
-            shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
+            shape = Shapes.medium
         ) {
             Column(modifier = Modifier.padding(all = LocalDimensions.current.paddingMedium)) {
                 Text(

@@ -4,4 +4,6 @@ object MlcConfig {
 
     var nodeId: String? = null
     var demoType: String? = null
+    var registerValueToLabelMap: String? = null
+
 }

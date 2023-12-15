@@ -1,6 +1,7 @@
 {
   "description": "Human Activity Recognition",
   "category": "AI & MLC",
+  "ex_app" : 9,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",
     "SENSOR_TILE_BOX_PROB"

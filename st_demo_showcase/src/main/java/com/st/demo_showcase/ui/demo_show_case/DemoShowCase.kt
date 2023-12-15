@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.st.blue_sdk.models.Boards
 import com.st.core.ARG_NODE_ID
 import com.st.demo_showcase.DemoShowCaseConfig
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
@@ -209,6 +210,9 @@ class DemoShowCase : Fragment() {
                                             )
                                         })
                                 )
+
+
+                                if((device?.familyType != Boards.Family.WB_FAMILY) && (device?.familyType != Boards.Family.WBA_FAMILY)) {
                                 currentAction.add(
                                     ActionItem(
                                         label = context.getString(R.string.st_demoShowcase_menuAction_fwUpdate),
@@ -220,7 +224,7 @@ class DemoShowCase : Fragment() {
                                             )
                                         })
                                 )
-
+                                }
                             }
                             currentAction.add(ActionItem(
                                 label =

@@ -9,26 +9,33 @@ package com.st.login.impl
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContract
 import com.st.login.AuthStateManager
 import com.st.login.Configuration
-import com.st.login.R
+import com.st.login.STLoginConfig
 import com.st.login.api.StAuthData
 import com.st.login.api.StLoginManager
-import com.st.login.di.RedirectUri
+import com.st.login.di.LoginConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
+import net.openid.appauth.AppAuthConfiguration
+import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ClientAuthentication
 import net.openid.appauth.EndSessionRequest
+import net.openid.appauth.ResponseTypeValues
 import net.openid.appauth.TokenRequest
 import net.openid.appauth.TokenResponse
+import net.openid.appauth.browser.BrowserDenyList
+import net.openid.appauth.browser.Browsers
+import net.openid.appauth.browser.VersionRange
+import net.openid.appauth.browser.VersionedBrowserMatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -38,18 +45,19 @@ import kotlin.coroutines.suspendCoroutine
 @Singleton
 class StLoginManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    @RedirectUri private val redirectUri: Uri
+    @LoginConfig private val stLoginConfig: STLoginConfig
 ) : StLoginManager {
 
-    companion object {
-        private const val TAG = "StLoginManager"
+    private var TAG = if (stLoginConfig.isProdEnvironment) {
+        "StLoginManagerPROD"
+    } else {
+        "StLoginManagerDEV"
     }
 
     private var configuration = Configuration.getInstance(
         context = context,
-        //configurationJSON = R.raw.dev_auth_config_vespucci,
-        configurationJSON = R.raw.prod_auth_config_vespucci,
-        redirectUri = redirectUri
+        configurationJSON = stLoginConfig.loginConfiguration,
+        redirectUri = stLoginConfig.redirectUri
     )
     private var endRequest: EndSessionRequest? = null
     private var authRequest: AuthorizationRequest? = null
@@ -59,18 +67,10 @@ class StLoginManagerImpl @Inject constructor(
 
     init {
         initAppAuth()
-        Log.e(TAG, "redirectUri = $redirectUri")
-    }
 
-    override fun setDevEnvironment() {
-//        configuration = Configuration.getInstance(
-//            context = context,
-//            //configurationJSON = R.raw.dev_auth_config_vespucci,
-//            configurationJSON = R.raw.dev_auth_config_vespucci,
-//            redirectUri = redirectUri
-//        )
-
-        initAppAuth()
+        Log.e(TAG, "configuration = ${stLoginConfig.loginConfiguration}")
+        Log.e(TAG, "redirectUri = ${stLoginConfig.redirectUri}")
+        Log.e(TAG, "customLogoutUri = ${stLoginConfig.customLogoutUri}")
     }
 
     override suspend fun getStAuthData(): StAuthData? {
@@ -117,7 +117,6 @@ class StLoginManagerImpl @Inject constructor(
             Log.i(TAG, "[ REFRESH TOKEN EXPIRED ]")
             false
         }
-        return true
     }
 
     private fun initAppAuth() {
@@ -279,10 +278,7 @@ class StLoginManagerImpl @Inject constructor(
 //                            mapOf(
 //                                "client_id" to configuration.clientId,
 //                                "response_type" to ResponseTypeValues.CODE,
-//                                "redirect_uri" to (StLoginConfig.customLogoutUri
-//                                    ?: configuration.redirectUri.toString()),
-//                                "logout_uri" to (StLoginConfig.customLogoutUri
-//                                    ?: configuration.redirectUri.toString()),
+//                                "logout_uri" to if (stLoginConfig.customLogoutUri.toString() == ""){ stLoginConfig.redirectUri.toString() } else { stLoginConfig.customLogoutUri.toString() },
 //                                "identity_provider" to configuration.identityProvider
 //                            )
 //                        )

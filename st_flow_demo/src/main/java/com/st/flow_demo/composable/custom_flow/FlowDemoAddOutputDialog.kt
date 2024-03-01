@@ -103,7 +103,7 @@ fun FlowDemoAddOutputDialog(
                 modifier = Modifier.fillMaxWidth(),
                 shape = Shapes.medium
             ) {
-                Column() {
+                Column {
                     if (errorText != null) {
                         Text(
                             modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),

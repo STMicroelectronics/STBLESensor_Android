@@ -48,6 +48,7 @@ import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -85,8 +86,8 @@ class ChartFragment : Fragment() {
     private lateinit var textViewSerialConsole: TextView
 
     private val dataViewModel: PlotViewModel by viewModels({ requireParentFragment() })
-    private val settingsViewModel: PlotSettingsViewModel by viewModels({ requireParentFragment() })
-
+    //private val settingsViewModel: PlotSettingsViewModel by viewModels({ requireParentFragment() })
+    private val settingsViewModel: PlotSettingsViewModel by activityViewModels()
     private lateinit var mLineColors: IntArray
 
     private var mFirstTimeRestore: Boolean = true

@@ -2,11 +2,8 @@ package com.st.flow_demo.composable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -16,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -32,7 +28,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.st.flow_demo.DestinationFlowDemoSensorsScree
 import com.st.flow_demo.DestinationFlowDemoFlowCategoriesExampleScreen
-import com.st.flow_demo.FlowConfig
 import com.st.flow_demo.DestinationFlowDemoFlowCategoryExampleScreen
 import com.st.flow_demo.DestinationFlowDemoFlowDetailScreen
 import com.st.flow_demo.DestinationFlowDemoFlowExpertEditingScreen
@@ -63,7 +58,6 @@ import com.st.flow_demo.composable.more_info.FlowDemoMoreInfoScreen
 import com.st.flow_demo.composable.example_flow.FlowDemoPnPLControlScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorsScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorDetailScreen
-import com.st.ui.composables.BottomAppBarItem
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
@@ -98,8 +92,8 @@ fun FlowDemoContent(
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         selectedIndex = 0
                         navController.navigate(DestinationFlowDemoFlowCategoriesExampleScreen.route) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
+                            navController.graph.startDestinationRoute?.let { screenRoute ->
+                                popUpTo(screenRoute) {
                                     saveState = false
                                 }
                             }
@@ -110,9 +104,9 @@ fun FlowDemoContent(
                     },
                     icon = {
                         Icon(
-                    painter = painterResource(id = R.drawable.ic_flows),
+                            painter = painterResource(id = R.drawable.ic_flows),
                             contentDescription = stringResource(id = R.string.navigation_tab_flows)
-                )
+                        )
                     },
                     label = { Text(text = stringResource(id = R.string.navigation_tab_flows)) })
 
@@ -125,8 +119,8 @@ fun FlowDemoContent(
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             selectedIndex = 1
                             navController.navigate(DestinationFlowDemoPnPLControlScreen.route) {
-                                navController.graph.startDestinationRoute?.let { screen_route ->
-                                    popUpTo(screen_route) {
+                                navController.graph.startDestinationRoute?.let { screenRoute ->
+                                    popUpTo(screenRoute) {
                                         saveState = false
                                     }
                                 }
@@ -137,7 +131,7 @@ fun FlowDemoContent(
                         },
                         icon = {
                             Icon(
-                        painter = painterResource(id = R.drawable.pnpl_icon),
+                                painter = painterResource(id = R.drawable.pnpl_icon),
                                 contentDescription = "Control"
                             )
                         },
@@ -154,23 +148,23 @@ fun FlowDemoContent(
                     selectedContentColor = Grey0,
                     unselectedContentColor = Grey6,
                     selected = 2 == selectedIndex,
-                        onClick = {
+                    onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         selectedIndex = 2
                         navController.navigate(DestinationFlowDemoSensorsScree.route) {
-                                navController.graph.startDestinationRoute?.let { screen_route ->
-                                    popUpTo(screen_route) {
-                                        saveState = false
-                                    }
+                            navController.graph.startDestinationRoute?.let { screenRoute ->
+                                popUpTo(screenRoute) {
+                                    saveState = false
                                 }
-                                launchSingleTop = true
-                                restoreState = false
                             }
+                            launchSingleTop = true
+                            restoreState = false
+                        }
 
                     },
                     icon = {
                         Icon(
-                    painter = painterResource(id = R.drawable.ic_sensor),
+                            painter = painterResource(id = R.drawable.ic_sensor),
                             contentDescription = stringResource(id = R.string.navigation_tab_sensors)
                         )
                     },
@@ -182,8 +176,8 @@ fun FlowDemoContent(
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         selectedIndex = 3
                         navController.navigate(DestinationFlowDemoMoreInfoScreen.route) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
+                            navController.graph.startDestinationRoute?.let { screenRoute ->
+                                popUpTo(screenRoute) {
                                     saveState = false
                                 }
                             }
@@ -194,9 +188,9 @@ fun FlowDemoContent(
                     },
                     icon = {
                         Icon(
-                    painter = painterResource(id = R.drawable.ic_more),
+                            painter = painterResource(id = R.drawable.ic_more),
                             contentDescription = stringResource(id = R.string.navigation_tab_more)
-                )
+                        )
                     },
                     label = { Text(text = stringResource(id = R.string.navigation_tab_more)) })
 

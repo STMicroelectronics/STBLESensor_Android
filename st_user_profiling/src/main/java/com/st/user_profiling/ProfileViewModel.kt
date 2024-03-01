@@ -46,28 +46,28 @@ else
 
 val profileTypes = aiDeveloperItemList +
         listOf(
-    RadioButtonItem(
-        data = ProfileType.DEVELOPER,
-        name = R.string.st_userProfiling_profileSelection_developerName,
-        description = R.string.st_userProfiling_profileSelection_developerDescription,
-        image = R.drawable.developer
-    ),
-    RadioButtonItem(
-        data = ProfileType.STUDENT,
-        name = R.string.st_userProfiling_profileSelection_studentName,
-        description = R.string.st_userProfiling_profileSelection_studentDescription,
-        image = R.drawable.university
-    ),
-    RadioButtonItem(
-        data = ProfileType.SALES,
-        name = R.string.st_userProfiling_profileSelection_salesName,
-        description = R.string.st_userProfiling_profileSelection_salesDescription,
-        image = R.drawable.fae
-    ),
-    RadioButtonItem(
-        data = ProfileType.OTHER,
-        name = R.string.st_userProfiling_profileSelection_otherName,
-        description = R.string.st_userProfiling_profileSelection_otherDescription,
-        image = R.drawable.other
-    )
-)
+            RadioButtonItem(
+                data = ProfileType.DEVELOPER,
+                name = R.string.st_userProfiling_profileSelection_developerName,
+                description = R.string.st_userProfiling_profileSelection_developerDescription,
+                image = R.drawable.developer
+            ),
+            RadioButtonItem(
+                data = ProfileType.STUDENT,
+                name = R.string.st_userProfiling_profileSelection_studentName,
+                description = R.string.st_userProfiling_profileSelection_studentDescription,
+                image = R.drawable.university
+            ),
+            RadioButtonItem(
+                data = ProfileType.SALES,
+                name = R.string.st_userProfiling_profileSelection_salesName,
+                description = R.string.st_userProfiling_profileSelection_salesDescription,
+                image = R.drawable.fae
+            ),
+            RadioButtonItem(
+                data = ProfileType.OTHER,
+                name = R.string.st_userProfiling_profileSelection_otherName,
+                description = R.string.st_userProfiling_profileSelection_otherDescription,
+                image = R.drawable.other
+            )
+        )

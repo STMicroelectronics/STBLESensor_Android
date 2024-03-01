@@ -129,34 +129,28 @@ class FFTAmplitudeViewModel
                     if (data is MotorTimeParameterInfo) {
                         var acc = data.accPeakX.value
                         var speed = data.rmsSpeedX.value
-                        if ((acc != null) && (speed != null)) {
-                            if ((!acc.isNaN()) && (!speed.isNaN())) {
-                                _mXStats.emit(TimeDomainStats(acc, speed))
-                                if(timeParameterAvailable.value==false) {
-                                    timeParameterAvailable.postValue(true)
-                                }
+                        if ((!acc.isNaN()) && (!speed.isNaN())) {
+                            _mXStats.emit(TimeDomainStats(acc, speed))
+                            if(timeParameterAvailable.value==false) {
+                                timeParameterAvailable.postValue(true)
                             }
                         }
 
                         acc = data.accPeakY.value
                         speed = data.rmsSpeedY.value
-                        if ((acc != null) && (speed != null)) {
-                            if ((!acc.isNaN()) && (!speed.isNaN())) {
-                                _mYStats.emit(TimeDomainStats(acc, speed))
-                                if (timeParameterAvailable.value == false) {
-                                    timeParameterAvailable.postValue(true)
-                                }
+                        if ((!acc.isNaN()) && (!speed.isNaN())) {
+                            _mYStats.emit(TimeDomainStats(acc, speed))
+                            if (timeParameterAvailable.value == false) {
+                                timeParameterAvailable.postValue(true)
                             }
                         }
 
                         acc = data.accPeakZ.value
                         speed = data.rmsSpeedZ.value
-                        if ((acc != null) && (speed != null)) {
-                            if ((!acc.isNaN()) && (!speed.isNaN())) {
-                                _mZStats.emit(TimeDomainStats(acc, speed))
-                                if (timeParameterAvailable.value == false) {
-                                    timeParameterAvailable.postValue(true)
-                                }
+                        if ((!acc.isNaN()) && (!speed.isNaN())) {
+                            _mZStats.emit(TimeDomainStats(acc, speed))
+                            if (timeParameterAvailable.value == false) {
+                                timeParameterAvailable.postValue(true)
                             }
                         }
                     }

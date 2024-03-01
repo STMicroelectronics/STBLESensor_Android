@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import javax.inject.Inject
 
@@ -88,7 +89,10 @@ class PnplViewModel @Inject constructor(
                 blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())?.extractComponents(demoName = demoName)
                     ?: emptyList()
 
-            _enableCollapse.value = demoName.isNullOrEmpty()
+            //If we want that Demo Settings start with the components Expanded..
+            //_enableCollapse.value = demoName.isNullOrEmpty()
+
+            _enableCollapse.value =true
 
             _isLoading.value = false
 
@@ -124,6 +128,23 @@ class PnplViewModel @Inject constructor(
         }
     }
 
+    private suspend fun sendGetStatusComponentInfoCommand(
+        name: String,
+        nodeId: String,
+        feature: PnPL
+    ) {
+        _isLoading.value = true
+
+        blueManager.writeFeatureCommand(
+            responseTimeout = 0,
+            nodeId = nodeId, featureCommand =
+            PnPLCommand(
+                feature = feature,
+                cmd = PnPLCmd(command = "get_status", request = name)
+            )
+        )
+    }
+
     fun sendChange(nodeId: String, name: String, value: Pair<String, Any>) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -149,7 +170,8 @@ class PnplViewModel @Inject constructor(
                     )
 
 
-                    sendGetAllCommand(nodeId = nodeId)
+                    //sendGetAllCommand(nodeId = nodeId)
+                    sendGetStatusComponentInfoCommand(feature=feature, name =name,nodeId = nodeId)
                 }
             }
         }
@@ -184,7 +206,8 @@ class PnplViewModel @Inject constructor(
 
         _componentStatusUpdates.value = emptyList()
 
-        coroutineScope.launch {
+        //coroutineScope.launch {
+        runBlocking {
             val features = blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
 
             blueManager.disableFeatures(

@@ -21,6 +21,7 @@ import com.google.android.material.button.MaterialButton
 import com.st.blue_sdk.board_catalog.models.BleCharacteristic
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
 import com.st.core.ARG_NODE_ID
 import dagger.hilt.android.AndroidEntryPoint
 import com.st.textual_monitor.databinding.TextualMonitorFragmentBinding
@@ -93,18 +94,27 @@ class TextualMonitorFragment : Fragment() {
         featureSelected?.let {
             if (viewModel.feature != null) {
                 //the feature is already notifying
-                viewModel.stopDemo(nodeId)
+                if(featureSelected.name!= RawPnPLControlled.NAME) {
+                    viewModel.stopDemo(nodeId)
+                } else {
+                    viewModel.stopRawPnPLDemo(nodeId)
+                }
                 startStopButton.setIconResource(R.drawable.ic_play_arrow)
             } else {
-                val initString = "${it.description}:\n\n"
-                featureData.text = initString
+                if(featureSelected.name!= RawPnPLControlled.NAME) {
+                    val initString = "${it.description}:\n\n"
+                    featureData.text = initString
 
-                //set the current feature
-                viewModel.setSelectedFeature(it.feature, it.bleCharDesc)
+                    //set the current feature
+                    viewModel.setSelectedFeature(it.feature, it.bleCharDesc)
 
-                //Start the notification
-                viewModel.startDemo(nodeId)
-
+                    //Start the notification
+                    viewModel.startDemo(nodeId)
+                } else {
+                    //set the current feature
+                    viewModel.setSelectedFeature(it.feature, it.bleCharDesc)
+                    viewModel.startRawPnPLDemo(nodeId)
+                }
                 startStopButton.setIconResource(R.drawable.ic_stop)
             }
         }
@@ -175,7 +185,7 @@ class TextualMonitorFragment : Fragment() {
     private fun retrieveBleCharDescription(
         it: Feature<*>,
         fwModel: BoardFirmware?
-    ): GenericTextualFeature? {
+    ): GenericTextualFeature {
         var bleCharDesc: BleCharacteristic? = null
         val uuid = it.uuid
         if (it.type == Feature.Type.GENERAL_PURPOSE) {

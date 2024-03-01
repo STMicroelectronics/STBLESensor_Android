@@ -53,6 +53,7 @@ import com.st.smart_motor_control.SmartMotorControlViewModel.Companion.MOTOR_CON
 import com.st.smart_motor_control.model.MotorControlFault
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
+import com.st.ui.composables.FontScalePreviews
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.ErrorText
@@ -92,7 +93,7 @@ fun MotorControl(
     var openSettingMotorSpeedDialog by rememberSaveable { mutableStateOf(value = false) }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(all = LocalDimensions.current.paddingNormal)
             .verticalScroll(
@@ -782,6 +783,7 @@ private fun MotorControlPreviewStopped() {
 }
 
 @Preview
+@FontScalePreviews
 @Composable
 private fun MotorControlPreviewRunningNoTel() {
     PreviewBlueMSTheme {

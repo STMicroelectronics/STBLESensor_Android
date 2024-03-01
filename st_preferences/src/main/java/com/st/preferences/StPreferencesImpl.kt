@@ -59,7 +59,7 @@ class StPreferencesImpl @Inject constructor(
     override fun getLevelProficiency(): String {
         val retValue: String = runBlocking { dataStore.data.first()[LEVEL_KEY] ?: "" }
 
-        if(retValue.isNotEmpty()) {
+        if (retValue.isNotEmpty()) {
             appAnalyticsService.forEach {
                 it.reportLevel(retValue)
             }
@@ -70,7 +70,7 @@ class StPreferencesImpl @Inject constructor(
     override fun getProfileType(): String {
         val retValue: String = runBlocking { dataStore.data.first()[TYPE_KEY] ?: "" }
 
-        if(retValue.isNotEmpty()) {
+        if (retValue.isNotEmpty()) {
             appAnalyticsService.forEach {
                 it.reportProfile(retValue)
             }
@@ -137,6 +137,16 @@ class StPreferencesImpl @Inject constructor(
         return runBlocking { dataStore.data.first()[BETA_KEY] ?: false }
     }
 
+    override fun setDisableHiddenDemos(disableHiddenDemos: Boolean) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs[DISABLE_HIDDEN_DEMOS_KEY] = disableHiddenDemos }
+        }
+    }
+
+    override fun isDisableHiddenDemos(): Boolean {
+        return runBlocking { dataStore.data.first()[DISABLE_HIDDEN_DEMOS_KEY] ?: false }
+    }
+
     override fun isServerForced(): Boolean {
         return runBlocking { dataStore.data.first()[SERVER_FORCED_KEY] ?: false }
     }
@@ -166,6 +176,41 @@ class StPreferencesImpl @Inject constructor(
         coroutineScope.launch {
             val idKey = stringPreferencesKey(nodeId)
             dataStore.edit { prefs -> prefs[idKey] = demos.joinToString() }
+        }
+    }
+
+    override fun setConfiguredAzureCloudApp(cloudAppUrl: String, serializedString: String) {
+        coroutineScope.launch {
+            val idKey = stringPreferencesKey(cloudAppUrl)
+            dataStore.edit { prefs -> prefs[idKey] = serializedString }
+        }
+    }
+
+    override fun getConfiguredAzureCloudApp(cloudAppUrl: String): String? {
+        val idKey = stringPreferencesKey(cloudAppUrl)
+        return runBlocking { dataStore.data.first()[idKey] }
+    }
+
+    override fun deleteConfiguredAzureCloudApp(cloudAppUrl: String) {
+        coroutineScope.launch {
+            val idKey = stringPreferencesKey(cloudAppUrl)
+            dataStore.edit { prefs -> prefs.remove(idKey) }
+        }
+    }
+
+    override fun setConfiguredMqttCloudApp(serializedString: String) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs[MQTT_SERVER_KEY] = serializedString }
+        }
+    }
+
+    override fun getConfiguredMqttCloudApp(): String? {
+        return runBlocking { dataStore.data.first()[MQTT_SERVER_KEY] }
+    }
+
+    override fun deleteConfiguredMqttCloudApp() {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs.remove(MQTT_SERVER_KEY) }
         }
     }
 
@@ -204,6 +249,8 @@ class StPreferencesImpl @Inject constructor(
         private val LEVEL_KEY = stringPreferencesKey("level_key")
         private val TYPE_KEY = stringPreferencesKey("type_key")
         private val BETA_KEY = booleanPreferencesKey("beta_key")
+        private val DISABLE_HIDDEN_DEMOS_KEY = booleanPreferencesKey("disable_hidden_demos_key")
         private val SERVER_FORCED_KEY = booleanPreferencesKey("server_forced_key")
+        private val MQTT_SERVER_KEY = stringPreferencesKey("mqtt_server_key")
     }
 }

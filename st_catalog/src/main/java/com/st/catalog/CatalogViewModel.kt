@@ -125,7 +125,7 @@ fun BoardFirmware.availableDemos(): List<Demo> {
         }
     }
 
-    return Demo.values().toList().filter { demo ->
+    return Demo.entries.filter { demo ->
         when (demo) {
             Demo.Flow -> boardModel() == Boards.Model.SENSOR_TILE_BOX || boardModel() == Boards.Model.SENSOR_TILE_BOX_PRO || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROB
             Demo.BlueVoiceFullDuplex -> false

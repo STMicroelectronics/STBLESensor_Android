@@ -131,6 +131,8 @@ dependencies {
     implementation project(path: ':st_flow_demo')
     implementation project(path: ':st_raw_pnpl')
     implementation project(path: ':st_smart_motor_control')
+    implementation project(path: ':st_cloud_azure_iot_central')
+    implementation project(path: ':st_cloud_mqtt')
 
     // Blue ST SDK
     implementation "com.st.blue.sdk:st-blue-sdk:$st_version"

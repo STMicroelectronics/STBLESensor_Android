@@ -81,20 +81,20 @@ class RegistersDemoViewModel
 
         if (MlcConfig.registerValueToLabelMap == null) {
 
-        viewModelScope.launch {
-            val buffer = StringBuffer()
-            blueManager.getDebugMessages(nodeId = nodeId)?.collect {
-                //Log.i("RegistersDemo DbGMsg",it.payload)
-                buffer.append(it.payload)
-                //Log.i("RegistersDemo","buffersize=${buffer.length}")
-                if (buffer.endsWith('\n')) {
-                    //Log.i("RegistersDemo","fullRec")
-                    valueMapper = buildRegisterMapperFromString(buffer.removeSuffix("\n"))
-                    buffer.delete(0,buffer.length)
+            viewModelScope.launch {
+                val buffer = StringBuffer()
+                blueManager.getDebugMessages(nodeId = nodeId)?.collect {
+                    //Log.i("RegistersDemo DbGMsg",it.payload)
+                    buffer.append(it.payload)
+                    //Log.i("RegistersDemo","buffersize=${buffer.length}")
+                    if (buffer.endsWith('\n')) {
+                        //Log.i("RegistersDemo","fullRec")
+                        valueMapper = buildRegisterMapperFromString(buffer.removeSuffix("\n"))
+                        buffer.delete(0,buffer.length)
+                    }
                 }
             }
-        }
-        askLabelsToNode(nodeId, demoType)
+            askLabelsToNode(nodeId, demoType)
 
         }
         else {

@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.booleanOrNull
@@ -584,25 +585,25 @@ class SmartMotorControlViewModel
 
                             rawPnPLFormat.forEach { stream ->
                                 stream.formats.forEach { format ->
-                                    if(format.name== "temperature") {
+                                    if (format.name == "temperature") {
                                         format.format.unit?.let { unit ->
                                             temperatureUnit = unit
                                         }
                                     }
 
-                                    if(format.name== "ref_speed") {
+                                    if (format.name == "ref_speed") {
                                         format.format.unit?.let { unit ->
                                             speedRefUnit = unit
                                         }
                                     }
 
-                                    if(format.name== "speed") {
+                                    if (format.name == "speed") {
                                         format.format.unit?.let { unit ->
                                             speedMeasUnit = unit
                                         }
                                     }
 
-                                    if(format.name== "bus_voltage") {
+                                    if (format.name == "bus_voltage") {
                                         format.format.unit?.let { unit ->
                                             busVoltageUnit = unit
                                         }
@@ -827,7 +828,13 @@ class SmartMotorControlViewModel
         shouldInitDemo = true
         shouldRenameTags = true
 
-        coroutineScope.launch {
+//        coroutineScope.launch {
+//            blueManager.disableFeatures(
+//                nodeId = nodeId, features = pnplFeatures
+//            )
+//        }
+        //Not optimal... but in this way... I am able to see the get status if demo is customized
+        runBlocking {
             blueManager.disableFeatures(
                 nodeId = nodeId, features = pnplFeatures
             )

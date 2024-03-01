@@ -19,7 +19,6 @@
     <string name="about_sensortile_box" translatable="false">About SensorTile.box</string>
     <string name="about_sensortile_box_pro" translatable="false">About SensorTile.box-Pro</string>
     <string name="stm_website" translatable="false">ST Website</string>
-    <string name="stm_json" translatable="false">Custom Fw Db Entry</string>
 
     <string name="expert_view" translatable="false">Expert View</string>
     <string name="no_description" translatable="false">Description not present</string>

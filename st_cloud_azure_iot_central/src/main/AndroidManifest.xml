@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<uses-feature android:name="android.hardware.camera"/>
+<uses-feature android:name="android.hardware.camera.autofocus"/>
+<uses-permission android:name="android.permission.CAMERA"/>
+
+</manifest>

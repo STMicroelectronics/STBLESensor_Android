@@ -243,49 +243,45 @@ class ElectricChargeVariationFragment : Fragment() {
 
         val actualTimeStamp = System.currentTimeMillis()
 
-        if (mQVAR != null) {
-            mQVARCard.visibility = View.VISIBLE
-            val yData = mQVAR.toFloat()
-            mQVARData.addEntry(
-                Entry(
-                    (actualTimeStamp - mFirstNotificationTimeStamp).toFloat(),
-                    yData
-                ), 0
-            )
-            mQVARData.removeEntryOlderThan(SECONDS_TO_PLOT_DEFAULT)
+        mQVARCard.visibility = View.VISIBLE
+        val yData = mQVAR.toFloat()
+        mQVARData.addEntry(
+            Entry(
+                (actualTimeStamp - mFirstNotificationTimeStamp).toFloat(),
+                yData
+            ), 0
+        )
+        mQVARData.removeEntryOlderThan(SECONDS_TO_PLOT_DEFAULT)
 
-            val yMax = mQVARDataSet.yMax
-            val yMin = mQVARDataSet.yMin
+        val yMax = mQVARDataSet.yMax
+        val yMin = mQVARDataSet.yMin
 
-            //Update the LimitLine for MaxY value
-            if (yMax != mQVARYMax) {
-                mQVARYMax = yMax
-                mQVARChart.axisLeft.removeLimitLine(mQVARLimitLineYMax)
-                mQVARLimitLineYMax = LimitLine(yMax, yMax.toString())
-                mQVARLimitLineYMax.lineColor = colorLimit
-                mQVARLimitLineYMax.textColor = colorLabel
-                mQVARLimitLineYMax.textSize = 14f
-                mQVARChart.axisLeft.addLimitLine(mQVARLimitLineYMax)
-            }
-
-            //Update the LimitLine for MinY value
-            if (yMin != mQVARYMin) {
-                mQVARYMin = yMin
-                mQVARChart.axisLeft.removeLimitLine(mQVARLimitLineYMin)
-                mQVARLimitLineYMin = LimitLine(yMin, yMin.toString())
-                mQVARLimitLineYMin.lineColor = colorLimit
-                mQVARLimitLineYMin.textColor = colorLabel
-                mQVARLimitLineYMin.textSize = 14f
-                mQVARLimitLineYMin.labelPosition = LimitLine.LimitLabelPosition.LEFT_BOTTOM
-                mQVARChart.axisLeft.addLimitLine(mQVARLimitLineYMin)
-            }
-
-            mQVARData.notifyDataChanged()
-            mQVARChart.notifyDataSetChanged()
-            mQVARChart.invalidate()
-        } else {
-            mQVARCard.visibility = View.GONE
+        //Update the LimitLine for MaxY value
+        if (yMax != mQVARYMax) {
+            mQVARYMax = yMax
+            mQVARChart.axisLeft.removeLimitLine(mQVARLimitLineYMax)
+            mQVARLimitLineYMax = LimitLine(yMax, yMax.toString())
+            mQVARLimitLineYMax.lineColor = colorLimit
+            mQVARLimitLineYMax.textColor = colorLabel
+            mQVARLimitLineYMax.textSize = 14f
+            mQVARChart.axisLeft.addLimitLine(mQVARLimitLineYMax)
         }
+
+        //Update the LimitLine for MinY value
+        if (yMin != mQVARYMin) {
+            mQVARYMin = yMin
+            mQVARChart.axisLeft.removeLimitLine(mQVARLimitLineYMin)
+            mQVARLimitLineYMin = LimitLine(yMin, yMin.toString())
+            mQVARLimitLineYMin.lineColor = colorLimit
+            mQVARLimitLineYMin.textColor = colorLabel
+            mQVARLimitLineYMin.textSize = 14f
+            mQVARLimitLineYMin.labelPosition = LimitLine.LimitLabelPosition.LEFT_BOTTOM
+            mQVARChart.axisLeft.addLimitLine(mQVARLimitLineYMin)
+        }
+
+        mQVARData.notifyDataChanged()
+        mQVARChart.notifyDataSetChanged()
+        mQVARChart.invalidate()
 
 
         if (mFlag != null) {

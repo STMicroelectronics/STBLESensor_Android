@@ -8,8 +8,8 @@
 package com.st.ext_config.composable
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -31,7 +31,6 @@ import com.st.ui.theme.Grey6
 import com.st.ui.theme.Shapes
 import com.st.ui.utils.fadedEdgeMarquee
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardCustomCommandsCard(
     modifier: Modifier = Modifier,
@@ -62,8 +61,8 @@ fun BoardCustomCommandsCard(
 
                 AnimatedVisibility(
                     visible = isOpen,
-                    enter = fadeIn(),
-                    exit = fadeOut()
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
                 ) {
                     BoardCustomCommandsContentCard(commands = commands, onSendCommand = { command ->
                         if (command.customCommandType != CustomCommandType.UNKNOWN) {
@@ -91,9 +90,9 @@ fun BoardCustomCommandsCard(
                 CustomCommandInput(
                     command = openCommandDialog,
                     onChangeValue = {arg, valid ->
-                    args = arg
-                    isValid = valid
-                }
+                        args = arg
+                        isValid = valid
+                    }
                 )
             },
             dismissButton = {
@@ -238,26 +237,26 @@ fun BoardCustomCommandsContentCard(
     ) {
         commands.forEachIndexed { index, command ->
             Column(modifier = Modifier.clickable {
-                    onSendCommand(command)
+                onSendCommand(command)
             }) {
                 Text(
-                color = Grey6,
-                style = MaterialTheme.typography.bodyMedium,
-                text = command.name ?: ""
-            )
-            Text(
-                modifier = Modifier.fadedEdgeMarquee(),
-                color = Grey6,
-                style = MaterialTheme.typography.bodySmall,
-                text = command.description ?: ""
-            )
+                    color = Grey6,
+                    style = MaterialTheme.typography.bodyMedium,
+                    text = command.name ?: ""
+                )
+                Text(
+                    modifier = Modifier.fadedEdgeMarquee(),
+                    color = Grey6,
+                    style = MaterialTheme.typography.bodySmall,
+                    text = command.description ?: ""
+                )
 
-            if (index != commands.lastIndex) {
-                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+                if (index != commands.lastIndex) {
+                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+                }
             }
         }
     }
-}
 }
 
 /** ----------------------- PREVIEW --------------------------------------- **/

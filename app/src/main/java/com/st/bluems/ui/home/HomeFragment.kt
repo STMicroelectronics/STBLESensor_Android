@@ -81,14 +81,14 @@ class HomeFragment : Fragment() {
     private val locationRequestLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             //if (result.resultCode == Activity.RESULT_OK) {
-                _isLocationEnabled.value = isLocationEnable(requireContext())
+            _isLocationEnabled.value = isLocationEnable(requireContext())
             //}
         }
 
     private val _isLocationEnabled = MutableStateFlow(false)
     private val isLocationEnabled = _isLocationEnabled.asStateFlow()
 
-    private var blePairingReceiver : BroadcastReceiver?=null
+    private var blePairingReceiver: BroadcastReceiver? = null
 
     fun onBoundStateChange(context: Context?, intent: Intent) {
         val boundState = intent.getIntExtra(
@@ -97,7 +97,7 @@ class HomeFragment : Fragment() {
         )
         //android lollipop show 2 notification -> we delete the pin only when we have finish
         // to bound
-        if(boundState != BluetoothDevice.BOND_BONDING) {
+        if (boundState != BluetoothDevice.BOND_BONDING) {
             nfcViewModel.setNFCPairingPin(null)  //the pairing is done -> remove the pin
         }
     }
@@ -105,16 +105,20 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     fun onPairingRequest(context: Context?, intent: Intent) {
+
         val pairingPin = nfcViewModel.pairingPin.value
         val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
         } else {
             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
         }
-        if((device!=null) && (pairingPin!=null)){
+        if ((device != null) && (pairingPin != null)) {
             val node = viewModel.getNodeFromNodeId(device.address)
             node?.device?.setPin(pairingPin)
-           //nfcViewModel.setNFCPairingPin(null)
+            //nfcViewModel.setNFCPairingPin(null)
+        } else if(device!=null) {
+            //Toast.makeText(context,"Pin 123456",Toast.LENGTH_SHORT).show()
+            viewModel.setIsPairingRequest(true)
         }
     }
 
@@ -131,6 +135,7 @@ class HomeFragment : Fragment() {
         super.onResume()
 //        viewModel.initLoginManager(requireActivity())
         viewModel.checkVersionBetaRelease()
+        viewModel.checkDisableHiddenDemos()
         viewModel.checkServerForced()
         viewModel.checkBoardsCatalogPresence()
 
@@ -139,13 +144,20 @@ class HomeFragment : Fragment() {
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
 
-        if(nfcViewModel.pairingPin.value!=null) {
-            blePairingReceiver =  object : BroadcastReceiver() {
+        //if (nfcViewModel.pairingPin.value != null) {
+            blePairingReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     if (intent != null) {
-                        when(intent.action) {
-                            BluetoothDevice.ACTION_BOND_STATE_CHANGED -> onBoundStateChange(context, intent)
-                            BluetoothDevice.ACTION_PAIRING_REQUEST -> onPairingRequest(context,intent)
+                        when (intent.action) {
+                            BluetoothDevice.ACTION_BOND_STATE_CHANGED -> onBoundStateChange(
+                                context,
+                                intent
+                            )
+
+                            BluetoothDevice.ACTION_PAIRING_REQUEST -> onPairingRequest(
+                                context,
+                                intent
+                            )
                         }
                     }
                 }
@@ -157,7 +169,7 @@ class HomeFragment : Fragment() {
                     addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
                 }
             )
-        }
+        //}
 
         //Because if we change the Profile&Level on DemoList...
         //when we will come back to HomeFragment,
@@ -173,7 +185,8 @@ class HomeFragment : Fragment() {
             }
 
             findNavController().navigate(
-                directions = HomeFragmentDirections.actionUserProfilingNavGraphToHomeFragment(), navOptions  = navOptions
+                directions = HomeFragmentDirections.actionUserProfilingNavGraphToHomeFragment(),
+                navOptions = navOptions
             )
         }
     }
@@ -210,6 +223,8 @@ class HomeFragment : Fragment() {
                     val connectionBoardName by viewModel.boardName.collectAsStateWithLifecycle()
                     val isLocationEnabled by isLocationEnabled.collectAsStateWithLifecycle()
 
+                    val isPairingRequest by viewModel.isPairingRequest.collectAsStateWithLifecycle()
+
                     DeviceListScreen(
                         viewModel = viewModel,
                         nfcViewModel = nfcViewModel,
@@ -224,7 +239,11 @@ class HomeFragment : Fragment() {
                         }
                     )
 
-                    ConnectionStatusDialog(connectionStatus = connectionStatus, boardName = connectionBoardName)
+                    ConnectionStatusDialog(
+                        isPairingRequest = isPairingRequest,
+                        connectionStatus = connectionStatus,
+                        boardName = connectionBoardName
+                    )
                 }
             }
         }

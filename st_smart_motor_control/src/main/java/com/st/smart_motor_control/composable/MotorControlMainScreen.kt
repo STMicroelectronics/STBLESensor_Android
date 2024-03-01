@@ -1,6 +1,8 @@
 package com.st.smart_motor_control.composable
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -280,7 +282,11 @@ fun SmartMotorControlScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_motor_control),
                             contentDescription = stringResource(id = R.string.st_motor_control),
-                            tint =  if(0 == selectedIndex) {Grey0 } else {Grey6}
+                            tint = if (0 == selectedIndex) {
+                                Grey0
+                            } else {
+                                Grey6
+                            }
                         )
                     },
                     label = { Text(text = stringResource(id = R.string.st_motor_control)) },
@@ -310,7 +316,11 @@ fun SmartMotorControlScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_tags),
                                 contentDescription = stringResource(id = R.string.st_motor_control_tags),
-                                tint =  if(1 == selectedIndex) {Grey0 } else {Grey6}
+                                tint = if (1 == selectedIndex) {
+                                    Grey0
+                                } else {
+                                    Grey6
+                                }
                             )
                         },
                         label = { Text(text = stringResource(id = R.string.st_motor_control_tags)) },
@@ -339,7 +349,11 @@ fun SmartMotorControlScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_settings),
                                 contentDescription = stringResource(id = R.string.st_motor_control_configuration),
-                                tint =  if(1 == selectedIndex) {Grey0 } else {Grey6}
+                                tint = if (1 == selectedIndex) {
+                                    Grey0
+                                } else {
+                                    Grey6
+                                }
                             )
                         },
                         label = { Text(text = stringResource(id = R.string.st_motor_control_configuration)) },
@@ -358,7 +372,19 @@ fun SmartMotorControlScreen(
             ) {
 
                 composable(
-                    route = "MotorControl"
+                    route = "MotorControl",
+                    enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(500)
+                        )
+                    }
                 ) {
                     MotorControl(
                         isLoading = isLoading,
@@ -381,7 +407,18 @@ fun SmartMotorControlScreen(
                 }
 
                 composable(
-                    route = "Sensors"
+                    route = "Sensors", enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(500)
+                        )
+                    }
                 ) {
                     if (isLogging.not()) {
                         MotorControlSensors(
@@ -405,7 +442,18 @@ fun SmartMotorControlScreen(
                 }
 
                 composable(
-                    route = "Tags"
+                    route = "Tags", enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(500)
+                        )
+                    }
                 ) {
                     if (MotorControlConfig.tags.isEmpty()) {
                         MotorControlTags(

@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.sqrt
 
 @AndroidEntryPoint
-class BeamFormingFragment: Fragment() {
+class BeamFormingFragment : Fragment() {
     companion object {
         private val DEFAULT_DIRECTION = BeamDirectionType.Right
     }
@@ -58,7 +58,7 @@ class BeamFormingFragment: Fragment() {
     private lateinit var mLeftButton: CompoundButton
     private lateinit var mTopLeftButton: CompoundButton
 
-    private var mAudioTrack: AudioTrack?=null
+    private var mAudioTrack: AudioTrack? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,7 +72,7 @@ class BeamFormingFragment: Fragment() {
 
         mWaveformView = binding.blueVoiceWaveformView
 
-        mTopButton =  binding.radioBFdirTop
+        mTopButton = binding.radioBFdirTop
         mTopRightButton = binding.radioBFdirTopRight
         mRightButton = binding.radioBFdirRight
         mBottomRightButton = binding.radioBFdirBottomRight
@@ -82,18 +82,18 @@ class BeamFormingFragment: Fragment() {
         mTopLeftButton = binding.radioBFdirTopLeft
 
         //Set the button,direction Map
-        mButtonToDirection[mTopButton] =  BeamDirectionType.Top
-        mButtonToDirection[mTopRightButton] =  BeamDirectionType.TopRight
-        mButtonToDirection[mRightButton] =  BeamDirectionType.Right
-        mButtonToDirection[mBottomRightButton] =  BeamDirectionType.BottomRight
-        mButtonToDirection[mBottomButton] =  BeamDirectionType.Bottom
-        mButtonToDirection[mBottomLeftButton] =  BeamDirectionType.BottomLeft
-        mButtonToDirection[mLeftButton] =  BeamDirectionType.Left
-        mButtonToDirection[mTopLeftButton] =  BeamDirectionType.TopLeft
+        mButtonToDirection[mTopButton] = BeamDirectionType.Top
+        mButtonToDirection[mTopRightButton] = BeamDirectionType.TopRight
+        mButtonToDirection[mRightButton] = BeamDirectionType.Right
+        mButtonToDirection[mBottomRightButton] = BeamDirectionType.BottomRight
+        mButtonToDirection[mBottomButton] = BeamDirectionType.Bottom
+        mButtonToDirection[mBottomLeftButton] = BeamDirectionType.BottomLeft
+        mButtonToDirection[mLeftButton] = BeamDirectionType.Left
+        mButtonToDirection[mTopLeftButton] = BeamDirectionType.TopLeft
 
         mBoard = binding.beamformingBoardImage
-        when(viewModel.getBoardType(nodeId)) {
-            Boards.Model.BLUE_COIN ->  {
+        when (viewModel.getBoardType(nodeId)) {
+            Boards.Model.BLUE_COIN -> {
                 mBoard.setImageResource(R.drawable.ic_board_bluecoin_bg)
                 show4MicConfiguration()
             }
@@ -102,7 +102,9 @@ class BeamFormingFragment: Fragment() {
             Boards.Model.NUCLEO_F401RE,
             Boards.Model.NUCLEO_L476RG,
             Boards.Model.NUCLEO_L053R8,
-            Boards.Model.NUCLEO_F446RE ->  {
+            Boards.Model.NUCLEO_U575ZIQ,
+            Boards.Model.NUCLEO_U5A5ZJQ,
+            Boards.Model.NUCLEO_F446RE -> {
                 mBoard.setImageResource(R.drawable.ic_board_nucleo_bg)
                 show2MicConfiguration()
             }
@@ -134,9 +136,13 @@ class BeamFormingFragment: Fragment() {
         }
 
         viewModel.beamFormingEnabled.observe(viewLifecycleOwner, Observer {
-            if(it==true) {
+            if (it == true) {
                 mCurrentDirId = DEFAULT_DIRECTION
-                viewModel.enableBeamForming(nodeId, checked = true, useStrongBeamFormingAlgorithm = true)
+                viewModel.enableBeamForming(
+                    nodeId,
+                    checked = true,
+                    useStrongBeamFormingAlgorithm = true
+                )
                 setBeamFormingButton(mCurrentDirId)
 
                 setupOnCheckedDirListener()
@@ -160,17 +166,17 @@ class BeamFormingFragment: Fragment() {
     private val mOnDirectionSelected =
         CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, isSelected: Boolean ->
             if (!isSelected) return@OnCheckedChangeListener
-            val buttonDir= mButtonToDirection[compoundButton]
-            if(buttonDir!=null) {
+            val buttonDir = mButtonToDirection[compoundButton]
+            if (buttonDir != null) {
                 setBeamFormingButton(buttonDir)
             }
         }
 
     private fun setBeamFormingButton(newDirection: BeamDirectionType) {
-        val selectedButton = mButtonToDirection.entries.find{it.value== newDirection}?.key
+        val selectedButton = mButtonToDirection.entries.find { it.value == newDirection }?.key
         if (selectedButton != null) {
             mCurrentDirId = newDirection
-            viewModel.setBeamFormingDirection(nodeId,mCurrentDirId)
+            viewModel.setBeamFormingDirection(nodeId, mCurrentDirId)
             selectedButton.isChecked = true
             deselectAllButtonDifferentFrom(selectedButton)
         }
@@ -206,7 +212,7 @@ class BeamFormingFragment: Fragment() {
     override fun onPause() {
         super.onPause()
         mWaveformView.stopPlotting()
-        viewModel.enableBeamForming(nodeId=nodeId, checked = false)
+        viewModel.enableBeamForming(nodeId = nodeId, checked = false)
         viewModel.stopDemo(nodeId = nodeId)
     }
 
@@ -247,7 +253,8 @@ class BeamFormingFragment: Fragment() {
         val buttonHalfSize = (mRightButton.width / 2).toFloat()
         val r = (mRightButton.x - mLeftButton.x) / 2
         val margin2 = (imageSize / 2 - r / sqrt(2.0) - buttonHalfSize).toInt()
-        var relBtn: RelativeLayout.LayoutParams = mTopRightButton.layoutParams as RelativeLayout.LayoutParams
+        var relBtn: RelativeLayout.LayoutParams =
+            mTopRightButton.layoutParams as RelativeLayout.LayoutParams
         relBtn.topMargin = margin2
         relBtn.marginEnd = margin2
         //update the parameters

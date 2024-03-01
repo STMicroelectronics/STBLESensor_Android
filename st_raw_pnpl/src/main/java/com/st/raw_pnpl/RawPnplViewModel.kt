@@ -8,6 +8,7 @@
 package com.st.raw_pnpl
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import java.lang.StringBuilder
 import javax.inject.Inject
@@ -69,7 +71,7 @@ class RawPnplViewModel
     val enableCollapse: State<Boolean>
         get() = _enableCollapse
 
-    private val _lastStatusUpdatedAt = mutableStateOf(value = 0L)
+    private val _lastStatusUpdatedAt = mutableLongStateOf(value = 0L)
     val lastStatusUpdatedAt: State<Long>
         get() = _lastStatusUpdatedAt
 
@@ -152,8 +154,26 @@ class RawPnplViewModel
                         featureCommand = featureCommand
                     )
 
-                    sendGetComponentStatus(nodeId = nodeId, compName = name)
+                    //sendGetComponentStatus(nodeId = nodeId, compName = name)
+                    sendGetAllCommand(nodeId = nodeId)
                 }
+            }
+        }
+    }
+
+    private fun sendGetAllCommand(nodeId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val feature =
+                blueManager.nodeFeatures(nodeId = nodeId).find { it.name == PnPL.NAME }
+                    ?: return@launch
+
+            if (feature is PnPL) {
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
+                    nodeId = nodeId,
+                    featureCommand = PnPLCommand(feature = feature, cmd = PnPLCmd.ALL)
+                )
             }
         }
     }
@@ -265,6 +285,18 @@ class RawPnplViewModel
 
                                     }
                                 }
+
+                                foundStream.customFormat?.let { customFormat ->
+                                    customFormat.output.forEach { output ->
+                                        string.append("$count) ${output.name}: ")
+                                        count++
+                                        string.append("[ ")
+                                        output.values.forEach { value ->
+                                            string.append("$value ")
+                                        }
+                                        string.append("]\n")
+                                    }
+                                }
                             }
                         }
                         _dataFeature.emit(string.toString())
@@ -279,13 +311,21 @@ class RawPnplViewModel
 
         _componentStatusUpdates.value = emptyList()
 
-        coroutineScope.launch {
+//        coroutineScope.launch {
+//            val features = blueManager.nodeFeatures(nodeId)
+//                .filter { it.name == RawPnPLControlled.NAME || it.name == PnPL.NAME }
+//
+//            blueManager.disableFeatures(
+//                nodeId = nodeId,
+//                features = features
+//            )
+//        }
+        //Not optimal... but in this way... I am able to see the get status if demo is customized
+        runBlocking {
             val features = blueManager.nodeFeatures(nodeId)
                 .filter { it.name == RawPnPLControlled.NAME || it.name == PnPL.NAME }
-
             blueManager.disableFeatures(
-                nodeId = nodeId,
-                features = features
+                nodeId = nodeId, features = features
             )
         }
     }

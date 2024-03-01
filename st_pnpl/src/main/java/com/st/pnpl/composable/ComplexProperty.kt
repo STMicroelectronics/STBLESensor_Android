@@ -74,29 +74,29 @@ fun ComplexProperty(
                         mustBeShowed = !hideProperties.contains(schema.name)
                     }
                     if(mustBeShowed) {
-                    var enumData: Int? = null
-                    if (data is JsonPrimitive) {
-                        enumData = data.intOrNull
+                        var enumData: Int? = null
+                        if (data is JsonPrimitive) {
+                            enumData = data.intOrNull
+                        }
+                        EnumProperty(
+                            modifier = modifier,
+                            label = label,
+                            data = enumData,
+                            unit = unit,
+                            enabled = enabled,
+                            color = color,
+                            description = description,
+                            comment = comment,
+                            initialValue = schema.initValue,
+                            colors = schema.enumColors.map {
+                                it.value to it.color
+                            },
+                            values = schema.enumValues.map {
+                                it.displayName.localizedDisplayName to it.enumValue
+                            },
+                            onValueChange = onValueChange
+                        )
                     }
-                    EnumProperty(
-                        modifier = modifier,
-                        label = label,
-                        data = enumData,
-                        unit = unit,
-                        enabled = enabled,
-                        color = color,
-                        description = description,
-                        comment = comment,
-                        initialValue = schema.initValue,
-                        colors = schema.enumColors.map {
-                            it.value to it.color
-                        },
-                        values = schema.enumValues.map {
-                            it.displayName.localizedDisplayName to it.enumValue
-                        },
-                        onValueChange = onValueChange
-                    )
-                }
                 }
 
                 DtmiContent.DtmiEnumContent.EnumType.STRING -> {
@@ -105,31 +105,31 @@ fun ComplexProperty(
                         mustBeShowed = !hideProperties.contains(schema.name)
                     }
                     if(mustBeShowed) {
-                    var enumData: String? = null
-                    if (data is JsonPrimitive) {
-                        enumData = data.contentOrNull
+                        var enumData: String? = null
+                        if (data is JsonPrimitive) {
+                            enumData = data.contentOrNull
+                        }
+                        EnumProperty(
+                            modifier = modifier,
+                            label = label,
+                            unit = unit,
+                            data = enumData,
+                            enabled = enabled,
+                            color = color,
+                            description = description,
+                            comment = comment,
+                            initialValue = schema.initValue,
+                            colors = schema.enumColors.map {
+                                it.value to it.color
+                            },
+                            values = schema.enumValues.map {
+                                it.displayName.localizedDisplayName to it.enumValue
+                            },
+                            onValueChange = onValueChange
+                        )
                     }
-                    EnumProperty(
-                        modifier = modifier,
-                        label = label,
-                        unit = unit,
-                        data = enumData,
-                        enabled = enabled,
-                        color = color,
-                        description = description,
-                        comment = comment,
-                        initialValue = schema.initValue,
-                        colors = schema.enumColors.map {
-                            it.value to it.color
-                        },
-                        values = schema.enumValues.map {
-                            it.displayName.localizedDisplayName to it.enumValue
-                        },
-                        onValueChange = onValueChange
-                    )
                 }
             }
-        }
         }
 
         is DtmiContent.DtmiObjectContent -> ObjectProperty(

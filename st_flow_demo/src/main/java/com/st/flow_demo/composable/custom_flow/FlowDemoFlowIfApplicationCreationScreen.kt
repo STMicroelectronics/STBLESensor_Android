@@ -61,7 +61,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
 
     val availableCustomFlowList by viewModel.flowsCustomList.collectAsStateWithLifecycle()
 
-    val filteredAvailableCustomExprFlowList = availableCustomFlowList.filter { it -> canBeUsedAsExp(it) }
+    val filteredAvailableCustomExprFlowList = availableCustomFlowList.filter { canBeUsedAsExp(it) }
 
     BackHandler {
         openConfirmationDialog = true

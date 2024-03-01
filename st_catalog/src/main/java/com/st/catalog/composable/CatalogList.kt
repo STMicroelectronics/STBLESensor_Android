@@ -7,20 +7,33 @@
  */
 package com.st.catalog.composable
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
+import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -28,9 +41,13 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +62,9 @@ import com.st.ui.composables.StTopBar
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
+import com.st.ui.theme.PrimaryBlue
 import com.st.ui.theme.SecondaryBlue
+import kotlinx.coroutines.launch
 
 @Composable
 fun CatalogList(
@@ -156,39 +175,160 @@ fun CatalogList(
                 contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
             ) { /** NOOP **/ }
         }) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .padding(paddingValues = paddingValues)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-            verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
         ) {
-            items(filteredBoardDescriptions) {
-                if (boardOrder == BoardOrder.RELEASE_DATE) {
-                    CatalogListItem(
-                        boardName = it.boardName,
-                        boardVariant = it.boardVariant,
-                        friendlyName = it.friendlyName,
-                        boardStatus = it.status,
-                        description = it.description,
-                        boardTypeName = it.boardModel().name,
-                        releaseDate = it.releaseDate,
-                        onClickItem = {
-                            onBoardSelected(it.bleDevId)
+            var column by rememberSaveable {
+                mutableStateOf(true)
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = LocalDimensions.current.paddingNormal),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = "ListView",
+                    style = MaterialTheme.typography.bodySmall
+                )
+
+                Icon(
+                    modifier = Modifier.clickable { column = !column },
+                    tint = PrimaryBlue,
+                    imageVector = if (column) {
+                        Icons.Default.GridView
+                    } else {
+                        Icons.Default.ViewList
+                    },
+                    contentDescription = "Grid/List View"
+                )
+            }
+
+            if (column) {
+                Box(modifier = Modifier.weight(1f)) {
+                    val state = rememberLazyListState()
+
+                    val coroutineScope = rememberCoroutineScope()
+
+                    LazyColumn(
+                        state = state,
+                        modifier = Modifier
+                            .padding(paddingValues = paddingValues),
+                        contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(filteredBoardDescriptions) {
+                            CatalogListItem(
+                                boardName = it.boardName,
+                                boardVariant = it.boardVariant,
+                                friendlyName = it.friendlyName,
+                                boardStatus = it.status,
+                                description = it.description,
+                                boardTypeName = it.boardModel().name,
+                                releaseDate = if (boardOrder == BoardOrder.RELEASE_DATE) {
+                                    it.releaseDate
+                                } else {
+                                    null
+                                },
+                                onClickItem = {
+                                    onBoardSelected(it.bleDevId)
+                                }
+                            )
                         }
-                    )
-                } else {
-                    CatalogListItem(
-                        boardName = it.boardName,
-                        boardVariant = it.boardVariant,
-                        friendlyName = it.friendlyName,
-                        boardStatus = it.status,
-                        description = it.description,
-                        boardTypeName = it.boardModel().name,
-                        onClickItem = {
-                            onBoardSelected(it.bleDevId)
+                    }
+
+                    val showButton by remember {
+                        derivedStateOf {
+                            state.firstVisibleItemIndex > 0
                         }
-                    )
+                    }
+
+                    if (showButton) {
+                        FloatingActionButton(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(LocalDimensions.current.paddingNormal),
+                            contentColor = SecondaryBlue,
+                            backgroundColor = Grey0,
+                            shape = CircleShape,
+                            onClick = {
+                                coroutineScope.launch {
+                                    state.animateScrollToItem(index = 0)
+                                }
+                            }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.primary,
+                                imageVector = Icons.Default.KeyboardDoubleArrowUp,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            } else {
+                Box(modifier = Modifier.weight(1f)) {
+                    val state = rememberLazyGridState()
+
+                    val coroutineScope = rememberCoroutineScope()
+
+                    LazyVerticalGrid(
+                        state = state,
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .padding(paddingValues = paddingValues),
+                        contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal),
+                        horizontalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
+                    ) {
+                        items(filteredBoardDescriptions) {
+                            CatalogListThumbnailItem(
+                                boardName = it.boardName,
+                                boardVariant = it.boardVariant,
+                                friendlyName = it.friendlyName,
+                                boardStatus = it.status,
+                                boardTypeName = it.boardModel().name,
+                                releaseDate = if (boardOrder == BoardOrder.RELEASE_DATE) {
+                                    it.releaseDate
+                                } else {
+                                    null
+                                },
+                                onClickItem = {
+                                    onBoardSelected(it.bleDevId)
+                                }
+                            )
+                        }
+                    }
+
+                    val showButton by remember {
+                        derivedStateOf {
+                            state.firstVisibleItemIndex > 0
+                        }
+                    }
+
+                    if (showButton) {
+                        FloatingActionButton(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(LocalDimensions.current.paddingNormal),
+                            contentColor = SecondaryBlue,
+                            backgroundColor = Grey0,
+                            shape = CircleShape,
+                            onClick = {
+                                coroutineScope.launch {
+                                    state.animateScrollToItem(index = 0)
+                                }
+                            }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.primary,
+                                imageVector = Icons.Default.KeyboardDoubleArrowUp,
+                                contentDescription = null
+                            )
+                        }
+                    }
                 }
             }
         }

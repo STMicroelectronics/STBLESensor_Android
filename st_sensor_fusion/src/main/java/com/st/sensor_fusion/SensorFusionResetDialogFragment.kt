@@ -55,6 +55,8 @@ class SensorFusionResetDialogFragment : DialogFragment() {
             Boards.Model.SENSOR_TILE_BOX_PRO -> R.drawable.box_pro_case_top
             Boards.Model.SENSOR_TILE_BOX_PROB -> R.drawable.box_pro_case_top
             Boards.Model.NUCLEO -> R.drawable.ic_board_nucleo_bg
+            Boards.Model.NUCLEO_U575ZIQ -> R.drawable.ic_board_nucleo_bg
+            Boards.Model.NUCLEO_U5A5ZJQ -> R.drawable.ic_board_nucleo_bg
             Boards.Model.NUCLEO_F401RE -> R.drawable.ic_board_nucleo_bg
             Boards.Model.NUCLEO_L476RG -> R.drawable.ic_board_nucleo_bg
             Boards.Model.NUCLEO_L053R8 -> R.drawable.ic_board_nucleo_bg

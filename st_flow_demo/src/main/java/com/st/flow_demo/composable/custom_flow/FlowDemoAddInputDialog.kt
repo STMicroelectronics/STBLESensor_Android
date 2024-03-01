@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -85,14 +86,14 @@ fun FlowDemoAddInputDialog(
         if (flowOnCreation != null) {
 
             var numberOfExpSelected by remember {
-                mutableStateOf(flowOnCreation.flows.filter { it ->
+                mutableIntStateOf(flowOnCreation.flows.filter {
                     isAlsoExp(
                         it
                     )
                 }.size)
             }
             var numberOfSensorSelected by remember(numberOfExpSelected) {
-                mutableStateOf(
+                mutableIntStateOf(
                     flowOnCreation.sensors.size + flowOnCreation.flows.size - numberOfExpSelected
                 )
             }
@@ -101,7 +102,7 @@ fun FlowDemoAddInputDialog(
                 modifier = Modifier.fillMaxWidth(),
                 shape = Shapes.medium
             ) {
-                Column() {
+                Column {
                     if (errorText != null) {
                         Text(
                             modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
@@ -127,7 +128,7 @@ fun FlowDemoAddInputDialog(
                             )
                         }
 
-                        items(availableInput) { it ->
+                        items(availableInput) {
                             val currentSensorFlow = findSensorById(flowOnCreation.sensors, it.id)
                             var booleanData = currentSensorFlow != null
 
@@ -171,7 +172,7 @@ fun FlowDemoAddInputDialog(
                                 )
                             }
 
-                            items(availableExpansionSensorFilter) { it ->
+                            items(availableExpansionSensorFilter) {
                                 val currentSensorFlow = findSensorById(flowOnCreation.sensors, it.id)
                                 var booleanData = currentSensorFlow != null
 

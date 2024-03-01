@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import java.io.FileNotFoundException
 import java.io.IOError
@@ -47,7 +48,7 @@ class BinaryContentViewModel @Inject constructor(
 
     private var observeFeaturePnPLJob: Job? = null
 
-    var maxPayloadSize:Int=20
+    var maxPayloadSize: Int = 20
 
     private val _modelUpdates =
         mutableStateOf<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>(
@@ -150,7 +151,10 @@ class BinaryContentViewModel @Inject constructor(
             _isLoading.value = true
 
             _modelUpdates.value =
-                blueManager.getDtmiModel(nodeId = nodeId,isBeta = stPreferences.isBetaApplication())?.extractComponent(compName = compName)
+                blueManager.getDtmiModel(
+                    nodeId = nodeId,
+                    isBeta = stPreferences.isBetaApplication()
+                )?.extractComponent(compName = compName)
                     ?: emptyList()
 
             _enableCollapse.value = false
@@ -185,7 +189,7 @@ class BinaryContentViewModel @Inject constructor(
                     )
 
                     //sendGetAllCommand(nodeId = nodeId)
-                    sendGetComponentStatus(nodeId = nodeId,compName = name)
+                    sendGetComponentStatus(nodeId = nodeId, compName = name)
                 }
             }
         }
@@ -216,7 +220,7 @@ class BinaryContentViewModel @Inject constructor(
                     )
 
                     //sendGetAllCommand(nodeId = nodeId)
-                    sendGetComponentStatus(nodeId = nodeId,compName = name)
+                    sendGetComponentStatus(nodeId = nodeId, compName = name)
                 }
             }
         }
@@ -301,8 +305,8 @@ class BinaryContentViewModel @Inject constructor(
                     )
                     byteArrayContentToBoard = null
                     _binaryContentReadyForSending.value = false
-                    _numberPackets.value=0
-                    _bytesRec.value=0
+                    _numberPackets.value = 0
+                    _bytesRec.value = 0
                 }
             }
         }
@@ -310,8 +314,8 @@ class BinaryContentViewModel @Inject constructor(
 
     fun startDemo(nodeId: String) {
         observeFeaturePnPLJob?.cancel()
-        _numberPackets.value=0
-        _bytesRec.value=0
+        _numberPackets.value = 0
+        _bytesRec.value = 0
 
         //Set the maxPayload size used for writing to node..
 //        val node = blueManager.getNode(nodeId)
@@ -334,7 +338,10 @@ class BinaryContentViewModel @Inject constructor(
                             _isLoading.value = true
 
                             _modelUpdates.value =
-                                blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())
+                                blueManager.getDtmiModel(
+                                    nodeId = nodeId,
+                                    isBeta = stPreferences.isBetaApplication()
+                                )
                                     ?.extractComponent(compName = "control") ?: emptyList()
 
                             _enableCollapse.value = false
@@ -375,7 +382,7 @@ class BinaryContentViewModel @Inject constructor(
                             _isLoading.value = false
                         }
                     } else if (data is RawData) {
-                        if(data.data.value!=null) {
+                        if (data.data.value != null) {
                             //EOS received
                             byteArrayContentFromBoard = data.data.value
                             _binaryContentReceived.value = true
@@ -393,13 +400,21 @@ class BinaryContentViewModel @Inject constructor(
 
         _componentStatusUpdates.value = emptyList()
 
-        coroutineScope.launch {
+//        coroutineScope.launch {
+//            val features = blueManager.nodeFeatures(nodeId)
+//                .filter { it.name == BinaryContent.NAME || it.name == PnPL.NAME }
+//
+//            blueManager.disableFeatures(
+//                nodeId = nodeId,
+//                features = features
+//            )
+//        }
+        //Not optimal... but in this way... I am able to see the get status if demo is customized
+        runBlocking {
             val features = blueManager.nodeFeatures(nodeId)
                 .filter { it.name == BinaryContent.NAME || it.name == PnPL.NAME }
-
             blueManager.disableFeatures(
-                nodeId = nodeId,
-                features = features
+                nodeId = nodeId, features = features
             )
         }
     }

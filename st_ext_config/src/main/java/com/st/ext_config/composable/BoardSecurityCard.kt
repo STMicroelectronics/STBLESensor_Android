@@ -9,8 +9,8 @@ package com.st.ext_config.composable
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,7 +38,6 @@ import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.Shapes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardSecurityCard(
     modifier: Modifier = Modifier,
@@ -51,7 +50,18 @@ fun BoardSecurityCard(
     showCertRequest: Boolean = true,
     onCertRequest: () -> Unit = { /** NOOP **/ }
 ) {
-    var isOpen by rememberSaveable { mutableStateOf(value = true) }
+    var isOpen by rememberSaveable(
+        showChangePin,
+        showClearDB,
+        showCertRegistration,
+        showCertRequest
+    ) {
+        mutableStateOf(
+            value = showChangePin || showClearDB ||
+                    showCertRegistration || showCertRequest
+        )
+    }
+
     var pin by rememberSaveable { mutableStateOf(value = "123456") }
     var openChangePINDialog by rememberSaveable { mutableStateOf(value = false) }
 
@@ -76,8 +86,8 @@ fun BoardSecurityCard(
 
             AnimatedVisibility(
                 visible = isOpen,
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = expandVertically(),
+                exit = shrinkVertically()
             ) {
                 BoardSecurityContentCard(
                     showChangePin = showChangePin,
@@ -188,33 +198,33 @@ fun BoardSecurityContentCard(
             text = stringResource(id = R.string.st_extConfig_boardSecurity_clearDb)
         )
 
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+//        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-        val certRegTextColor = if (showCertRegistration) Grey6 else Grey6.copy(alpha = 0.3f)
-        Text(
-            modifier = Modifier.clickable {
-                if (showCertRegistration) {
-                    onCertRegistration()
-                }
-            },
-            color = certRegTextColor,
-            style = MaterialTheme.typography.bodyMedium,
-            text = stringResource(id = R.string.st_extConfig_boardSecurity_certRegistration)
-        )
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-        val certReqTextColor = if (showCertRequest) Grey6 else Grey6.copy(alpha = 0.3f)
-        Text(
-            modifier = Modifier.clickable {
-                if (showCertRequest) {
-                    onCertRequest()
-                }
-            },
-            color = certReqTextColor,
-            style = MaterialTheme.typography.bodyMedium,
-            text = stringResource(id = R.string.st_extConfig_boardSecurity_certRequest)
-        )
+//        val certRegTextColor = if (showCertRegistration) Grey6 else Grey6.copy(alpha = 0.3f)
+//        Text(
+//            modifier = Modifier.clickable {
+//                if (showCertRegistration) {
+//                    onCertRegistration()
+//                }
+//            },
+//            color = certRegTextColor,
+//            style = MaterialTheme.typography.bodyMedium,
+//            text = stringResource(id = R.string.st_extConfig_boardSecurity_certRegistration)
+//        )
+//
+//        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+//
+//        val certReqTextColor = if (showCertRequest) Grey6 else Grey6.copy(alpha = 0.3f)
+//        Text(
+//            modifier = Modifier.clickable {
+//                if (showCertRequest) {
+//                    onCertRequest()
+//                }
+//            },
+//            color = certReqTextColor,
+//            style = MaterialTheme.typography.bodyMedium,
+//            text = stringResource(id = R.string.st_extConfig_boardSecurity_certRequest)
+//        )
     }
 }
 

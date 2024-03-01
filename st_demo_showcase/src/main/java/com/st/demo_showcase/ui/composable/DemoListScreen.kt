@@ -32,6 +32,7 @@ import com.st.blue_sdk.models.Node
 import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.utils.DTMIModelLoadedStatus
 import com.st.demo_showcase.utils.isExpertRequired
+import com.st.demo_showcase.utils.isLastFwVersionMandatory
 import com.st.demo_showcase.utils.isLoginRequired
 import com.st.demo_showcase.utils.isPnPLMandatory
 import com.st.ui.composables.BlueMsButton
@@ -50,12 +51,15 @@ fun DemoListScreen(
     device: Node?,
     isLoggedIn: Boolean,
     isExpert: Boolean,
+    isBetaApplication: Boolean,
+    fwUpdateAvailable: Boolean,
     statusModelDTMI: DTMIModelLoadedStatus = DTMIModelLoadedStatus.NotNecessary,
     pinnedDevices: List<String>,
     availableDemos: List<Demo>,
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ },
     onLoginRequired: () -> Unit = { /** NOOP **/ },
     onExpertRequired: () -> Unit = { /** NOOP **/ },
+    onLastFwRequired: ()  -> Unit = { /** NOOP **/ },
     onDemoSelected: (Demo) -> Unit = { /** NOOP **/ },
     onCustomDTMIClicked: () -> Unit = { /** NOOP **/ },
     onDemoReordered: (Int, Int) -> Unit = { _, _ -> /** NOOP **/ }
@@ -64,6 +68,10 @@ fun DemoListScreen(
     var openDeniedExpertDemoDialog by rememberSaveable { mutableStateOf(value = false) }
     var openDeniedExpertLoginDemoDialog by rememberSaveable { mutableStateOf(value = false) }
     var openDeniedPnPLDemoDialog by rememberSaveable { mutableStateOf(value = false) }
+    var openDeniedLastFwDialog by rememberSaveable {
+        mutableStateOf(value = false)
+    }
+
     val haptic = LocalHapticFeedback.current
     val state = rememberReorderableLazyListState(onMove = { from, to ->
         if (from.index > 0 && to.index > 1) {
@@ -107,23 +115,35 @@ fun DemoListScreen(
         items(availableDemos, key = { it.name }) { item ->
             ReorderableItem(state, key = item.name) { isDragging ->
                 if (isDragging) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                val scale by animateFloatAsState(if (isDragging) 1.1f else 1.0f)
-                val elevation by animateDpAsState(if (isDragging) LocalDimensions.current.elevationLarge else 0.dp)
+                val scale by animateFloatAsState(
+                    if (isDragging) 1.1f else 1.0f,
+                    label = "Moving Demo Scale"
+                )
+                val elevation by animateDpAsState(
+                    if (isDragging) LocalDimensions.current.elevationLarge else 0.dp,
+                    label = "Moving Demo Elevation"
+                )
                 DemoListItem(
                     modifier = Modifier
                         .detectReorderAfterLongPress(state)
                         .scale(scale)
                         .shadow(elevation = elevation),
                     item = item,
-                    isLoginLock = item.isLoginRequired() && !isLoggedIn,
-                    isExpertLock = item.isExpertRequired() && !isExpert,
-                    isPnPLlock = item.isPnPLMandatory() && ((statusModelDTMI == DTMIModelLoadedStatus.CustomNotLoaded) || (statusModelDTMI == DTMIModelLoadedStatus.NotNecessary)),
+                    isLoginLock = if (isBetaApplication) false else {
+                        item.isLoginRequired() && !isLoggedIn
+                    },
+                    isExpertLock = if (isBetaApplication) false else {
+                        item.isExpertRequired() && !isExpert
+                    },
+                    isPnPLLock = item.isPnPLMandatory() && ((statusModelDTMI == DTMIModelLoadedStatus.CustomNotLoaded) || (statusModelDTMI == DTMIModelLoadedStatus.NotNecessary)),
+                    isLastFwLock = item.isLastFwVersionMandatory() && fwUpdateAvailable,
                     even = availableDemos.indexOf(item) % 2 == 0,
                     isLastOne = availableDemos.indexOf(item) == availableDemos.lastIndex,
                     onDemoSelected = onDemoSelected,
                     onLoginRequired = { openDeniedLoginDemoDialog = true },
                     onExpertRequired = { openDeniedExpertDemoDialog = true },
                     onPnPLRequired = { openDeniedPnPLDemoDialog = true },
+                    onLastFwRequired = { openDeniedLastFwDialog = true },
                     onExpertLoginRequired = { openDeniedExpertLoginDemoDialog = true }
                 )
             }
@@ -153,6 +173,13 @@ fun DemoListScreen(
     if (openDeniedExpertLoginDemoDialog) {
         ExpertLoginRestrictionDialog(
             onOk = { openDeniedExpertLoginDemoDialog = false }
+        )
+    }
+
+    if(openDeniedLastFwDialog) {
+        LastFwRestrictionDialog(
+            onLastFwRequired = onLastFwRequired,
+            onDismiss = { openDeniedLastFwDialog = false }
         )
     }
 }
@@ -189,6 +216,41 @@ fun LoginRestrictionDialog(
         }
     )
 }
+
+
+@SuppressLint("MissingPermission")
+@Composable
+fun LastFwRestrictionDialog(
+    onDismiss: () -> Unit,
+    onLastFwRequired: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Demo Locked")
+        },
+        text = {
+            Text(
+                "This functionality is only available only with the latest Fw version\nPressing Ok the application will download the latest Fw version"
+            )
+        },
+        dismissButton = {
+            BlueMsButtonOutlined(
+                text = stringResource(id = android.R.string.cancel),
+                onClick = onDismiss
+            )
+        },
+        confirmButton = {
+            BlueMsButton(
+                text = stringResource(id = android.R.string.ok), onClick = {
+                    onLastFwRequired()
+                    onDismiss()
+                }
+            )
+        }
+    )
+}
+
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -281,8 +343,10 @@ private fun DemoListScreenPreview() {
             device = null,
             isLoggedIn = true,
             isExpert = true,
+            isBetaApplication = false,
+            fwUpdateAvailable = false,
             pinnedDevices = emptyList(),
-            availableDemos = Demo.values().toList()
+            availableDemos = Demo.entries
         )
     }
 }

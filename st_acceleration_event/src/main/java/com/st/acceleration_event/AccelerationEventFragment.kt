@@ -32,7 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AccelerationEventFragment : Fragment(){
+class AccelerationEventFragment : Fragment() {
 
     private val viewModel: AccelerationEventViewModel by viewModels()
     private lateinit var binding: AccelerationEventFragmentBinding
@@ -129,6 +129,8 @@ class AccelerationEventFragment : Fragment(){
             Boards.Model.NUCLEO_L476RG -> nucleoSupportedEvents
             Boards.Model.NUCLEO_L053R8 -> nucleoSupportedEvents
             Boards.Model.NUCLEO_F446RE -> nucleoSupportedEvents
+            Boards.Model.NUCLEO_U575ZIQ -> nucleoSupportedEvents
+            Boards.Model.NUCLEO_U5A5ZJQ -> nucleoSupportedEvents
             else -> arrayOf(DetectableEventType.None)
         }
     }
@@ -154,6 +156,8 @@ class AccelerationEventFragment : Fragment(){
             Boards.Model.NUCLEO_L476RG -> DetectableEventType.Orientation
             Boards.Model.NUCLEO_L053R8 -> DetectableEventType.Orientation
             Boards.Model.NUCLEO_F446RE -> DetectableEventType.Orientation
+            Boards.Model.NUCLEO_U575ZIQ -> DetectableEventType.Orientation
+            Boards.Model.NUCLEO_U5A5ZJQ -> DetectableEventType.Orientation
             else -> DetectableEventType.None
         }
     }
@@ -209,12 +213,17 @@ class AccelerationEventFragment : Fragment(){
         mEventSelector.setSelection(mDetectableEventArrayAdapter.getPosition(mCurrentEvent))
         mEventSelector.isEnabled = true
 
-        mEventSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        mEventSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
 
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, selectedIndex: Int, p3: Long) {
+            override fun onItemSelected(
+                p0: AdapterView<*>?,
+                p1: View?,
+                selectedIndex: Int,
+                p3: Long
+            ) {
                 val selectedEvent = mDetectableEventArrayAdapter.getItem(selectedIndex)
                 if (selectedEvent == DetectableEventType.Multiple) {
                     mSingleEventView.visibility = View.GONE

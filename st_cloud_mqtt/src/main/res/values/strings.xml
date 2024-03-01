@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_tab_cloud_config">Cloud Config</string>
+    <string name="navigation_tab_device_connection">Dev Upload</string>
+</resources>

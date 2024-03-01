@@ -15,7 +15,8 @@ interface ApplicationAnalyticsService {
         STBLESensorDev,
         STBLESensorRel,
         STAssetTrackingDev,
-        STAssetTrackingRel
+        STAssetTrackingRel,
+        STVespucciDev
     }
 
     fun reportApplicationAnalytics(context: Context)
@@ -24,7 +25,7 @@ interface ApplicationAnalyticsService {
         nodeName: String,
         nodeType: String,
         fwVersion: String,
-        FwFullName: String
+        fwFullName: String
     )
 
     fun reportProfile(profile: String)

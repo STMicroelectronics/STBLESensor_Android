@@ -84,6 +84,12 @@ class DemoShowCaseViewModel @Inject constructor(
     private val _isExpert = MutableStateFlow(false)
     val isExpert = _isExpert.asStateFlow()
 
+    private val _isBeta = MutableStateFlow(false)
+    val isBeta = _isBeta.asStateFlow()
+
+    private val _fwUpdateAvailable = MutableStateFlow(false)
+    val fwUpdateAvailable = _fwUpdateAvailable.asStateFlow()
+
 
     private var familyType: Boards.Family = Boards.Family.OTHER_FAMILY
 
@@ -111,7 +117,7 @@ class DemoShowCaseViewModel @Inject constructor(
                         .not()
                     )
 
-        //Start Demo?
+        //Start Demo
         if (isDemoHome) {
             appAnalyticsService.forEach {
                 currentDemo.value?.let { demo ->
@@ -140,60 +146,85 @@ class DemoShowCaseViewModel @Inject constructor(
         viewModelScope.launch {
             _nodeId.value = nodeId
 
-            val firmwareInfo = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
-            _device.value = firmwareInfo
+            var firmwareInfo: Node? = null
+            try {
+                firmwareInfo = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
+                _device.value = firmwareInfo
+            } catch (e: Exception) {
+                exitFromDemoShowCase(nodeId)
+            }
 
+            firmwareInfo?.let {
+                familyType = firmwareInfo.familyType
 
-            familyType = firmwareInfo.familyType
+                checkFwUpdate()
 
-            checkFwUpdate()
-
-            appAnalyticsService.forEach {
-                if ((firmwareInfo.advertiseInfo != null) && (firmwareInfo.catalogInfo != null)) {
-                    it.reportNodeAnalytics(
-                        firmwareInfo.advertiseInfo!!.getName(),
-                        firmwareInfo.catalogInfo!!.brdName,
-                        firmwareInfo.catalogInfo!!.fwVersion,
-                        firmwareInfo.runningFw ?: firmwareInfo.catalogInfo!!.friendlyName()
-                    )
-                } else {
-                    if (firmwareInfo.advertiseInfo != null) {
+                appAnalyticsService.forEach {
+                    if ((firmwareInfo.advertiseInfo != null) && (firmwareInfo.catalogInfo != null)) {
                         it.reportNodeAnalytics(
                             firmwareInfo.advertiseInfo!!.getName(),
-                            firmwareInfo.advertiseInfo!!.getBoardType().name,
-                            "Unknown",
-                            "Unknown"
+                            firmwareInfo.catalogInfo!!.brdName,
+                            firmwareInfo.catalogInfo!!.fwVersion,
+                            firmwareInfo.runningFw ?: firmwareInfo.catalogInfo!!.friendlyName()
                         )
                     } else {
-                        it.reportNodeAnalytics("Unknown", "Unknown", "Unknown", "Unknown")
+                        if (firmwareInfo.advertiseInfo != null) {
+                            it.reportNodeAnalytics(
+                                firmwareInfo.advertiseInfo!!.getName(),
+                                firmwareInfo.advertiseInfo!!.getBoardType().name,
+                                "Unknown",
+                                "Unknown"
+                            )
+                        } else {
+                            it.reportNodeAnalytics("Unknown", "Unknown", "Unknown", "Unknown")
+                        }
                     }
                 }
-            }
-            val model = blueManager.getDtmiModel(
-                nodeId = nodeId,
-                isBeta = stPreferences.isBetaApplication()
-            )
-            _modelUpdates.value = model
-            if (model != null) {
-                if(model.customDTMI) {
-                    _statusModelDTMI.value = DTMIModelLoadedStatus.CustomLoaded
+                val model = blueManager.getDtmiModel(
+                    nodeId = nodeId,
+                    isBeta = stPreferences.isBetaApplication()
+                )
+                _modelUpdates.value = model
+                if (model != null) {
+                    if (model.customDTMI) {
+                        _statusModelDTMI.value = DTMIModelLoadedStatus.CustomLoaded
+                    } else {
+                        _statusModelDTMI.value = DTMIModelLoadedStatus.Loaded
+                    }
                 } else {
-                    _statusModelDTMI.value = DTMIModelLoadedStatus.Loaded
-                }
-            } else {
-                _statusModelDTMI.value = DTMIModelLoadedStatus.NotNecessary
-                if ((firmwareInfo.advertiseInfo != null) && (firmwareInfo.catalogInfo != null)) {
-                    if (firmwareInfo.catalogInfo!!.dtmi != null) {
-                        _statusModelDTMI.value = DTMIModelLoadedStatus.CustomNotLoaded
+                    _statusModelDTMI.value = DTMIModelLoadedStatus.NotNecessary
+                    if ((firmwareInfo.advertiseInfo != null) && (firmwareInfo.catalogInfo != null)) {
+                        if (firmwareInfo.catalogInfo!!.dtmi != null) {
+                            _statusModelDTMI.value = DTMIModelLoadedStatus.CustomNotLoaded
+                        }
                     }
                 }
-            }
 
-            buildDemoList(nodeId)
+                buildDemoList(nodeId)
+            }
         }
     }
 
     fun disconnect(nodeId: String) {
+
+        if (_device.value != null) {
+            if (_device.value!!.catalogInfo != null) {
+                //if there is the section for Renaming Demos
+                if (_device.value!!.catalogInfo!!.demoDecorator != null) {
+                    //Restore Original Demo name
+                    _device.value!!.catalogInfo!!.demoDecorator!!.rename.forEach { renameDemo ->
+                        val match =
+                            Demo.entries.firstOrNull { renameDemo.new == it.displayName }
+                        Log.i("DemoShowCaseViewModel", "try to Rename back Demo: ${renameDemo.new}")
+                        match?.let { demo ->
+                            demo.displayName = renameDemo.old
+                            Log.i("DemoShowCaseViewModel", "Renamed back Demo: ${renameDemo.old} -> ")
+                        }
+                    }
+                }
+            }
+        }
+
         _availableDemo.value = emptyList()
         viewModelScope.launch {
             blueManager.disconnect(nodeId = nodeId)
@@ -227,7 +258,7 @@ class DemoShowCaseViewModel @Inject constructor(
             )
             _modelUpdates.value = model
             if (model != null) {
-                if(model.customDTMI) {
+                if (model.customDTMI) {
                     _statusModelDTMI.value = DTMIModelLoadedStatus.CustomLoaded
                 } else {
                     _statusModelDTMI.value = DTMIModelLoadedStatus.Loaded
@@ -260,11 +291,16 @@ class DemoShowCaseViewModel @Inject constructor(
 
                             _updateFw.value = updateFirmware.friendlyName()
 
+                            _fwUpdateAvailable.value = true
+
                             _showFwUpdate.value = true
 //                                currentFirmwareInfo.advertiseInfo?.getProtocolVersion() == 2.toShort() && currentFirmwareInfo.catalogInfo?.fota?.type == BoardFotaType.WB_READY
                         }
                     }
                 } else {
+                    _fwUpdateAvailable.value = false
+                    _updateUrl.value = ""
+                    _updateFw.value = ""
                     _showFwUpdate.value = false
                 }
             }
@@ -278,10 +314,10 @@ class DemoShowCaseViewModel @Inject constructor(
             nodeId = nodeId
         ).toMutableList()
 
-        if(audioService.isServerEnable(nodeId)) {
+        if (audioService.isServerEnable(nodeId)) {
             if (audioService.isMusicServerEnable(nodeId)) {
                 val match =
-                    buildDemoList.filter { it == Demo.BlueVoiceOpus || it == Demo.SpeechToTextDemo}
+                    buildDemoList.filter { it == Demo.BlueVoiceOpus || it == Demo.SpeechToTextDemo }
                 buildDemoList.removeAll(match.toSet())
                 buildDemoList.add(Demo.BlueVoiceFullBand)
             } else if (audioService.isFullDuplexEnable(nodeId)) {
@@ -292,10 +328,19 @@ class DemoShowCaseViewModel @Inject constructor(
             }
         }
 
-        //Check if we could add the Textual and Cloud Demos... we must have at least one Feature that notify something
+        //Check if we could add the Textual or Cloud MQTT ... we must have at least one Feature that notify something
         if (blueManager.nodeFeatures(nodeId).any { it.isDataNotifyFeature }) {
             buildDemoList.add(Demo.TextualMonitor)
-            buildDemoList.add(Demo.Cloud)
+            buildDemoList.add(Demo.CloudMqtt)
+        }
+
+        //Check if we could add the Azure IoT Central Cloud demo
+        if (_device.value != null) {
+            if (_device.value!!.catalogInfo != null) {
+                if (_device.value!!.catalogInfo!!.cloudApps.firstOrNull { cloudApp -> cloudApp.dtmiType == "iotc" } != null) {
+                    buildDemoList.add(Demo.CloudAzureIotCentral)
+                }
+            }
         }
 
         //Change PnPL-Demo name if it's present
@@ -326,14 +371,16 @@ class DemoShowCaseViewModel @Inject constructor(
                     }
 
                     //Remove demo
-                    _device.value!!.catalogInfo!!.demoDecorator!!.remove.forEach { demoName ->
-                        val match =
-                            buildDemoList.firstOrNull { it.displayName == demoName }
+                    if (!stPreferences.isDisableHiddenDemos()) {
+                        _device.value!!.catalogInfo!!.demoDecorator!!.remove.forEach { demoName ->
+                            val match =
+                                buildDemoList.firstOrNull { it.displayName == demoName }
 
-                        Log.i("DemoShowCaseViewModel", "try to Remove Demo: $demoName")
-                        match?.let {
-                            Log.i("DemoShowCaseViewModel", "Removed Demo: $demoName")
-                            buildDemoList.remove(match)
+                            Log.i("DemoShowCaseViewModel", "try to Remove Demo: $demoName")
+                            match?.let {
+                                Log.i("DemoShowCaseViewModel", "Removed Demo: $demoName")
+                                buildDemoList.remove(match)
+                            }
                         }
                     }
 
@@ -411,6 +458,12 @@ class DemoShowCaseViewModel @Inject constructor(
     fun initExpert() {
         viewModelScope.launch {
             _isExpert.emit(LevelProficiency.fromString(stPreferences.getLevelProficiency()) == LevelProficiency.EXPERT)
+        }
+    }
+
+    fun initIsBeta() {
+        viewModelScope.launch {
+            _isBeta.emit(stPreferences.isBetaApplication())
         }
     }
 

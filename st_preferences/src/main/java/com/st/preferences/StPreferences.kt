@@ -37,9 +37,13 @@ interface StPreferences {
 
     fun setBetaApplicationFlag(enableBeta: Boolean)
 
-    fun isBetaApplication() : Boolean
+    fun isBetaApplication(): Boolean
 
-    fun isServerForced() : Boolean
+    fun setDisableHiddenDemos(disableHiddenDemos: Boolean)
+
+    fun isDisableHiddenDemos(): Boolean
+
+    fun isServerForced(): Boolean
 
     fun setServerForcedFlag(serverForced: Boolean)
 
@@ -58,4 +62,16 @@ interface StPreferences {
     fun getDemoOrder(nodeId: String): List<String>
 
     fun setDemoOrder(nodeId: String, demos: List<String>)
+
+    fun setConfiguredAzureCloudApp(cloudAppUrl: String, serializedString: String)
+
+    fun getConfiguredAzureCloudApp(cloudAppUrl: String): String?
+
+    fun deleteConfiguredAzureCloudApp(cloudAppUrl: String)
+
+    fun setConfiguredMqttCloudApp(serializedString: String)
+
+    fun getConfiguredMqttCloudApp(): String?
+
+    fun deleteConfiguredMqttCloudApp()
 }

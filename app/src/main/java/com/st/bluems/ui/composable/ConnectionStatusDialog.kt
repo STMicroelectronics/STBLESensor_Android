@@ -21,17 +21,20 @@ import androidx.compose.ui.window.Dialog
 import com.st.blue_sdk.models.ConnectionStatus
 import com.st.blue_sdk.models.NodeState
 import com.st.bluems.R
+import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.WarningText
 
 @Composable
 fun ConnectionStatusDialog(
+    isPairingRequest: Boolean = false,
     connectionStatus: ConnectionStatus,
     boardName: String
 ) {
     when (connectionStatus.current) {
-        NodeState.Connecting -> NodeConnectingDialog(boardName)
+        NodeState.Connecting -> NodeConnectingDialog(boardName, isPairingRequest)
         NodeState.Connected -> NodeConnectedDialog(boardName)
         NodeState.Disconnecting -> NodeDisconnectingDialog(boardName)
         NodeState.ServicesDiscovered -> Unit
@@ -41,7 +44,7 @@ fun ConnectionStatusDialog(
 }
 
 @Composable
-fun NodeConnectingDialog(boardName: String) {
+fun NodeConnectingDialog(boardName: String, isPairingRequest: Boolean = false) {
     Dialog(onDismissRequest = { /** NOOP **/ }) {
         Surface(modifier = Modifier.fillMaxWidth()) {
             Column(
@@ -57,6 +60,18 @@ fun NodeConnectingDialog(boardName: String) {
 
                 Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
 
+                if (isPairingRequest) {
+                    Text(
+                        modifier = Modifier
+                            .padding(bottom = LocalDimensions.current.paddingMedium)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = WarningText,
+                        text = "Default PIN 123456"
+                    )
+                }
+
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth(1f))
 
                 Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
@@ -65,7 +80,10 @@ fun NodeConnectingDialog(boardName: String) {
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Grey6,
-                    text = stringResource(id = R.string.st_home_connectionStatus_connectingDescription,boardName)
+                    text = stringResource(
+                        id = R.string.st_home_connectionStatus_connectingDescription,
+                        boardName
+                    )
                 )
             }
         }
@@ -97,7 +115,10 @@ fun NodeConnectedDialog(boardName: String) {
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Grey6,
-                    text = stringResource(id = R.string.st_home_connectionStatus_connectedDescription,boardName)
+                    text = stringResource(
+                        id = R.string.st_home_connectionStatus_connectedDescription,
+                        boardName
+                    )
                 )
             }
         }
@@ -129,7 +150,10 @@ fun NodeDisconnectingDialog(boardName: String) {
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Grey6,
-                    text = stringResource(id = R.string.st_home_connectionStatus_disconnectingDescription,boardName)
+                    text = stringResource(
+                        id = R.string.st_home_connectionStatus_disconnectingDescription,
+                        boardName
+                    )
                 )
             }
         }

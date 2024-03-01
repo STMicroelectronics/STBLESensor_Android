@@ -3,11 +3,11 @@ package com.st.ui.utils
 import com.st.ui.R
 
 fun getBlueStBoardImages(boardType: String): Int {
-    return BLUE_ST_SDK_V2_BOARD_IMAGES[boardType] ?: R.drawable.real_board_generic
+    return BLUE_ST_SDK_V2_BOARD_IMAGES.getOrDefault(boardType,R.drawable.real_board_generic)
 }
 
 fun getBlueStBoardTypeImages(boardType: String): Int {
-    return BLUE_ST_SDK_V2_BOARD_TYPE_IMAGES[boardType] ?: R.drawable.real_board_generic
+    return BLUE_ST_SDK_V2_BOARD_TYPE_IMAGES.getOrDefault(boardType,R.drawable.real_board_generic)
 }
 
 private val BLUE_ST_SDK_V2_BOARD_TYPE_IMAGES = mapOf(
@@ -28,6 +28,8 @@ private val BLUE_ST_SDK_V2_BOARD_TYPE_IMAGES = mapOf(
     "NUCLEO_L053R8" to R.drawable.board_nucleo,
     "NUCLEO_L476RG" to R.drawable.board_nucleo,
     "NUCLEO_F446RE" to R.drawable.board_nucleo,
+    "NUCLEO_U575ZIQ" to R.drawable.board_nucleo,
+    "NUCLEO_U5A5ZJQ" to R.drawable.board_nucleo,
     "DISCOVERY_IOT01A" to R.drawable.board_stm32,
     "B_L475E_IOT01A" to R.drawable.board_stm32,
     "B_U585I_IOT02A" to R.drawable.board_stm32,
@@ -58,6 +60,8 @@ private val BLUE_ST_SDK_V2_BOARD_IMAGES = mapOf(
     "NUCLEO_F401RE" to R.drawable.real_board_nucleo,
     "NUCLEO_L053R8" to R.drawable.real_board_nucleo,
     "NUCLEO_L476RG" to R.drawable.real_board_nucleo,
+    "NUCLEO_U575ZIQ" to R.drawable.real_board_nucleo_u5,
+    "NUCLEO_U5A5ZJQ" to R.drawable.real_board_nucleo_u5,
     "NUCLEO_F446RE" to R.drawable.real_board_nucleo,
     "DISCOVERY_IOT01A" to R.drawable.real_board_b_l475e_iot01bx,
     "WB55_NUCLEO_BOARD" to R.drawable.real_board_nucleo_wb55,

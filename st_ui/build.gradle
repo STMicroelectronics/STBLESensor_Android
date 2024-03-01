@@ -115,9 +115,6 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Accompanist
-    api "com.google.accompanist:accompanist-insets:$accompanist_version"
-    api "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    api "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
     api "com.google.accompanist:accompanist-permissions:$accompanist_version"
 
     api "com.github.bumptech.glide:glide:$glide_version"

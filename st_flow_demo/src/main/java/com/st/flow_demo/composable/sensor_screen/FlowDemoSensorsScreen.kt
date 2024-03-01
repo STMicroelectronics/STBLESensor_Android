@@ -31,7 +31,6 @@ fun FlowDemoSensorsScreen(
     navController: NavHostController,
     paddingValues: PaddingValues
 ) {
-
     ComposableLifecycle { _, event ->
         when (event) {
             Lifecycle.Event.ON_START -> viewModel.retrieveSensorsAdapter()
@@ -83,7 +82,7 @@ fun FlowDemoSensorsScreen(
                     )
                 }
             }
-            if(sensorListOrdered.isNotEmpty()) {
+            if (sensorListOrdered.isNotEmpty()) {
                 item {
                     Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
 

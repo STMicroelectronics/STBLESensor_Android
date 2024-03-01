@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,65 +47,103 @@ class FwDownloadViewModel
     val bankStatus: StateFlow<FwDownloadUiState> = _uiState.asStateFlow()
     private val _device: MutableStateFlow<Node?> = MutableStateFlow(null)
 
-    fun startDemo(nodeId: String) {
+    fun startDemo(nodeId: String, banksStatus: BanksStatus? = null) {
         viewModelScope.launch {
             if (features.isEmpty()) {
-                blueManager.nodeFeatures(nodeId).find { ExtConfiguration.NAME == it.name }
-                    ?.let { f -> features.add(f) }
+                //if (banksStatus == null) {
+                    blueManager.nodeFeatures(nodeId).find { ExtConfiguration.NAME == it.name }
+                        ?.let { f -> features.add(f) }
 
-                blueManager.enableFeatures(
-                    nodeId = nodeId, features = features
-                )
+                    blueManager.enableFeatures(
+                        nodeId = nodeId, features = features
+                    )
+                //}
 
                 _device.value = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
 
-                features.filterIsInstance<ExtConfiguration>().firstOrNull()?.let { feature ->
-                    val response = blueManager.writeFeatureCommand(
-                        nodeId = nodeId, featureCommand = ExtendedFeatureCommand(
-                            feature = feature,
-                            extendedCommand = ExtConfigCommands.buildConfigCommand(ExtConfigCommands.BANKS_STATUS)
-                        )
-                    )
-                    if (response is ExtendedFeatureResponse) {
-                        response.response.banksStatus?.let { bankStatus ->
-                            var fwDetail1: BoardFirmware? = null
-                            var fwDetail2: BoardFirmware? = null
-                            val advInfo = _device.value?.advertiseInfo
-
-                            advInfo?.getFwInfo()?.let {
-                                fwDetail1 = catalog.getFwDetailsNode(
-                                    deviceId = it.deviceId,
-                                    bleFwId = bankStatus.fwId1
+                if (banksStatus == null) {
+                    features.filterIsInstance<ExtConfiguration>().firstOrNull()?.let { feature ->
+                        val response = blueManager.writeFeatureCommand(
+                            nodeId = nodeId, featureCommand = ExtendedFeatureCommand(
+                                feature = feature,
+                                extendedCommand = ExtConfigCommands.buildConfigCommand(
+                                    ExtConfigCommands.BANKS_STATUS
                                 )
-                                fwDetail2 = catalog.getFwDetailsNode(
-                                    deviceId = it.deviceId,
-                                    bleFwId = bankStatus.fwId2
+                            )
+                        )
+                        if (response is ExtendedFeatureResponse) {
+                            response.response.banksStatus?.let { bankStatus ->
+                                var fwDetail1: BoardFirmware? = null
+                                var fwDetail2: BoardFirmware? = null
+                                val advInfo = _device.value?.advertiseInfo
+
+                                advInfo?.getFwInfo()?.let {
+                                    fwDetail1 = catalog.getFwDetailsNode(
+                                        deviceId = it.deviceId,
+                                        bleFwId = bankStatus.fwId1
+                                    )
+                                    fwDetail2 = catalog.getFwDetailsNode(
+                                        deviceId = it.deviceId,
+                                        bleFwId = bankStatus.fwId2
+                                    )
+                                }
+                                val updateFwDetail =
+                                    if (fwDetail2?.fwName != _device.value?.fwUpdate?.fwName &&
+                                        fwDetail2?.fwVersion != _device.value?.fwUpdate?.fwVersion
+                                    )
+                                        _device.value?.fwUpdate
+                                    else
+                                        null
+
+                                _uiState.value = FwDownloadUiState(
+                                    node = _device.value,
+                                    bankStatus = bankStatus,
+                                    currentFwDetail = fwDetail1,
+                                    otherFwDetail = fwDetail2,
+                                    updateFwDetail = updateFwDetail
                                 )
                             }
-                            val updateFwDetail =
-                                if (fwDetail2?.fwName != _device.value?.fwUpdate?.fwName &&
-                                    fwDetail2?.fwVersion != _device.value?.fwUpdate?.fwVersion
-                                )
-                                    _device.value?.fwUpdate
-                                else
-                                    null
-
-                            _uiState.value = FwDownloadUiState(
-                                node = _device.value,
-                                bankStatus = bankStatus,
-                                currentFwDetail = fwDetail1,
-                                otherFwDetail = fwDetail2,
-                                updateFwDetail = updateFwDetail
-                            )
                         }
                     }
+                } else {
+                    var fwDetail1: BoardFirmware? = null
+                    var fwDetail2: BoardFirmware? = null
+                    val advInfo = _device.value?.advertiseInfo
+
+                    advInfo?.getFwInfo()?.let {
+                        fwDetail1 = catalog.getFwDetailsNode(
+                            deviceId = it.deviceId,
+                            bleFwId = banksStatus.fwId1
+                        )
+                        fwDetail2 = catalog.getFwDetailsNode(
+                            deviceId = it.deviceId,
+                            bleFwId = banksStatus.fwId2
+                        )
+                    }
+                    val updateFwDetail =
+                        if (fwDetail2?.fwName != _device.value?.fwUpdate?.fwName &&
+                            fwDetail2?.fwVersion != _device.value?.fwUpdate?.fwVersion
+                        )
+                            _device.value?.fwUpdate
+                        else
+                            null
+
+                    _uiState.value = FwDownloadUiState(
+                        node = _device.value,
+                        bankStatus = banksStatus,
+                        currentFwDetail = fwDetail1,
+                        otherFwDetail = fwDetail2,
+                        updateFwDetail = updateFwDetail
+                    )
                 }
             }
         }
     }
 
     fun stopDemo(nodeId: String) {
-        coroutineScope.launch {
+        //coroutineScope.launch {
+        //Not optimal... but in this way... I will not loose notifications
+        runBlocking {
             blueManager.disableFeatures(nodeId, features)
         }
     }

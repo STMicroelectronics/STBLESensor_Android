@@ -10,11 +10,14 @@ package com.st.demo_showcase.utils
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AreaChart
+import androidx.compose.material.icons.filled.Label
 import androidx.compose.material.icons.filled.Settings
 import androidx.navigation.NavController
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
 import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.models.LOG_SETTINGS
+import com.st.neai_classification.NEAI_CLASSIFICATION_SETTINGS
+import com.st.neai_classification.NeaiClassificationFragmentDirections
 import com.st.plot.PlotFragmentDirections
 import com.st.plot.utils.PLOT_SETTINGS
 import com.st.ui.composables.ActionItem
@@ -31,6 +34,7 @@ fun List<String>?.toActions(
             imageVector = when (it) {
                 LOG_SETTINGS -> Icons.Default.Settings
                 PLOT_SETTINGS -> Icons.Default.AreaChart
+                NEAI_CLASSIFICATION_SETTINGS -> Icons.Default.Label
                 else -> null
             },
             action = {
@@ -38,6 +42,13 @@ fun List<String>?.toActions(
                     Demo.Plot ->
                         when (it) {
                             PLOT_SETTINGS -> PlotFragmentDirections.actionDemoPlotToPlotSettingsFragment()
+                            LOG_SETTINGS -> DemoShowcaseNavGraphDirections.globalActionToLogSettings()
+                            else -> null
+                        }
+
+                    Demo.NEAIClassification ->
+                        when(it) {
+                            NEAI_CLASSIFICATION_SETTINGS -> NeaiClassificationFragmentDirections.actionNeaiClassificationFragmentToNeaiClassificationSettingFragment(nodeId)
                             LOG_SETTINGS -> DemoShowcaseNavGraphDirections.globalActionToLogSettings()
                             else -> null
                         }
@@ -56,8 +67,8 @@ fun List<String>?.toActions(
 }
 
 fun Demo.isLoginRequired(): Boolean = when (this) {
-//    Demo.Cloud -> true
     Demo.ExtConfig -> true
+    Demo.CloudAzureIotCentral -> true
     else -> false
 }
 
@@ -67,6 +78,7 @@ fun Demo.isExpertRequired(): Boolean = when (this) {
     Demo.TextualMonitor -> true
     Demo.RawPnpl -> true
     Demo.WbsOtaFUOTA -> true
+    Demo.CloudMqtt ->true
     else -> false
 }
 
@@ -80,8 +92,11 @@ fun Demo.isPnPLMandatory(): Boolean = when (this) {
 }
 
 fun Demo.isBetaRequired(): Boolean = when (this) {
-//    Demo.RawPnpl -> true
-//    Demo.SmartMotorControl -> true
+    else -> false
+}
+
+fun Demo.isLastFwVersionMandatory(): Boolean = when (this) {
+    Demo.Flow -> true
     else -> false
 }
 
@@ -89,7 +104,6 @@ fun Demo.isBetaRequired(): Boolean = when (this) {
 fun Demo.getDescription(context: Context): String =
     when (this) {
         Demo.Flow -> "Deploy one application to the board"
-        Demo.Cloud -> "Connect the board to different cloud providers"
         Demo.Environmental -> "Display available temperature, pressure, humidity and Lux sensors values"
         Demo.Level -> "Show Level and Pitch&Roll"
         Demo.FitnessActivity -> "Display recognized fitness activity and counter reps"
@@ -146,4 +160,6 @@ fun Demo.getDescription(context: Context): String =
         Demo.RawPnpl -> "Raw Feature Controlled using PnP-Like messages defined by a DTDL-Model"
         Demo.SmartMotorControl -> "Motor Control integration with high speed sensors data log configuration, control and tagging"
         Demo.WbsOtaFUOTA -> "Firmware Update Over the Air for WB/WBA boards"
+        Demo.CloudAzureIotCentral -> "Connect the board to one Azure IoT Central Dashboard"
+        Demo.CloudMqtt -> "Connect the board to one MQTT Server"
     }

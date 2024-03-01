@@ -8,8 +8,8 @@
 package com.st.ext_config.composable
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -30,7 +30,6 @@ import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.Shapes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardReportCard(
     modifier: Modifier = Modifier,
@@ -45,7 +44,18 @@ fun BoardReportCard(
     showGetHelp: Boolean = true,
     onGetHelp: () -> Unit = { /** NOOP **/ }
 ) {
-    var isOpen by rememberSaveable { mutableStateOf(value = true) }
+    var isOpen by rememberSaveable(
+        showGetUID,
+        showGetVersionFirmware,
+        showGetInfo,
+        showGetPowerStatus,
+        showGetHelp
+    ) {
+        mutableStateOf(
+            value = showGetUID || showGetVersionFirmware || showGetInfo ||
+                    showGetPowerStatus || showGetHelp
+        )
+    }
 
     Surface(
         modifier = modifier
@@ -68,8 +78,8 @@ fun BoardReportCard(
 
             AnimatedVisibility(
                 visible = isOpen,
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = expandVertically(),
+                exit = shrinkVertically()
             ) {
                 BoardReportContentCard(
                     showGetUID = showGetUID,

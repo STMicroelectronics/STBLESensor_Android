@@ -84,6 +84,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
+    // Preference Screen
+    implementation "androidx.preference:preference-ktx:$preference_version"
+
     // Tests
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$junit_ui_version"

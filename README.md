@@ -5,7 +5,7 @@ Application ST BLE Sensors
 
 # Compilation
 
-Code compiled using gradle  8.2.1 and JDK jbr-17
+Code compiled using gradle  8.2.1 and JDK 17.0.7
 
 set on Gradle properties the Github Login name and SSO authentication
 Example:
@@ -16,7 +16,7 @@ GPR_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXX
 For using this application is necessary to downlaod the Android BlueST-SDK from:
 https://github.com/STMicroelectronics/BlueSTSDK_Android
 
-tag BlueST-SDK_V1.1.0
+tag BlueST-SDK_V1.1.3
 
 and follow the instruction for compiling and publish on local maven repository the 2 libraries necessary for this application:
 * st-blue-sdk

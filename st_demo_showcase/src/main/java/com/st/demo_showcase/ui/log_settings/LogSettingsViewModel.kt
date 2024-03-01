@@ -60,7 +60,7 @@ class LogSettingsViewModel @Inject constructor(
     }
 
     fun clearLogging(nodeId: String) {
-        blueManager.clearAllLoggers(nodeId = nodeId, loggerTags = LogType.values().map { it.tag })
+        blueManager.clearAllLoggers(nodeId = nodeId, loggerTags = LogType.entries.map { it.tag })
         _numberLogs.value = 0
     }
 
@@ -149,7 +149,6 @@ class LogSettingsViewModel @Inject constructor(
                     PackageManager.PackageInfoFlags.of(0)
                 )
             } else {
-                @Suppress("DEPRECATION")
                 packageManager.getPackageInfo(packageName, 0)
             }
             val strAppName =

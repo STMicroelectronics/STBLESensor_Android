@@ -29,7 +29,7 @@
         android:id="@+id/global_action_to_homeFragment"
         app:destination="@+id/homeFragment"
         app:popUpTo="@+id/homeFragment"
-        app:popUpToInclusive="true"/>
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/global_action_to_logSettings"
@@ -214,6 +214,12 @@
         <action
             android:id="@+id/action_demoList_to_smartMotorControlFragment"
             app:destination="@id/smartMotorControlFragment" />
+        <action
+            android:id="@+id/action_demoList_to_cloudAzureIotCentralFragment"
+            app:destination="@id/cloudAzureIotCentralFragment" />
+        <action
+            android:id="@+id/action_demoList_to_cloudMqttFragment"
+            app:destination="@id/cloudMqttFragment" />
         <!-- *** NEW_DEMO_TEMPLATE ANCHOR3 *** -->
     </fragment>
     <fragment
@@ -333,6 +339,9 @@
         <argument
             android:name="nodeId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_neaiClassificationFragment_to_neaiClassificationSettingFragment"
+            app:destination="@id/neaiClassificationSettingFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventCounterFragment"
@@ -376,6 +385,14 @@
         android:id="@+id/plotSettingsFragment"
         android:name="com.st.plot.PlotSettingsFragment"
         android:label="PlotSettingsFragment" />
+    <fragment
+        android:id="@+id/neaiClassificationSettingFragment"
+        android:name="com.st.neai_classification.NeaiClassificationSettingFragment"
+        android:label="NeaiClassificationSettingFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/nfcWritingFragment"
         android:name="com.st.nfc_writing.NfcWritingFragment"
@@ -608,6 +625,22 @@
         android:id="@+id/smartMotorControlFragment"
         android:name="com.st.smart_motor_control.SmartMotorControlFragment"
         android:label="SmartMotorControlFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/cloudAzureIotCentralFragment"
+        android:name="com.st.cloud_azure_iot_central.CloudAzureIotCentralFragment"
+        android:label="CloudAzureIotCentralFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/cloudMqttFragment"
+        android:name="com.st.cloud_mqtt.CloudMqttFragment"
+        android:label="CloudMqttFragment">
         <argument
             android:name="nodeId"
             app:argType="string" />

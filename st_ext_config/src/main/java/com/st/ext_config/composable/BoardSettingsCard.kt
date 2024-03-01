@@ -8,8 +8,10 @@
 package com.st.ext_config.composable
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -39,7 +41,6 @@ import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.Shapes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardSettingsCard(
     modifier: Modifier = Modifier,
@@ -57,7 +58,19 @@ fun BoardSettingsCard(
     showSetWiFiCredentials: Boolean = true,
     onSetWiFiCredentials: (WifiCredentials) -> Unit = { /** NOOP **/ }
 ) {
-    var isOpen by rememberSaveable { mutableStateOf(value = true) }
+    var isOpen by rememberSaveable(
+        showSetName,
+        showReadCustomCommand,
+        showSetTime,
+        showSetDate,
+        showSensorConfiguration,
+        showSetWiFiCredentials
+    ) {
+        mutableStateOf(
+            value = showSetName || showReadCustomCommand || showSetTime ||
+                    showSetDate || showSensorConfiguration || showSetWiFiCredentials
+        )
+    }
     var name by rememberSaveable { mutableStateOf(value = deviceName) }
     var openSetNameDialog by rememberSaveable { mutableStateOf(value = false) }
     var openSetWiFiDialog by rememberSaveable { mutableStateOf(value = false) }
@@ -83,8 +96,8 @@ fun BoardSettingsCard(
 
             AnimatedVisibility(
                 visible = isOpen,
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = expandVertically(),
+                exit = shrinkVertically()
             ) {
                 BoardSettingsContentCard(
                     showSetName = showSetName,
@@ -333,19 +346,19 @@ fun BoardSettingsContentCard(
             text = stringResource(id = R.string.st_extConfig_boardSettings_setDate)
         )
 
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-        val sensTextColor = if (showSensorConfiguration) Grey6 else Grey6.copy(alpha = 0.3f)
-        Text(
-            modifier = Modifier.clickable {
-                if (showSensorConfiguration) {
-                    onSensorConfiguration()
-                }
-            },
-            color = sensTextColor,
-            style = MaterialTheme.typography.bodyMedium,
-            text = stringResource(id = R.string.st_extConfig_boardSettings_sensorsConfiguration)
-        )
+//        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+//
+//        val sensTextColor = if (showSensorConfiguration) Grey6 else Grey6.copy(alpha = 0.3f)
+//        Text(
+//            modifier = Modifier.clickable {
+//                if (showSensorConfiguration) {
+//                    onSensorConfiguration()
+//                }
+//            },
+//            color = sensTextColor,
+//            style = MaterialTheme.typography.bodyMedium,
+//            text = stringResource(id = R.string.st_extConfig_boardSettings_sensorsConfiguration)
+//        )
 
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 

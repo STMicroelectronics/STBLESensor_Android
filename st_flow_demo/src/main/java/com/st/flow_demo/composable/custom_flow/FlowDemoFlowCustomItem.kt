@@ -1,6 +1,7 @@
 package com.st.flow_demo.composable.custom_flow
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.st.flow_demo.R
@@ -75,13 +78,24 @@ fun FlowDemoFlowCustomItem(
 
             Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingLarge))
 
-            Text(
-                modifier = Modifier.weight(1f),
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-                text = flow.description
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    text = flow.description
+                )
+
+                flow.file?.name?.let {
+                    Text(
+                        modifier = Modifier.padding(start= LocalDimensions.current.paddingSmall),
+                        fontStyle = FontStyle.Italic,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        text = it
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingLarge))
 

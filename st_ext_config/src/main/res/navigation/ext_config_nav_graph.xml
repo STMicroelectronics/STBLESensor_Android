@@ -24,6 +24,10 @@
             <argument
                 android:name="nodeId"
                 app:argType="string" />
+            <argument
+                android:name="bankStatus"
+                app:argType="com.st.blue_sdk.features.extended.ext_configuration.BanksStatus"
+                app:nullable="true" />
         </action>
 
         <action
@@ -50,6 +54,11 @@
         <argument
             android:name="nodeId"
             app:argType="string" />
+        <argument
+            android:name="bankStatus"
+            app:argType="com.st.blue_sdk.features.extended.ext_configuration.BanksStatus"
+            android:defaultValue="@null"
+            app:nullable="true" />
 
         <action
             android:id="@+id/action_fwDownloadFragment_to_fwUpgrade"

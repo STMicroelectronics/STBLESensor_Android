@@ -46,6 +46,8 @@ fun MainTopBar(
     isExpert: Boolean = false,
     isServerForced: Boolean = false,
     isBetaRelease: Boolean = false,
+    disableHiddenDemos: Boolean = false,
+    enableDisableHiddenDemos: () -> Unit = { /** NOOP **/ },
     login: () -> Unit = { /** NOOP **/ },
     logout: () -> Unit = { /** NOOP **/ },
     onAddCatalogEntryFromFile: () -> Unit = { /** NOOP **/ }
@@ -104,6 +106,18 @@ fun MainTopBar(
                         Text(text = "Read Release Catalog", modifier = Modifier.clickable {
                             readReleaseCatalog()
                         })
+
+                        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
+                        if (disableHiddenDemos) {
+                            Text(text = "Hide Removed Demos", modifier = Modifier.clickable {
+                                enableDisableHiddenDemos()
+                            })
+                        } else {
+                            Text(text = "Show Removed Demos", modifier = Modifier.clickable {
+                                enableDisableHiddenDemos()
+                            })
+                        }
                     } else {
                         Text(
                             text = "v${BuildConfig.VERSION_NAME} [Stable]",

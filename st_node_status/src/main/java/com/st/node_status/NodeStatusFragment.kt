@@ -217,7 +217,7 @@ class NodeStatusFragment : Fragment() {
     private fun setUpNodeInfo(node: Node) {
         mNodeName.text = node.advertiseInfo?.getName() ?: node.friendlyName
         mNodeAddress.text = node.advertiseInfo?.getAddress() ?: ""
-        mNodeIcon.setImageResource(getBlueStBoardImages(node.device.name))
+        mNodeIcon.setImageResource(getBlueStBoardImages(node.boardType.name))
     }
 
     private fun getRemainingTimeMinutes(batteryCapacity: Float, current: Float): Float {

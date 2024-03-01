@@ -292,6 +292,20 @@ class HighSpeedDataLogViewModel @Inject constructor(
         )
     }
 
+
+    private suspend fun sendGetStatusComponentInfoCommand(name: String, nodeId: String) {
+        _isLoading.value = true
+
+        blueManager.writeFeatureCommand(
+            responseTimeout = 0,
+            nodeId = nodeId, featureCommand =
+            PnPLCommand(
+                feature = pnplFeatures.first(),
+                cmd = PnPLCmd(command = "get_status", request = name)
+            )
+        )
+    }
+
     private suspend fun setTime(nodeId: String) {
         val calendar = Calendar.getInstance()
         val timeInMillis = calendar.timeInMillis
@@ -338,7 +352,8 @@ class HighSpeedDataLogViewModel @Inject constructor(
         viewModelScope.launch {
             setTime(nodeId)
 
-            setName(nodeId)
+            //For Avoiding to change again the Acquisition name
+            //setName(nodeId)
 
             blueManager.writeFeatureCommand(
                 responseTimeout = 0,
@@ -365,10 +380,22 @@ class HighSpeedDataLogViewModel @Inject constructor(
     }
 
     fun sendCommand(nodeId: String, name: String, value: CommandRequest?) {
-        viewModelScope.launch {
-            _sendCommand(nodeId, name, value)
 
-            sendGetAllCommand(nodeId)
+        value?.let {
+            if (it.commandName == "load_file") {
+                runBlocking {
+                    //RunBlocking for avoiding that the HSDataLogFragment starts
+                    // before to finish the load process
+                    //Without the sendGetAllCommand, because when the HSDataLogFragment will start...
+                    // it triggers a get status command
+                    _sendCommand(nodeId, name, value)
+                }
+            } else {
+                viewModelScope.launch {
+                    _sendCommand(nodeId, name, value)
+                    sendGetAllCommand(nodeId)
+                }
+            }
         }
     }
 
@@ -403,7 +430,9 @@ class HighSpeedDataLogViewModel @Inject constructor(
                     nodeId = nodeId, featureCommand = featureCommand
                 )
 
-                sendGetAllCommand(nodeId)
+                //ToDO Must Be confirmed
+                //sendGetAllCommand(nodeId)
+                sendGetStatusComponentInfoCommand(name = name, nodeId = nodeId)
             }
         }
     }
@@ -411,10 +440,12 @@ class HighSpeedDataLogViewModel @Inject constructor(
     fun startDemo(nodeId: String) {
         observeFeatureJob?.cancel()
 
-        pnplFeatures.addAll(
-            blueManager.nodeFeatures(nodeId = nodeId)
-                .filter { it.name == PnPL.NAME }.filterIsInstance<PnPL>()
-        )
+        if(pnplFeatures.isEmpty()) {
+            pnplFeatures.addAll(
+                blueManager.nodeFeatures(nodeId = nodeId)
+                    .filter { it.name == PnPL.NAME }.filterIsInstance<PnPL>()
+            )
+        }
 
         observeFeatureJob = blueManager.getFeatureUpdates(nodeId = nodeId,
             features = pnplFeatures,
@@ -561,14 +592,16 @@ class HighSpeedDataLogViewModel @Inject constructor(
 //                nodeId = nodeId, features = pnplFeatures
 //            )
 //        }
-        //Not optimal... but in this way... I am not able to see the get status if demo is customized
+        //Not optimal... but in this way... I am able to see the get status if demo is customized
         runBlocking {
-            launch {
             blueManager.disableFeatures(
                 nodeId = nodeId, features = pnplFeatures
             )
+
+            //pnplFeatures.clear()
+            _sensors.value = emptyList()
+            _tags.value = emptyList()
         }
-    }
     }
 
     fun refresh(nodeId: String) {

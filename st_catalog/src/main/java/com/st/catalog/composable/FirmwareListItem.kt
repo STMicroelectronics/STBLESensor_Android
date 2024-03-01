@@ -65,12 +65,12 @@ fun FirmwareListItem(
                 .padding(bottom = LocalDimensions.current.paddingSmall),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = version,
+                Text(
+                    text = version,
                     maxLines = 1,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
                 if(fwMaturity!=FirmwareMaturity.RELEASE){
                     Text(

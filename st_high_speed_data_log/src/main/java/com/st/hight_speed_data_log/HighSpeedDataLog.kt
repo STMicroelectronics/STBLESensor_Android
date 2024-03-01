@@ -240,8 +240,8 @@ fun HighSpeedDataLog(
                             contentDescription = stringResource(id = R.string.st_hsdl_sensors),
                             tint =  if(0 == selectedIndex) {Grey0 } else {
                                 Grey6
-                    }
-                )
+                            }
+                        )
                     },
                     label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_hsdl_sensors)) },
                     enabled = !isLoading
@@ -271,7 +271,7 @@ fun HighSpeedDataLog(
                             contentDescription = stringResource(id = R.string.st_hsdl_tags),
                             tint =  if(1 == selectedIndex) {Grey0 } else {
                                 Grey6
-                    }
+                            }
                         )
                     },
                     label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_hsdl_tags)) },

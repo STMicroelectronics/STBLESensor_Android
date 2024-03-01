@@ -119,18 +119,6 @@ fun FlowDemoMoreInfoScreen(
                         )
                     }
                 )
-
-                FlowDemoMoreInfoRow(
-                    iconId = R.drawable.ic_book,
-                    content = stringResource(id = R.string.stm_json),
-                    onClick = {
-                        openLinkFromUrl(
-                            context = context,
-                            link = "https://raw.githubusercontent.com/STMicroelectronics/appconfig/release/bluestsdkv2/custom/steval_mkboxpro/DefaultFw_0_9_0.json"
-                        )
-                    }
-                )
-
             } else {
                 Row(
                     modifier = Modifier

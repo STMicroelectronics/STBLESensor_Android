@@ -9,8 +9,8 @@ package com.st.ext_config.composable
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -32,7 +32,6 @@ import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.Shapes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardControlCard(
     modifier: Modifier = Modifier,
@@ -45,7 +44,12 @@ fun BoardControlCard(
     showSwap: Boolean = true,
     onSwap: () -> Unit = { /** NOOP **/ },
 ) {
-    var isOpen by rememberSaveable { mutableStateOf(value = true) }
+    var isOpen by rememberSaveable(showDFU, showFwDownload, showSwap, showOff) {
+        mutableStateOf(
+            value = showDFU ||
+                    showFwDownload || showSwap || showOff
+        )
+    }
 
     Surface(
         modifier = modifier
@@ -68,8 +72,8 @@ fun BoardControlCard(
 
             AnimatedVisibility(
                 visible = isOpen,
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = expandVertically(),
+                exit = shrinkVertically()
             ) {
                 BoardControlContentCard(
                     showDFU = showDFU,

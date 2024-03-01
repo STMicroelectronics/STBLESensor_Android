@@ -32,7 +32,7 @@ class ApplicationAnalyticsDefaultImpl @Inject constructor() : ApplicationAnalyti
         nodeName: String,
         nodeType: String,
         fwVersion: String,
-        FwFullName: String
+        fwFullName: String
     ) {
         Log.d(TAG, "Default Impl for reportNodeAnalytics")
     }

@@ -19,7 +19,6 @@ import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.flow_demo.composable.custom_flow.entry.FlowDemoRadioButtonGroupEntry
 import com.st.flow_demo.helpers.canBeUsedAsExp
-import com.st.flow_demo.models.Output
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
@@ -34,7 +33,7 @@ fun FlowDemoAddSavedExprDialog(
     val availableCustomFlowList by viewModel.flowsCustomList.collectAsStateWithLifecycle()
 
     val filteredAvailableCustomFlowList =
-        availableCustomFlowList.filter { it -> canBeUsedAsExp(it) }
+        availableCustomFlowList.filter { canBeUsedAsExp(it) }
 
 
     var expressionSelectedId = if (viewModel.expressionSelected != null) {

@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -31,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -55,6 +60,7 @@ import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.composables.LocalLastStatusUpdatedAt
+import com.st.ui.theme.Grey5
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
@@ -65,11 +71,12 @@ fun FwDownloadScreen(
     modifier: Modifier = Modifier,
     nodeId: String,
     viewModel: FwDownloadViewModel,
-    navController: NavController
+    navController: NavController,
+    banksStatus: BanksStatus?
 ) {
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId = nodeId)
+            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId = nodeId, banksStatus = banksStatus)
             Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
             else -> Unit
         }
@@ -112,10 +119,22 @@ fun FwDownloadScreen(
     onSwap: () -> Unit = { /** NOOP **/ },
     onCancelClick: () -> Unit = { /** NOOP **/ }
 ) {
-    val compatibleList by remember(key1 = state) {
-        derivedStateOf { state.node?.fwCompatibleList ?: emptyList() }
+
+    var onlyLatest by rememberSaveable { mutableStateOf(value = true) }
+
+    val compatibleList by remember(key1 = state, key2 = onlyLatest) {
+        derivedStateOf {
+            val listFw =
+                state.node?.fwCompatibleList ?: emptyList()
+            if (onlyLatest) {
+                listFw.groupBy { it.fwName }.map { list -> list.value.maxByOrNull { it.fwVersion }!! }
+            } else {
+                listFw
+            }
+        }
     }
-    var selectedFw: Int by remember { mutableStateOf(value = 0) }
+
+    var selectedFw: Int by remember(key1 = compatibleList) { mutableIntStateOf(value = 0) }
 
     Column(
         modifier = modifier
@@ -177,12 +196,42 @@ fun FwDownloadScreen(
         if (compatibleList.isNotEmpty()) {
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-            Text(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium,
-                text = stringResource(id = R.string.st_extConfig_fwDownload_compatibleFwLabel)
-            )
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+
+                Text(
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium,
+                    text = stringResource(id = R.string.st_extConfig_fwDownload_compatibleFwLabel)
+                )
+
+                Row(Modifier.clickable { onlyLatest = !onlyLatest }) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 4.dp),
+                        tint = SecondaryBlue,
+                        imageVector = if (onlyLatest) Icons.Default.FilterAlt else Icons.Default.FilterAltOff,
+                        contentDescription = null
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 4.dp),
+                        color = if (onlyLatest) SecondaryBlue else Grey5,
+                        style = MaterialTheme.typography.titleMedium,
+                        text = "latest"
+                    )
+                    Text(
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleMedium,
+                        text = ":"
+                    )
+                }
+            }
+
+
 
             EnumPropertyFw(
                 data = null,
@@ -275,10 +324,13 @@ fun <T : Any> EnumPropertyFw(
             ) {
                 val text = values.first { it.second == internalState }.first
                 Text(text = text)
-                Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
-                DropdownMenu(expanded = expanded, modifier = Modifier.fillMaxWidth(0.9f),onDismissRequest = {
-                    expanded = false
-                }) {
+                Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                DropdownMenu(
+                    expanded = expanded,
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    onDismissRequest = {
+                        expanded = false
+                    }) {
                     values.forEach {
                         DropdownMenuItem(
                             onClick = {

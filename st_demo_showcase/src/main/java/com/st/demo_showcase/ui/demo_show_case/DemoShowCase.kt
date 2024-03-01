@@ -213,17 +213,17 @@ class DemoShowCase : Fragment() {
 
 
                                 if((device?.familyType != Boards.Family.WB_FAMILY) && (device?.familyType != Boards.Family.WBA_FAMILY)) {
-                                currentAction.add(
-                                    ActionItem(
-                                        label = context.getString(R.string.st_demoShowcase_menuAction_fwUpdate),
-                                        action = {
-                                            navController?.navigate(
-                                                DemoListFragmentDirections.actionDemoListToFwUpgrade(
-                                                    nodeId
+                                    currentAction.add(
+                                        ActionItem(
+                                            label = context.getString(R.string.st_demoShowcase_menuAction_fwUpdate),
+                                            action = {
+                                                navController?.navigate(
+                                                    DemoListFragmentDirections.actionDemoListToFwUpgrade(
+                                                        nodeId
+                                                    )
                                                 )
-                                            )
-                                        })
-                                )
+                                            })
+                                    )
                                 }
                             }
                             currentAction.add(ActionItem(

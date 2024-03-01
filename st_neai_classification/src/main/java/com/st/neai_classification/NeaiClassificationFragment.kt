@@ -21,6 +21,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.st.blue_sdk.features.extended.neai_class_classification.*
@@ -35,6 +36,8 @@ class NeaiClassificationFragment : Fragment() {
     private val viewModel: NeaiClassificationViewModel by viewModels()
 
     private lateinit var binding: NeaiClassificationFragmentBinding
+
+    private var useDefaultNames: Boolean=true
 
     private lateinit var nodeId: String
 
@@ -66,13 +69,15 @@ class NeaiClassificationFragment : Fragment() {
     private lateinit var mStartClassification: MaterialButton
     private lateinit var mStopClassification: MaterialButton
 
+    private var customNames = ArrayList<String>()
 
     private fun setClassesDetails(classProb: IntArray, mostProbClass: Short?) {
         val mostProb = mostProbClass ?: 0
         for (elem in classProb.indices) {
             if (classProb[elem] != NeaiClassClassification.CLASS_PROB_ESCAPE_CODE) {
                 mClassesArrayLinearLayouts[elem].visibility = View.VISIBLE
-                val string = "CL ${elem + 1} (${classProb[elem]} %):"
+                //val string = "CL ${elem + 1} (${classProb[elem]} %):"
+                val string = customNames[elem]+ " (${classProb[elem]} %):"
                 mClassesArrayTextViews[elem].text = string
                 if (elem == (mostProb - 1)) {
                     mClassesArrayTextViews[elem].setTextColor(
@@ -104,7 +109,11 @@ class NeaiClassificationFragment : Fragment() {
         val mostProb = (mostProbClass ?: 0).toInt()
         val textString: String =
             if (mostProb != 0) {
-                "$mostProbClass"
+                if(useDefaultNames) {
+                    "$mostProbClass"
+                } else {
+                    customNames[mostProb-1]
+                }
             } else {
                 resources.getString(R.string.st_neaiClassification_text_unknown)
             }
@@ -320,6 +329,7 @@ class NeaiClassificationFragment : Fragment() {
         mLinearLayoutNClasses = binding.neaiLinearlayoutNclassesClassification
 
         //Find all the Classes' LinearLayout
+        mClassesArrayLinearLayouts.clear()
         var linearLayout: LinearLayout = binding.neaiClass1LinearlayoutClassification
         mClassesArrayLinearLayouts.add(linearLayout)
         linearLayout = binding.neaiClass2LinearlayoutClassification
@@ -338,6 +348,7 @@ class NeaiClassificationFragment : Fragment() {
         mClassesArrayLinearLayouts.add(linearLayout)
 
         //Find all the Classes' TextView
+        mClassesArrayTextViews.clear()
         var textView: TextView = binding.neaiClass1TextviewClassification
         mClassesArrayTextViews.add(textView)
         textView = binding.neaiClass2TextviewClassification
@@ -356,6 +367,7 @@ class NeaiClassificationFragment : Fragment() {
         mClassesArrayTextViews.add(textView)
 
         //Find all the Classes' ProgressBar
+        mClassesArrayProgressBars.clear()
         var progressBar: ProgressBar = binding.neaiClass1ProgressbarClassification
         mClassesArrayProgressBars.add(progressBar)
         progressBar = binding.neaiClass2ProgressbarClassification
@@ -431,6 +443,26 @@ class NeaiClassificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        //Read the Custom Names
+        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        customNames.clear()
+        customNames.add(pref.getString("neai_classification_custom_class_1","CL 1") ?: "CL 1")
+        customNames.add(pref.getString("neai_classification_custom_class_2","CL 2") ?: "CL 2")
+        customNames.add(pref.getString("neai_classification_custom_class_3","CL 3") ?: "CL 3")
+        customNames.add(pref.getString("neai_classification_custom_class_4","CL 4") ?: "CL 4")
+        customNames.add(pref.getString("neai_classification_custom_class_5","CL 5") ?: "CL 5")
+        customNames.add(pref.getString("neai_classification_custom_class_6","CL 6") ?: "CL 6")
+        customNames.add(pref.getString("neai_classification_custom_class_7","CL 7") ?: "CL 7")
+        customNames.add(pref.getString("neai_classification_custom_class_8","CL 8") ?: "CL 8")
+
+        useDefaultNames = pref.getBoolean("neai_classification_default_names",true)
+
+        if(useDefaultNames) {
+            customNames.forEachIndexed { index, s ->
+                customNames[index] = "CL ${index+1}"
+            }
+        }
+
         viewModel.startDemo(nodeId = nodeId)
     }
 

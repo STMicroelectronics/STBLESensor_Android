@@ -76,8 +76,8 @@ fun FlowDemoOutputConfigurationScreen(
                         PropertyType.FLOAT -> FlowDemoDecimalEntry(
                             title = property.label,
                             defaultValue = property.value as Float,
-                            onModified = {
-                                property.value = it
+                            onModified = { value ->
+                                property.value = value
                             }
                         )
 
@@ -85,8 +85,8 @@ fun FlowDemoOutputConfigurationScreen(
                             FlowDemoIntegerEntry(
                                 title = property.label,
                                 defaultValue = property.value as Int,
-                                onModified = {
-                                    property.value = it
+                                onModified = { value ->
+                                    property.value = value
                                 }
                             )
                         }
@@ -99,8 +99,8 @@ fun FlowDemoOutputConfigurationScreen(
                                     title = property.label,
                                     values = valuesMap,
                                     defaultValue = property.value as Int,
-                                    onValueSelected = {
-                                        property.value = it
+                                    onValueSelected = { value ->
+                                        property.value = value
                                     }
                                 )
                             }
@@ -110,8 +110,8 @@ fun FlowDemoOutputConfigurationScreen(
                             FlowDemoStringEntry(
                                 title = property.label,
                                 defaultValue = property.value as String,
-                                onModified = {
-                                    property.value = it
+                                onModified = { value ->
+                                    property.value = value
                                 }
                             )
                         }
@@ -120,8 +120,8 @@ fun FlowDemoOutputConfigurationScreen(
                             FlowDemoBooleanEntry(
                                 title = property.label,
                                 defaultValue = property.value as Boolean,
-                                onModified = {
-                                    property.value = it
+                                onModified = { value ->
+                                    property.value = value
                                 }
                             )
                         }

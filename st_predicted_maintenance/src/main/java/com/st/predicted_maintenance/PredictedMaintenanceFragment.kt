@@ -16,13 +16,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.st.blue_sdk.features.extended.predictive.PredictiveAccelerationStatusInfo
-import com.st.blue_sdk.features.extended.predictive.PredictiveFrequencyStatusInfo
-import com.st.blue_sdk.features.extended.predictive.PredictiveSpeedStatusInfo
 import com.st.core.ARG_NODE_ID
 import com.st.predicted_maintenance.databinding.PredictedMaintenanceFragmentBinding
 import com.st.predicted_maintenance.utilities.PredictiveStatusView
-import com.st.predicted_maintenance.utilities.ViewStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

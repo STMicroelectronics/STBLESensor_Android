@@ -59,11 +59,21 @@ class HomeViewModel @Inject constructor(
 
     private val _isBetaRelease = MutableStateFlow(false)
     val isBetaRelease = _isBetaRelease.asStateFlow()
+
+
+    private val _disableHiddenDemos = MutableStateFlow(false)
+    val disableHiddenDemos = _disableHiddenDemos.asStateFlow()
+
     private val _connectionStatus = MutableStateFlow(ConnectionStatus())
     val connectionStatus = _connectionStatus.asStateFlow()
+
     private val _boardName = MutableStateFlow("")
     val boardName = _boardName.asStateFlow()
     val pinnedDevices = stPreferences.getFavouriteDevices()
+
+
+    private val _isPairingRequest = MutableStateFlow(false)
+    val isPairingRequest = _isPairingRequest.asStateFlow()
 
     private val _boardsDescription = MutableStateFlow(emptyList<BoardDescription>())
     val boardsDescription = _boardsDescription.asStateFlow()
@@ -98,9 +108,17 @@ class HomeViewModel @Inject constructor(
             var retryCount = 0
             var callback = onNodeReady
 
-            blueManager.connectToNode(nodeId = nodeId, maxPayloadSize = maxPayloadSize,enableServer = enableServer)
+            blueManager.connectToNode(
+                nodeId = nodeId,
+                maxPayloadSize = maxPayloadSize,
+                enableServer = enableServer
+            )
                 .collect { node ->
                     _connectionStatus.value = node.connectionStatus
+
+                    if( node.connectionStatus.current!=NodeState.Connecting) {
+                        setIsPairingRequest(false)
+                    }
                     _boardName.value = node.boardType.name
 
                     val previousNodeState = node.connectionStatus.prev
@@ -119,7 +137,7 @@ class HomeViewModel @Inject constructor(
                         }
 
                         Log.d(TAG, "Retry connection...")
-                        blueManager.connectToNode(nodeId,enableServer = enableServer)
+                        blueManager.connectToNode(nodeId, enableServer = enableServer)
                     }
 
                     if (currentNodeState == NodeState.Ready) {
@@ -257,13 +275,17 @@ class HomeViewModel @Inject constructor(
         _isBetaRelease.value = stPreferences.isBetaApplication()
     }
 
+    fun checkDisableHiddenDemos() {
+        _disableHiddenDemos.value = stPreferences.isDisableHiddenDemos()
+    }
+
     fun checkServerForced() {
         _isServerForced.value = stPreferences.isServerForced()
     }
 
     fun switchServerForced() {
         val isServerForced = stPreferences.isServerForced()
-        if(isServerForced) {
+        if (isServerForced) {
             stPreferences.setServerForcedFlag(false)
             _isServerForced.value = false
         } else {
@@ -277,6 +299,10 @@ class HomeViewModel @Inject constructor(
             _boardsDescription.value = blueManager.getBoardsDescription()
             Log.i("DB", "checkBoardsCatalogPresence = ${_boardsDescription.value.size}")
         }
+    }
+
+    fun setIsPairingRequest(newValue: Boolean) {
+        _isPairingRequest.value = newValue
     }
 
     fun switchVersionBetaRelease() {
@@ -297,7 +323,16 @@ class HomeViewModel @Inject constructor(
                 readBetaCatalog()
                 _isBetaRelease.value = true
             }
+            //Every time we switch between beta/release... rest the flag for disabling the hidden demos
+            _disableHiddenDemos.value = false
+            stPreferences.setDisableHiddenDemos(false)
         }
+    }
+
+    fun enableDisableHiddenDemos() {
+        val isDisableHiddenDemos = stPreferences.isDisableHiddenDemos()
+        stPreferences.setDisableHiddenDemos(!isDisableHiddenDemos)
+        _disableHiddenDemos.value = !isDisableHiddenDemos
     }
 
     fun profileShow(level: LevelProficiency, type: ProfileType) {

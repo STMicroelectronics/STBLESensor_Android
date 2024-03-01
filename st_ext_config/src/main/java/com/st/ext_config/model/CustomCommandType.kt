@@ -14,6 +14,5 @@ enum class CustomCommandType {
     BOOLEAN,
     ENUMSTRING,
     ENUMINTEGER,
-
     UNKNOWN
 }

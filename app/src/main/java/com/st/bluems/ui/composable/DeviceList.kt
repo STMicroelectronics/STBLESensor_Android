@@ -70,6 +70,7 @@ fun DeviceListScreen(
     val isServerForced by viewModel.isServerForced.collectAsStateWithLifecycle()
     val pinnedDevices by viewModel.pinnedDevices.collectAsStateWithLifecycle(emptyList())
     val boardsDescription by viewModel.boardsDescription.collectAsStateWithLifecycle()
+    val disableHiddenDemos by viewModel.disableHiddenDemos.collectAsStateWithLifecycle()
 
 
     val nfcNodeId by nfcViewModel.nfcNodeId.collectAsStateWithLifecycle()
@@ -95,6 +96,10 @@ fun DeviceListScreen(
         isExpert = isExpert,
         isServerForced = isServerForced,
         isBetaRelease = isBetaRelease,
+        disableHiddenDemos = disableHiddenDemos,
+        enableDisableHiddenDemos = {
+            viewModel.enableDisableHiddenDemos()
+        },
         login = {
             viewModel.login()
         },
@@ -206,6 +211,8 @@ fun DeviceListWithPermissionsCheck(
     isExpert: Boolean = false,
     isServerForced: Boolean = false,
     isBetaRelease: Boolean = false,
+    disableHiddenDemos: Boolean = false,
+    enableDisableHiddenDemos: () -> Unit = { /** NOOP **/ },
     devices: List<Node>,
     pinnedDevices: List<String>,
     onPinChange: (String, Boolean) -> Unit,
@@ -270,6 +277,8 @@ fun DeviceListWithPermissionsCheck(
                     isExpert = isExpert,
                     isServerForced = isServerForced,
                     isBetaRelease = isBetaRelease,
+                    disableHiddenDemos = disableHiddenDemos,
+                    enableDisableHiddenDemos = enableDisableHiddenDemos,
                     login = login,
                     logout = logout,
                     goToProfile = goToProfile,
@@ -439,6 +448,8 @@ fun DeviceList(
     isExpert: Boolean = false,
     isServerForced: Boolean = false,
     isBetaRelease: Boolean = false,
+    disableHiddenDemos: Boolean = false,
+    enableDisableHiddenDemos: () -> Unit = { /** NOOP **/ },
     isLoading: Boolean = false,
     pinnedDevices: List<String>,
     onPinChange: (String, Boolean) -> Unit,
@@ -504,6 +515,8 @@ fun DeviceList(
                 isExpert = isExpert,
                 isServerForced = isServerForced,
                 isBetaRelease = isBetaRelease,
+                disableHiddenDemos = disableHiddenDemos,
+                enableDisableHiddenDemos = enableDisableHiddenDemos,
                 login = login,
                 logout = logout,
                 goToProfile = goToProfile,

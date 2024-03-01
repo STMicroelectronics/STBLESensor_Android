@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -50,23 +52,6 @@ fun RawPnplScreenContent(
             contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
         ) {
-            item {
-                Surface(
-                    modifier = modifier.fillMaxWidth(),
-                    shape = Shapes.small,
-                    shadowElevation = LocalDimensions.current.elevationNormal
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(all = LocalDimensions.current.paddingNormal),
-                        style = MaterialTheme.typography.bodyMedium,
-                        text = dataFeature.value
-                    )
-                }
-            }
-
-
             itemsIndexed(contents) { index, componentWithInterface ->
                 val name = componentWithInterface.first.name
                 val data = (status.find { it.containsKey(name) })?.get(name)
@@ -102,6 +87,22 @@ fun RawPnplScreenContent(
 
                 if (contents.lastIndex != index) {
                     Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+                }
+            }
+
+            item {
+                Surface(
+                    modifier = modifier.fillMaxWidth(),
+                    shape = Shapes.small,
+                    shadowElevation = LocalDimensions.current.elevationNormal
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = LocalDimensions.current.paddingNormal),
+                        style = MaterialTheme.typography.bodyMedium,
+                        text = dataFeature.value
+                    )
                 }
             }
         }

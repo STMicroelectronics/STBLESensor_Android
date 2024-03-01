@@ -119,14 +119,14 @@ class SwitchDemoFragment : Fragment() {
         if (value == SwitchStatusType.Off) {
             if(currentSwitchValue != SwitchStatusType.Off) {
                 mSwitchImage.startAnimation(firstAnimOnToOff)
-            currentSwitchValue = SwitchStatusType.Off
+                currentSwitchValue = SwitchStatusType.Off
             }
         } else {
             if(currentSwitchValue != SwitchStatusType.On) {
                 mSwitchImage.startAnimation(firstAnimOffToOn)
-            currentSwitchValue = SwitchStatusType.On
+                currentSwitchValue = SwitchStatusType.On
+            }
         }
-    }
     }
 
 

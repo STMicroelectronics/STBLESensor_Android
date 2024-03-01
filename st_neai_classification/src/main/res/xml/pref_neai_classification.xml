@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Default Name">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="neai_classification_default_names"
+            android:title="Use Default" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Custom Names"
+        android:key="neai_classification_custom_names"
+        app:initialExpandedChildrenCount="0">
+
+        <EditTextPreference
+            android:defaultValue="CL 1"
+            android:key="neai_classification_custom_class_1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 1"
+            android:title="Class 1" />
+
+        <EditTextPreference
+            android:defaultValue="CL 2"
+            android:key="neai_classification_custom_class_2"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 2"
+            android:title="Class 2" />
+
+        <EditTextPreference
+            android:defaultValue="CL 3"
+            android:key="neai_classification_custom_class_3"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 3"
+            android:title="Class 3" />
+
+        <EditTextPreference
+            android:defaultValue="CL 4"
+            android:key="neai_classification_custom_class_4"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 4"
+            android:title="Class 4" />
+
+        <EditTextPreference
+            android:defaultValue="CL 5"
+            android:key="neai_classification_custom_class_5"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 5"
+            android:title="Class 5" />
+
+        <EditTextPreference
+            android:defaultValue="CL 6"
+            android:key="neai_classification_custom_class_6"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 6"
+            android:title="Class 6" />
+
+        <EditTextPreference
+            android:defaultValue="CL 7"
+            android:key="neai_classification_custom_class_7"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 7"
+            android:title="Class 7" />
+
+        <EditTextPreference
+            android:defaultValue="CL 8"
+            android:key="neai_classification_custom_class_8"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="CL 8"
+            android:title="Class 8" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

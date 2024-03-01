@@ -62,6 +62,7 @@ import com.st.blue_sdk.services.audio.AudioService
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
 import com.st.demo_showcase.R
 import com.st.demo_showcase.ui.demo_list.DemoListFragmentDirections
+import com.st.neai_classification.NEAI_CLASSIFICATION_SETTINGS
 import com.st.plot.utils.PLOTTABLE_FEATURE
 import com.st.plot.utils.PLOT_SETTINGS
 import com.st.blue_sdk.features.compass.Compass as CompassFeature
@@ -119,7 +120,8 @@ enum class Demo(
         displayName = "NEAI Classification",
         group = listOf(DemoGroup.AI),
         icon = com.st.neai_classification.R.drawable.neai_icon,
-        features = listOf(NeaiClassClassificationFeature.NAME)
+        features = listOf(NeaiClassClassificationFeature.NAME),
+        settings = listOf(LOG_SETTINGS, NEAI_CLASSIFICATION_SETTINGS)
     ),
     PredictedMaintenance(
         displayName = "Board Pred Maintenance",
@@ -221,7 +223,7 @@ enum class Demo(
         displayName = "BeamForming",
         group = listOf(DemoGroup.Audio),
         icon = com.st.blue_voice.R.drawable.beamforming_icon,
-        requireAllFeatures=true,
+        requireAllFeatures = true,
         features = listOf(
             AudioOpusFeature.NAME,
             AudioOpusConfFeature.NAME, BeamForming.NAME
@@ -231,7 +233,7 @@ enum class Demo(
         displayName = "BeamForming ADPCM",
         group = listOf(DemoGroup.Audio),
         icon = com.st.blue_voice.R.drawable.beamforming_icon,
-        requireAllFeatures=true,
+        requireAllFeatures = true,
         features = listOf(
             AudioADPCMFeature.NAME,
             AudioADPCMSyncFeature.NAME, BeamForming.NAME
@@ -247,7 +249,7 @@ enum class Demo(
         displayName = "SpeechToText",
         group = listOf(DemoGroup.Audio, DemoGroup.Cloud),
         icon = com.st.blue_voice.R.drawable.blue_voice_icon,
-        requireAllFeatures=true,
+        requireAllFeatures = true,
         features = listOf(
             AudioOpusFeature.NAME,
             AudioOpusConfFeature.NAME
@@ -257,7 +259,7 @@ enum class Demo(
         displayName = "SpeechToText ADPCM",
         group = listOf(DemoGroup.Audio, DemoGroup.Cloud),
         icon = com.st.blue_voice.R.drawable.blue_voice_icon,
-        requireAllFeatures=true,
+        requireAllFeatures = true,
         features = listOf(
             AudioADPCMFeature.NAME,
             AudioADPCMSyncFeature.NAME
@@ -315,7 +317,7 @@ enum class Demo(
     ),
     NavigationGesture(
         displayName = "Navigation Gesture",
-        group = listOf(DemoGroup.EnvironmentalSensors,DemoGroup.Control),
+        group = listOf(DemoGroup.EnvironmentalSensors, DemoGroup.Control),
         icon = com.st.gesture_navigation.R.drawable.gesture_navigation_icon,
         features = listOf(GestureNavigationFeature.NAME)
     ),
@@ -435,13 +437,6 @@ enum class Demo(
         couldBeEnabledOutside = true,
         features = listOf()
     ),
-    Cloud(
-        displayName = "Cloud Logging",
-        group = listOf(DemoGroup.Cloud),
-        icon = com.st.ui.R.drawable.demo_cloud,
-        couldBeEnabledOutside = true,
-        features = emptyList()
-    ),
     NodeStatus(
         displayName = "Rssi & Battery",
         group = listOf(DemoGroup.Status),
@@ -466,7 +461,20 @@ enum class Demo(
         displayName = "FUOTA",
         icon = R.drawable.wbs_ota_config,
         group = listOf(DemoGroup.Fota),
-        features = listOf(OTAControl.NAME,OTAReboot.NAME)
+        features = listOf(OTAControl.NAME, OTAReboot.NAME)
+    ),
+    CloudAzureIotCentral(
+        displayName = "Cloud Azure IoT Central",
+        group = listOf(DemoGroup.Cloud),
+        couldBeEnabledOutside = true,
+        icon = com.st.cloud_azure_iot_central.R.drawable.cloud_azure_iot_central_icon,
+        features = emptyList()
+    ),
+    CloudMqtt(
+        displayName = "Cloud MQTT",
+        icon = com.st.cloud_mqtt.R.drawable.cloud_mqtt_icon,
+        couldBeEnabledOutside = true,
+        features = listOf()
     )
     // *** NEW_DEMO_TEMPLATE ANCHOR1 ***\
     ,
@@ -484,8 +492,8 @@ enum class Demo(
     ),
     AiLoggingDemo(
         displayName = "AI Data Log",
-        group = listOf(DemoGroup.DataLog,DemoGroup.AI),
-        icon =  com.st.ui.R.drawable.multiple_log_icon,
+        group = listOf(DemoGroup.DataLog, DemoGroup.AI),
+        icon = com.st.ui.R.drawable.multiple_log_icon,
         features = listOf(AiLogging.NAME)
     );
 
@@ -500,11 +508,10 @@ enum class Demo(
         navController?.navigate(directions = direction)
     }
 
-    fun navigateTo(navController: NavController, nodeId: String, isExpert: Boolean=false) {
+    fun navigateTo(navController: NavController, nodeId: String, isExpert: Boolean = false) {
 
         val direction = when (this) {
             Flow -> DemoListFragmentDirections.actionDemoListToFlowDemoFragment(nodeId)
-            Cloud -> DemoListFragmentDirections.actionDemoListToWorkingInProgressFragment(nodeId)
             BeamFormingDemo -> DemoListFragmentDirections.actionDemoListToBeamFormingFragment(
                 nodeId
             )
@@ -560,7 +567,7 @@ enum class Demo(
             )
 
             Pnpl -> DemoListFragmentDirections.actionDemoListToPnplFragment(nodeId)
-            Plot -> DemoListFragmentDirections.actionDemoListToPlotFragment(nodeId,isExpert)
+            Plot -> DemoListFragmentDirections.actionDemoListToPlotFragment(nodeId, isExpert)
             NfcWriting -> DemoListFragmentDirections.actionDemoListToNfcWritingFragment(nodeId)
             BinaryContentDemo -> DemoListFragmentDirections.actionDemoListToBinaryContentFragment(
                 nodeId
@@ -679,6 +686,12 @@ enum class Demo(
             SmartMotorControl -> DemoListFragmentDirections.actionDemoListToSmartMotorControlFragment(
                 nodeId
             )
+
+            CloudAzureIotCentral -> DemoListFragmentDirections.actionDemoListToCloudAzureIotCentralFragment(
+                nodeId
+            )
+
+            CloudMqtt -> DemoListFragmentDirections.actionDemoListToCloudMqttFragment(nodeId)
             // *** NEW_DEMO_TEMPLATE ANCHOR2 ***
             BlueVoiceFullBand -> DemoListFragmentDirections.actionDemoListToLegacyDemoFragment(
                 nodeId
@@ -692,14 +705,14 @@ enum class Demo(
 
     companion object {
 
-        private val map = Demo.values().associateBy { it.displayName }
+        private val map = entries.associateBy { it.displayName }
         infix fun from(name: String) = map[name]
 
         fun buildDemoList(
             blueManager: BlueManager,
             audioService: AudioService,
             nodeId: String
-        ): List<Demo> = values().filter {
+        ): List<Demo> = entries.filter {
             if (it.couldBeEnabledOutside) {
                 false
             } else {

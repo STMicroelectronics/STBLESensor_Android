@@ -34,7 +34,7 @@ abstract class ActivityView : ConstraintLayout {
      * utility method to deselect all the demo icons
      */
     protected fun deselectAllImages() {
-        for (type in ActivityType.values()) {
+        for (type in ActivityType.entries) {
             val image = getSelectedImage(type)
             if (image != null) {
                 image.alpha = DEFAULT_ALPHA

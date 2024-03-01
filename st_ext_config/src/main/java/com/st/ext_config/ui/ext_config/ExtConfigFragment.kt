@@ -71,9 +71,7 @@ class ExtConfigFragment : Fragment() {
                         nodeId = nodeId,
                         goToFwDownload = {
                             findNavController().navigate(
-                                ExtConfigFragmentDirections.actionExtConfigFragmentToFwDownload(
-                                    nodeId
-                                )
+                                ExtConfigFragmentDirections.actionExtConfigFragmentToFwDownload(nodeId,viewModel.banksStatus)
                             )
                         },
                         goToCertRequest = {
@@ -179,9 +177,11 @@ fun ExtConfigScreen(
             onChangePin = { sendCommand(Command.CHANGE_PIN, it) },
             showClearDB = state.commandNameList.contains(Command.CLEAR_DB),
             onClearDB = { sendCommand(Command.CLEAR_DB, null) },
-            showCertRegistration = state.commandNameList.contains(Command.SET_CERTIFICATE),
+            //showCertRegistration = state.commandNameList.contains(Command.SET_CERTIFICATE),
+            showCertRegistration = false,
             onCertRegistration = goToCertRegistration,
-            showCertRequest = state.commandNameList.contains(Command.READ_CERTIFICATE),
+            //showCertRequest = state.commandNameList.contains(Command.READ_CERTIFICATE),
+            showCertRequest = false,
             onCertRequest = goToCertRequest
         )
 

@@ -158,12 +158,12 @@ fun DeviceListItem(
                         text = stringResource(id = com.st.bluems.R.string.st_home_deviceListItem_fwCustomLabel)
                     )
                 } else {
-                    catalogInfo?.maturity?.let { maturity ->
-                        if(maturity!=FirmwareMaturity.RELEASE) {
+                    if (catalogInfo != null) {
+                        if(catalogInfo.maturity!=FirmwareMaturity.RELEASE) {
                             Text(
                                 modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
                                 color = ErrorText,
-                                text = "$maturity FW"
+                                text = "${catalogInfo.maturity} FW"
                             )
                         }
                     }

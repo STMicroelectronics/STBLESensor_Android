@@ -10,17 +10,21 @@ package com.st.catalog.composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
 import com.st.blue_sdk.board_catalog.models.BoardStatus
 import com.st.ui.theme.*
 import com.st.ui.utils.asString
@@ -30,7 +34,7 @@ import com.st.ui.utils.getBlueStBoardImages
 fun CatalogListItem(
     modifier: Modifier = Modifier,
     boardName: String,
-    boardVariant: String?=null,
+    boardVariant: String? = null,
     friendlyName: String? = null,
     boardStatus: BoardStatus? = null,
     description: String? = null,
@@ -75,7 +79,7 @@ fun CatalogListItem(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                if(boardVariant!=null) {
+                if (boardVariant != null) {
                     Text(
                         modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
                         text = boardVariant,
@@ -98,7 +102,7 @@ fun CatalogListItem(
                 if (releaseDate != null) {
                     Text(
                         modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
-                        text = releaseDate,
+                        text = releaseDate.replace('_','/'),
                         maxLines = 1,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary

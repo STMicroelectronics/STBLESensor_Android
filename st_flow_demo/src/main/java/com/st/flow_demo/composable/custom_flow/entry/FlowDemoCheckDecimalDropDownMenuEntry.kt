@@ -155,16 +155,17 @@ fun FlowDemoCheckDecimalDropDownMenuEntry(
                             expanded = false
                         }
                     ) {
-                        values.forEach {
+                        values.forEach { string ->
+                        //values.forEachIndexed { _, string ->
                             DropdownMenuItem(
                                 onClick = {
-                                    onValueSelectedDropDown(it)
+                                    onValueSelectedDropDown(string.removeSuffix(" Hz"))
 
-                                    selectedValueDropDown = it
+                                    selectedValueDropDown = string
                                     expanded = false
                                 },
                                 text = {
-                                    Text(it)
+                                    Text(string)
                                 }
                             )
                         }

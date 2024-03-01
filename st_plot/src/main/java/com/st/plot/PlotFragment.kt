@@ -41,6 +41,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.st.core.ARG_IS_EXPERT
 import com.st.core.ARG_NODE_ID
@@ -50,7 +51,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class PlotFragment : Fragment() {
 
     private val viewModel: PlotViewModel by viewModels()
-    private val settingsViewModel: PlotSettingsViewModel by viewModels()
+    //private val settingsViewModel: PlotSettingsViewModel by viewModels()
+    private val settingsViewModel: PlotSettingsViewModel by activityViewModels()
     private lateinit var nodeId: String
     private var isExpert: Boolean=false
 

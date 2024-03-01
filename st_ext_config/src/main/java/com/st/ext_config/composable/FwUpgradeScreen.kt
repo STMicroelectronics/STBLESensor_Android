@@ -7,7 +7,6 @@
  */
 package com.st.ext_config.composable
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -383,7 +382,9 @@ fun FwUpgradeScreen(
             else -> ""
         }
 
-        Text(text = errorMessage, color = ErrorText, modifier = Modifier.padding(10.dp))
+        if(errorMessage.isNotBlank()) {
+            Text(text = errorMessage, color = ErrorText, modifier = Modifier.padding(10.dp))
+        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.weight(weight = 1f))

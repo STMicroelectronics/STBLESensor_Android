@@ -6,8 +6,8 @@ import java.util.Calendar
 class FlowUploaderHelper {
 
     companion object {
-        private val TAG = FlowUploaderHelper::class.java.simpleName
-        const val TIMEOUT_MS = 10000L
+//        private val TAG = FlowUploaderHelper::class.java.simpleName
+//        const val TIMEOUT_MS = 10000L
         const val CHARACTERISTIC_SIZE = 20
         const val SEND_FLOW_REQUEST = "SF"
         const val SEND_FLOW_RESPONSE = "Flow_Req_Received"

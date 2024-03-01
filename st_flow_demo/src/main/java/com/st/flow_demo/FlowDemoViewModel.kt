@@ -11,6 +11,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
@@ -136,7 +137,7 @@ class FlowDemoViewModel
     val availableCounterFlow: StateFlow<List<Flow>>
         get() = _availableCounterFlow
 
-    private val _flowBytesSent = MutableStateFlow<Int>(0)
+    private val _flowBytesSent = MutableStateFlow(0)
     val flowByteSent: StateFlow<Int>
         get() = _flowBytesSent
 
@@ -170,7 +171,7 @@ class FlowDemoViewModel
     val enableCollapse: State<Boolean>
         get() = _enableCollapse
 
-    private val _lastStatusUpdatedAt = mutableStateOf(value = 0L)
+    private val _lastStatusUpdatedAt = mutableLongStateOf(value = 0L)
     val lastStatusUpdatedAt: State<Long>
         get() = _lastStatusUpdatedAt
 
@@ -210,7 +211,7 @@ class FlowDemoViewModel
 
                         if (data is PnPLConfig) {
                             data.deviceStatus.value?.components?.let { json ->
-                                _lastStatusUpdatedAt.value = System.currentTimeMillis()
+                                _lastStatusUpdatedAt.longValue = System.currentTimeMillis()
                                 _componentStatusUpdates.value = json
                                 _isLoading.value = false
                             }
@@ -230,8 +231,6 @@ class FlowDemoViewModel
         observeFeaturePnPLJob?.cancel()
 
         _componentStatusUpdates.value = emptyList()
-
-        node = null
     }
 
     private fun sendGetAllCommand(nodeId: String) {
@@ -320,9 +319,9 @@ class FlowDemoViewModel
         return retValue
     }
 
-    fun getFlowByID(flowId: String): Flow? {
-        return _flowsExampleList.value.firstOrNull { it.id == flowId }
-    }
+//    fun getFlowByID(flowId: String): Flow? {
+//        return _flowsExampleList.value.firstOrNull { it.id == flowId }
+//    }
 
     fun saveFlowOnPhone(context: Context, file: Uri?) {
         file?.let {
@@ -339,11 +338,11 @@ class FlowDemoViewModel
 
     fun retrieveSensorsAdapter() {
         node?.let {
-            val uniqueIds = node!!.catalogInfo?.let { it.compatibleSensorAdapters }
-            uniqueIds?.let { Ids ->
+            val uniqueIds = node!!.catalogInfo?.compatibleSensorAdapters
+            uniqueIds?.let { ids ->
                 val tmpList = mutableListOf<Sensor>()
                 viewModelScope.launch(Dispatchers.IO) {
-                    Ids.forEach {
+                    ids.forEach {
                         val sensor = blueManager.getSensorAdapter(uniqueId = it)
                         sensor?.let {
                             tmpList.add(sensor)
@@ -582,17 +581,17 @@ class FlowDemoViewModel
         if (node != null) {
             if ((node!!.advertiseInfo != null) && (node!!.catalogInfo != null)) {
                 if(node!!.catalogInfo!!.optionBytes.isNotEmpty()) {
-                val optionByte = node!!.catalogInfo!!.optionBytes[0]
-                if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
-                    val optionByteValue =
-                        node!!.advertiseInfo!!.getOptBytes()[0 + 1 + node!!.advertiseInfo!!.getOptBytesOffset()]
+                    val optionByte = node!!.catalogInfo!!.optionBytes[0]
+                    if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
+                        val optionByteValue =
+                            node!!.advertiseInfo!!.getOptBytes()[0 + 1 + node!!.advertiseInfo!!.getOptBytesOffset()]
 
-                    if (optionByteValue != optionByte.escapeValue) {
-                        return optionByte.stringValues!!.find { it.value == optionByteValue }?.displayName
+                        if (optionByteValue != optionByte.escapeValue) {
+                            return optionByte.stringValues!!.find { it.value == optionByteValue }?.displayName
+                        }
                     }
                 }
             }
-        }
         }
         return null
     }
@@ -601,17 +600,17 @@ class FlowDemoViewModel
         if (node != null) {
             if ((node!!.advertiseInfo != null) && (node!!.catalogInfo != null)) {
                 if(node!!.catalogInfo!!.optionBytes.size>1) {
-                val optionByte = node!!.catalogInfo!!.optionBytes[1]
-                if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
-                    val optionByteValue =
-                        node!!.advertiseInfo!!.getOptBytes()[0 + 2 + node!!.advertiseInfo!!.getOptBytesOffset()]
+                    val optionByte = node!!.catalogInfo!!.optionBytes[1]
+                    if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
+                        val optionByteValue =
+                            node!!.advertiseInfo!!.getOptBytes()[0 + 2 + node!!.advertiseInfo!!.getOptBytesOffset()]
 
-                    if (optionByteValue != optionByte.escapeValue) {
-                        return optionByte.stringValues!!.find { it.value == optionByteValue }?.displayName
+                        if (optionByteValue != optionByte.escapeValue) {
+                            return optionByte.stringValues!!.find { it.value == optionByteValue }?.displayName
+                        }
                     }
                 }
             }
-        }
         }
         return null
     }
@@ -630,12 +629,14 @@ class FlowDemoViewModel
                         stream?.let {
                             Log.i("parseFlowFile", "${file.name}")
                             val flow = parseFlowFile(stream)
-                            if (flow != null && flow.version == Flow.FLOW_VERSION && flow.board_compatibility.contains(
-                                    node!!.boardType.name
-                                )
-                            ) {
-                                flow.file = file
-                                flows.add(flow)
+                            flow?.let {
+                                if (flow.version == Flow.FLOW_VERSION && flow.board_compatibility.contains(
+                                        node!!.boardType.name
+                                    )
+                                ) {
+                                    flow.file = file
+                                    flows.add(flow)
+                                }
                             }
                         }
                     } catch (e: FileNotFoundException) {

@@ -36,6 +36,8 @@ class FwDownloadFragment : Fragment() {
     ): View {
         val nodeId = navArgs.nodeId
 
+        val banksStatus = navArgs.bankStatus
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -45,6 +47,7 @@ class FwDownloadFragment : Fragment() {
                             .fillMaxSize()
                             .padding(all = LocalDimensions.current.paddingNormal),
                         nodeId = nodeId,
+                        banksStatus = banksStatus,
                         viewModel = viewModel,
                         navController = findNavController()
                     )

@@ -626,7 +626,7 @@ fun <T : Any> EnumProperty(
 
                 Icon(
                     tint = Grey6,
-                    imageVector = Icons.Filled.KeyboardArrowDown,
+                    imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = null
                 )
 

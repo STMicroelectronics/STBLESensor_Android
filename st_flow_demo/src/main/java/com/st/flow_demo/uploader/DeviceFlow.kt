@@ -100,14 +100,14 @@ data class DeviceFlow(
     }
 
     private fun orderSensors() {
-        sensors.sortWith(Comparator { sensor1, sensor2 -> sensor1.id.compareTo(sensor2.id) })
+        sensors.sortWith { sensor1, sensor2 -> sensor1.id.compareTo(sensor2.id) }
     }
 
     private fun orderFlows() {
-        flows.sortWith(Comparator { flow1, flow2 ->
+        flows.sortWith { flow1, flow2 ->
             getCompositeInputFlowCount(flow2) - getCompositeInputFlowCount(
                 flow1
             )
-        })
+        }
     }
 }

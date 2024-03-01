@@ -66,10 +66,13 @@ class SourceLocalizationFragment : Fragment() {
             Boards.Model.NUCLEO_F401RE,
             Boards.Model.NUCLEO_L476RG,
             Boards.Model.NUCLEO_L053R8,
+            Boards.Model.NUCLEO_U575ZIQ,
+            Boards.Model.NUCLEO_U5A5ZJQ,
             Boards.Model.NUCLEO_F446RE -> {
                 mBoardImage.setImageResource(R.drawable.ic_board_nucleo_bg)
                 mBoardImage.rotation = 90F
             }
+
             else -> mBoardImage.setImageResource(R.drawable.mic_on)
         }
 

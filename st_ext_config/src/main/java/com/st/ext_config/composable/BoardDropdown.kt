@@ -40,15 +40,15 @@ fun BoardDropdown(
             Boards.Model.PROTEUS -> mutableListOf(stringResource(id = R.string.st_extConfig_fwUpgrade_proteus1))
             Boards.Model.STDES_CBMLORABLE -> mutableListOf(stringResource(id = R.string.st_extConfig_fwUpgrade_cbmlorable))
             else -> {
-        mutableListOf(
-            stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard1),
-            stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2),
-        )
+                mutableListOf(
+                    stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard1),
+                    stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2),
+                )
             }
         }
-    if(!wbOnly) {
+    if (!wbOnly) {
         items.add(stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard3))
-        }
+    }
     // remember the selected item
     var selectedItem by remember {
         mutableStateOf(items[selectedIndex])
@@ -58,7 +58,7 @@ fun BoardDropdown(
         expanded = expanded,
         onExpandedChange = {
             if (items.size>1 ) {
-            expanded = !expanded
+                expanded = !expanded
             }
         },
         modifier = modifier

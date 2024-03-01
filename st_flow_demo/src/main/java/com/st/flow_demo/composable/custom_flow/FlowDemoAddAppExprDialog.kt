@@ -33,7 +33,7 @@ fun FlowDemoAddAppExprDialog(
     val availableCustomFlowList by viewModel.flowsCustomList.collectAsStateWithLifecycle()
 
     val filteredAvailableCustomFlowList =
-        availableCustomFlowList.filter { it -> it.canBeUploaded() }.plus(availableCounter)
+        availableCustomFlowList.filter { it.canBeUploaded() }.plus(availableCounter)
 
 
     var flowSelectedId = if (viewModel.flowSelected != null) {

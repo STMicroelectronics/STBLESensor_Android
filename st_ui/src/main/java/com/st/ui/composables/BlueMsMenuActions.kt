@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 
@@ -105,23 +104,11 @@ fun BlueMsMenuActions(
                                         )
                                     }
                                     Text(
-//                                        text = buildAnnotatedString {
-//                                            append(
-//                                                AnnotatedString(
-//                                                    action.label.uppercase(),
-//                                                    paragraphStyle = ParagraphStyle(
-//                                                        textIndent = TextIndent(
-//                                                            firstLine = 0.sp,
-//                                                            restLine = 20.sp
-//                                                        )
-//                                                    )
-//                                                )
-//                                            )
-//                                        },
                                         text = action.label.uppercase(),
                                         maxLines = 2,
-                                        fontSize = 15.sp,
-                                        lineHeight = 24.sp,
+//                                        fontSize = 15.sp,
+//                                        lineHeight = 24.sp,
+                                        style = MaterialTheme.typography.titleSmall,
                                         color = MaterialTheme.colorScheme.primary,
                                         overflow = TextOverflow.Ellipsis
                                         //modifier = Modifier.basicMarquee()

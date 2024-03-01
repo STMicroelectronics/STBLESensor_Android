@@ -8,8 +8,8 @@
 package com.st.pnpl.composable
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -128,8 +128,8 @@ fun Component(
 
             AnimatedVisibility(
                 visible = isOpen || enableCollapse.not(),
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = expandVertically(),
+                exit = shrinkVertically()
             ) {
                 Column(
                     modifier = Modifier

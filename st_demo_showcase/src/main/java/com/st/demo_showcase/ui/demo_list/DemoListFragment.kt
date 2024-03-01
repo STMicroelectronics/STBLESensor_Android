@@ -39,6 +39,7 @@ class DemoListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel.initLoginManager(requireActivity())
         viewModel.initExpert()
+        viewModel.initIsBeta()
 
         StUserProfilingConfig.onDone = { level: LevelProficiency, type: ProfileType ->
             viewModel.profileShow(level = level, type = type)
@@ -66,6 +67,10 @@ class DemoListFragment : Fragment() {
                         emptyList()
                     )
 
+                    val isBeta by viewModel.isBeta.collectAsStateWithLifecycle()
+
+                    val fwUpdateAvailable by viewModel.fwUpdateAvailable.collectAsStateWithLifecycle()
+
                     LaunchedEffect(key1 = Unit) {
                         viewModel.setCurrentDemo(null)
                     }
@@ -83,6 +88,8 @@ class DemoListFragment : Fragment() {
                         pinnedDevices = pinnedDevices,
                         isLoggedIn = isLoggedIn,
                         isExpert = isExpert,
+                        isBetaApplication = isBeta,
+                        fwUpdateAvailable = fwUpdateAvailable,
                         availableDemos = demos,
                         onDemoReordered = { from, to ->
                             viewModel.saveReorder(from, to)
@@ -109,11 +116,18 @@ class DemoListFragment : Fragment() {
                             viewModel.login()
                         },
                         onExpertRequired = {
-                            val direction = DemoListFragmentDirections.actionDemoListToUserProfilingNavGraph()
+                            val direction =
+                                DemoListFragmentDirections.actionDemoListToUserProfilingNavGraph()
                             findNavController().navigate(directions = direction)
                         },
+                        onLastFwRequired = {
+                            findNavController().navigate(directions = DemoListFragmentDirections.actionDemoListToFwUpgrade(
+                                nodeId,
+                                viewModel.updateUrl.value
+                            ))
+                        },
                         statusModelDTMI = statusModelDTMI,
-                        onCustomDTMIClicked = { pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE))}
+                        onCustomDTMIClicked = { pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE)) }
                     )
                 }
             }

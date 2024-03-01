@@ -50,24 +50,24 @@
     </LinearLayout>
 
     <LinearLayout
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="8"
         android:orientation="horizontal">
 
-    <com.st.ui.legacy.VerticalTextView
-        android:id="@+id/plotFeature_yLabel"
-        android:layout_width="wrap_content"
+        <com.st.ui.legacy.VerticalTextView
+            android:id="@+id/plotFeature_yLabel"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-        android:textAlignment="center"
-        tools:text="YLabel" />
+            android:textAlignment="center"
+            tools:text="YLabel" />
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/plotFeature_chart"
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/plotFeature_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    </com.github.mikephil.charting.charts.LineChart>
+        </com.github.mikephil.charting.charts.LineChart>
 
     </LinearLayout>
 

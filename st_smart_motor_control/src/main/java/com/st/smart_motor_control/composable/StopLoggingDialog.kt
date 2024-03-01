@@ -50,10 +50,7 @@ fun StopLoggingDialogContent(
                 .padding(all = LocalDimensions.current.paddingNormal)
         ) {
             Text(
-                lineHeight = 24.sp,
-                letterSpacing = 0.15.sp,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -68,9 +65,7 @@ fun StopLoggingDialogContent(
 
             Text(
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp,
-                lineHeight = 24.sp,
-                letterSpacing = 0.15.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Grey6,
                 text = stringResource(id = R.string.st_motor_control_datalog_stopDialogMessage)
             )

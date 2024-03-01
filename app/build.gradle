@@ -25,17 +25,26 @@ android {
         applicationId "com.st.bluems"
         minSdk rootProject.minSdk
         targetSdk rootProject.targetSdk
-        versionCode 180
-        versionName "5.2.0"
+        versionCode 191
+        versionName "5.2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
 
+
         manifestPlaceholders = [
                 'appAuthRedirectScheme': 'stblesensor'
         ]
+
+        buildConfigField(
+                "String",
+                "VESPUCCI_ENVIRONMENT",
+//                "\"DEV\""
+//                "\"PRE_PROD\""
+                "\"PROD\""
+        )
     }
 
     buildTypes {
@@ -45,6 +54,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -107,6 +117,8 @@ dependencies {
 
     // Blue ST SDK
     implementation "com.st.blue.sdk:st-blue-sdk:$st_version"
+
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugaring_version"
 
     // Hilt
     implementation "androidx.hilt:hilt-navigation-fragment:$hilt_navigation_fragment_version"

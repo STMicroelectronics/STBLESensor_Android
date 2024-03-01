@@ -11,8 +11,6 @@ import androidx.activity.result.ActivityResultRegistry
 
 interface StLoginManager {
 
-    fun setDevEnvironment()
-
     suspend fun getStAuthData(): StAuthData?
 
     suspend fun login(activityResultRegistry: ActivityResultRegistry): StAuthData?

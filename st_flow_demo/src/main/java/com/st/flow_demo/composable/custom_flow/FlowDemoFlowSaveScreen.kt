@@ -35,6 +35,7 @@ import com.st.flow_demo.helpers.FlowSaveDeleteState
 import com.st.flow_demo.helpers.CUSTOM_FLOW_FOLDER
 import com.st.flow_demo.helpers.FLOW_FILE_EXTENSION
 import com.st.flow_demo.helpers.FLOW_FILE_TYPE
+import com.st.flow_demo.models.Flow.Companion.FLOW_CUSTOM
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
@@ -149,6 +150,11 @@ fun FlowDemoFlowSaveScreen(
                         if (!flow.board_compatibility.contains(boardName)) {
                             flow.board_compatibility.add(boardName)
                         }
+
+                        //Add Custom Flow value
+                        flow.ex_app = FLOW_CUSTOM
+
+                        //Updated the current flow
                         viewModel.flowSelected = flow
 
                         //Save the Flow on the Disk

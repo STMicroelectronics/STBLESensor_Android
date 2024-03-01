@@ -67,26 +67,26 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val initData = content.initValue
-                var booleanData = initData
-                if (data is JsonPrimitive) {
-                    booleanData = data.booleanOrNull ?: initData
-                }
+                    val initData = content.initValue
+                    var booleanData = initData
+                    if (data is JsonPrimitive) {
+                        booleanData = data.booleanOrNull ?: initData
+                    }
 
-                BooleanProperty(
-                    modifier = modifier,
-                    label = label,
-                    description = description,
-                    comment = comment,
-                    color = color,
-                    trueLabel = content.trueName.localizedDisplayName,
-                    falseLabel = content.falseName.localizedDisplayName,
-                    value = booleanData,
-                    unit = unit,
-                    enabled = propEnabled,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
+                    BooleanProperty(
+                        modifier = modifier,
+                        label = label,
+                        description = description,
+                        comment = comment,
+                        color = color,
+                        trueLabel = content.trueName.localizedDisplayName,
+                        falseLabel = content.falseName.localizedDisplayName,
+                        value = booleanData,
+                        unit = unit,
+                        enabled = propEnabled,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
+                }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiStringPropertyContent -> {
@@ -96,32 +96,32 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var stringData = defaultData
-                if (data is JsonPrimitive) {
-                    stringData = data.contentOrNull ?: defaultData
+                    val defaultData = content.initValue
+                    var stringData = defaultData
+                    if (data is JsonPrimitive) {
+                        stringData = data.contentOrNull ?: defaultData
+                    }
+
+                    val minLength = content.minLength
+                    val maxLength = content.maxLength
+                    val trimWhitespace = content.trimWhitespace
+
+                    StringProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = stringData,
+                        unit = unit,
+                        description = description,
+                        color = color,
+                        comment = comment,
+                        enabled = propEnabled,
+                        minLength = minLength,
+                        maxLength = maxLength,
+                        trimWhitespace = trimWhitespace,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { value, _ -> onValueChange(content.name to value) }
+                    )
                 }
-
-                val minLength = content.minLength
-                val maxLength = content.maxLength
-                val trimWhitespace = content.trimWhitespace
-
-                StringProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = stringData,
-                    unit = unit,
-                    description = description,
-                    color = color,
-                    comment = comment,
-                    enabled = propEnabled,
-                    minLength = minLength,
-                    maxLength = maxLength,
-                    trimWhitespace = trimWhitespace,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { value, _ -> onValueChange(content.name to value) }
-                )
-            }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiIntegerPropertyContent -> {
@@ -131,30 +131,30 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var intData = defaultData
-                if (data is JsonPrimitive) {
-                    intData = data.intOrNull ?: defaultData
+                    val defaultData = content.initValue
+                    var intData = defaultData
+                    if (data is JsonPrimitive) {
+                        intData = data.intOrNull ?: defaultData
+                    }
+
+                    val minValue = content.minValue
+                    val maxValue = content.maxValue
+
+                    IntegerProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = intData,
+                        unit = unit,
+                        color = color,
+                        description = description,
+                        comment = comment,
+                        minValue = minValue,
+                        maxValue = maxValue,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { value, _ -> onValueChange(content.name to value) }
+                    )
                 }
-
-                val minValue = content.minValue
-                val maxValue = content.maxValue
-
-                IntegerProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = intData,
-                    unit = unit,
-                    color = color,
-                    description = description,
-                    comment = comment,
-                    minValue = minValue,
-                    maxValue = maxValue,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { value, _ -> onValueChange(content.name to value) }
-                )
-            }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiLongPropertyContent -> {
@@ -164,30 +164,30 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var intData = defaultData
-                if (data is JsonPrimitive) {
-                    intData = data.longOrNull ?: defaultData
+                    val defaultData = content.initValue
+                    var intData = defaultData
+                    if (data is JsonPrimitive) {
+                        intData = data.longOrNull ?: defaultData
+                    }
+
+                    val minValue = content.minValue
+                    val maxValue = content.maxValue
+
+                    LongProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = intData,
+                        unit = unit,
+                        description = description,
+                        color = color,
+                        comment = comment,
+                        minValue = minValue,
+                        maxValue = maxValue,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
                 }
-
-                val minValue = content.minValue
-                val maxValue = content.maxValue
-
-                LongProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = intData,
-                    unit = unit,
-                    description = description,
-                    color = color,
-                    comment = comment,
-                    minValue = minValue,
-                    maxValue = maxValue,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiDoublePropertyContent -> {
@@ -196,32 +196,32 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var doubleData = defaultData
-                if (data is JsonPrimitive) {
-                    doubleData = data.doubleOrNull ?: defaultData
+                    val defaultData = content.initValue
+                    var doubleData = defaultData
+                    if (data is JsonPrimitive) {
+                        doubleData = data.doubleOrNull ?: defaultData
+                    }
+
+                    val minValue = content.minValue
+                    val maxValue = content.maxValue
+                    val decimalPlaces = content.decimalPlaces
+
+                    DoubleProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = doubleData,
+                        unit = unit,
+                        color = color,
+                        description = description,
+                        comment = comment,
+                        decimalPlaces = decimalPlaces,
+                        minValue = minValue,
+                        maxValue = maxValue,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
                 }
-
-                val minValue = content.minValue
-                val maxValue = content.maxValue
-                val decimalPlaces = content.decimalPlaces
-
-                DoubleProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = doubleData,
-                    unit = unit,
-                    color = color,
-                    description = description,
-                    comment = comment,
-                    decimalPlaces = decimalPlaces,
-                    minValue = minValue,
-                    maxValue = maxValue,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiFloatPropertyContent -> {
@@ -230,30 +230,30 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var floatData = defaultData
-                if (data is JsonPrimitive) {
-                    floatData = data.floatOrNull ?: defaultData
+                    val defaultData = content.initValue
+                    var floatData = defaultData
+                    if (data is JsonPrimitive) {
+                        floatData = data.floatOrNull ?: defaultData
+                    }
+                    val minValue = content.minValue
+                    val maxValue = content.maxValue
+                    val decimalPlaces = content.decimalPlaces
+                    FloatProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = floatData,
+                        unit = unit,
+                        color = color,
+                        description = description,
+                        comment = comment,
+                        decimalPlaces = decimalPlaces,
+                        minValue = minValue,
+                        maxValue = maxValue,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
                 }
-                val minValue = content.minValue
-                val maxValue = content.maxValue
-                val decimalPlaces = content.decimalPlaces
-                FloatProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = floatData,
-                    unit = unit,
-                    color = color,
-                    description = description,
-                    comment = comment,
-                    decimalPlaces = decimalPlaces,
-                    minValue = minValue,
-                    maxValue = maxValue,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiDurationPropertyContent -> {
@@ -262,24 +262,24 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                var stringData = ""
-                if (data is JsonPrimitive) {
-                    stringData = data.contentOrNull ?: ""
-                }
+                    var stringData = ""
+                    if (data is JsonPrimitive) {
+                        stringData = data.contentOrNull ?: ""
+                    }
 
-                StringProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = stringData,
-                    unit = unit,
-                    description = description,
-                    color = color,
-                    comment = comment,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { value, _ -> onValueChange(content.name to value) }
-                )
-            }
+                    StringProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = stringData,
+                        unit = unit,
+                        description = description,
+                        color = color,
+                        comment = comment,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { value, _ -> onValueChange(content.name to value) }
+                    )
+                }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiVectorPropertyContent -> {
@@ -288,29 +288,29 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var vectorData = defaultData
-                if (data is JsonObject) {
-                    vectorData = Json.decodeFromJsonElement(data) ?: defaultData
-                }
-
-                VectorProperty(
-                    modifier = modifier,
-                    label = label,
-                    x = vectorData.x,
-                    y = vectorData.y,
-                    z = vectorData.z,
-                    unit = unit,
-                    color = color,
-                    description = description,
-                    comment = comment,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { x, y, z ->
-                        onValueChange(content.name to listOf(x, y, z))
+                    val defaultData = content.initValue
+                    var vectorData = defaultData
+                    if (data is JsonObject) {
+                        vectorData = Json.decodeFromJsonElement(data) ?: defaultData
                     }
-                )
-            }
+
+                    VectorProperty(
+                        modifier = modifier,
+                        label = label,
+                        x = vectorData.x,
+                        y = vectorData.y,
+                        z = vectorData.z,
+                        unit = unit,
+                        color = color,
+                        description = description,
+                        comment = comment,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { x, y, z ->
+                            onValueChange(content.name to listOf(x, y, z))
+                        }
+                    )
+                }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiDateTimePropertyContent -> {
@@ -319,27 +319,27 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var stringData = defaultData
-                if (data is JsonPrimitive) {
-                    stringData = data.contentOrNull ?: defaultData
+                    val defaultData = content.initValue
+                    var stringData = defaultData
+                    if (data is JsonPrimitive) {
+                        stringData = data.contentOrNull ?: defaultData
+                    }
+
+                    val hideTime = content.hideTime
+
+                    DateTimeProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = stringData,
+                        unit = unit,
+                        description = description,
+                        color = color,
+                        comment = comment,
+                        enabled = propEnabled,
+                        hideTime = hideTime,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
                 }
-
-                val hideTime = content.hideTime
-
-                DateTimeProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = stringData,
-                    unit = unit,
-                    description = description,
-                    color = color,
-                    comment = comment,
-                    enabled = propEnabled,
-                    hideTime = hideTime,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiDatePropertyContent -> {
@@ -348,25 +348,25 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var stringData = defaultData
-                if (data is JsonPrimitive) {
-                    stringData = data.contentOrNull ?: defaultData
-                }
+                    val defaultData = content.initValue
+                    var stringData = defaultData
+                    if (data is JsonPrimitive) {
+                        stringData = data.contentOrNull ?: defaultData
+                    }
 
-                DateTimeProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = stringData,
-                    unit = unit,
-                    description = description,
-                    color = color,
-                    comment = comment,
-                    enabled = propEnabled,
-                    hideTime = true,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
+                    DateTimeProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = stringData,
+                        unit = unit,
+                        description = description,
+                        color = color,
+                        comment = comment,
+                        enabled = propEnabled,
+                        hideTime = true,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
+                }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiTimePropertyContent -> {
@@ -375,24 +375,24 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var stringData = defaultData
-                if (data is JsonPrimitive) {
-                    stringData = data.contentOrNull ?: defaultData
-                }
+                    val defaultData = content.initValue
+                    var stringData = defaultData
+                    if (data is JsonPrimitive) {
+                        stringData = data.contentOrNull ?: defaultData
+                    }
 
-                TimeProperty(
-                    modifier = modifier,
-                    label = label,
-                    value = stringData,
-                    unit = unit,
-                    description = description,
-                    color = color,
-                    comment = comment,
-                    enabled = propEnabled,
-                    onValueChange = { value -> onValueChange(content.name to value) }
-                )
-            }
+                    TimeProperty(
+                        modifier = modifier,
+                        label = label,
+                        value = stringData,
+                        unit = unit,
+                        description = description,
+                        color = color,
+                        comment = comment,
+                        enabled = propEnabled,
+                        onValueChange = { value -> onValueChange(content.name to value) }
+                    )
+                }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiGeoPropertyContent -> {
@@ -401,29 +401,29 @@ fun Property(
                     mustBeShowed = !hideProperties.contains(content.name)
                 }
                 if(mustBeShowed) {
-                val defaultData = content.initValue
-                var geoData = defaultData
-                if (data is JsonObject) {
-                    geoData = Json.decodeFromJsonElement(data) ?: defaultData
-                }
-
-                GeoProperty(
-                    modifier = modifier,
-                    label = label,
-                    lat = geoData.lat,
-                    lon = geoData.lon,
-                    alt = geoData.alt,
-                    unit = unit,
-                    color = color,
-                    description = description,
-                    comment = comment,
-                    enabled = propEnabled,
-                    commandBehavior = commandBehavior,
-                    onValueChange = { lat, lon, alt ->
-                        onValueChange(content.name to listOf(lat, lon, alt))
+                    val defaultData = content.initValue
+                    var geoData = defaultData
+                    if (data is JsonObject) {
+                        geoData = Json.decodeFromJsonElement(data) ?: defaultData
                     }
-                )
-            }
+
+                    GeoProperty(
+                        modifier = modifier,
+                        label = label,
+                        lat = geoData.lat,
+                        lon = geoData.lon,
+                        alt = geoData.alt,
+                        unit = unit,
+                        color = color,
+                        description = description,
+                        comment = comment,
+                        enabled = propEnabled,
+                        commandBehavior = commandBehavior,
+                        onValueChange = { lat, lon, alt ->
+                            onValueChange(content.name to listOf(lat, lon, alt))
+                        }
+                    )
+                }
             }
 
             is DtmiContent.DtmiPropertyContent.DtmiComplexPropertyContent -> {

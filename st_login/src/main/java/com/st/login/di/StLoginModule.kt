@@ -26,15 +26,14 @@ abstract class StLoginModule {
     @Module
     @InstallIn(SingletonComponent::class)
     object WithProvides {
-
         @Provides
-        @RedirectUri
-        fun provideRedirectUris(
-            availableRedirectUris: Map<Int, @JvmSuppressWildcards Uri>
-        ): Uri {
+        @LoginConfig
+        fun provideSTLoginConfigs(
+            provideSTLoginConfigs: Map<String, @JvmSuppressWildcards com.st.login.STLoginConfig>
+        ): com.st.login.STLoginConfig {
             // Choose the available client from the options provided.
-            val bestEntry = availableRedirectUris.maxBy { it.key }
-            return checkNotNull(bestEntry.value) { "No RedirectUri were provided" }
+            val bestEntry = provideSTLoginConfigs["stLoginConfig"]
+            return checkNotNull(bestEntry) { "No RedirectUri were provided" }
         }
     }
 }

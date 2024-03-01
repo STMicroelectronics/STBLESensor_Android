@@ -27,6 +27,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -65,7 +67,6 @@ import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
-import com.st.ui.theme.toDouble
 
 @Composable
 fun FlowDemoSensorConfigurationScreen(
@@ -80,6 +81,8 @@ fun FlowDemoSensorConfigurationScreen(
 
     var isMLCChanged by remember { mutableStateOf(false) }
     var isFSMChanged by remember { mutableStateOf(false) }
+
+    val boardType by remember { mutableStateOf(viewModel.getBoardType()) }
 
     BackHandler {
         openConfirmationDialog = true
@@ -101,7 +104,6 @@ fun FlowDemoSensorConfigurationScreen(
 
         if (viewModel.sensorOnConfig != null) {
             val sensorOnConfig by remember { mutableStateOf(value = viewModel.sensorOnConfig!!.copy()) }
-
             val configOnConfig by remember {
                 mutableStateOf(
                     value =
@@ -122,7 +124,7 @@ fun FlowDemoSensorConfigurationScreen(
                         uri = fileUri,
                         sensorConfiguration = configOnConfig,
                         isMLC = isMLC,
-                        board = viewModel.getBoardType()
+                        board = boardType
                     )
                     errorText?.let { error ->
                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
@@ -148,7 +150,7 @@ fun FlowDemoSensorConfigurationScreen(
                 sensorId = sensorOnConfig.id,
                 powerMode = sensorOnConfig.configuration?.powerMode,
                 sensorConfiguration = configOnConfig,
-                board = viewModel.getBoardType()
+                board = boardType
             )
 
             if (configOnConfig.regConfig != null) {
@@ -163,7 +165,7 @@ fun FlowDemoSensorConfigurationScreen(
                             } else {
                                 val tmpList = mutableListOf<MlcFsmDecisionTreeOutput>()
                                 val numberReg =
-                                    if (viewModel.getBoardType() == Boards.Model.SENSOR_TILE_BOX) {
+                                    if (boardType == Boards.Model.SENSOR_TILE_BOX) {
                                         8
                                     } else {
                                         4
@@ -240,7 +242,7 @@ fun FlowDemoSensorConfigurationScreen(
                             mlcDecisionTreeOutputList.forEach { decisionTree ->
                                 var isOpen by remember(isMLCChanged) { mutableStateOf(value = false) }
                                 var decisionTreeSize by remember(isMLCChanged) {
-                                    mutableStateOf(
+                                    mutableIntStateOf(
                                         value = decisionTree.mlcFsmLabels.size
                                     )
                                 }
@@ -462,7 +464,7 @@ fun FlowDemoSensorConfigurationScreen(
                             } else {
                                 val tmpList = mutableListOf<MlcFsmDecisionTreeOutput>()
                                 val numberReg =
-                                    if (viewModel.getBoardType() == Boards.Model.SENSOR_TILE_BOX) {
+                                    if (boardType == Boards.Model.SENSOR_TILE_BOX) {
                                         16
                                     } else {
                                         8
@@ -539,7 +541,7 @@ fun FlowDemoSensorConfigurationScreen(
                             fsmDecisionTreeOutputList.forEach { decisionTree ->
                                 var isOpen by remember(isFSMChanged) { mutableStateOf(value = false) }
                                 var decisionTreeSize by remember(isFSMChanged) {
-                                    mutableStateOf(
+                                    mutableIntStateOf(
                                         value = decisionTree.mlcFsmLabels.size
                                     )
                                 }
@@ -753,7 +755,7 @@ fun FlowDemoSensorConfigurationScreen(
 
             //Acquisition Time Section
             if (configOnConfig.acquisitionTime != null) {
-                var selectedValue by remember { mutableStateOf(value = configOnConfig.acquisitionTime!!.toFloat() / 60) }
+                var selectedValue by remember { mutableFloatStateOf(value = configOnConfig.acquisitionTime!!.toFloat() / 60) }
 
                 FlowDemoDecimalEntry(
                     title = "Acquisition Time",
@@ -774,7 +776,7 @@ fun FlowDemoSensorConfigurationScreen(
                         sensorOnConfig.powerModes!![0].mode
                 }
 
-                var selectedPowerModeId by remember { mutableStateOf(value = configOnConfig.powerMode!!.id) }
+                var selectedPowerModeId by remember { mutableIntStateOf(value = configOnConfig.powerMode!!.id) }
 
                 var selectedOdrForDropDown by remember(selectedPowerModeId) {
                     mutableStateOf(
@@ -814,7 +816,7 @@ fun FlowDemoSensorConfigurationScreen(
                         onValueSelected = {
                             selectedPowerModeId = it
                             configOnConfig.powerMode =
-                                PowerMode.Mode.values()[it]
+                                PowerMode.Mode.entries.toTypedArray()[it]
 
                             //configOnConfig.odr = null
                             selectedPowerModeDescription =
@@ -829,7 +831,7 @@ fun FlowDemoSensorConfigurationScreen(
                                 sensorId = sensorOnConfig.id,
                                 powerMode = configOnConfig.powerMode,
                                 sensorConfiguration = configOnConfig,
-                                board = viewModel.getBoardType()
+                                board = boardType
                             )
                         }
                     )
@@ -883,11 +885,11 @@ fun FlowDemoSensorConfigurationScreen(
                                 sensorId = sensorOnConfig.id,
                                 powerMode = null,
                                 sensorConfiguration = configOnConfig,
-                                board = viewModel.getBoardType()
+                                board = boardType
                             )
                         },
                         values = valuesForDropDown,
-                        initialValueDropDown = selectedOdrForDropDown!!.toString(),
+                        initialValueDropDown = "${selectedOdrForDropDown!!} Hz",
                         errorTextDropDown = if (checkedCheckBox) {
                             if ((minCustomSampleTime != null) && (defaultValueDecimalEntry != null)) {
                                 if (defaultValueDecimalEntry!! < minCustomSampleTime!!) {
@@ -917,7 +919,7 @@ fun FlowDemoSensorConfigurationScreen(
                             }
                         },
                         onValueSelectedDropDown = {
-                            selectedOdrForDropDown = it.toDouble()
+                            selectedOdrForDropDown = it.toDoubleOrNull() ?: 0f.toDouble()
                             configOnConfig.odr = selectedOdrForDropDown
                             configOnConfig.filters = FilterConfiguration()
                             needToResetSelectedLowHighPassFilters = true
@@ -926,7 +928,7 @@ fun FlowDemoSensorConfigurationScreen(
                                 sensorId = sensorOnConfig.id,
                                 powerMode = null,
                                 sensorConfiguration = configOnConfig,
-                                board = viewModel.getBoardType()
+                                board = boardType
                             )
                         }
                     )

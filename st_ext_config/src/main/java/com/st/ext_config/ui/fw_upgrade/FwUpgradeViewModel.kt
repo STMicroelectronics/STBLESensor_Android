@@ -108,6 +108,8 @@ class FwUpgradeViewModel
                 fwName = cursor.getString(nameIndex),
                 fwSize = cursor.getLong(sizeIndex).toString()
             )
+
+            changeErrorMessageCode(-1)
         }
     }
 
@@ -162,10 +164,17 @@ class FwUpgradeViewModel
                     val filePath = filesDir.absolutePath + fileName
                     val downloaded = saveFile(responseBody, filePath)
                     Uri.fromFile(File(filePath))?.let {
+                        var fwSize =""
+                        if(downloaded) {
+                            val fileDescriptor =
+                                FwFileDescriptor(fileUri = it, resolver = contentResolver)
+                            fwSize = fileDescriptor.getFileSize().toString()
+                        }
                         _fwUpdateState.value = _fwUpdateState.value.copy(
                             fwUri = it,
                             downloadFinished = downloaded,
                             fwName = fileName,
+                            fwSize = fwSize,
                             boardInfo = blueManager.getFwVersion(nodeId = nodeId)
                         )
                     }

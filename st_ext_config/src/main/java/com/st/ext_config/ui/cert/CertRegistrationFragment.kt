@@ -12,8 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -165,8 +167,8 @@ fun CertRegistrationScreen(
 
         AnimatedVisibility(
             visible = showCert,
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = expandVertically(),
+            exit = shrinkVertically()
         ) {
             Text(
                 style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),

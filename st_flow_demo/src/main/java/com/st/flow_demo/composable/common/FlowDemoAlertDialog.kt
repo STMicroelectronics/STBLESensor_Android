@@ -1,6 +1,5 @@
 package com.st.flow_demo.composable.common
 
-import android.R
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,13 +23,13 @@ fun FlowDemoAlertDialog(
         },
         confirmButton = {
             BlueMsButton(
-                text = stringResource(id = R.string.ok),
+                text = stringResource(id = android.R.string.ok),
                 onClick = onConfirmation
             )
         },
         dismissButton = {
             BlueMsButton(
-                text = stringResource(id = R.string.cancel),
+                text = stringResource(id = android.R.string.cancel),
                 onClick = onDismiss
             )
         }

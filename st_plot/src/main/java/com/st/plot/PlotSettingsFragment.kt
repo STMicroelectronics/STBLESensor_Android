@@ -77,8 +77,7 @@ private class DataStorageMapper(private val viewModel: PlotSettingsViewModel) :
         when (key) {
             MINIMUM_Y_KEY -> viewModel.changeMimimumYValue(value?.toFloatOrNull())
             MAXIMUM_Y_KEY -> viewModel.changeMaximumYValue(value?.toFloatOrNull())
-            TIME_TO_PLOT_KEY -> viewModel.changePlotDuration(value?.toInt()
-                ?.let { it.seconds })
+            TIME_TO_PLOT_KEY -> viewModel.changePlotDuration(value?.toInt()?.seconds)
         }
     }
 
@@ -171,7 +170,7 @@ class PlotSettingsFragment : PreferenceFragmentCompat() {
     private fun setupTextEditPreference(preference: EditTextPreference) {
         preference.setOnBindEditTextListener { editText ->
             editText.inputType =
-                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
         }
 
         preference.summaryProvider = EditTextPreference.SimpleSummaryProvider.getInstance()

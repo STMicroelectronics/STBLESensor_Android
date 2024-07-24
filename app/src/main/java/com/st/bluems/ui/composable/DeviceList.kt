@@ -20,7 +20,6 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.*
@@ -47,10 +46,10 @@ import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.composables.JSON_FILE_TYPE
 import com.st.ui.theme.LocalDimensions
-import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Grey6
-import androidx.compose.material.FloatingActionButton as Material2FloatingActionButton
-import androidx.compose.material.Scaffold as Material2Scaffold
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
+import com.st.ui.theme.SecondaryBlue
 
 @Composable
 fun DeviceListScreen(
@@ -139,8 +138,8 @@ fun DeviceListScreen(
         },
         readBetaCatalog = {
             forceScan = true
-            viewModel.readBetaCatalog()
-            Toast.makeText(context, "Loaded Beta Catalog", Toast.LENGTH_SHORT).show()
+            //viewModel.readBetaCatalog()
+            Toast.makeText(context, "Loaded Beta Catalog Not Implemented", Toast.LENGTH_SHORT).show()
         },
         readReleaseCatalog = {
             forceScan = true
@@ -493,18 +492,23 @@ fun DeviceList(
         }
     }
 
-    Material2Scaffold(
+    Scaffold(
         modifier = modifier,
-        floatingActionButtonPosition = androidx.compose.material.FabPosition.Center,
-        isFloatingActionButtonDocked = true,
-        floatingActionButton = {
-            DeviceScanFAB(
-                isLoading = isLoading,
-                onStartScan = onStartScan
-            )
-        },
+//        floatingActionButtonPosition = FabPosition.End,
+//        floatingActionButton = {
+//            DeviceScanFAB(
+//                isLoading = isLoading,
+//                onStartScan = onStartScan
+//            )
+//        },
         bottomBar = {
             MainBottomBar(
+                floatingActionButton = {
+                    DeviceScanFAB(
+                        isLoading = isLoading,
+                        onStartScan = onStartScan
+                    )
+                },
                 openCatalog = goToCatalog,
                 openFilter = { openFilterDialog = true }
             )
@@ -650,16 +654,24 @@ fun DeviceScanFAB(
         }
     }
 
-    Material2FloatingActionButton(
-        backgroundColor = SecondaryBlue,
-        shape = CircleShape,
+    FloatingActionButton(
+        containerColor = SecondaryBlue,
         onClick = onStartScan
     ) {
+        //Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
-            modifier = Modifier.rotate(rotation.value),
+            modifier = Modifier
+                .size(LocalDimensions.current.iconSmall)
+                .rotate(rotation.value),
             tint = MaterialTheme.colorScheme.primary,
             imageVector = Icons.Default.Sync,
             contentDescription = null
         )
+//            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+//            Text(
+//                style = MaterialTheme.typography.labelSmall,
+//                text = "Refresh"
+//            )
+//        }
     }
 }

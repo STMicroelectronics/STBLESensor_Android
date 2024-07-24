@@ -126,7 +126,7 @@ fun ProfileSelectionContentScreen(
             }
 
             if (index != levels.lastIndex) {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.padding(
                         vertical = LocalDimensions.current.paddingNormal
                     )

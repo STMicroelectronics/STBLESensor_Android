@@ -18,8 +18,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.st.core.ARG_FW_LOCK
 import com.st.core.ARG_FW_URL
 import com.st.core.ARG_NODE_ID
+import com.st.ext_config.FwUpgradeConfig
 import com.st.ext_config.composable.FwUpgradeScreen
 import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.LocalDimensions
@@ -34,8 +36,14 @@ class FwUpgradeDirectFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val nodeId = arguments?.getString(ARG_NODE_ID)
+            ?: FwUpgradeConfig.nodeId
             ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
-        val fwUrl = arguments?.getString(ARG_FW_URL) ?: ""
+        val fwUrl = arguments?.getString(ARG_FW_URL)
+            ?: FwUpgradeConfig.fwUrl
+            ?: ""
+        val fwLock = arguments?.getBoolean(ARG_FW_LOCK)
+            ?: FwUpgradeConfig.fwLock
+            ?: false
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -46,6 +54,7 @@ class FwUpgradeDirectFragment : Fragment() {
                             .fillMaxSize()
                             .padding(all = LocalDimensions.current.paddingNormal),
                         viewModel = viewModel,
+                        fwLock = fwLock,
                         nodeId = nodeId,
                         fwUrl = fwUrl
                     )

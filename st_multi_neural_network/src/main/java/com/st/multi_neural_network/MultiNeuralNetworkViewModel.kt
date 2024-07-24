@@ -29,7 +29,7 @@ import javax.inject.Inject
 class MultiNeuralNetworkViewModel
 @Inject internal constructor(
     private val blueManager: BlueManager,
-    private val coroutineScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
     companion object {

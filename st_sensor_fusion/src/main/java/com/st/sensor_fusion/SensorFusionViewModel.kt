@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.CalibrationStatus
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.acceleration_event.AccelerationEvent
 import com.st.blue_sdk.features.acceleration_event.AccelerationEventInfo
 import com.st.blue_sdk.features.acceleration_event.AccelerationType
@@ -127,15 +128,16 @@ class SensorFusionViewModel
                         if (data.quaternions.size == 1) {
                             _fusionData.emit(data.quaternions[0].value)
                         } else {
-                            var prevTimeStamp: Long = -1
-                            for (current in data.quaternions) {
-                                val currentTimeStamp = current.value.timeStamp
-                                if (prevTimeStamp != -1L) {
-                                    delay(currentTimeStamp - prevTimeStamp)
-                                }
-                                _fusionData.emit(current.value)
-                                prevTimeStamp = currentTimeStamp
-                            }
+//                            var prevTimeStamp: Long = -1
+//                            for (current in data.quaternions) {
+//                                val currentTimeStamp = current.value.timeStamp
+//                                if (prevTimeStamp != -1L) {
+//                                    delay(currentTimeStamp - prevTimeStamp)
+//                                }
+//                                _fusionData.emit(current.value)
+//                                prevTimeStamp = currentTimeStamp
+//                            }
+                            _fusionData.emit(data.quaternions[0].value)
                         }
                     }
                 }
@@ -221,7 +223,7 @@ class SensorFusionViewModel
         }
     }
 
-    fun disableProximityNotitification(nodeId: String) {
+    fun disableProximityNotification(nodeId: String) {
         featureProximity?.let {
             coroutineScope.launch {
                 blueManager.disableFeatures(nodeId, listOf(it))
@@ -238,7 +240,7 @@ class SensorFusionViewModel
             }
         }
 
-        disableProximityNotitification(nodeId)
+        disableProximityNotification(nodeId)
 
         featureFreeFall?.let {
             coroutineScope.launch {

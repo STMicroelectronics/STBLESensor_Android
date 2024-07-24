@@ -10,5 +10,5 @@ data class BoardRegConfig(
     @SerialName(value = "mlcLabels")
     var mlcLabels: String?=null,
     @SerialName(value = "fsmLabels")
-    var fsmLabels: String?=null,
+    var fsmLabels: String?=null
 )

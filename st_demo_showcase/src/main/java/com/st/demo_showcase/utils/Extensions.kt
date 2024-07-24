@@ -9,8 +9,8 @@ package com.st.demo_showcase.utils
 
 import android.content.Context
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.AreaChart
-import androidx.compose.material.icons.filled.Label
 import androidx.compose.material.icons.filled.Settings
 import androidx.navigation.NavController
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
@@ -34,7 +34,7 @@ fun List<String>?.toActions(
             imageVector = when (it) {
                 LOG_SETTINGS -> Icons.Default.Settings
                 PLOT_SETTINGS -> Icons.Default.AreaChart
-                NEAI_CLASSIFICATION_SETTINGS -> Icons.Default.Label
+                NEAI_CLASSIFICATION_SETTINGS -> Icons.AutoMirrored.Filled.Label
                 else -> null
             },
             action = {
@@ -92,6 +92,7 @@ fun Demo.isPnPLMandatory(): Boolean = when (this) {
 }
 
 fun Demo.isBetaRequired(): Boolean = when (this) {
+    Demo.MedicalSignal -> true
     else -> false
 }
 
@@ -115,6 +116,7 @@ fun Demo.getDescription(context: Context): String =
         Demo.NavigationGesture -> "Recognition of gesture navigation using sensor"
         Demo.NEAIAnomalyDetection -> "AI library (generated using NanoEdgeAIStudio) for predictive maintenance solution"
         Demo.NEAIClassification -> "AI library (generated using NanoEdgeAIStudio) for classification"
+        Demo.NeaiExtrapolation -> "AI library (generated using NanoEdgeAIStudio) for extrapolation"
         Demo.EventCounter -> "Display the counter that will be increased at each event detected by board"
         Demo.PianoDemo -> "Display a Piano keyboard for playing audio notes on the board"
         Demo.Pnpl -> "Board Control and Configuration using PnP-Like messages defined by a DTDL-Model"
@@ -162,4 +164,5 @@ fun Demo.getDescription(context: Context): String =
         Demo.WbsOtaFUOTA -> "Firmware Update Over the Air for WB/WBA boards"
         Demo.CloudAzureIotCentral -> "Connect the board to one Azure IoT Central Dashboard"
         Demo.CloudMqtt -> "Connect the board to one MQTT Server"
+        Demo.MedicalSignal -> "Display Medical Signals"
     }

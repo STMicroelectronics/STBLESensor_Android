@@ -31,6 +31,8 @@ import com.st.blue_sdk.features.extended.ext_configuration.ExtConfiguration
 import com.st.blue_sdk.features.extended.gnss.GNSS
 import com.st.blue_sdk.features.extended.hs_datalog_config.HSDataLogConfig
 import com.st.blue_sdk.features.extended.json_nfc.JsonNFC
+import com.st.blue_sdk.features.extended.medical_signal.MedicalSignal16BitFeature
+import com.st.blue_sdk.features.extended.medical_signal.MedicalSignal24BitFeature
 import com.st.blue_sdk.features.extended.motion_algorithm.MotionAlgorithm
 import com.st.blue_sdk.features.extended.piano.Piano
 import com.st.blue_sdk.features.extended.pnpl.PnPL
@@ -38,7 +40,7 @@ import com.st.blue_sdk.features.extended.predictive.PredictiveAccelerationStatus
 import com.st.blue_sdk.features.extended.predictive.PredictiveFrequencyStatus
 import com.st.blue_sdk.features.extended.predictive.PredictiveSpeedStatus
 import com.st.blue_sdk.features.extended.qvar.QVAR
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
 import com.st.blue_sdk.features.extended.registers_feature.RegistersFeature
 import com.st.blue_sdk.features.extended.tof_multi_object.ToFMultiObject
 import com.st.blue_sdk.features.external.std.HeartRate
@@ -71,6 +73,7 @@ import com.st.blue_sdk.features.extended.fitness_activity.FitnessActivity as Fit
 import com.st.blue_sdk.features.extended.gesture_navigation.GestureNavigation as GestureNavigationFeature
 import com.st.blue_sdk.features.extended.neai_anomaly_detection.NeaiAnomalyDetection as NeaiAnomalyDetectionFeature
 import com.st.blue_sdk.features.extended.neai_class_classification.NeaiClassClassification as NeaiClassClassificationFeature
+import com.st.blue_sdk.features.extended.neai_extrapolation.NeaiExtrapolation as NeaiExtrapolationFeature
 
 const val LOG_SETTINGS = "Log Settings"
 const val SERIAL_CONSOLE = "Serial Console"
@@ -123,6 +126,12 @@ enum class Demo(
         features = listOf(NeaiClassClassificationFeature.NAME),
         settings = listOf(LOG_SETTINGS, NEAI_CLASSIFICATION_SETTINGS)
     ),
+    NeaiExtrapolation(
+        displayName = "NEAI Extrapolation",
+        group = listOf(DemoGroup.AI),
+        icon = com.st.neai_extrapolation.R.drawable.neai_icon,
+        features = listOf(NeaiExtrapolationFeature.NAME)
+    ),
     PredictedMaintenance(
         displayName = "Board Pred Maintenance",
         group = listOf(DemoGroup.PredictiveMaintenance, DemoGroup.Status),
@@ -137,7 +146,8 @@ enum class Demo(
         group = listOf(DemoGroup.AI, DemoGroup.DataLog),
         icon = com.st.high_speed_data_log.R.drawable.high_speed_data_log_icon,
         requireAllFeatures = true,
-        features = listOf(HSDataLogConfig.NAME, PnPL.NAME)
+        features = listOf(HSDataLogConfig.NAME, PnPL.NAME),
+        settings = listOf()
     ),
     HighSpeedDataLog1(
         displayName = "HighSpeed DataLog",
@@ -185,7 +195,7 @@ enum class Demo(
         requireAllFeatures = true,
         features = listOf(
             AudioADPCMFeature.NAME,
-            AudioADPCMSyncFeature.NAME,
+            AudioADPCMSyncFeature.NAME
         )
     ),
     BlueVoiceOpus(
@@ -195,7 +205,7 @@ enum class Demo(
         requireAllFeatures = true,
         features = listOf(
             AudioOpusFeature.NAME,
-            AudioOpusConfFeature.NAME,
+            AudioOpusConfFeature.NAME
         )
     ),
     BlueVoiceFullDuplex(
@@ -282,7 +292,7 @@ enum class Demo(
         group = listOf(DemoGroup.AI, DemoGroup.InertialSensors, DemoGroup.Audio, DemoGroup.Health),
         icon = com.st.multi_neural_network.R.drawable.multi_neural_network_icon,
         features = listOf(Activity.NAME, AudioClassification.NAME),
-        requireAllFeatures = true,
+        requireAllFeatures = true
     ),
     RegistersMLCDemo(
         displayName = "Machine Learning Core",
@@ -446,16 +456,17 @@ enum class Demo(
     RawPnpl(
         displayName = "Raw PnPL Controlled",
         icon = com.st.raw_pnpl.R.drawable.ic_rule,
-        features = listOf(PnPL.NAME, RawPnPLControlled.NAME),
+        features = listOf(PnPL.NAME, RawControlled.NAME),
         requireAllFeatures = true,
         group = listOf(DemoGroup.Control)
     ),
     SmartMotorControl(
         displayName = "Smart Motor Control",
         icon = com.st.smart_motor_control.R.drawable.smart_motor_control_icon,
-        features = listOf(PnPL.NAME, RawPnPLControlled.NAME),
+        features = listOf(PnPL.NAME, RawControlled.NAME),
         requireAllFeatures = true,
-        group = listOf(DemoGroup.Control, DemoGroup.DataLog)
+        group = listOf(DemoGroup.Control, DemoGroup.DataLog),
+        settings = listOf()
     ),
     WbsOtaFUOTA(
         displayName = "FUOTA",
@@ -472,9 +483,16 @@ enum class Demo(
     ),
     CloudMqtt(
         displayName = "Cloud MQTT",
+        group = listOf(DemoGroup.Cloud),
         icon = com.st.cloud_mqtt.R.drawable.cloud_mqtt_icon,
         couldBeEnabledOutside = true,
-        features = listOf()
+        features = emptyList()
+    ),
+    MedicalSignal(
+        displayName = "Medical Signals",
+        icon = com.st.medical_signal.R.drawable.medical_signal_icon,
+        features = listOf(MedicalSignal16BitFeature.NAME, MedicalSignal24BitFeature.NAME),
+        group = listOf(DemoGroup.Health, DemoGroup.Graphs)
     )
     // *** NEW_DEMO_TEMPLATE ANCHOR1 ***\
     ,
@@ -555,6 +573,10 @@ enum class Demo(
             )
 
             NEAIClassification -> DemoListFragmentDirections.actionDemoListToNeaiClassificationFragment(
+                nodeId
+            )
+
+            NeaiExtrapolation -> DemoListFragmentDirections.actionDemoListToNeaiExtrapolationFragment(
                 nodeId
             )
 
@@ -692,6 +714,9 @@ enum class Demo(
             )
 
             CloudMqtt -> DemoListFragmentDirections.actionDemoListToCloudMqttFragment(nodeId)
+
+            MedicalSignal -> DemoListFragmentDirections.actionDemoListToMedicalSignalFragment(nodeId)
+
             // *** NEW_DEMO_TEMPLATE ANCHOR2 ***
             BlueVoiceFullBand -> DemoListFragmentDirections.actionDemoListToLegacyDemoFragment(
                 nodeId

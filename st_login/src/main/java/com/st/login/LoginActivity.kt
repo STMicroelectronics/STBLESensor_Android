@@ -327,6 +327,7 @@ class LoginActivity : AppCompatActivity() {
                                 super.onPageFinished(view, url)
                             }
 
+                            @Deprecated("Deprecated in Java")
                             override fun shouldOverrideUrlLoading(
                                 view: WebView,
                                 url: String

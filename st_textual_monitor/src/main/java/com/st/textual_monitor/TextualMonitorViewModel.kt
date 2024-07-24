@@ -24,11 +24,11 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlledInfo
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.decodeRawPnPLData
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.model.RawPnPLStreamIdEntry
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.readRawPnPLFormat
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlledInfo
+import com.st.blue_sdk.features.extended.raw_controlled.decodeRawData
+import com.st.blue_sdk.features.extended.raw_controlled.model.RawStreamIdEntry
+import com.st.blue_sdk.features.extended.raw_controlled.readRawPnPLFormat
 import com.st.blue_sdk.features.general_purpose.GeneralPurposeInfo
 import com.st.preferences.StPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -81,7 +81,7 @@ class TextualMonitorViewModel
     val componentStatusUpdates: State<List<JsonObject>>
         get() = _componentStatusUpdates
 
-    private val rawPnPLFormat: MutableList<RawPnPLStreamIdEntry> = mutableListOf()
+    private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
 
     fun getNodeFwModel(nodeId: String): BoardFirmware? {
         var model: BoardFirmware?
@@ -106,7 +106,7 @@ class TextualMonitorViewModel
             observeFeatureJob = viewModelScope.launch {
                 blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
                     if (feature!!.type != Feature.Type.GENERAL_PURPOSE) {
-                        if(feature!!.name != RawPnPLControlled.NAME) {
+                        if(feature!!.name != RawControlled.NAME) {
                             val data = it.data
                             _dataFeature.emit("\nTS =${it.timeStamp}:\n")
                             _dataFeature.emit(data.toString())
@@ -255,7 +255,7 @@ class TextualMonitorViewModel
         observeFeatureJob?.cancel()
 
         featuresPnPL = blueManager.nodeFeatures(nodeId)
-            .filter { it.name == PnPL.NAME || it.name == RawPnPLControlled.NAME }
+            .filter { it.name == PnPL.NAME || it.name == RawControlled.NAME }
 
         if(featuresPnPL.isNotEmpty()) {
             observeFeatureJob = blueManager.getFeatureUpdates(
@@ -267,13 +267,26 @@ class TextualMonitorViewModel
                         _modelUpdates.value = blueManager.getDtmiModel(
                             nodeId = nodeId,
                             isBeta = stPreferences.isBetaApplication()
-                        )?.filterComponentsByProperty(propName = RawPnPLControlled.PROPERTY_NAME_ST_BLE_STREAM)
+                        )?.filterComponentsByProperty(propName = RawControlled.PROPERTY_NAME_ST_BLE_STREAM)
                             ?: emptyList()
 
                         val featurePnPL =
                             blueManager.nodeFeatures(nodeId).find { it.name == PnPL.NAME }
 
                         if (featurePnPL is PnPL) {
+
+                            val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
+                            var maxWriteLength =
+                                node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
+                            maxWriteLength?.let {
+
+                                if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                    maxWriteLength = (node.maxPayloadSize)
+                                }
+
+                                featurePnPL.setMaxPayLoadSize(maxWriteLength!!)
+                            }
+
                             blueManager.writeFeatureCommand(
                                 responseTimeout = 0,
                                 nodeId = nodeId,
@@ -300,7 +313,7 @@ class TextualMonitorViewModel
                             modelUpdates = _modelUpdates.value
                         )
                     }
-                } else if (data is RawPnPLControlledInfo) {
+                } else if (data is RawControlledInfo) {
 
                     val string = java.lang.StringBuilder()
                     //string.append("\nTS =${featureUpdate.timeStamp}:\n")
@@ -308,10 +321,10 @@ class TextualMonitorViewModel
 
                     //Search the StreamID and decode the data
                     val streamId =
-                        decodeRawPnPLData(data = data.data, rawPnPLFormat = rawPnPLFormat)
+                        decodeRawData(data = data.data, rawFormat = rawPnPLFormat)
 
                     //Print out the data decoded
-                    if (streamId != RawPnPLControlled.STREAM_ID_NOT_FOUND) {
+                    if (streamId != RawControlled.STREAM_ID_NOT_FOUND) {
                         val foundStream = rawPnPLFormat.firstOrNull { it.streamId == streamId }
 
                         foundStream?.let {
@@ -327,13 +340,50 @@ class TextualMonitorViewModel
                                     }
                                     count++
 
-                                    string.append("[ ")
+                                    if(formatRawPnpLEntry.format.channels!= 1) {
+                                        //The channels are interleaved
+                                        string.append("[ ")
+                                        if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                            val values =
+                                                formatRawPnpLEntry.format.valuesFloat.chunked(
+                                                    formatRawPnpLEntry.format.channels
+                                                )
+                                            values.forEach { channel ->
+                                                string.append("[ ")
+                                                channel.forEach { value ->
+                                                    string.append("$value ")
+                                                }
+                                                string.append("] ")
+                                            }
+                                        } else {
+                                            val values =
+                                                formatRawPnpLEntry.format.values.chunked(
+                                                    formatRawPnpLEntry.format.channels
+                                                )
+                                            values.forEach { channel ->
+                                                string.append("[ ")
+                                                channel.forEach { value ->
+                                                    string.append("$value ")
+                                                }
+                                                string.append("] ")
+                                            }
+                                        }
+                                        string.append("] ")
+                                    } else {
+                                        string.append("[ ")
 
-                                    formatRawPnpLEntry.format.values.forEach { value ->
-                                        string.append("$value ")
+                                        if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                            formatRawPnpLEntry.format.valuesFloat.forEach { value ->
+                                                string.append("$value ")
+                                            }
+                                        } else {
+                                            formatRawPnpLEntry.format.values.forEach { value ->
+                                                string.append("$value ")
+                                            }
+                                        }
+
+                                        string.append("] ")
                                     }
-
-                                    string.append("] ")
 
                                     string.append(formatRawPnpLEntry.format.unit)
 

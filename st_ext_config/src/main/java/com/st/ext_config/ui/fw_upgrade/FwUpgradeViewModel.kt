@@ -157,29 +157,38 @@ class FwUpgradeViewModel
     fun startDemo(nodeId: String, fwUrl: String) {
         viewModelScope.launch {
             if (_fwUpdateState.value.fwUri == null) {
-                _fwUpdateState.value = _fwUpdateState.value.copy(downloadFinished = false)
-                try {
-                    val responseBody = downloadAPI.downloadFile(fwUrl).body()
-                    val fileName: String = fwUrl.substring(fwUrl.lastIndexOf("/") + 1)
-                    val filePath = filesDir.absolutePath + fileName
-                    val downloaded = saveFile(responseBody, filePath)
-                    Uri.fromFile(File(filePath))?.let {
-                        var fwSize =""
-                        if(downloaded) {
-                            val fileDescriptor =
-                                FwFileDescriptor(fileUri = it, resolver = contentResolver)
-                            fwSize = fileDescriptor.getFileSize().toString()
+                if(fwUrl.isNotEmpty()) {
+                    _fwUpdateState.value = _fwUpdateState.value.copy(downloadFinished = false)
+                    try {
+                        val responseBody = downloadAPI.downloadFile(fwUrl).body()
+                        val fileName: String = fwUrl.substring(fwUrl.lastIndexOf("/") + 1)
+                        val filePath = filesDir.absolutePath + fileName
+                        val downloaded = saveFile(responseBody, filePath)
+                        Uri.fromFile(File(filePath))?.let {
+                            var fwSize = ""
+                            if (downloaded) {
+                                val fileDescriptor =
+                                    FwFileDescriptor(fileUri = it, resolver = contentResolver)
+                                fwSize = fileDescriptor.getFileSize().toString()
+
+                                _fwUpdateState.value = _fwUpdateState.value.copy(
+                                    fwUri = it,
+                                    downloadFinished = downloaded,
+                                    fwName = fileName,
+                                    fwSize = fwSize,
+                                    boardInfo = blueManager.getFwVersion(nodeId = nodeId)
+                                )
+                            } else {
+                                _fwUpdateState.value = _fwUpdateState.value.copy(
+                                    fwName = fileName,
+                                    error = FwUploadError.ERROR_DOWNLOADING_FILE,
+                                    boardInfo = blueManager.getFwVersion(nodeId = nodeId)
+                                )
+                            }
                         }
-                        _fwUpdateState.value = _fwUpdateState.value.copy(
-                            fwUri = it,
-                            downloadFinished = downloaded,
-                            fwName = fileName,
-                            fwSize = fwSize,
-                            boardInfo = blueManager.getFwVersion(nodeId = nodeId)
-                        )
+                    } catch (e: Exception) {
+                        Log.e(TAG, e.toString())
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, e.toString())
                 }
             }
         }

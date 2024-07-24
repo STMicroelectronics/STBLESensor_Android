@@ -66,7 +66,7 @@ class BlueVoiceFullDuplexFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.startRecSwitch.setOnCheckedChangeListener { btn, checked ->
+        binding.startRecSwitch.setOnCheckedChangeListener { _, checked ->
             isSending = checked
             storeIsSendingStatus(isSending)
             if (checked) {

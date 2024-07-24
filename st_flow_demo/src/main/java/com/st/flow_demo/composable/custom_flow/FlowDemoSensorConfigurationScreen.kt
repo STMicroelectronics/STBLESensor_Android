@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -25,6 +24,7 @@ import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -124,7 +124,8 @@ fun FlowDemoSensorConfigurationScreen(
                         uri = fileUri,
                         sensorConfiguration = configOnConfig,
                         isMLC = isMLC,
-                        board = boardType
+                        board = boardType,
+                        sensorModel = viewModel.sensorOnConfig!!.model
                     )
                     errorText?.let { error ->
                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
@@ -281,7 +282,7 @@ fun FlowDemoSensorConfigurationScreen(
                                                     "DecTree${decisionTree.number}",
                                                     fontStyle = FontStyle.Italic
                                                 )
-                                            },
+                                            }
                                         )
 
                                         if (isOpen) {
@@ -580,7 +581,7 @@ fun FlowDemoSensorConfigurationScreen(
                                                     "DecTree${decisionTree.number}",
                                                     fontStyle = FontStyle.Italic
                                                 )
-                                            },
+                                            }
                                         )
 
                                         if (isOpen) {
@@ -1037,7 +1038,7 @@ fun FlowDemoSensorConfigurationScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = LocalDimensions.current.paddingNormal),
+                    .padding(end = LocalDimensions.current.paddingNormal)
             ) {
                 BlueMsButton(
                     text = "Cancel",
@@ -1093,7 +1094,7 @@ fun FlowDemoSensorConfigurationScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = LocalDimensions.current.paddingNormal),
+                    .padding(end = LocalDimensions.current.paddingNormal)
             ) {
                 BlueMsButton(
                     text = "Cancel",

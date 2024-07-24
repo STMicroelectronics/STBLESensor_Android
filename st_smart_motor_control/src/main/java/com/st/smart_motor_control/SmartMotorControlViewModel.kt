@@ -22,23 +22,29 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlledInfo
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.decodeRawPnPLData
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.model.RawPnPLStreamIdEntry
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.readRawPnPLFormat
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlledInfo
+import com.st.blue_sdk.features.extended.raw_controlled.decodeRawData
+import com.st.blue_sdk.features.extended.raw_controlled.model.RawStreamIdEntry
+import com.st.blue_sdk.features.extended.raw_controlled.readRawPnPLFormat
+import com.st.blue_sdk.models.NodeState
+import com.st.core.GlobalConfig
+import com.st.pnpl.composable.PnPLSpontaneousMessageType
+import com.st.pnpl.composable.searchInfoWarningError
+import com.st.pnpl.util.PnPLTypeOfCommand
+import com.st.pnpl.util.SetCommandPnPLRequest
 import com.st.preferences.StPreferences
 import com.st.smart_motor_control.model.MotorControlFault
 import com.st.smart_motor_control.model.MotorControlFault.Companion.getErrorCodeFromValue
 import com.st.ui.composables.CommandRequest
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
@@ -64,9 +70,17 @@ class SmartMotorControlViewModel
 ) : ViewModel() {
 
     private var observeFeatureJob: Job? = null
+    private var observeNodeStatusJob: Job? = null
     private val pnplFeatures: MutableList<Feature<*>> = mutableListOf()
     private var shouldInitDemo: Boolean = true
+    private var setShouldInitDemoAtResponse: Boolean = false
     private var shouldRenameTags: Boolean = true
+
+    private var pnplBleResponses: Boolean = false
+
+    private var numberOfTags = 4
+
+    private var commandQueue: MutableList<SetCommandPnPLRequest> = mutableListOf()
 
     private val _tags =
         MutableStateFlow<List<ComponentWithInterface>>(
@@ -112,12 +126,11 @@ class SmartMotorControlViewModel
     private val _isSDCardInserted = MutableStateFlow(false)
     val isSDCardInserted = _isSDCardInserted.asStateFlow()
 
-    private val rawPnPLFormat: MutableList<RawPnPLStreamIdEntry> = mutableListOf()
+    private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
 
     private val _faultStatus = MutableStateFlow<MotorControlFault>(MotorControlFault.None)
     val faultStatus: StateFlow<MotorControlFault>
         get() = _faultStatus
-
 
     private val _temperature = MutableStateFlow<Int?>(null)
     val temperature: StateFlow<Int?>
@@ -135,11 +148,29 @@ class SmartMotorControlViewModel
     val busVoltage: StateFlow<Int?>
         get() = _busVoltage
 
+    private val _neaiClassName = MutableStateFlow<String?>(null)
+    val neaiClassName: StateFlow<String?>
+        get() = _neaiClassName
+
+    private val _neaiClassProb = MutableStateFlow<Float?>(null)
+    val neaiClassProb: StateFlow<Float?>
+        get() = _neaiClassProb
+
     private val _isMotorRunning = MutableStateFlow(false)
     val isMotorRunning = _isMotorRunning.asStateFlow()
 
     private val _motorSpeed = MutableStateFlow(1024)
     val motorSpeed = _motorSpeed.asStateFlow()
+
+    private val _statusMessage: MutableStateFlow<PnPLSpontaneousMessageType?> = MutableStateFlow(null)
+    val statusMessage: StateFlow<PnPLSpontaneousMessageType?>
+        get() = _statusMessage.asStateFlow()
+
+    private val _isConnectionLost = MutableStateFlow(false)
+    val isConnectionLost: StateFlow<Boolean>
+        get() = _isConnectionLost.asStateFlow()
+
+    private var nodeIdLocal: String?=null
 
     var temperatureUnit: String = "°C"
     var speedRefUnit: String = "rpm"
@@ -149,7 +180,7 @@ class SmartMotorControlViewModel
     private fun sensorPropNamePredicate(name: String): Boolean =
         name == "odr" || name == "fs" ||
                 name == "enable" || name == "aop" ||
-                name == "load_file" || name == "ucf_status"
+                name == "load_file" || name == "ucf_status" || name == "mounted"
 
     private fun actuatorsPropNamePredicate(name: String): Boolean =
         name == "enable" || name == "st_ble_stream"
@@ -328,6 +359,13 @@ class SmartMotorControlViewModel
             .sortedBy { it.first.name }
 
 
+    fun cleanStatusMessage() {
+        viewModelScope.launch {
+            _statusMessage.emit(null)
+        }
+    }
+
+
     private suspend fun getModel(nodeId: String) {
         _isLoading.value = true
 
@@ -360,58 +398,105 @@ class SmartMotorControlViewModel
         _isLoading.value = false
     }
 
-    private suspend fun sendGetAllCommand(nodeId: String) {
-        _isLoading.value = true
-
-        blueManager.writeFeatureCommand(
-            responseTimeout = 0,
-
-            nodeId = nodeId,
-            featureCommand = PnPLCommand(
-                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
-                cmd = PnPLCmd.ALL
+    private suspend fun addCommandToQueueAndCheckSend(
+        nodeId: String,
+        newCommand: SetCommandPnPLRequest
+    ) {
+        commandQueue.add(newCommand)
+        //if it's the only one command in the list... send it
+        if (commandQueue.size == 1) {
+            _isLoading.value = true
+            blueManager.writeFeatureCommand(
+                responseTimeout = 0,
+                nodeId = nodeId, featureCommand = PnPLCommand(
+                    feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                    cmd = commandQueue[0].pnpLCommand
+                )
             )
-        )
+        }
+    }
+
+    private suspend fun sendGetAllCommand(nodeId: String) {
+
+        if (pnplBleResponses) {
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd.ALL
+                )
+            )
+        } else {
+            _isLoading.value = true
+
+            blueManager.writeFeatureCommand(
+                responseTimeout = 0,
+                nodeId = nodeId,
+                featureCommand = PnPLCommand(
+                    feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                    cmd = PnPLCmd.ALL
+                )
+            )
+        }
     }
 
     private suspend fun sendGetComponentStatus(nodeId: String, compName: String) {
-        _isLoading.value = true
-
-        blueManager.writeFeatureCommand(
-            responseTimeout = 0,
-
-            nodeId = nodeId,
-            featureCommand = PnPLCommand(
-                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
-                cmd = PnPLCmd(command = "get_status", request = compName)
+        if (pnplBleResponses) {
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd(command = "get_status", request = compName)
+                )
             )
-        )
+        } else {
+            _isLoading.value = true
+
+            blueManager.writeFeatureCommand(
+                responseTimeout = 0,
+                nodeId = nodeId,
+                featureCommand = PnPLCommand(
+                    feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                    cmd = PnPLCmd(command = "get_status", request = compName)
+                )
+            )
+        }
     }
 
     private suspend fun sendGetLogControllerCommand(nodeId: String) {
-        _isLoading.value = true
-
-        blueManager.writeFeatureCommand(
-            responseTimeout = 0,
-
-            nodeId = nodeId, featureCommand = PnPLCommand(
-                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
-                cmd = PnPLCmd.LOG_CONTROLLER
+        if (pnplBleResponses) {
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd.LOG_CONTROLLER
+                )
             )
-        )
+        } else {
+            _isLoading.value = true
+
+            blueManager.writeFeatureCommand(
+                responseTimeout = 0,
+                nodeId = nodeId, featureCommand = PnPLCommand(
+                    feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                    cmd = PnPLCmd.LOG_CONTROLLER
+                )
+            )
+        }
     }
 
     private suspend fun sendGetTagsInfoCommand(nodeId: String) {
-        _isLoading.value = true
-
-        blueManager.writeFeatureCommand(
-            responseTimeout = 0,
-
-            nodeId = nodeId, featureCommand = PnPLCommand(
-                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
-                cmd = PnPLCmd.TAGS_INFO
+        if (pnplBleResponses) {
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd.TAGS_INFO
+                )
             )
-        )
+        } else {
+            _isLoading.value = true
+            blueManager.writeFeatureCommand(
+                responseTimeout = 0,
+
+                nodeId = nodeId, featureCommand = PnPLCommand(
+                    feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                    cmd = PnPLCmd.TAGS_INFO
+                )
+            )
+        }
     }
 
     private suspend fun setTime(nodeId: String) {
@@ -420,14 +505,28 @@ class SmartMotorControlViewModel
         val sdf = SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.ROOT)
         val datetime = sdf.format(Date(timeInMillis))
 
-        _sendCommand(
-            nodeId = nodeId, name = LOG_CONTROLLER_JSON_KEY,
-            value = CommandRequest(
-                commandName = "set_time",
-                commandType = "",
-                request = mapOf("datetime" to datetime)
+        if (pnplBleResponses) {
+            //add the command to the list
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
+                        component = LOG_CONTROLLER_JSON_KEY,
+                        command = "set_time",
+                        fields = mapOf("datetime" to datetime)
+                    ),
+                    askTheStatus = false
+                )
             )
-        )
+        } else {
+            _sendCommand(
+                nodeId = nodeId, name = LOG_CONTROLLER_JSON_KEY,
+                value = CommandRequest(
+                    commandName = "set_time",
+                    commandType = "",
+                    request = mapOf("datetime" to datetime)
+                )
+            )
+        }
     }
 
     private suspend fun setName(nodeId: String) {
@@ -439,63 +538,141 @@ class SmartMotorControlViewModel
 
         _acquisitionName.emit(datetime)
 
-        _sendCommand(
-            nodeId = nodeId, name = "", value = CommandRequest(
-                commandName = ACQUISITION_INFO_JSON_KEY,
-                commandType = "",
-                request = mapOf(NAME_JSON_KEY to datetime)
+        if (pnplBleResponses) {
+            //add the command to the list
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
+                        component = "",
+                        command = ACQUISITION_INFO_JSON_KEY,
+                        fields = mapOf(NAME_JSON_KEY to datetime)
+                    ),
+                    askTheStatus = false
+                )
             )
-        )
 
-        _sendCommand(
-            nodeId = nodeId, name = "", value = CommandRequest(
-                commandName = ACQUISITION_INFO_JSON_KEY,
-                commandType = "",
-                request = mapOf(DESC_JSON_KEY to "")
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
+                        component = "",
+                        command = ACQUISITION_INFO_JSON_KEY,
+                        fields = mapOf(DESC_JSON_KEY to "Empty")
+                    ),
+                    askTheStatus = false
+                )
             )
-        )
+        } else {
+            _sendCommand(
+                nodeId = nodeId, name = "", value = CommandRequest(
+                    commandName = ACQUISITION_INFO_JSON_KEY,
+                    commandType = "",
+                    request = mapOf(NAME_JSON_KEY to datetime)
+                )
+            )
+
+            _sendCommand(
+                nodeId = nodeId, name = "", value = CommandRequest(
+                    commandName = ACQUISITION_INFO_JSON_KEY,
+                    commandType = "",
+                    request = mapOf(DESC_JSON_KEY to "")
+                )
+            )
+        }
     }
 
     fun startLog(nodeId: String) {
         viewModelScope.launch {
             setTime(nodeId)
 
-            setName(nodeId)
+            //For Avoiding to change again the Acquisition name
+            //setName(nodeId)
 
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-
-                nodeId = nodeId, featureCommand = PnPLCommand(
-                    feature = pnplFeatures.filterIsInstance<PnPL>().first(), cmd = PnPLCmd.START_LOG
+            if (pnplBleResponses) {
+                //add the command to the list
+                addCommandToQueueAndCheckSend(
+                    nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                        typeOfCommand = PnPLTypeOfCommand.Log, pnpLCommand = PnPLCmd.START_LOG,
+                        askTheStatus = true
+                    )
                 )
-            )
+            } else {
+                _isLoading.value = true
 
-            sendGetLogControllerCommand(nodeId = nodeId)
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
+
+                    nodeId = nodeId, featureCommand = PnPLCommand(
+                        feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                        cmd = PnPLCmd.START_LOG
+                    )
+                )
+
+                sendGetLogControllerCommand(nodeId = nodeId)
+            }
         }
     }
 
     fun stopLog(nodeId: String) {
         viewModelScope.launch {
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-
-                nodeId = nodeId,
-                featureCommand = PnPLCommand(
-                    feature = pnplFeatures.filterIsInstance<PnPL>().first(), cmd = PnPLCmd.STOP_LOG
+            if (pnplBleResponses) {
+                //add the command to the list
+                addCommandToQueueAndCheckSend(
+                    nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                        typeOfCommand = PnPLTypeOfCommand.Log, pnpLCommand = PnPLCmd.STOP_LOG,
+                        askTheStatus = true
+                    )
                 )
-            )
+                setShouldInitDemoAtResponse = true
+            } else {
+                _isLoading.value = true
+                shouldInitDemo = true
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
 
-            shouldInitDemo = true
-            sendGetLogControllerCommand(nodeId = nodeId)
+                    nodeId = nodeId,
+                    featureCommand = PnPLCommand(
+                        feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                        cmd = PnPLCmd.STOP_LOG
+                    )
+                )
+
+                sendGetLogControllerCommand(nodeId = nodeId)
+            }
         }
     }
 
     fun sendCommand(nodeId: String, name: String, value: CommandRequest?) {
-        viewModelScope.launch {
-            _sendCommand(nodeId, name, value)
-
-            //sendGetAllCommand(nodeId)
-            sendGetComponentStatus(nodeId = nodeId, compName = name)
+        value?.let {
+            if (pnplBleResponses) {
+                //add the command to the list
+                viewModelScope.launch {
+                    addCommandToQueueAndCheckSend(
+                        nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                            typeOfCommand = PnPLTypeOfCommand.Command, pnpLCommand = PnPLCmd(
+                                component = name,
+                                command = value.commandName,
+                                fields = value.request
+                            ),
+                            askTheStatus = it.commandName != "load_file"
+                        )
+                    )
+                }
+            } else {
+                if (it.commandName == "load_file") {
+                    runBlocking {
+                        //RunBlocking for avoiding that the HSDataLogFragment starts
+                        // before to finish the load process
+                        //Without the sendGetAllCommand, because when the HSDataLogFragment will start...
+                        // it triggers a get status command
+                        _sendCommand(nodeId, name, value)
+                    }
+                } else {
+                    viewModelScope.launch {
+                        _sendCommand(nodeId, name, value)
+                        sendGetAllCommand(nodeId)
+                    }
+                }
+            }
         }
     }
 
@@ -515,51 +692,101 @@ class SmartMotorControlViewModel
         }
     }
 
+    fun sendChange(nodeId: String, name: String, value: Pair<String, Any>) {
+        value.let {
+            viewModelScope.launch {
+                if (pnplBleResponses) {
+                    //add the command to the list
+                    addCommandToQueueAndCheckSend(
+                        nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                            typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
+                                command = name,
+                                fields = mapOf(it)
+                            )
+                        )
+                    )
+                } else {
+                    _isLoading.value = true
 
-    fun sendMotorControlCommand(nodeId: String, name: String, value: CommandRequest?) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _sendCommand(nodeId, name, value)
+                    value.let {
+                        val featureCommand = PnPLCommand(
+                            feature = pnplFeatures.filterIsInstance<PnPL>().first(), cmd = PnPLCmd(
+                                command = name, fields = mapOf(it)
+                            )
+                        )
 
-            sendGetComponentStatus(nodeId = nodeId, compName = name)
+                        blueManager.writeFeatureCommand(
+                            responseTimeout = 0,
+
+                            nodeId = nodeId, featureCommand = featureCommand
+                        )
+
+                        sendGetComponentStatus(nodeId = nodeId, compName = name)
+                    }
+                }
+            }
         }
     }
 
-    fun sendChange(nodeId: String, name: String, value: Pair<String, Any>) {
+    fun disconnect() {
+        nodeIdLocal?.let { nodeId ->
+            GlobalConfig.navigateBack?.let { it1 -> it1(nodeId) }
+        }
+    }
+
+    fun resetConnectionLost() {
         viewModelScope.launch {
-            _isLoading.value = true
-
-            value.let {
-                val featureCommand = PnPLCommand(
-                    feature = pnplFeatures.filterIsInstance<PnPL>().first(), cmd = PnPLCmd(
-                        command = name, fields = mapOf(it)
-                    )
-                )
-
-                blueManager.writeFeatureCommand(
-                    responseTimeout = 0,
-
-                    nodeId = nodeId, featureCommand = featureCommand
-                )
-
-                //sendGetAllCommand(nodeId)
-                sendGetComponentStatus(nodeId = nodeId, compName = name)
-            }
+            _isConnectionLost.emit(false)
         }
     }
 
     fun startDemo(nodeId: String) {
         observeFeatureJob?.cancel()
+        observeNodeStatusJob?.cancel()
+
+        nodeIdLocal = nodeId
+
+        //We need to know the number of Sw Tags before to start
+        runBlocking {
+            val tags = blueManager.getDtmiModel(
+                nodeId = nodeId,
+                isBeta = stPreferences.isBetaApplication()
+            )?.extractComponent(compName = TAGS_INFO_JSON_KEY)?.firstOrNull()
+
+            tags?.let {
+                numberOfTags = tags.second.contents.filter{tagsPropNamePredicate(it.name)}.size
+            }
+        }
+
+        //Make the disconnection if the we lost the node
+        observeNodeStatusJob = viewModelScope.launch {
+            blueManager.getNodeStatus(nodeId = nodeId).collect {
+                if( it.connectionStatus.prev == NodeState.Ready && it.connectionStatus.current == NodeState.Disconnected) {
+                    //GlobalConfig.navigateBack?.let { it1 -> it1(nodeId) }
+                    _isConnectionLost.emit(true)
+                }
+            }
+        }
 
         pnplFeatures.addAll(
             blueManager.nodeFeatures(nodeId = nodeId)
-                .filter { it.name == PnPL.NAME || it.name == RawPnPLControlled.NAME }
+                .filter { it.name == PnPL.NAME || it.name == RawControlled.NAME }
         )
 
         observeFeatureJob = blueManager.getFeatureUpdates(nodeId = nodeId,
             features = pnplFeatures,
             onFeaturesEnabled = {
                 viewModelScope.launch {
+
+                    val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
+                    var maxWriteLength = node.catalogInfo?.characteristics?.firstOrNull { it.name ==  PnPL.NAME }?.maxWriteLength
+                    maxWriteLength?.let {
+                        if (maxWriteLength!! > (node.maxPayloadSize)) {
+                            maxWriteLength = (node.maxPayloadSize)
+                        }
+                        (pnplFeatures.firstOrNull { it.name == PnPL.NAME } as PnPL?)?.setMaxPayLoadSize(maxWriteLength!!)
+                    }
+
                     if (_sensorsActuators.value.isEmpty() || _tags.value.isEmpty()) {
                         getModel(nodeId = nodeId)
 
@@ -571,8 +798,19 @@ class SmartMotorControlViewModel
                 if (data is PnPLConfig) {
                     data.deviceStatus.value?.components?.let { json ->
 
+                        //Check if the BLE Responses are == true
+                        data.deviceStatus.value?.pnplBleResponses?.let { value ->
+                            pnplBleResponses = value
+                        }
+
+                        //Search the Spontaneous messages
+                        val message = searchInfoWarningError(json)
+                        message?.let {
+                            _statusMessage.emit(message)
+                        }
+
                         //Search the RawPnPL Format
-                        val rawPnPLFormatTmp: MutableList<RawPnPLStreamIdEntry> = mutableListOf()
+                        val rawPnPLFormatTmp: MutableList<RawStreamIdEntry> = mutableListOf()
                         readRawPnPLFormat(
                             rawPnPLFormat = rawPnPLFormatTmp,
                             json = json,
@@ -610,7 +848,82 @@ class SmartMotorControlViewModel
                                     }
                                 }
                             }
+                        }
 
+                        if (pnplBleResponses) {
+                            //Search the Set/Command Response if they are allowed for the fw
+                            //data.setCommandResponse.value?.let { setCommandResponse ->
+                            if (data.setCommandResponse.value != null) {
+                                if (data.setCommandResponse.value!!.response != null) {
+                                    if (!data.setCommandResponse.value!!.response!!.status) {
+                                        //Report one Message...
+                                        val messageStatus = PnPLSpontaneousMessageType.ERROR
+                                        messageStatus.message =
+                                            data.setCommandResponse.value!!.response!!.message
+                                                ?: "Generic Error"
+                                        _statusMessage.emit(messageStatus)
+                                    }
+
+                                    //Ask the status
+                                    val firstOne = commandQueue.first()
+
+                                    //Remove the command from the list and send Next One
+                                    commandQueue.removeFirst()
+                                    if (commandQueue.isNotEmpty()) {
+                                        _isLoading.value = true
+                                        blueManager.writeFeatureCommand(
+                                            responseTimeout = 0,
+                                            nodeId = nodeId, featureCommand = PnPLCommand(
+                                                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                                                cmd = commandQueue[0].pnpLCommand
+                                            )
+                                        )
+                                    }
+
+                                    if (firstOne.askTheStatus) {
+                                        when (firstOne.typeOfCommand) {
+                                            PnPLTypeOfCommand.Command -> sendGetComponentStatus(
+                                                compName = firstOne.pnpLCommand.command,
+                                                nodeId = nodeId
+                                            )
+
+                                            PnPLTypeOfCommand.Set -> sendGetComponentStatus(
+                                                compName = firstOne.pnpLCommand.command,
+                                                nodeId = nodeId
+                                            )
+
+                                            PnPLTypeOfCommand.Log -> sendGetLogControllerCommand(
+                                                nodeId = nodeId
+                                            )
+
+                                            else -> {}
+                                        }
+                                    }
+                                } else {
+                                    if (commandQueue.isNotEmpty()) {
+                                        val firstOne = commandQueue.first()
+                                        if (firstOne.typeOfCommand != PnPLTypeOfCommand.Status) {
+                                            val messageStatus = PnPLSpontaneousMessageType.ERROR
+                                            messageStatus.message =
+                                                "Status Message from a not Get Status Command[${firstOne.typeOfCommand}]"
+                                            _statusMessage.emit(messageStatus)
+                                        } else {
+
+                                            commandQueue.removeFirst()
+                                            if (commandQueue.isNotEmpty()) {
+                                                _isLoading.value = true
+                                                blueManager.writeFeatureCommand(
+                                                    responseTimeout = 0,
+                                                    nodeId = nodeId, featureCommand = PnPLCommand(
+                                                        feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                                                        cmd = commandQueue[0].pnpLCommand
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         json.find { it.containsKey(LOG_CONTROLLER_JSON_KEY) }
@@ -621,6 +934,11 @@ class SmartMotorControlViewModel
                                 _isLogging.value =
                                     logControllerJson[LOG_STATUS_JSON_KEY]?.jsonPrimitive?.booleanOrNull
                                         ?: false
+
+                                if (!_isLogging.value && setShouldInitDemoAtResponse) {
+                                    setShouldInitDemoAtResponse = false
+                                    shouldInitDemo = true
+                                }
 
                                 Log.d(TAG, "isLoading ${_isLoading.value}")
                                 Log.d(TAG, "isLogging ${_isLogging.value}")
@@ -646,7 +964,7 @@ class SmartMotorControlViewModel
 
                         json.find { it.containsKey(TAGS_INFO_JSON_KEY) }
                             ?.get(TAGS_INFO_JSON_KEY)?.jsonObject?.let { tags ->
-                                _componentStatusUpdates.value = json
+                                //_componentStatusUpdates.value = json
 
                                 val vespucciTagsMap = mutableMapOf<String, Boolean>()
                                 tags.forEach {
@@ -679,7 +997,6 @@ class SmartMotorControlViewModel
                         if (shouldInitDemo) {
                             shouldInitDemo = false
                             if (_isLogging.value) {
-
                                 //Ask Tags info
                                 sendGetTagsInfoCommand(nodeId)
 
@@ -689,73 +1006,117 @@ class SmartMotorControlViewModel
                                     compName = MOTOR_CONTROLLER_JSON_KEY
                                 )
 
-                                //delay(50L)
-
-                                //Ask Slow telemetry status
-                                sendGetComponentStatus(
-                                    nodeId = nodeId,
-                                    compName = SLOW_TELEMETRY_JSON_KEY
-                                )
+                                sendGetAllCommand(nodeId = nodeId)
 
                             } else {
                                 setName(nodeId = nodeId)
                                 if (shouldRenameTags) {
                                     shouldRenameTags = false
-                                    for (index in 0..4) {
+                                    //for (index in 0..4) {
+                                    for (index in 0..<numberOfTags) {
                                         if (index in 0..MotorControlConfig.tags.lastIndex) {
                                             val tagName = MotorControlConfig.tags[index]
-                                            val renameCommand = PnPLCommand(
-                                                feature = pnplFeatures.filterIsInstance<PnPL>()
-                                                    .first(),
-                                                cmd = PnPLCmd(
-                                                    command = TAGS_INFO_JSON_KEY,
-                                                    request = "$TAG_JSON_KEY$index",
-                                                    fields = mapOf(LABEL_JSON_KEY to tagName)
+
+                                            if (pnplBleResponses) {
+                                                //add the command to the list
+                                                addCommandToQueueAndCheckSend(
+                                                    nodeId = nodeId,
+                                                    newCommand = SetCommandPnPLRequest(
+                                                        typeOfCommand = PnPLTypeOfCommand.Set,
+                                                        pnpLCommand = PnPLCmd(
+                                                            command = TAGS_INFO_JSON_KEY,
+                                                            request = "$TAG_JSON_KEY$index",
+                                                            fields = mapOf(LABEL_JSON_KEY to tagName)
+                                                        ),
+                                                        askTheStatus = false
+                                                    )
                                                 )
-                                            )
 
-                                            blueManager.writeFeatureCommand(
-                                                responseTimeout = 0,
-
-                                                nodeId = nodeId, featureCommand = renameCommand
-                                            )
-
-
-                                            val enableCommand = PnPLCommand(
-                                                feature = pnplFeatures.filterIsInstance<PnPL>()
-                                                    .first(),
-                                                cmd = PnPLCmd(
-                                                    command = TAGS_INFO_JSON_KEY,
-                                                    request = "$TAG_JSON_KEY$index",
-                                                    fields = mapOf(ENABLED_JSON_KEY to true)
+                                                //add the command to the list
+                                                addCommandToQueueAndCheckSend(
+                                                    nodeId = nodeId,
+                                                    newCommand = SetCommandPnPLRequest(
+                                                        typeOfCommand = PnPLTypeOfCommand.Set,
+                                                        pnpLCommand = PnPLCmd(
+                                                            command = TAGS_INFO_JSON_KEY,
+                                                            request = "$TAG_JSON_KEY$index",
+                                                            fields = mapOf(ENABLED_JSON_KEY to true)
+                                                        ),
+                                                        askTheStatus = index == MotorControlConfig.tags.lastIndex
+                                                    )
                                                 )
-                                            )
 
-                                            //delay(50L)
+                                            } else {
+                                                _isLoading.value = true
+                                                val renameCommand = PnPLCommand(
+                                                    feature = pnplFeatures.filterIsInstance<PnPL>()
+                                                        .first(),
+                                                    cmd = PnPLCmd(
+                                                        command = TAGS_INFO_JSON_KEY,
+                                                        request = "$TAG_JSON_KEY$index",
+                                                        fields = mapOf(LABEL_JSON_KEY to tagName)
+                                                    )
+                                                )
 
-                                            blueManager.writeFeatureCommand(
-                                                responseTimeout = 0,
+                                                blueManager.writeFeatureCommand(
+                                                    responseTimeout = 0,
 
-                                                nodeId = nodeId, featureCommand = enableCommand
-                                            )
+                                                    nodeId = nodeId, featureCommand = renameCommand
+                                                )
+
+
+                                                val enableCommand = PnPLCommand(
+                                                    feature = pnplFeatures.filterIsInstance<PnPL>()
+                                                        .first(),
+                                                    cmd = PnPLCmd(
+                                                        command = TAGS_INFO_JSON_KEY,
+                                                        request = "$TAG_JSON_KEY$index",
+                                                        fields = mapOf(ENABLED_JSON_KEY to true)
+                                                    )
+                                                )
+
+                                                //delay(50L)
+
+                                                blueManager.writeFeatureCommand(
+                                                    responseTimeout = 0,
+
+                                                    nodeId = nodeId, featureCommand = enableCommand
+                                                )
+                                            }
                                         } else {
-                                            val disableCommand = PnPLCommand(
-                                                feature = pnplFeatures.filterIsInstance<PnPL>()
-                                                    .first(),
-                                                cmd = PnPLCmd(
-                                                    command = TAGS_INFO_JSON_KEY,
-                                                    request = "$TAG_JSON_KEY$index",
-                                                    fields = mapOf(ENABLED_JSON_KEY to false)
+                                            if (pnplBleResponses) {
+                                                //add the command to the list
+                                                addCommandToQueueAndCheckSend(
+                                                    nodeId = nodeId,
+                                                    newCommand = SetCommandPnPLRequest(
+                                                        typeOfCommand = PnPLTypeOfCommand.Set,
+                                                        pnpLCommand = PnPLCmd(
+                                                            command = TAGS_INFO_JSON_KEY,
+                                                            request = "$TAG_JSON_KEY$index",
+                                                            fields = mapOf(ENABLED_JSON_KEY to false)
+                                                        ),
+                                                        askTheStatus = false
+                                                    )
                                                 )
-                                            )
+                                            } else {
+                                                _isLoading.value = true
+                                                val disableCommand = PnPLCommand(
+                                                    feature = pnplFeatures.filterIsInstance<PnPL>()
+                                                        .first(),
+                                                    cmd = PnPLCmd(
+                                                        command = TAGS_INFO_JSON_KEY,
+                                                        request = "$TAG_JSON_KEY$index",
+                                                        fields = mapOf(ENABLED_JSON_KEY to false)
+                                                    )
+                                                )
 
-                                            // viewModelScope.launch {
-                                            blueManager.writeFeatureCommand(
-                                                responseTimeout = 0,
+                                                // viewModelScope.launch {
+                                                blueManager.writeFeatureCommand(
+                                                    responseTimeout = 0,
 
-                                                nodeId = nodeId, featureCommand = disableCommand
-                                            )
-                                            //}
+                                                    nodeId = nodeId, featureCommand = disableCommand
+                                                )
+                                            }
                                         }
                                         //delay(50L)
                                     }
@@ -766,22 +1127,29 @@ class SmartMotorControlViewModel
                         }
 
                         getModel(nodeId = nodeId)
+
+                        if (json.size == 1) {
+                            _componentStatusUpdates.update {
+                                it.filter { jo -> jo.keys != json.first().keys } + json
+                            }
+                        } else {
+                            _componentStatusUpdates.value = json
+                        }
                     }
-                } else if (data is RawPnPLControlledInfo) {
+                } else if (data is RawControlledInfo) {
 
                     //Search the StreamID and decode the data
                     val streamId =
-                        decodeRawPnPLData(data = data.data, rawPnPLFormat = rawPnPLFormat)
+                        decodeRawData(data = data.data, rawFormat = rawPnPLFormat)
 
                     //Print out the data decoded
-                    if (streamId != RawPnPLControlled.STREAM_ID_NOT_FOUND) {
+                    if (streamId != RawControlled.STREAM_ID_NOT_FOUND) {
                         val foundStream = rawPnPLFormat.firstOrNull { it.streamId == streamId }
                         foundStream?.let {
 
                             //Search Fault Status
                             var value =
                                 foundStream.formats.firstOrNull { entry -> entry.name == "fault" }?.format?.values?.firstOrNull()
-
                             if (value is Int) {
                                 _faultStatus.emit(getErrorCodeFromValue(value))
                             }
@@ -790,30 +1158,43 @@ class SmartMotorControlViewModel
                             value =
                                 foundStream.formats.firstOrNull { entry -> entry.name == "temperature" }?.format?.values?.firstOrNull()
 
-                            if (value is Int?) {
+                            if (value is Int) {
                                 _temperature.emit(value)
                             }
 
                             //Search Speed Reference
                             value =
                                 foundStream.formats.firstOrNull { entry -> entry.name == "ref_speed" }?.format?.values?.firstOrNull()
-                            if (value is Int?) {
+                            if (value is Int) {
                                 _speedRef.emit(value)
                             }
 
                             //Search Speed Measurement
                             value =
                                 foundStream.formats.firstOrNull { entry -> entry.name == "speed" }?.format?.values?.firstOrNull()
-                            if (value is Int?) {
+                            if (value is Int) {
                                 _speedMeas.emit(value)
                             }
 
                             //Search Bus voltage
                             value =
-                                foundStream.formats.firstOrNull { entry -> entry.name == "bus_voltage" }?.format?.values?.first()
-                            if (value is Int?) {
+                                foundStream.formats.firstOrNull { entry -> entry.name == "bus_voltage" }?.format?.values?.firstOrNull()
+                            if (value is Int) {
                                 _busVoltage.emit(value)
                             }
+
+                            //Search NeaiClassName
+                            value = foundStream.formats.firstOrNull { entry -> entry.name == "class_neai"}?.format?.values?.firstOrNull()
+                            if (value is String) {
+                                _neaiClassName.emit(value)
+                            }
+
+                            //Search NeaiClassProbability
+                            value = foundStream.formats.firstOrNull { entry -> entry.name == "probability_neai"}?.format?.values?.firstOrNull()
+                            if (value is Float) {
+                                _neaiClassProb.emit(value)
+                            }
+
                         }
                     }
                 }
@@ -823,6 +1204,7 @@ class SmartMotorControlViewModel
 
     fun stopDemo(nodeId: String) {
         observeFeatureJob?.cancel()
+        observeNodeStatusJob?.cancel()
 
         _componentStatusUpdates.value = emptyList()
         shouldInitDemo = true
@@ -849,28 +1231,46 @@ class SmartMotorControlViewModel
 
     fun onTagChangeState(nodeId: String, tag: String, newState: Boolean) {
         viewModelScope.launch {
-            val enableCommand = PnPLCommand(
-                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
-                cmd = PnPLCmd(
-                    command = TAGS_INFO_JSON_KEY,
-                    request = "$TAG_JSON_KEY$tag",
-                    fields = mapOf(STATUS_JSON_KEY to newState)
+            if (pnplBleResponses) {
+                //add the command to the list
+                addCommandToQueueAndCheckSend(
+                    nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                        typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
+                            command = TAGS_INFO_JSON_KEY,
+                            request = "$TAG_JSON_KEY$tag",
+                            fields = mapOf(STATUS_JSON_KEY to newState)
+                        ),
+                        askTheStatus = false
+                    )
                 )
-            )
+                val oldTagsStatus = _vespucciTags.value.toMutableMap()
+                oldTagsStatus[tag] = newState
 
-            val oldTagsStatus = _vespucciTags.value.toMutableMap()
-            oldTagsStatus[tag] = newState
+                _vespucciTags.emit(oldTagsStatus)
+            } else {
+                val enableCommand = PnPLCommand(
+                    feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                    cmd = PnPLCmd(
+                        command = TAGS_INFO_JSON_KEY,
+                        request = "$TAG_JSON_KEY$tag",
+                        fields = mapOf(STATUS_JSON_KEY to newState)
+                    )
+                )
 
-            _vespucciTags.emit(oldTagsStatus)
+                val oldTagsStatus = _vespucciTags.value.toMutableMap()
+                oldTagsStatus[tag] = newState
 
-            //delay(50L)
+                _vespucciTags.emit(oldTagsStatus)
 
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
+                //delay(50L)
 
-                nodeId = nodeId,
-                featureCommand = enableCommand
-            )
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0,
+
+                    nodeId = nodeId,
+                    featureCommand = enableCommand
+                )
+            }
         }
     }
 

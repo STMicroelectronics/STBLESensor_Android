@@ -25,6 +25,7 @@ import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.Shapes
 import com.st.ui.theme.WarningText
 
 @Composable
@@ -46,7 +47,7 @@ fun ConnectionStatusDialog(
 @Composable
 fun NodeConnectingDialog(boardName: String, isPairingRequest: Boolean = false) {
     Dialog(onDismissRequest = { /** NOOP **/ }) {
-        Surface(modifier = Modifier.fillMaxWidth()) {
+        Surface(modifier = Modifier.fillMaxWidth(), shape = Shapes.medium) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,7 +94,7 @@ fun NodeConnectingDialog(boardName: String, isPairingRequest: Boolean = false) {
 @Composable
 fun NodeConnectedDialog(boardName: String) {
     Dialog(onDismissRequest = { /** NOOP **/ }) {
-        Surface(modifier = Modifier.fillMaxWidth()) {
+        Surface(modifier = Modifier.fillMaxWidth(), shape = Shapes.medium) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -10,6 +10,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,24 +22,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Icon
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.CloudUpload
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,6 +49,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -58,14 +60,17 @@ import androidx.navigation.NavHostController
 import com.st.cloud_azure_iot_central.CloudAzureIotCentralViewModel
 import com.st.cloud_azure_iot_central.CloudAzureNavigationDeviceSelection
 import com.st.ui.composables.BlueMSFeatureItem
-import com.st.ui.composables.BlueMSSnackBar
+import com.st.ui.composables.BlueMSSnackBarMaterial3
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Shapes
+import com.st.ui.theme.SuccessText
+import com.st.ui.theme.WarningText
 import kotlinx.coroutines.launch
+import com.st.cloud_azure_iot_central.R
 
 @Composable
 fun CloudAzureDeviceConnection(
@@ -76,7 +81,7 @@ fun CloudAzureDeviceConnection(
     val deviceConnected by viewModel.deviceConnected.collectAsStateWithLifecycle()
 
     val features = viewModel.availableFeatures
-    val featuresEnabled= viewModel.featuresEnabled
+    val featuresEnabled = viewModel.featuresEnabled
 
     val sendFeature by viewModel.sendFeature.collectAsStateWithLifecycle()
 
@@ -84,7 +89,7 @@ fun CloudAzureDeviceConnection(
 
     val retValue by viewModel.retValue.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val possibleUpdateIntervals: List<Int> =
         listOf(500, 1000, 2000, 5000, 10000)
@@ -96,7 +101,7 @@ fun CloudAzureDeviceConnection(
     BackHandler {
         if (deviceConnected) {
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(
+                snackBarHostState.showSnackbar(
                     message = "Disconnect the device before",
                     actionLabel = "dismiss",
                     duration = SnackbarDuration.Indefinite
@@ -118,62 +123,37 @@ fun CloudAzureDeviceConnection(
     Scaffold(
         modifier = modifier.padding(LocalDimensions.current.paddingNormal),
         snackbarHost = {
-            BlueMSSnackBar(
-                snackbarHostState = snackbarHostState,
-                onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() })
+            BlueMSSnackBarMaterial3(
+                snackBarHostState = snackBarHostState
+            )
         }
     ) { paddingValue ->
 
-    Column(
-        modifier = modifier
-            .padding(paddingValue)
-            .fillMaxSize()
-    ) {
-        Text(
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
-            text = "Device Connection"
-        )
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-
-        Surface(
-            modifier = modifier.fillMaxWidth(),
-            shape = Shapes.small,
-            shadowElevation = LocalDimensions.current.elevationSmall
+        Column(
+            modifier = modifier
+                .padding(paddingValue)
+                .fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(LocalDimensions.current.paddingNormal)
-                    .animateContentSize(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    )
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            text = "Device [ ${viewModel.selectedCloudDevice?.displayName ?: ""} ] Status"
-                        )
-                        Text(
-                            modifier = Modifier.padding(start = LocalDimensions.current.paddingMedium),
-                            text = if (deviceConnected) "Connected" else {
-                                if (isLoading) "Connecting" else "Not Connected"
-                            }
-                        )
-                    }
+            Text(
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                text = "Device Connection"
+            )
 
-                    Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+
+            Surface(
+                modifier = modifier.fillMaxWidth(),
+                shape = Shapes.small,
+                shadowElevation = LocalDimensions.current.elevationSmall
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(LocalDimensions.current.paddingNormal),
+                    contentAlignment = Alignment.TopEnd
+                ) {
 
                     IconButton(onClick = { if (deviceConnected) viewModel.disconnectDevice() else viewModel.connectDevice() }) {
 
@@ -188,7 +168,7 @@ fun CloudAzureDeviceConnection(
                                         LocalDimensions.current.paddingSmall
                                     ),
                                 tint = Grey0,
-                                imageVector = Icons.Default.CloudOff,
+                                imageVector = Icons.Default.Stop,
                                 contentDescription = null
                             )
                         } else {
@@ -202,127 +182,174 @@ fun CloudAzureDeviceConnection(
                                         LocalDimensions.current.paddingSmall
                                     ),
                                 tint = Grey0,
-                                imageVector = Icons.Default.CloudUpload,
+                                painter = painterResource(id = R.drawable.cloud_dev_upload),
                                 contentDescription = null
                             )
                         }
                     }
-                }
 
-                if (isLoading) {
-                    LinearProgressIndicator(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                LocalDimensions.current.paddingNormal
+                            .padding(LocalDimensions.current.paddingNormal)
+                            .animateContentSize(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
                             )
-                    )
-                }
-
-                if (deviceConnected) {
-
-                    Divider(modifier = Modifier.padding(LocalDimensions.current.paddingNormal))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { openUpdateIntervalSelectionDialog = true },
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
                     ) {
+
                         Text(
-                            modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.primary,
-                            text = "Update Interval:"
+                            text = "Device name:"
                         )
 
                         Text(
-                            modifier = Modifier
-                                .padding(LocalDimensions.current.paddingNormal),
-                            style = MaterialTheme.typography.bodyLarge,
-                            textDecoration = TextDecoration.Underline,
-                            color = SecondaryBlue,
-                            text = updateInterval.toString()
+                            style = MaterialTheme.typography.bodyMedium,
+                            text = viewModel.selectedCloudDevice?.displayName ?: ""
                         )
 
                         Text(
-                            modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
-                            style = MaterialTheme.typography.bodyLarge,
-                            text = "[mSec]"
-                        )
-                    }
-
-                    Divider(modifier = Modifier.padding(LocalDimensions.current.paddingNormal))
-
-                    sendFeature?.let {
-                        Text(
-                            modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.primary,
-                            text = "Sending Sensor:"
+                            text = "Status:"
                         )
 
                         Text(
-                            modifier = Modifier
-                                .padding(start = LocalDimensions.current.paddingMedium)
-                                .fillMaxWidth(),
-                            text = it,
-                            style = MaterialTheme.typography.bodySmall,
-                            maxLines = 2,
-                            minLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            style = MaterialTheme.typography.bodyMedium,
+                            text = if (deviceConnected) "Connected" else {
+                                if (isLoading) "Connecting" else "Not Connected"
+                            },
+                            color = if (deviceConnected) SuccessText else {
+                                if (isLoading) Color.Unspecified else WarningText
+                            }
                         )
-                    }
-                }
-            }
-        }
 
-        AnimatedVisibility(
-            visible = deviceConnected,
-            enter = expandVertically(),
-            exit = shrinkVertically()
-        ) {
-            Column(modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-                Text(
-                    modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    text = "Select Features:"
-                )
-                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-                if ((features != null) && (featuresEnabled!=null)){
-                    LazyColumn(
-                        modifier = Modifier.fillMaxHeight(),
-                        contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-                        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
-                    ) {
-                        itemsIndexed(features) { index, feature ->
-                            BlueMSFeatureItem(isChecked = featuresEnabled[index],featureName = feature.name, onSelected = { enable ->
+                        if (isLoading) {
+                            LinearProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        LocalDimensions.current.paddingNormal
+                                    )
+                            )
+                        }
 
-                                featuresEnabled[index] = enable
+                        if (deviceConnected) {
 
-                                if (enable) {
-                                    viewModel.enableFeature(feature)
-                                } else {
-                                    viewModel.disableFeature(feature)
+                            HorizontalDivider(modifier = Modifier.padding(LocalDimensions.current.paddingNormal))
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    text = "Update Interval:"
+                                )
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { openUpdateIntervalSelectionDialog = true },
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+
+                                    Text(
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        textDecoration = TextDecoration.Underline,
+                                        color = SecondaryBlue,
+                                        text = updateInterval.toString()
+                                    )
+
+                                    Text(
+                                        modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        text = "[mSec]"
+                                    )
                                 }
-                            })
+
+                            }
+
+                            HorizontalDivider(modifier = Modifier.padding(LocalDimensions.current.paddingNormal))
+
+                            sendFeature?.let {
+                                Text(
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    text = "Sending Sensor:"
+                                )
+
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = it,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 2,
+                                    minLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
                     }
-                } else {
+
+                }
+            }
+
+            AnimatedVisibility(
+                visible = deviceConnected,
+                enter = expandVertically(),
+                exit = shrinkVertically()
+            ) {
+                Column(modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
                     Text(
                         modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = ErrorText,
-                        text = "No Features available"
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        text = "Select Features:"
                     )
+                    Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+                    if ((features != null) && (featuresEnabled != null)) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                            verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
+                        ) {
+                            itemsIndexed(features) { index, feature ->
+                                BlueMSFeatureItem(
+                                    isChecked = featuresEnabled[index],
+                                    featureName = feature.name,
+                                    onSelected = { enable ->
+
+                                        featuresEnabled[index] = enable
+
+                                        if (enable) {
+                                            viewModel.enableFeature(feature)
+                                        } else {
+                                            viewModel.disableFeature(feature)
+                                        }
+                                    })
+                            }
+                        }
+                    } else {
+                        Text(
+                            modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = ErrorText,
+                            text = "No Features available"
+                        )
+                    }
                 }
             }
         }
-    }
 
         if (openUpdateIntervalSelectionDialog) {
             UpdateIntervalSelectionDialog(possibleUpdateIntervals = possibleUpdateIntervals,
@@ -340,7 +367,7 @@ fun CloudAzureDeviceConnection(
         val text = retValue!!
         viewModel.cleanError()
         coroutineScope.launch {
-            snackbarHostState.showSnackbar(message = text, duration = SnackbarDuration.Short)
+            snackBarHostState.showSnackbar(message = text, duration = SnackbarDuration.Short)
         }
     }
 }
@@ -358,7 +385,7 @@ private fun UpdateIntervalSelectionDialog(
 
     var selectedInterval by remember(updateInterval) { mutableIntStateOf(value = updateInterval) }
 
-    AlertDialog(
+    BasicAlertDialog(
         onDismissRequest = onDismiss
     ) {
         Surface(

@@ -11,43 +11,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.RecyclerView
 import com.st.core.ARG_DEMO_TYPE
 import com.st.core.ARG_NODE_ID
-import com.st.registers_demo.common.RegisterStatusViewAdapter
 import com.st.registers_demo.common.RegistersDemoType
-import com.st.registers_demo.databinding.RegistersDemoFragmentBinding
+import com.st.registers_demo.composable.RegisterDemoContent
+import com.st.ui.composables.ComposableLifecycle
+import com.st.ui.theme.BlueMSTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegistersDemoFragment : Fragment() {
 
-    private val viewModel: RegistersDemoViewModel by viewModels()
-    private lateinit var binding: RegistersDemoFragmentBinding
-    private lateinit var nodeId: String
-    private lateinit var demoType: RegistersDemoType
 
-    private lateinit var registerView: RecyclerView
-    private lateinit var registerAdapter: RegisterStatusViewAdapter
+    private val viewModel: RegistersDemoViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        nodeId = arguments?.getString(ARG_NODE_ID)
-            ?: MlcConfig.nodeId
-                    ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
+        val nodeId = arguments?.getString(ARG_NODE_ID)
+            ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
 
         val demoTypeString = arguments?.getString(ARG_DEMO_TYPE)
-            ?: MlcConfig.demoType
-            ?: throw IllegalArgumentException("Missing string $ARG_DEMO_TYPE arguments")
+            ?: "MLC"
+
+        var demoType: RegistersDemoType = RegistersDemoType.MLC
 
         try {
             demoType = RegistersDemoType.valueOf(demoTypeString)
@@ -55,47 +52,45 @@ class RegistersDemoFragment : Fragment() {
             e.printStackTrace()
         }
 
-        binding = RegistersDemoFragmentBinding.inflate(inflater, container, false)
-
-        registerView = binding.registerStatusList
-
-        registerAdapter = when (demoType) {
-            RegistersDemoType.MLC -> RegisterStatusViewAdapter(
-                R.string.mlc_registerId_format
-            )
-
-            RegistersDemoType.FSM -> RegisterStatusViewAdapter(
-                R.string.fsm_registerId_format
-            )
-
-            RegistersDemoType.STRED -> RegisterStatusViewAdapter(
-                R.string.stred_registerId_format
-            )
-        }
-        registerView.adapter = registerAdapter
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.registersData.collect {
-                    registerAdapter.submitList(it)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                BlueMSTheme {
+                    RegistersDemoScreen(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        demoType = demoType,
+                        viewModel = viewModel,
+                        nodeId = nodeId
+                    )
                 }
             }
         }
     }
+}
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.startDemo(nodeId = nodeId, demoType = demoType)
+@Composable
+fun RegistersDemoScreen(
+    modifier: Modifier,
+    demoType: RegistersDemoType,
+    viewModel: RegistersDemoViewModel,
+    nodeId: String
+) {
+
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_START -> {
+                viewModel.startDemo(nodeId = nodeId, demoType = demoType)
+            }
+
+            Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
+            else -> Unit
+        }
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.stopDemo(nodeId = nodeId)
-    }
+    RegisterDemoContent(
+        modifier = modifier,
+        viewModel = viewModel,
+        demoType = demoType
+    )
 }

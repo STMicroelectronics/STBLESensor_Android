@@ -86,7 +86,7 @@ fun MainTopBar(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Divider()
+                    HorizontalDivider()
 
                     if (isBetaRelease) {
                         Text(
@@ -95,7 +95,7 @@ fun MainTopBar(
                                 switchVersionBetaRelease()
                             })
 
-                        Divider(modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal))
+                        HorizontalDivider(modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal))
 
                         Text(text = "Read Beta Catalog", modifier = Modifier.clickable {
                             readBetaCatalog()
@@ -126,7 +126,7 @@ fun MainTopBar(
                             })
                     }
 
-                    Divider()
+                    HorizontalDivider()
                 }
             }
         }

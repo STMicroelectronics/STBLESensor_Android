@@ -35,6 +35,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardDescription
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
+import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
+import com.st.blue_sdk.board_catalog.models.FotaDetails
 import com.st.catalog.CatalogViewModel
 import com.st.catalog.R
 import com.st.catalog.StCatalogConfig
@@ -61,11 +63,11 @@ fun BoardScreen(
     val boards by viewModel.boards.collectAsStateWithLifecycle()
     val boardDescOrNull by viewModel.boardDescription.collectAsStateWithLifecycle()
 
-    boardOrNull?.let { board ->
+    if (boardOrNull != null) {
         val allDemo by remember {
             derivedStateOf {
                 val demosSet = mutableSetOf<Demo>()
-                boards.filter { it.bleDevId == board.bleDevId }.forEach {
+                boards.filter { it.bleDevId == boardOrNull!!.bleDevId }.forEach {
                     demosSet.addAll(it.availableDemos())
                 }
                 demosSet
@@ -74,7 +76,7 @@ fun BoardScreen(
 
         BoardScreen(
             modifier = modifier,
-            board = board,
+            board = boardOrNull!!,
             boardDescOrNull = boardDescOrNull,
             demos = allDemo.toList(),
             goToFw = {
@@ -89,7 +91,7 @@ fun BoardScreen(
                 Intent(Intent.ACTION_VIEW).also { intent ->
                     var uri = "https://www.st.com/content/st_com/en.html"
                     boardDescOrNull?.let {
-                        if(boardDescOrNull!!.docURL!=null) {
+                        if (boardDescOrNull!!.docURL != null) {
                             uri = boardDescOrNull!!.docURL!!
                         }
                     }
@@ -101,7 +103,7 @@ fun BoardScreen(
                 Intent(Intent.ACTION_VIEW).also { intent ->
                     var uri = "https://www.st.com/content/st_com/en.html"
                     boardDescOrNull?.let {
-                        if(boardDescOrNull!!.orderURL!=null) {
+                        if (boardDescOrNull!!.orderURL != null) {
                             uri = boardDescOrNull!!.orderURL!!
                         }
                     }
@@ -111,6 +113,56 @@ fun BoardScreen(
                 }
             }
         )
+    } else {
+        boardDescOrNull?.let { boardDesc ->
+            BoardScreen(
+                modifier = modifier,
+                board = BoardFirmware(
+                    bleDevId = boardDesc.bleDevId,
+                    bleFwId = "",
+                    brdName = boardDesc.boardName,
+                    fwVersion = "",
+                    fwName = "",
+                    cloudApps = emptyList(),
+                    characteristics = emptyList(),
+                    optionBytes = emptyList(),
+                    fwDesc = "",
+                    fota = FotaDetails(),
+                    maturity = FirmwareMaturity.RELEASE
+                ),
+                boardDescOrNull = boardDescOrNull,
+                demos = emptyList(),
+                showGoToFw = false,
+                onBack = {
+                    navController.popBackStack()
+                },
+                goToDs = {
+                    Intent(Intent.ACTION_VIEW).also { intent ->
+                        var uri = "https://www.st.com/content/st_com/en.html"
+                        boardDescOrNull?.let {
+                            if (boardDescOrNull!!.docURL != null) {
+                                uri = boardDescOrNull!!.docURL!!
+                            }
+                        }
+                        intent.data = Uri.parse(uri)
+                        context.startActivity(intent)
+                    }
+                },
+                onReadMoreClick = {
+                    Intent(Intent.ACTION_VIEW).also { intent ->
+                        var uri = "https://www.st.com/content/st_com/en.html"
+                        boardDescOrNull?.let {
+                            if (boardDescOrNull!!.orderURL != null) {
+                                uri = boardDescOrNull!!.orderURL!!
+                            }
+                        }
+
+                        intent.data = Uri.parse(uri)
+                        context.startActivity(intent)
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -118,8 +170,9 @@ fun BoardScreen(
 fun BoardScreen(
     modifier: Modifier = Modifier,
     board: BoardFirmware,
-    boardDescOrNull:BoardDescription?=null,
+    boardDescOrNull: BoardDescription? = null,
     demos: List<Demo>,
+    showGoToFw: Boolean = true,
     onBack: () -> Unit = { /** NOOP **/ },
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ },
@@ -144,26 +197,29 @@ fun BoardScreen(
                 BoardHeader(
                     board = board,
                     boardDescOrNull = boardDescOrNull,
+                    showGoToFw = showGoToFw,
                     goToFw = goToFw,
                     goToDs = goToDs
                 )
             }
 
-            if (StCatalogConfig.showDemoList) {
-                item {
-                    Text(
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        text = stringResource(id = R.string.st_catalog_board_demoListLabel)
-                    )
-                }
+            if (demos.isNotEmpty()) {
+                if (StCatalogConfig.showDemoList) {
+                    item {
+                        Text(
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            text = stringResource(id = R.string.st_catalog_board_demoListLabel)
+                        )
+                    }
 
-                itemsIndexed(items = demos) { index, demo ->
-                    DemoListItem(
-                        item = demo,
-                        even = index % 2 == 0,
-                        isLastOne = index == demos.lastIndex
-                    )
+                    itemsIndexed(items = demos) { index, demo ->
+                        DemoListItem(
+                            item = demo,
+                            even = index % 2 == 0,
+                            isLastOne = index == demos.lastIndex
+                        )
+                    }
                 }
             }
 
@@ -187,7 +243,7 @@ fun BoardScreen(
         }
 
         boardDescOrNull?.let {
-            if(boardDescOrNull.orderURL!=null) {
+            if (boardDescOrNull.orderURL != null) {
                 BlueMsButton(
                     modifier = Modifier
                         .fillMaxWidth()

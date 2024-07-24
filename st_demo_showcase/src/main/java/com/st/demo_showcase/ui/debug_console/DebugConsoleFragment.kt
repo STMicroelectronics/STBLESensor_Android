@@ -47,7 +47,7 @@ class DebugConsoleFragment : Fragment() {
 
                     DebugConsoleScreen(
                         debugMessages = debugMessages,
-                        onClear = { viewModel.clearConsole() },
+                        onClear = { viewModel.clearConsole() }
                     ) { msg ->
                         viewModel.sendDebugMessage(nodeId = nodeId, msg = msg)
                     }

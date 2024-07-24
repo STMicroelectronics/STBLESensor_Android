@@ -11,6 +11,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,14 +29,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -48,10 +52,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.st.pnpl.composable.Component
-import com.st.ui.composables.JSON_FILE_TYPE
+import com.st.ui.composables.BlueMSDialogCircularProgressIndicator
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 import com.st.ui.theme.toInt
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -65,6 +70,8 @@ fun BinaryScreenScreen(
     val contents = viewModel.modelUpdates.value
     val status = viewModel.componentStatusUpdates.value
     val isLoading = viewModel.isLoading.value
+    val chunkProgress = viewModel.chunkProgress.value
+    val isSendingOperationOnGoing = viewModel.isSendingOperationOnGoing.value
     val enableCollapse = viewModel.enableCollapse.value
     val binaryContentReceived = viewModel.binaryContentReceived.value
     val binaryContentReadyForSending = viewModel.binaryContentReadyForSending.value
@@ -72,6 +79,7 @@ fun BinaryScreenScreen(
 
     val bytesRec = viewModel.bytesRec.value
     val numberPackets = viewModel.numberPackets.value
+    val maxBinaryContentWriteSize = viewModel.maxBinaryContentWriteSize.value
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
@@ -81,15 +89,16 @@ fun BinaryScreenScreen(
     )
     var isOpen by rememberSaveable(contents) { mutableStateOf(value = "") }
 
-    Column(modifier = modifier.fillMaxWidth()) {
-        val pickFileLauncher = rememberLauncherForActivityResult(
-            ActivityResultContracts.OpenDocument()
-        ) { fileUri ->
-            if (fileUri != null) {
-                viewModel.setDtmiModel(nodeId, fileUri)
-            }
-        }
-
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+    ) {
         val pickBinaryFileFromBoardLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.CreateDocument("*/*")
         ) { fileUri ->
@@ -106,114 +115,124 @@ fun BinaryScreenScreen(
             }
         }
 
-        MyExtendedFloatingActionButton(
-            operation = {
-                viewModel.hideFileOperation()
-                pickBinaryFileForBoardLauncher.launch(arrayOf("*/*"))
-            },
-            idIcon = R.drawable.ic_file_upload,
-            idString = R.string.st_loadFromFile,
-            modifier = Modifier.padding(LocalDimensions.current.paddingSmall)
-        )
+        Surface(
+            modifier = Modifier
+                .padding(all = LocalDimensions.current.paddingNormal)
+                .fillMaxWidth(),
+            shape = Shapes.small,
+            shadowElevation = LocalDimensions.current.elevationNormal
+        ) {
 
-        if(numberPackets!=0) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(LocalDimensions.current.paddingSmall),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Column {
 
                 Text(
-                    text = "Packets = $numberPackets",
-                    modifier = Modifier.weight(0.5f)
+                    modifier = Modifier.padding(
+                        start = LocalDimensions.current.paddingMedium,
+                        bottom = LocalDimensions.current.paddingNormal,
+                        top = LocalDimensions.current.paddingNormal,
+                        end = LocalDimensions.current.paddingNormal
+                    ),
+                    text = "File Management",
+                    style = MaterialTheme.typography.titleMedium
                 )
 
-                Text(
-                    text = "Bytes = $bytesRec",
-                    modifier = Modifier.weight(0.5f)
-                )
-            }
+                if (isSendingOperationOnGoing) {
+                    Text(
+                        text = "..operation on going..",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(LocalDimensions.current.paddingNormal)
+                    )
+                } else {
 
-        }
+                    MyExtendedFloatingActionButton(
+                        operation = {
+                            viewModel.hideFileOperation()
+                            pickBinaryFileForBoardLauncher.launch(arrayOf("*/*"))
+                        },
+                        idIcon = R.drawable.ic_file_upload,
+                        idString = R.string.st_loadFromFile,
+                        modifier = Modifier.padding(LocalDimensions.current.paddingNormal)
+                    )
 
-        if(binaryContentReadyForSending) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(LocalDimensions.current.paddingSmall),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                    if (numberPackets != 0) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(LocalDimensions.current.paddingNormal),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                var text by remember { mutableStateOf("20") }
+                            Text(
+                                text = "Packets = $numberPackets",
+                                modifier = Modifier.weight(0.5f)
+                            )
 
-                OutlinedTextField(
-                    value = text,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    onValueChange = {
-                        text = it
-                        viewModel.maxPayloadSize = it.toInt()
-                    },
-                    label = { Text("Write Size") },
-                    modifier = Modifier.weight(0.5f)
-                )
+                            Text(
+                                text = "Bytes = $bytesRec",
+                                modifier = Modifier.weight(0.5f)
+                            )
+                        }
+
+                    }
+
+                    if (binaryContentReadyForSending) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(LocalDimensions.current.paddingSmall),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            var text by remember { mutableStateOf(maxBinaryContentWriteSize.toString()) }
+
+                            OutlinedTextField(
+                                value = text,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                onValueChange = {
+                                    text = it
+                                    viewModel.setMaxBinaryContentWriteSize(it.toInt())
+                                },
+                                label = { Text("BLE Write Size") },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .padding(end = LocalDimensions.current.paddingNormal)
+                            )
+
+                            MyExtendedFloatingActionButton(
+                                operation = {
+                                    viewModel.hideFileOperation()
+                                    viewModel.writeBinaryContentToNode(nodeId)
+                                },
+                                idIcon = R.drawable.ic_bluetooth,
+                                idString = R.string.st_sendToBoard,
+                                modifier = Modifier.weight(0.5f)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
 
                 MyExtendedFloatingActionButton(
                     operation = {
                         viewModel.hideFileOperation()
-                        viewModel.writeBinaryContentToNode(nodeId)
+                        pickBinaryFileFromBoardLauncher.launch("Binary.bin")
                     },
-                    idIcon = R.drawable.ic_bluetooth,
-                    idString = R.string.st_sendToBoard,
-                    modifier = Modifier.weight(0.5f)
+                    isVisible = binaryContentReceived,
+                    idIcon = R.drawable.ic_file_download,
+                    idString = R.string.st_saveToFile,
+                    modifier = Modifier.padding(LocalDimensions.current.paddingNormal)
                 )
+
+                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+
+                FileOperationResult(fileOperationResultVisible, viewModel.fileOperationResult)
             }
         }
 
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-
-        MyExtendedFloatingActionButton(
-            operation = {
-                viewModel.hideFileOperation()
-                pickBinaryFileFromBoardLauncher.launch("Binary.bin")
-            },
-            isVisible = binaryContentReceived,
-            idIcon = R.drawable.ic_file_download,
-            idString = R.string.st_saveToFile,
-            modifier = Modifier.padding(LocalDimensions.current.paddingSmall)
-        )
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.Center
-//        ) {
-        FileOperationResult(fileOperationResultVisible, viewModel.fileOperationResult)
-//        }
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(LocalDimensions.current.paddingSmall),
-            horizontalArrangement = Arrangement.End
-        ) {
-            MyExtendedFloatingActionButton(
-                operation = {
-                    pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE))
-                },
-                idIcon = R.drawable.ic_load_dtdl,
-                idString = R.string.st_pnpl_uploadDtmiFile,
-                modifier = Modifier.padding(LocalDimensions.current.paddingSmall)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
-
 
         CompositionLocalProvider(
             LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
@@ -269,6 +288,17 @@ fun BinaryScreenScreen(
             }
         }
     }
+
+    if (isSendingOperationOnGoing) {
+        BlueMSDialogCircularProgressIndicator(
+            percentage = if (chunkProgress != null) {
+                chunkProgress.current * 100f / chunkProgress.total
+            } else {
+                null
+            },
+            message = "Sending", colorFill = null
+        )
+    }
 }
 
 @Composable
@@ -280,7 +310,7 @@ fun FileOperationResult(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalDimensions.current.paddingSmall),
+                .padding(LocalDimensions.current.paddingNormal),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -303,7 +333,7 @@ fun MyExtendedFloatingActionButton(
         ExtendedFloatingActionButton(
             modifier = modifier,
             onClick = operation,
-            backgroundColor =  MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.primary,
             icon = {
                 Icon(
                     painter = painterResource(id = idIcon),

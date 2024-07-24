@@ -3,6 +3,7 @@ package com.st.cloud_azure_iot_central.composable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -11,13 +12,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Token
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,80 @@ import com.st.ui.theme.SuccessText
 
 @Composable
 fun CloudDeviceItem(
+    boardUid: String,
+    isSelected: Boolean,
+    cloudDevice: AzureCloudDevice,
+    onCloudDeviceSelection: () -> Unit = { /** NOOP**/ },
+    onCloudDeviceDeleting: () -> Unit = { /** NOOP**/ }
+) {
+    val fontColorTitle =
+        if (cloudDevice.id == boardUid) MaterialTheme.colorScheme.primary else Grey6
+
+    val fontColorBody = if (cloudDevice.id == boardUid) Color.Unspecified else Grey5
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        border = if (isSelected) BorderStroke(4.dp, SuccessText) else null,
+        shape = Shapes.small,
+        shadowElevation = LocalDimensions.current.elevationNormal,
+        enabled = cloudDevice.id == boardUid,
+        onClick = { onCloudDeviceSelection() }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(LocalDimensions.current.paddingNormal),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            if (cloudDevice.id == boardUid) {
+                Icon(
+                    modifier = Modifier.clickable { onCloudDeviceDeleting() },
+                    tint = ErrorText,
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = LocalDimensions.current.paddingNormal),
+                verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
+            ) {
+                Text(
+                    style = MaterialTheme.typography.titleSmall,
+                    color = fontColorTitle,
+                    text = "Name: "
+                )
+
+                Text(
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    text = cloudDevice.displayName,
+                    color = fontColorBody
+                )
+
+                Text(
+                    style = MaterialTheme.typography.titleSmall,
+                    color = fontColorTitle,
+                    text = "Id: "
+                )
+
+                Text(
+                    style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    text = cloudDevice.id,
+                    color = fontColorBody
+                )
+
+            }
+        }
+    }
+}
+
+@Composable
+fun CloudDeviceItemOld(
     boardUid: String,
     isSelected: Boolean,
     hasCredentials: Boolean,
@@ -111,7 +186,7 @@ fun CloudDeviceItem(
                     horizontalAlignment = Alignment.End
                 ) {
                     Icon(
-                        tint = if(hasCredentials) Grey6 else MaterialTheme.colorScheme.surface,
+                        tint = if (hasCredentials) Grey6 else MaterialTheme.colorScheme.surface,
                         imageVector = Icons.Default.Token,
                         contentDescription = null
                     )

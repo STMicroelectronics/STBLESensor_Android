@@ -13,9 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -24,23 +23,28 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.st.cloud_azure_iot_central.CloudAzureIotCentralViewModel
-import com.st.ui.composables.BlueMSSnackBar
+import com.st.ui.composables.BlueMSSnackBarMaterial3
 import com.st.ui.composables.ComposableLifecycle
-import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.SecondaryBlue
@@ -96,20 +100,22 @@ fun CloudAzureDeviceSelection(
         }
     )
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    var oneDeviceSelected by rememberSaveable { mutableStateOf(false) }
+
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = modifier.padding(all = LocalDimensions.current.paddingNormal),
         snackbarHost = {
-            BlueMSSnackBar(
-                snackbarHostState = snackbarHostState,
-                onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() })
+            BlueMSSnackBarMaterial3(
+                snackBarHostState = snackBarHostState
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { openAddDeviceDialog = true },
-                contentColor = Grey0,
-                backgroundColor = SecondaryBlue
+                contentColor = MaterialTheme.colorScheme.primary,
+                containerColor = SecondaryBlue
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
@@ -128,11 +134,6 @@ fun CloudAzureDeviceSelection(
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
 
-//        Surface(
-//            modifier = modifier.fillMaxWidth(),
-//            shape = Shapes.small,
-//            shadowElevation = LocalDimensions.current.elevationSmall
-//        ) {
             Text(
                 modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
                 style = MaterialTheme.typography.bodyLarge,
@@ -140,17 +141,29 @@ fun CloudAzureDeviceSelection(
                 textAlign = TextAlign.Center,
                 text = "Select on of the following devices or create a new one"
             )
-            //}
 
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
+            if (oneDeviceSelected) {
+                Text(
+                    modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Grey6,
+                    textAlign = TextAlign.Center,
+                    text = buildAnnotatedString {
+                        append("Click on  '")
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Dev Upload")
+                        }
+                        append("'")
+                    }
+                )
+            }
 
-            Text(
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                text = "Available devices:"
-            )
+            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
 
             Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
                 LazyColumn(
@@ -163,9 +176,9 @@ fun CloudAzureDeviceSelection(
                             CloudDeviceItem(
                                 boardUid = boardUid,
                                 isSelected = index == selectedDevice,
-                                hasCredentials = cloudDevice.credentials != null,
                                 cloudDevice = cloudDevice,
                                 onCloudDeviceSelection = {
+                                    oneDeviceSelected = true
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     cloudDevice.selected = true
                                     viewModel.setSelectedCloudDevice(index)
@@ -209,7 +222,7 @@ fun CloudAzureDeviceSelection(
         val text = retValue!!
         viewModel.cleanError()
         coroutineScope.launch {
-            snackbarHostState.showSnackbar(message = text)
+            snackBarHostState.showSnackbar(message = text)
         }
     }
 

@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,8 +106,8 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                         end = LocalDimensions.current.paddingNormal
                     ),
                     fontSize = 20.sp,
-                    text = "Condition",
-                )
+                    text = "Condition"
+                    )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -130,8 +130,8 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                 FlowDemoInputFunctionOutputConfigurationListItem(
                     iconId = getOutputIconResourceByName(expressionSelected.outputs[0].icon),
                     label = expressionSelected.description,
-                    hasSettings = false,
-                )
+                    hasSettings = false
+                    )
 
                 ClickableTest(
                     text = stringResource(id = R.string.change_expression_new_app),
@@ -155,8 +155,8 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                         end = LocalDimensions.current.paddingNormal
                     ),
                     fontSize = 20.sp,
-                    text = "Execute",
-                )
+                    text = "Execute"
+                    )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -179,7 +179,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
             FlowDemoInputFunctionOutputConfigurationListItem(
                 iconId = getOutputIconResourceByName(flowSelected.outputs[0].icon),
                 label = flowSelected.description,
-                hasSettings = false,
+                hasSettings = false
             )
 
             ClickableTest(
@@ -192,7 +192,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = LocalDimensions.current.paddingNormal),
+                .padding(end = LocalDimensions.current.paddingNormal)
         ) {
             BlueMsButton(
                 text = stringResource(id = R.string.terminate_new_app),

@@ -21,6 +21,7 @@ import com.st.blue_sdk.utils.isExtendedOrExternalFeatureCharacteristics
 import com.st.blue_sdk.utils.isGeneralPurposeFeatureCharacteristics
 import com.st.blue_sdk.utils.isStandardFeatureCharacteristics
 import com.st.demo_showcase.models.Demo
+import com.st.preferences.StPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class CatalogViewModel
 @Inject internal constructor(
     private val blueManager: BlueManager,
+    stPreferences: StPreferences
 ) : ViewModel() {
 
     private val _boards = MutableStateFlow(emptyList<BoardFirmware>())
@@ -50,6 +52,8 @@ class CatalogViewModel
     private val _boardDescription: MutableStateFlow<BoardDescription?> = MutableStateFlow(null)
     val boardDescription = _boardDescription.asStateFlow()
 
+    var isBeta = false;
+
     fun getBoard(boardId: String) {
         viewModelScope.launch {
             _board.value = blueManager.getBoardCatalog().findLast { it.bleDevId == boardId }
@@ -62,10 +66,9 @@ class CatalogViewModel
         viewModelScope.launch {
             _firmwareList.value =
                 blueManager.getBoardCatalog().filter { it.bleDevId == boardId }.filter {
-                    if (StCatalogConfig.firmwareFilter.isNotEmpty())
-                        StCatalogConfig.firmwareFilter.contains(it.bleFwId)
-                    else
-                        true
+                    StCatalogConfig.firmwareFamilyFilter?.let { familyFw ->
+                        it.fwName.startsWith(familyFw)
+                    } ?: true
                 }
         }
     }
@@ -78,9 +81,16 @@ class CatalogViewModel
                     StCatalogConfig.boardModelFilter.contains(it.boardModel())
                 else
                     true
-            }
-            _boardsDescription.value = blueManager.getBoardsDescription()
+            }.distinctBy { it.bleDevId }
+            _boardsDescription.value = blueManager.getBoardsDescription().filter {
+                if (StCatalogConfig.boardModelFilter.isNotEmpty())
+                    StCatalogConfig.boardModelFilter.contains(it.boardModel())
+                else
+                    true
+            }.distinctBy { it.bleDevId }
         }
+
+        isBeta = stPreferences.isBetaApplication()
     }
 }
 

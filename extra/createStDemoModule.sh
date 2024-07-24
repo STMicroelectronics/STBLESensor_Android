@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 # Copyright (c) 2022(-0001) STMicroelectronics.
 # All rights reserved.
@@ -7,6 +6,18 @@
 # the root directory of this software component.
 # If no LICENSE file comes with this software, it is provided AS-IS.
 #
+
+# Verify jq is installed.
+if ! which jq > /dev/null; then
+    echo "jq is not installed. Please install it and try again. (brew install jq)"
+    exit 1
+fi
+
+# Verify GitHub token is export as env variable.
+if [ -z "$GPR_API_KEY" ]; then
+    echo "GPR_API_KEY is empty. Please set with your GitHub token to use GitHub API."
+  exit 1
+fi
 
 # Verify bash version. macOS comes with bash 3 preinstalled.
 if [[ ${BASH_VERSINFO[0]} -lt 4 ]]; then
@@ -25,6 +36,7 @@ DISPLAY_NAME=$3
 # Utility placeholder string
 PLACEHOLDER_NAME="new_demo_template"
 PLACEHOLDER_NAME_CAMEL="NewDemoTemplate"
+ANCHOR_DEMO="NEW_DEMO_ANCHOR"
 ANCHOR_DEMO_1="NEW_DEMO_TEMPLATE ANCHOR1"
 ANCHOR_DEMO_2="NEW_DEMO_TEMPLATE ANCHOR2"
 ANCHOR_DEMO_3="NEW_DEMO_TEMPLATE ANCHOR3"
@@ -66,12 +78,15 @@ for i in "${strarr[@]}"; do
 done
 DEMO_NAME_UNDERSCORE=${DEMO_NAME_UNDERSCORE::-1}
 
-# Add to private settings.gradle the new module
-echo "include ':st_$DEMO_NAME_UNDERSCORE'" >>../settings.gradle
+# Add to private settings.gradle.kts the new module
+echo "include(\":st_$DEMO_NAME_UNDERSCORE\"" >>../settings.gradle.kts
+
+# Add to pul settings.gradle.kts the new module
+echo "include(\":st_$DEMO_NAME_UNDERSCORE\"" >>../settings.gradle.kts
 
 # Add to demo showcase
-DEP_NUM=$(sed -n '$=' ../st_demo_showcase/st_dependencies.gradle)
-sed -i "$DEP_NUM i implementation project(path: ':st_$DEMO_NAME_UNDERSCORE')" ../st_demo_showcase/st_dependencies.gradle
+lineNum=$(awk "/$ANCHOR_DEMO/{ print NR ; exit }" ../st_demo_showcase/build.gradle.kts)
+sed -i "$lineNum i implementation(project(\":st_$DEMO_NAME_UNDERSCORE\"))" ../st_demo_showcase/build.gradle.kts
 
 # Create module folder
 mkdir -p ../st_"$DEMO_NAME_UNDERSCORE"/
@@ -130,3 +145,72 @@ text="<fragment android:id=\"@+id/${DEMO_NAME_CAMEL,}Fragment\" android:name=\"c
 sed -i "$lineNum i $text" ../st_demo_showcase/src/main/res/navigation/demo_showcase_nav_graph.xml
 
 echo "Module st_$DEMO_NAME_UNDERSCORE created. sync to load it"
+
+# -------------------------------------------------------------------------------------------------
+#                                  CREATE ISSUE ST VESPUCCI
+# -------------------------------------------------------------------------------------------------
+
+# Variables
+TOKEN=$GPR_API_KEY
+PROJECT_NUMBER=3
+OWNER="PRG-SWP"
+REPO="Android_App_STVespucci"
+TITLE="New Demo Module created: $DEMO_NAME_UNDERSCORE"
+BODY="Add the new demo module dependency to **Vespucci** \`libs.version.toml\`.\n\nAdd this line in \`[libraries]\` section:\n\`st-$DEMO_NAME_UNDERSCORE = { module = \\\"com.st.$DEMO_NAME_UNDERSCORE:st-$DEMO_NAME_UNDERSCORE\\\", version.ref = \\\"stLibs\\\" }\`\n\nAdd this line in the \`stLibs\` bundle in \`[bundles]\` section:\n\`\\\"st-$DEMO_NAME_UNDERSCORE\\\"\`"
+LABELS="@high"
+ASSIGNEE="AlbyST"
+
+create_issue_response=$(curl -s -H "Authorization: token $TOKEN" -X POST -d "{ \"title\": \"$TITLE\", \"body\": \"$BODY\", \"labels\": [\"$LABELS\"], \"assignees\": [\"$ASSIGNEE\"] }" https://api.github.com/repos/$OWNER/"${REPO}"/issues)
+
+# Get Issue Number / Issue Node Id
+ISSUE_NUMBER=$(echo "$create_issue_response" | jq '.number')
+ISSUE_NUMBER=${ISSUE_NUMBER//\"/}
+ISSUE_NODE_ID=$(echo "$create_issue_response" | jq -r '.node_id')
+ISSUE_NODE_ID=${ISSUE_NODE_ID//\"/}
+
+echo "Issue number $ISSUE_NUMBER has been created."
+
+## -------------------------------------------------------------------------------------------------
+
+get_project_id_response=$(curl -s -H "Authorization: bearer $TOKEN" -X POST -d '{
+"query": "query { organization(login: \"'$OWNER'\") { projectV2(number: '$PROJECT_NUMBER') { id title } } }"
+}' https://api.github.com/graphql)
+
+# Get Project Id / Project Name
+PROJECT_ID=$(echo "$get_project_id_response" | jq '.data.organization.projectV2.id')
+PROJECT_ID=${PROJECT_ID//\"/}
+PROJECT_NAME=$(echo "$get_project_id_response" | jq '.data.organization.projectV2.title')
+PROJECT_NAME=${PROJECT_NAME//\"/}
+
+echo "Fetch $PROJECT_NAME project id succeeded."
+
+## -------------------------------------------------------------------------------------------------
+
+add_to_project_response=$(curl -s -H "Authorization: bearer $TOKEN" -X POST -d '{
+  "query": "mutation { addProjectV2ItemById(input: { contentId: \"'"${ISSUE_NODE_ID}"'\", projectId: \"'"${PROJECT_ID}"'\" }) { item { id project { title } } } }"
+}' https://api.github.com/graphql)
+
+# Get Card ID
+CARD_ID=$(echo "$add_to_project_response" | jq '.data.addProjectV2ItemById.item.id')
+CARD_ID=${CARD_ID//\"/}
+
+echo "Card has been created."
+
+# -------------------------------------------------------------------------------------------------
+
+#get_column_id_response=$(curl -s -H "Authorization: bearer $TOKEN" -X POST -d '{
+#"query": "query { organization(login: \"'$OWNER'\") { projectV2(number: '$PROJECT_NUMBER') { fields(first: 100) { nodes { ... on ProjectV2SingleSelectField { id dataType name } ... on ProjectV2SingleSelectField { options { id name } } } } } } }"
+#}' https://api.github.com/graphql)
+
+STATUS_FIELD_ID=PVTSSF_lADOB0ylPc4AP4pnzgKJChg
+STATUS_TODO_OPTION_ID=f75ad846
+
+# -------------------------------------------------------------------------------------------------
+
+move_card_response=$(curl -s -H "Authorization: bearer $TOKEN" -X POST -d '{
+  "query": "mutation { updateProjectV2ItemFieldValue(input: { value: {singleSelectOptionId: \"'"${STATUS_TODO_OPTION_ID}"'\" } ,fieldId: \"'"${STATUS_FIELD_ID}"'\", itemId: \"'"${CARD_ID}"'\", projectId: \"'"${PROJECT_ID}"'\"}) { clientMutationId } }"
+}' https://api.github.com/graphql)
+
+echo "Card has been moved in TODO column."
+
+# -------------------------------------------------------------------------------------------------

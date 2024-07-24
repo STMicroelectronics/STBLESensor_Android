@@ -12,11 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -78,7 +79,7 @@ fun FlowDemoAddInputDialog(
             canBeUsedAsExp(it)
         }
 
-    AlertDialog(
+    BasicAlertDialog(
         // properties = DialogProperties(usePlatformDefaultWidth = false),
         //onDismiss we don't change the flow
         onDismissRequest = onDismissRequest
@@ -161,7 +162,7 @@ fun FlowDemoAddInputDialog(
                                 })
                         }
 
-                        if(availableExpansionSensorFilter.isNotEmpty()) {
+                        if (availableExpansionSensorFilter.isNotEmpty()) {
                             item {
                                 Text(
                                     modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
@@ -173,7 +174,8 @@ fun FlowDemoAddInputDialog(
                             }
 
                             items(availableExpansionSensorFilter) {
-                                val currentSensorFlow = findSensorById(flowOnCreation.sensors, it.id)
+                                val currentSensorFlow =
+                                    findSensorById(flowOnCreation.sensors, it.id)
                                 var booleanData = currentSensorFlow != null
 
                                 FlowDemoBooleanProperty(
@@ -207,7 +209,7 @@ fun FlowDemoAddInputDialog(
 
                         }
 
-                        if(availableExprFilter.isNotEmpty()) {
+                        if (availableExprFilter.isNotEmpty()) {
 
                             item {
                                 Text(
@@ -248,7 +250,7 @@ fun FlowDemoAddInputDialog(
                             }
                         }
 
-                        if(availableCustomInputFilter.isNotEmpty()) {
+                        if (availableCustomInputFilter.isNotEmpty()) {
                             item {
                                 Text(
                                     modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
@@ -326,7 +328,7 @@ fun FlowDemoAddInputDialog(
                                             onDismissRequest()
                                         }
                                     )
-                                    
+
                                     Spacer(modifier = Modifier.weight(1f))
 
                                     BlueMsButton(

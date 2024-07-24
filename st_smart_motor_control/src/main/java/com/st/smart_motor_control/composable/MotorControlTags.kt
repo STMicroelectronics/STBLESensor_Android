@@ -41,6 +41,7 @@ fun MotorControlTags(
                 data = data,
                 enableCollapse = false,
                 isOpen = true,
+                showNotMounted = false,
                 componentModel = componentWithInterface.first,
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },

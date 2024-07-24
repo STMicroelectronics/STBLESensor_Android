@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -21,7 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled.Companion.HIDE_PROPERTIES_NAME
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled.Companion.HIDE_PROPERTIES_NAME
 import com.st.raw_pnpl.RawPnplViewModel
 import com.st.pnpl.composable.Component
 import com.st.ui.composables.LocalLastStatusUpdatedAt

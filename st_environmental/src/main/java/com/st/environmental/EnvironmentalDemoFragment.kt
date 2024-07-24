@@ -26,10 +26,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -52,6 +55,8 @@ import com.st.core.ARG_NODE_ID
 import com.st.environmental.model.EnvironmentalValues
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.BlueMSTheme
+import com.st.ui.theme.Grey3
+import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
 import dagger.hilt.android.AndroidEntryPoint
@@ -147,7 +152,7 @@ fun EnvironmentalDemoScreen(
             }
         }
 
-        if(viewModel.environmentalValues.hasTemperatures) {
+        if (viewModel.environmentalValues.hasTemperatures) {
             EnvironmentalWidget(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,19 +170,38 @@ fun EnvironmentalDemoScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "°C/°F")
+                        Text(
+                            text = "°C/°F",
+                            modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall)
+                        )
                         Switch(
                             checked = useFahrenheit,
                             onCheckedChange = {
                                 useFahrenheit = it
-                            }
+                            },
+//                            thumbContent = if (useFahrenheit) {
+//                                {
+//                                    Icon(
+//                                        imageVector = Icons.Filled.Check,
+//                                        contentDescription = null,
+//                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+//                                    )
+//                                }
+//                            } else {
+//                                null
+//                            },
+                            colors = SwitchDefaults.colors(
+                                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                uncheckedTrackColor = Grey6,
+                                disabledUncheckedTrackColor = Grey3
+                            )
                         )
                     }
                 }
             )
         }
 
-        if(viewModel.environmentalValues.hasPressure) {
+        if (viewModel.environmentalValues.hasPressure) {
             Spacer(Modifier.height(height = 16.0.dp))
 
             EnvironmentalWidget(
@@ -195,7 +219,7 @@ fun EnvironmentalDemoScreen(
             )
         }
 
-        if(viewModel.environmentalValues.hasHumidity) {
+        if (viewModel.environmentalValues.hasHumidity) {
             Spacer(Modifier.height(height = 16.0.dp))
 
             EnvironmentalWidget(
@@ -240,6 +264,7 @@ fun EnvironmentalWidget(
             .fillMaxWidth()
             .height(intrinsicSize = IntrinsicSize.Min)
             .padding(all = LocalDimensions.current.paddingSmall),
+        colors = CardDefaults.cardColors(),
         shape = Shapes.small
     ) {
         Row(
@@ -256,7 +281,7 @@ fun EnvironmentalWidget(
             Column(
                 modifier = Modifier
                     .weight(weight = 0.1f)
-                    .padding(start = LocalDimensions.current.paddingNormal),
+                    .padding(start = LocalDimensions.current.paddingNormal)
             ) {
                 values.forEach {
                     Text(

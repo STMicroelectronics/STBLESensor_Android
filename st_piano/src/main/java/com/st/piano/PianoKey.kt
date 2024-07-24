@@ -10,6 +10,6 @@ package com.st.piano
 import android.graphics.RectF
 
 
-class PianoKey(var rect: RectF, var sound: Int, var white: Boolean) {
+class PianoKey(var rect: RectF, var rectInt: RectF?=null,var sound: Int, var white: Boolean) {
     var pressed = false
 }

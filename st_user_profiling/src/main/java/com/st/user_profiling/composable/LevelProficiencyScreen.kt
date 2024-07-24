@@ -113,7 +113,7 @@ fun LevelProficiencyContentScreen(
             }
 
             if (index != levels.lastIndex) {
-                Divider(modifier = Modifier.padding(vertical = LocalDimensions.current.paddingNormal))
+                HorizontalDivider(modifier = Modifier.padding(vertical = LocalDimensions.current.paddingNormal))
             }
         }
 

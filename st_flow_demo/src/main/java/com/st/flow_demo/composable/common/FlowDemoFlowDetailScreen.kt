@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import com.st.flow_demo.FlowDemoViewModel
 import com.st.flow_demo.R
 import com.st.ui.composables.BlueMsButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.rotate
 import com.st.flow_demo.DestinationFlowDemoFlowExpertEditingScreen
@@ -85,8 +85,8 @@ fun FlowDemoFlowDetailScreen(
             } else {
                 Text(
                     fontSize = 12.sp,
-                    text = stringResource(id = R.string.no_description),
-                )
+                    text = stringResource(id = R.string.no_description)
+                    )
             }
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
@@ -105,7 +105,7 @@ fun FlowDemoFlowDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = LocalDimensions.current.paddingNormal),
-                        horizontalArrangement = Arrangement.End,
+                        horizontalArrangement = Arrangement.End
                     ) {
                         BlueMsButton(
                             enabled = flow.expression == null,
@@ -168,7 +168,7 @@ fun FlowDemoFlowDetailScreen(
                                 end = LocalDimensions.current.paddingNormal
                             ),
                             fontSize = 20.sp,
-                            text = stringResource(id = R.string.app_input),
+                            text = stringResource(id = R.string.app_input)
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -232,7 +232,7 @@ fun FlowDemoFlowDetailScreen(
                                     end = LocalDimensions.current.paddingNormal
                                 ),
                                 fontSize = 20.sp,
-                                text = stringResource(id = R.string.app_function),
+                                text = stringResource(id = R.string.app_function)
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
@@ -273,7 +273,7 @@ fun FlowDemoFlowDetailScreen(
                                 end = LocalDimensions.current.paddingNormal
                             ),
                             fontSize = 20.sp,
-                            text = stringResource(id = R.string.app_output),
+                            text = stringResource(id = R.string.app_output)
                         )
 
                         Spacer(modifier = Modifier.weight(1f))

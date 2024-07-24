@@ -13,7 +13,7 @@ import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
 import com.st.blue_sdk.features.extended.neai_class_classification.NeaiClassClassification
 import com.st.blue_sdk.features.extended.neai_class_classification.NeaiClassClassificationInfo
-import com.st.blue_sdk.features.extended.neai_class_classification.request.WriteStarClassificationCommand
+import com.st.blue_sdk.features.extended.neai_class_classification.request.WriteStartClassificationCommand
 import com.st.blue_sdk.features.extended.neai_class_classification.request.WriteStopClassificationCommand
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +60,7 @@ class NeaiClassificationViewModel @Inject constructor(
             viewModelScope.launch {
                 blueManager.writeFeatureCommand(
                     nodeId = nodeId,
-                    featureCommand = WriteStarClassificationCommand(feature = feature)
+                    featureCommand = WriteStartClassificationCommand(feature = feature)
                 )
             }
         }

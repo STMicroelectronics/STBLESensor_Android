@@ -14,9 +14,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +54,7 @@ fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
     val barCodeVal = remember { mutableStateOf("") }
     Surface(
         modifier = Modifier.size(320.dp,400.dp),
-        shape = Shapes.medium,
+        shape = Shapes.medium
     ) {
 
         val cameraPermissionState = rememberPermissionState(
@@ -68,7 +68,7 @@ fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
                         this.scaleType = PreviewView.ScaleType.FILL_CENTER
                         layoutParams = ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
                         )
                         implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                     }
@@ -182,7 +182,7 @@ fun MissingPermissionDialog(
 
 @SuppressLint("UnsafeOptInUsageError")
 class BarCodeAnalyser(
-    private val onBarcodeDetected: (barcodes: List<Barcode>) -> Unit,
+    private val onBarcodeDetected: (barcodes: List<Barcode>) -> Unit
 ) : ImageAnalysis.Analyzer {
     private var lastAnalyzedTimeStamp = 0L
 

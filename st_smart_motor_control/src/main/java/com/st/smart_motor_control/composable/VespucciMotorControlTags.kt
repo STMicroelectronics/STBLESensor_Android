@@ -14,7 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -218,7 +218,7 @@ fun TagsInfo(
 
             Spacer(modifier = Modifier.height(LocalDimensions.current.paddingNormal))
 
-            Divider()
+            HorizontalDivider()
 
             Spacer(modifier = Modifier.height(LocalDimensions.current.paddingNormal))
 
@@ -297,7 +297,7 @@ private fun VespucciMotorControlTagsPreview() {
             acquisitionInfo = "Fri May 26 2023 13:47:27",
             isLogging = false,
             isLoading = false,
-            vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
+            vespucciTags = mapOf("Example" to true, "Test" to false, "Mock" to true)
         )
     }
 }
@@ -310,7 +310,7 @@ private fun VespucciMotorControlTagsLoggingPreview() {
             acquisitionInfo = "Fri May 26 2023 13:47:27",
             isLogging = true,
             isLoading = false,
-            vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
+            vespucciTags = mapOf("Example" to true, "Test" to false, "Mock" to true)
         )
     }
 }
@@ -323,7 +323,7 @@ private fun VespucciMotorControlTagsLoadingPreview() {
             acquisitionInfo = "Fri May 26 2023 13:47:27",
             isLogging = false,
             isLoading = true,
-            vespucciTags = mapOf("Prova" to true, "Test" to false, "Mock" to true)
+            vespucciTags = mapOf("Example" to true, "Test" to false, "Mock" to true)
         )
     }
 }

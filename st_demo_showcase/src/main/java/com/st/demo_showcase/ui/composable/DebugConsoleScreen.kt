@@ -16,9 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -109,7 +109,7 @@ fun DebugConsoleScreen(
             IconButton(onClick = { onSendDebugMessage(HELP_MSG) }) {
                 Icon(
                     tint = MaterialTheme.colorScheme.primary,
-                    imageVector = Icons.Default.Help,
+                    imageVector = Icons.AutoMirrored.Filled.Help,
                     contentDescription = null
                 )
             }
@@ -153,7 +153,7 @@ fun DebugConsoleScreen(
                 }) {
                     Icon(
                         tint = MaterialTheme.colorScheme.primary,
-                        imageVector = Icons.Default.Send,
+                        imageVector = Icons.AutoMirrored.Filled.Send,
                         contentDescription = null
                     )
                 }

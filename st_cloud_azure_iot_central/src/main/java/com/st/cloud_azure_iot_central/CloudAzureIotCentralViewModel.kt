@@ -325,7 +325,7 @@ class CloudAzureIotCentralViewModel
                     node!!.catalogInfo?.cloudApps?.mapIndexed { index, cloudApp ->
                         CloudAppConfigured(
                             cloudApp = cloudApp,
-                            appIndex = index,
+                            appIndex = index
                         )
                     }
                 } ?: emptyList()).toMutableList()

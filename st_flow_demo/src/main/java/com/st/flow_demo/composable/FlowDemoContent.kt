@@ -4,12 +4,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,6 +62,7 @@ import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorDetailScreen
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue2
 
 @Composable
 fun FlowDemoContent(
@@ -79,14 +81,19 @@ fun FlowDemoContent(
             FlowConfig.FlowTabBar?.invoke("Flow creation")
         },
         bottomBar = {
-            BottomNavigation(
+            NavigationBar(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Grey0
             ) {
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = Grey6,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2
+                    ),
                     selected = 0 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -111,9 +118,14 @@ fun FlowDemoContent(
                     label = { Text(text = stringResource(id = R.string.navigation_tab_flows)) })
 
                 if (viewModel.isPnPLExported()) {
-                    BottomNavigationItem(
-                        selectedContentColor = Grey0,
-                        unselectedContentColor = Grey6,
+                    NavigationBarItem(
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Grey0,
+                            selectedTextColor = Grey0,
+                            unselectedIconColor = Grey6,
+                            unselectedTextColor = Grey6,
+                            indicatorColor = PrimaryBlue2
+                        ),
                         selected = 1 == selectedIndex,
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -144,9 +156,14 @@ fun FlowDemoContent(
                 }
 
 
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = Grey6,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2
+                    ),
                     selected = 2 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -171,7 +188,15 @@ fun FlowDemoContent(
                     label = { Text(text = stringResource(id = R.string.navigation_tab_sensors)) })
 
 
-                BottomNavigationItem(selected = 3 == selectedIndex,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2
+                    ),
+                    selected = 3 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         selectedIndex = 3
@@ -202,7 +227,7 @@ fun FlowDemoContent(
             NavHost(
                 modifier = Modifier.padding(paddingValues),
                 navController = navController,
-                startDestination = DestinationFlowDemoFlowCategoriesExampleScreen.route,
+                startDestination = DestinationFlowDemoFlowCategoriesExampleScreen.route
             ) {
                 composable(
                     route = DestinationFlowDemoSensorsScree.route

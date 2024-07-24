@@ -98,7 +98,7 @@ fun DemoListScreen(
                         runningFw = device.runningFw,
                         onPinChange = onPinChange,
                         statusModelDTMI = statusModelDTMI,
-                        onCustomDTMIClicked = onCustomDTMIClicked,
+                        onCustomDTMIClicked = onCustomDTMIClicked
                     )
                 } else {
                     DeviceHeader(

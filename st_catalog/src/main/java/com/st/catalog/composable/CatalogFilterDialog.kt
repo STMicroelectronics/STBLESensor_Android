@@ -26,7 +26,7 @@ import com.st.ui.theme.Shapes
 @Composable
 fun CatalogFilterDialog(
     modifier: Modifier = Modifier,
-    demoGroups: List<DemoGroup> = DemoGroup.values().toList(),
+    demoGroups: List<DemoGroup> = DemoGroup.entries,
     filters: CatalogFilter,
     boardOrder:BoardOrder = BoardOrder.NONE,
     releaseDatesPresent: Boolean = false,
@@ -51,7 +51,7 @@ fun CatalogFilterDialog(
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-            Divider()
+            HorizontalDivider()
 
             Row(
                 modifier = Modifier
@@ -74,7 +74,7 @@ fun CatalogFilterDialog(
                 }
             }
 
-            Divider()
+            HorizontalDivider()
 
             Text(
                 style = MaterialTheme.typography.titleLarge,
@@ -84,7 +84,7 @@ fun CatalogFilterDialog(
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-            Divider()
+            HorizontalDivider()
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
@@ -138,7 +138,7 @@ fun DemoGroupChip(
         onClick = { onCheckedChange(checked.not()) },
         shape = Shapes.medium,
         color = if (checked) SecondaryBlue else Grey1,
-        contentColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.primary
     ) {
         Text(
             modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),

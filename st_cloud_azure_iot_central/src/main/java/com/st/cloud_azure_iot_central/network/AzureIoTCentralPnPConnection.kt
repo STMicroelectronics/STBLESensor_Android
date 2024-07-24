@@ -114,8 +114,18 @@ class AzureIoTCentralPnPConnection {
         val obj: MutableMap<String, Double> = HashMap()
         val sampleValues = StringBuilder()
 
-        for (index in telemetryFormat.indices) {
-            obj[telemetryFormat[index]!!.name!!] = telemetry[index]
+        //for (index in telemetryFormat.indices) {
+        for(index in 0 until minOf(telemetryFormat.size,telemetry.size)) {
+                when(telemetryFormat[index]!!) {
+                    is FieldModel.FieldModelObj -> {
+                        val name = (telemetryFormat[index]!! as FieldModel.FieldModelObj).name
+                        obj[name!!] = telemetry[index]
+                    }
+                    is FieldModel.FieldModelString -> {
+                        val name =(telemetryFormat[index]!! as FieldModel.FieldModelString).name
+                        obj[name!!] = telemetry[index]
+                    }
+                }
 
             sampleValues.append("a_x").append("=").append(telemetry[index].toString())
 

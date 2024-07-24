@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,10 +31,10 @@ import com.st.ui.theme.Grey6
 fun CurrentBank(
     modifier: Modifier = Modifier,
     currentBank: Int?,
-    currentFwDetail: String?,
+    currentFwDetail: String?
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -61,7 +61,7 @@ fun CurrentBank(
         )
 
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
-        Divider()
+        HorizontalDivider()
     }
 }
 
@@ -118,7 +118,7 @@ fun OtherBank(
         }
 
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
-        Divider()
+        HorizontalDivider()
     }
 }
 

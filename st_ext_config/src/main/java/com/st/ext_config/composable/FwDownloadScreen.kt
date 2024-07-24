@@ -24,9 +24,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterAltOff
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -139,7 +139,7 @@ fun FwDownloadScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(state = rememberScrollState()),
+            .verticalScroll(state = rememberScrollState())
     ) {
         CurrentBank(
             modifier = Modifier.fillMaxWidth(),
@@ -184,7 +184,7 @@ fun FwDownloadScreen(
             )
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
-            Divider()
+            HorizontalDivider()
 
             LaunchedEffect(key1 = state.updateFwDetail) {
                 selectedFw = compatibleList.indexOfFirst {
@@ -198,7 +198,7 @@ fun FwDownloadScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Text(
@@ -275,7 +275,7 @@ fun FwDownloadScreen(
                     ),
                     onClick = {
                         onInstallClick(
-                            compatibleList[selectedFw].fota.fwUrl,
+                            compatibleList[selectedFw].fota.fwUrl
                         )
                     }
                 )

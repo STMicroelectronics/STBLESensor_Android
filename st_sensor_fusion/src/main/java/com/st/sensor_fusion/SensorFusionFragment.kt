@@ -26,7 +26,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.st.blue_sdk.features.proximity.Proximity
 import com.st.blue_sdk.features.proximity.ProximityInfo
 import com.st.blue_sdk.features.sensor_fusion.Quaternion
 import com.st.core.ARG_NODE_ID
@@ -34,6 +33,7 @@ import com.st.sensor_fusion.databinding.SensorFusionFragmentBinding
 import com.st.sensor_fusion.utility.GLCubeRender
 import com.st.sensor_fusion.utility.HidableTextView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.min
@@ -160,7 +160,7 @@ class SensorFusionFragment : Fragment() {
         if (mProximityButton.isChecked) {
             viewModel.enableProximityNotification(nodeId)
         } else {
-            viewModel.disableProximityNotitification(nodeId)
+            viewModel.disableProximityNotification(nodeId)
         }
     }
 

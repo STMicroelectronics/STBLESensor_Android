@@ -10,10 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -51,7 +52,7 @@ fun FlowDemoAddOutputDialog(
 
     val context = LocalContext.current
 
-    AlertDialog(
+    BasicAlertDialog(
         //properties = DialogProperties(usePlatformDefaultWidth = false),
         //onDismiss we don't change the flow
         onDismissRequest = onDismissRequest
@@ -75,7 +76,7 @@ fun FlowDemoAddOutputDialog(
                     val filteredOutput = availableOutputs.toMutableList()
                     for (i in filteredOutput.indices.reversed()) {
                         val output = filteredOutput[i]
-                        if(!outputIds.contains(output.id))
+                        if (!outputIds.contains(output.id))
                             filteredOutput.remove(output)
                     }
 
@@ -83,11 +84,11 @@ fun FlowDemoAddOutputDialog(
 
                     //Remove Bluetooth output if any sensor have a ODR > BleMaxOdr
                     availableOutputs.forEach { output ->
-                        if(output.id=="O3") {
+                        if (output.id == "O3") {
                             sensorList.forEach { sensor ->
                                 sensor.configuration?.let {
-                                    if ((sensor.configuration!!.odr != null) && (sensor.bleMaxOdr!=null)) {
-                                        if(sensor.configuration!!.odr!! > sensor.bleMaxOdr!!) {
+                                    if ((sensor.configuration!!.odr != null) && (sensor.bleMaxOdr != null)) {
+                                        if (sensor.configuration!!.odr!! > sensor.bleMaxOdr!!) {
                                             filteredOutput.remove(output)
                                         }
                                     }
@@ -129,10 +130,10 @@ fun FlowDemoAddOutputDialog(
                                     booleanData = value
                                     val tmpList = flowOnCreation.outputs.toMutableList()
                                     if (booleanData) {
-                                        if(it.id=="O5") {
+                                        if (it.id == "O5") {
                                             //If we are saving one output like Exp... we set the condition
                                             //for switching on LED when condition true
-                                            if(it.properties!=null) {
+                                            if (it.properties != null) {
                                                 it.properties!![0].value = true
                                             }
                                         }
@@ -142,7 +143,7 @@ fun FlowDemoAddOutputDialog(
                                     }
                                     flowOnCreation.outputs = tmpList.toList()
 
-                                    errorText = hasOutputAmbiguousInputs(tmpList,context)
+                                    errorText = hasOutputAmbiguousInputs(tmpList, context)
                                 })
                         }
 

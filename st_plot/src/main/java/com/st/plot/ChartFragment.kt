@@ -47,6 +47,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -171,12 +172,12 @@ class ChartFragment : Fragment() {
         chart.axisRight.isEnabled = false
         val leftAxis = chart.axisLeft
         leftAxis.setDrawGridLines(true)
-        leftAxis.textColor = resources.getColor(com.st.ui.R.color.labelPlotContrast)
+        leftAxis.textColor = ContextCompat.getColor(requireContext(), com.st.ui.R.color.labelPlotContrast)
 
         chart.setNoDataText(resources.getString(R.string.plotFeature_noData))
-        chart.setNoDataTextColor(resources.getColor(com.st.ui.R.color.colorAccent))
+        chart.setNoDataTextColor(ContextCompat.getColor(requireContext(), com.st.ui.R.color.colorAccent))
         chart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        chart.legend.textColor = resources.getColor(com.st.ui.R.color.labelPlotContrast)
+        chart.legend.textColor =  ContextCompat.getColor(requireContext(), com.st.ui.R.color.labelPlotContrast)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

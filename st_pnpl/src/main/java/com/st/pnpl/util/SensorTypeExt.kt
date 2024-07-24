@@ -20,8 +20,8 @@ val SensorType.imageResource: Int
         SensorType.Pressure -> R.drawable.sensor_type_pressure
         SensorType.Microphone -> R.drawable.sensor_type_microphone
         SensorType.MLC -> R.drawable.sensor_type_mlc
-        SensorType.CLASS -> R.drawable.sensor_type_class
-        SensorType.STREDL -> R.drawable.sensor_type_class
+        SensorType.CLASS -> R.drawable.sensor_type_algorithm
+        SensorType.STREDL -> R.drawable.sensor_type_algorithm
         SensorType.Unknown -> R.drawable.sensor_type_unknown
     }
 

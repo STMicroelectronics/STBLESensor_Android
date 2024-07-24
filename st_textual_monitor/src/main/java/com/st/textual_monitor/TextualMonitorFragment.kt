@@ -11,7 +11,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ScrollView
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -21,11 +26,12 @@ import com.google.android.material.button.MaterialButton
 import com.st.blue_sdk.board_catalog.models.BleCharacteristic
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.blue_sdk.features.Feature
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
 import com.st.core.ARG_NODE_ID
-import dagger.hilt.android.AndroidEntryPoint
 import com.st.textual_monitor.databinding.TextualMonitorFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class TextualMonitorFragment : Fragment() {
@@ -48,6 +54,8 @@ class TextualMonitorFragment : Fragment() {
     private lateinit var buttonViewSerialConsole: Button
 
     private var serialConsoleIsRunning = false
+
+    private var dataValues: MutableList<String> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,16 +102,17 @@ class TextualMonitorFragment : Fragment() {
         featureSelected?.let {
             if (viewModel.feature != null) {
                 //the feature is already notifying
-                if(featureSelected.name!= RawPnPLControlled.NAME) {
+                if(featureSelected.name!= RawControlled.NAME) {
                     viewModel.stopDemo(nodeId)
                 } else {
                     viewModel.stopRawPnPLDemo(nodeId)
                 }
                 startStopButton.setIconResource(R.drawable.ic_play_arrow)
             } else {
-                if(featureSelected.name!= RawPnPLControlled.NAME) {
+                if(featureSelected.name!= RawControlled.NAME) {
                     val initString = "${it.description}:\n\n"
                     featureData.text = initString
+                    dataValues.clear()
 
                     //set the current feature
                     viewModel.setSelectedFeature(it.feature, it.bleCharDesc)
@@ -162,7 +171,9 @@ class TextualMonitorFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dataFeature.collect {
-                    featureData.append(it)
+                    dataValues.add(it)
+                    dataValues = dataValues.takeLast(32).toMutableList()
+                    featureData.text = dataValues.joinToString("\n")
                     scrollView.post { scrollView.fullScroll(View.FOCUS_DOWN) }
                 }
             }

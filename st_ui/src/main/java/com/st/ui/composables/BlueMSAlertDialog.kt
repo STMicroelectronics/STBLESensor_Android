@@ -30,7 +30,7 @@ fun BlueMSAlertDialog(
                     text = stringResource(id = android.R.string.ok),
                     onClick = onConfirmation
                 )
-            } else null
+            }
         },
         dismissButton = {
             if (onShowCancelButton) {
@@ -38,7 +38,7 @@ fun BlueMSAlertDialog(
                     text = stringResource(id = android.R.string.cancel),
                     onClick = onDismiss
                 )
-            }else null
+            }
         }
     )
 }

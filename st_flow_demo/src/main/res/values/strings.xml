@@ -49,9 +49,6 @@
     <string name="error_select_outputs_to_save" translatable="false">You cannot simultaneously select a physical output (usb, sd, bt) and logical output (as input, exp)</string>
     <string name="error_cannot_set_two_logical_output" translatable="false">You cannot simultaneously select two logical output (as input, exp)</string>
 
-    <string name="ucf_file_steval_mksbox1v1_unsupported" translatable="false">The selected ucf file is not compatible with the LSM6DSOX device</string>
-    <string name="ucf_file_steval_mkboxpro_unsupported" translatable="false">The selected ucf file is not compatible with the LSM6DSV16X device</string>
-
     <string name="ucf_file_mlc_disabled" translatable="false">The selected ucf file does not enable the Machine Learning Core</string>
     <string name="ucf_file_fsm_disabled" translatable="false">The selected ucf file does not enable the Finite State Machine</string>
 

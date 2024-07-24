@@ -14,6 +14,8 @@ import com.st.blue_sdk.features.event_counter.EventCounter
 import com.st.blue_sdk.features.event_counter.EventCounterInfo
 import com.st.blue_sdk.features.extended.euler_angle.EulerAngle
 import com.st.blue_sdk.features.extended.euler_angle.EulerAngleInfo
+import com.st.blue_sdk.features.extended.neai_extrapolation.NeaiExtrapolation
+import com.st.blue_sdk.features.extended.neai_extrapolation.NeaiExtrapolationInfo
 import com.st.blue_sdk.features.extended.qvar.QVAR
 import com.st.blue_sdk.features.extended.qvar.QVARInfo
 import com.st.blue_sdk.features.extended.tof_multi_object.ToFMultiObject
@@ -66,7 +68,8 @@ val PLOTTABLE_FEATURE = listOf(
     MemsNorm.NAME,
     QVAR.NAME,
     ToFMultiObject.NAME,
-    EventCounter.NAME
+    EventCounter.NAME,
+    NeaiExtrapolation.NAME
 )
 
 internal fun Feature<*>.fieldsDesc(): Map<String, String> =
@@ -104,6 +107,7 @@ internal fun Feature<*>.fieldsDesc(): Map<String, String> =
         )
 
         is EventCounter -> mapOf("Event" to "#Event")
+        is NeaiExtrapolation -> mapOf("target" to "target")
         else -> mapOf("Events" to "")
     }
 
@@ -253,7 +257,7 @@ internal fun FeatureUpdate<*>.toPlotEntry(feature: Feature<*>, xOffset: Long): P
             if (feature !is QVAR) null
             else {
                 val yData = mutableListOf<Float>()
-                yData.add((data.qvar.value ?: 0).toFloat())
+                yData.add((data.qvar.value).toFloat())
                 yData.add((data.dqvar.value ?: 0).toFloat())
 
                 PlotEntry(
@@ -287,6 +291,18 @@ internal fun FeatureUpdate<*>.toPlotEntry(feature: Feature<*>, xOffset: Long): P
                     listOf(data.count.value.toFloat()).toFloatArray()
                 )
 
+        is NeaiExtrapolationInfo ->
+            if (feature !is NeaiExtrapolation) null
+            else {
+                if (data.extrapolation != null) {
+                    if (data.extrapolation!!.target != null) {
+                        PlotEntry(
+                            notificationTime.time - xOffset,
+                            listOf(data.extrapolation!!.target!!).toFloatArray()
+                        )
+                    } else null
+                } else null
+            }
         else -> null
     }
 
@@ -384,7 +400,7 @@ internal fun FeatureUpdate<*>.toPlotDesc(feature: Feature<*>): String? =
             else {
                 val out = StringBuilder()
                 out.append("TS:$timeStamp")
-                data.qvar.value?.let { out.append(" QVAR:${it.toFloat()}") }
+                data.qvar.value.let { out.append(" QVAR:${it.toFloat()}") }
                 data.dqvar.value?.let { out.append(" DQVAR:${it.toFloat()}") }
                 out.toString()
             }
@@ -406,5 +422,17 @@ internal fun FeatureUpdate<*>.toPlotDesc(feature: Feature<*>): String? =
             else
                 "TS: $timeStamp #:${data.count.value}"
 
+        is NeaiExtrapolationInfo ->
+            if(feature !is NeaiExtrapolation) null
+            else {
+                    if (data.extrapolation != null) {
+                        if (data.extrapolation!!.target != null) {
+                            val out = StringBuilder()
+                            out.append("TS:$timeStamp")
+                            out.append(" Target:${data.extrapolation!!.target!!}")
+                            out.toString()
+                        } else null
+                    } else null
+                }
         else -> null
     }

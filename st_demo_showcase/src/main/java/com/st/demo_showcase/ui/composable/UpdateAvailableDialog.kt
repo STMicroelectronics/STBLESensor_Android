@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +38,7 @@ import com.st.ui.theme.Grey6
 
 @Composable
 fun UpdateAvailableDialog(
+    mandatory: Boolean = false,
     show: Boolean,
     currentFw: String,
     updateFw: String,
@@ -83,7 +84,7 @@ fun UpdateAvailableDialog(
                         .padding(all = LocalDimensions.current.paddingNormal),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Divider()
+                    HorizontalDivider()
 
                     Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
 
@@ -120,19 +121,21 @@ fun UpdateAvailableDialog(
                         )
                     )
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Grey6,
-                            text = stringResource(id = R.string.st_demoShowcase_fwUpdate_doNotAskAgain)
-                        )
-                        Checkbox(
-                            checked = checked,
-                            onCheckedChange = {
-                                checked = it
-                            }
-                        )
+                    if (!mandatory) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Grey6,
+                                text = stringResource(id = R.string.st_demoShowcase_fwUpdate_doNotAskAgain)
+                            )
+                            Checkbox(
+                                checked = checked,
+                                onCheckedChange = {
+                                    checked = it
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -147,6 +150,20 @@ fun UpdateAvailableDialog(
 private fun AvailableDialogUpdatePreview() {
     PreviewBlueMSTheme {
         UpdateAvailableDialog(
+            show = true,
+            currentFw = "current",
+            updateFw = "update",
+            changeLog = "changelog"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AvailableDialogUpdateMandatoryPreview() {
+    PreviewBlueMSTheme {
+        UpdateAvailableDialog(
+            mandatory = true,
             show = true,
             currentFw = "current",
             updateFw = "update",

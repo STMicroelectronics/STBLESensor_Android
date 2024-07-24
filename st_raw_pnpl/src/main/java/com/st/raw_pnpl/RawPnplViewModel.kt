@@ -21,13 +21,13 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled.Companion.PROPERTY_NAME_ST_BLE_STREAM
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlled.Companion.STREAM_ID_NOT_FOUND
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.RawPnPLControlledInfo
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.decodeRawPnPLData
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.model.RawPnPLStreamIdEntry
-import com.st.blue_sdk.features.extended.raw_pnpl_controlled.readRawPnPLFormat
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled.Companion.PROPERTY_NAME_ST_BLE_STREAM
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled.Companion.STREAM_ID_NOT_FOUND
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlledInfo
+import com.st.blue_sdk.features.extended.raw_controlled.decodeRawData
+import com.st.blue_sdk.features.extended.raw_controlled.model.RawStreamIdEntry
+import com.st.blue_sdk.features.extended.raw_controlled.readRawPnPLFormat
 import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
 import kotlinx.coroutines.Job
@@ -79,7 +79,7 @@ class RawPnplViewModel
     val dataFeature: Flow<String>
         get() = _dataFeature
 
-    private val rawPnPLFormat: MutableList<RawPnPLStreamIdEntry> = mutableListOf()
+    private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
 
     private fun sendGetComponentStatus(nodeId: String, compName: String) {
 
@@ -182,7 +182,7 @@ class RawPnplViewModel
         observeFeaturePnPLJob?.cancel()
 
         blueManager.nodeFeatures(nodeId)
-            .filter { it.name == PnPL.NAME || it.name == RawPnPLControlled.NAME }.let { feature ->
+            .filter { it.name == PnPL.NAME || it.name == RawControlled.NAME }.let { feature ->
 
                 observeFeaturePnPLJob = blueManager.getFeatureUpdates(
                     nodeId = nodeId,
@@ -201,6 +201,16 @@ class RawPnplViewModel
 
                             val featurePnPL =
                                 blueManager.nodeFeatures(nodeId).find { it.name == PnPL.NAME }
+
+                            val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
+                            var maxWriteLength =
+                                node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
+                            maxWriteLength?.let {
+                                if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                    maxWriteLength = (node.maxPayloadSize)
+                                }
+                                (featurePnPL as PnPL).setMaxPayLoadSize(maxWriteLength!!)
+                            }
 
                             if (featurePnPL is PnPL) {
                                 blueManager.writeFeatureCommand(
@@ -231,7 +241,7 @@ class RawPnplViewModel
                                 modelUpdates = _modelUpdates.value
                             )
                         }
-                    } else if (data is RawPnPLControlledInfo) {
+                    } else if (data is RawControlledInfo) {
 
                         val string = StringBuilder()
                         //string.append("\nTS =${featureUpdate.timeStamp}:\n")
@@ -239,7 +249,7 @@ class RawPnplViewModel
 
                         //Search the StreamID and decode the data
                         val streamId =
-                            decodeRawPnPLData(data = data.data, rawPnPLFormat = rawPnPLFormat)
+                            decodeRawData(data = data.data, rawFormat = rawPnPLFormat)
 
                         //Print out the data decoded
                         if (streamId != STREAM_ID_NOT_FOUND) {
@@ -258,15 +268,54 @@ class RawPnplViewModel
                                         }
                                         count++
 
-                                        string.append("[ ")
+                                        if(formatRawPnpLEntry.format.channels!= 1) {
+                                            //The channels are interleaved
+                                            string.append("[ ")
+                                            if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                                val values =
+                                                    formatRawPnpLEntry.format.valuesFloat.chunked(
+                                                        formatRawPnpLEntry.format.channels
+                                                    )
+                                                values.forEach { channel ->
+                                                    string.append("[ ")
+                                                    channel.forEach { value ->
+                                                        string.append("$value ")
+                                                    }
+                                                    string.append("] ")
+                                                }
+                                            } else {
+                                                val values =
+                                                    formatRawPnpLEntry.format.values.chunked(
+                                                        formatRawPnpLEntry.format.channels
+                                                    )
+                                                values.forEach { channel ->
+                                                    string.append("[ ")
+                                                    channel.forEach { value ->
+                                                        string.append("$value ")
+                                                    }
+                                                    string.append("] ")
+                                                }
+                                            }
+                                            string.append("] ")
+                                        } else {
+                                            string.append("[ ")
 
-                                        formatRawPnpLEntry.format.values.forEach { value ->
-                                            string.append("$value ")
+                                            if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                                formatRawPnpLEntry.format.valuesFloat.forEach { value ->
+                                                    string.append("$value ")
+                                                }
+                                            } else {
+                                                formatRawPnpLEntry.format.values.forEach { value ->
+                                                    string.append("$value ")
+                                                }
+                                            }
+
+                                            string.append("] ")
                                         }
 
-                                        string.append("] ")
-
-                                        string.append(formatRawPnpLEntry.format.unit)
+                                        formatRawPnpLEntry.format.unit?.let { unit ->
+                                            string.append(unit)
+                                        }
 
                                         if ((formatRawPnpLEntry.format.min != null) || (formatRawPnpLEntry.format.max != null))
                                             string.append(" {")
@@ -323,7 +372,7 @@ class RawPnplViewModel
         //Not optimal... but in this way... I am able to see the get status if demo is customized
         runBlocking {
             val features = blueManager.nodeFeatures(nodeId)
-                .filter { it.name == RawPnPLControlled.NAME || it.name == PnPL.NAME }
+                .filter { it.name == RawControlled.NAME || it.name == PnPL.NAME }
             blueManager.disableFeatures(
                 nodeId = nodeId, features = features
             )

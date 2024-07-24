@@ -1,6 +1,7 @@
 package com.st.cloud_azure_iot_central.model
 
 import com.st.cloud_azure_iot_central.model.serializer.CloudContentSchemaModelSerializer
+import com.st.cloud_azure_iot_central.model.serializer.FieldModelSerializer
 import com.st.cloud_azure_iot_central.model.serializer.StringToArrayTypeSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -69,13 +70,27 @@ data class SchemaModel(
     val fields: List<FieldModel?>?=null
 )
 
-@Serializable
-data class FieldModel(
-    @SerialName("displayName")
-    val displayName: String?=null,
-    @SerialName("name")
-    val name: String?=null,
-    @SerialName("schema")
-    //val schema: SchemaModel?
-    val schema: String?
-)
+@Serializable(with = FieldModelSerializer::class)
+sealed class FieldModel {
+    @Serializable
+    @SerialName("field_model_obj")
+    data class FieldModelObj (
+        @SerialName("displayName")
+        val displayName: String?=null,
+        @SerialName("name")
+        val name: String?=null,
+        @SerialName("schema")
+        val schema: SchemaModel?
+    ): FieldModel()
+
+    @Serializable
+    @SerialName("field_model_string")
+    data class FieldModelString (
+        @SerialName("displayName")
+        val displayName: String?=null,
+        @SerialName("name")
+        val name: String?=null,
+        @SerialName("schema")
+        val schema: String?
+    ): FieldModel()
+}

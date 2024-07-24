@@ -8,10 +8,10 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
 object CloudContentSchemaModelSerializer : JsonContentPolymorphicSerializer<CloudContentSchemaModel>(
-    CloudContentSchemaModel::class,
+    CloudContentSchemaModel::class
 ) {
     override fun selectDeserializer(
-        element: JsonElement,
+        element: JsonElement
     ): DeserializationStrategy<CloudContentSchemaModel> {
 
         val jsonObject = element.jsonObject

@@ -244,7 +244,7 @@ class ElectricChargeVariationFragment : Fragment() {
         val actualTimeStamp = System.currentTimeMillis()
 
         mQVARCard.visibility = View.VISIBLE
-        val yData = mQVAR.toFloat()
+        var yData = mQVAR.toFloat()
         mQVARData.addEntry(
             Entry(
                 (actualTimeStamp - mFirstNotificationTimeStamp).toFloat(),
@@ -253,8 +253,8 @@ class ElectricChargeVariationFragment : Fragment() {
         )
         mQVARData.removeEntryOlderThan(SECONDS_TO_PLOT_DEFAULT)
 
-        val yMax = mQVARDataSet.yMax
-        val yMin = mQVARDataSet.yMin
+        var yMax = mQVARDataSet.yMax
+        var yMin = mQVARDataSet.yMin
 
         //Update the LimitLine for MaxY value
         if (yMax != mQVARYMax) {
@@ -293,7 +293,7 @@ class ElectricChargeVariationFragment : Fragment() {
 
         if (mDQVAR != null) {
             mDQVARCard.visibility = View.VISIBLE
-            val yData = mDQVAR.toFloat()
+            yData = mDQVAR.toFloat()
             mDQVARData.addEntry(
                 Entry(
                     (actualTimeStamp - mFirstNotificationTimeStamp).toFloat(),
@@ -302,8 +302,8 @@ class ElectricChargeVariationFragment : Fragment() {
             )
             mDQVARData.removeEntryOlderThan(SECONDS_TO_PLOT_DEFAULT)
 
-            val yMax = mDQVARDataSet.yMax
-            val yMin = mDQVARDataSet.yMin
+            yMax = mDQVARDataSet.yMax
+            yMin = mDQVARDataSet.yMin
 
             //Update the LimitLine for MaxY value
             if (yMax != mDQVARYMax) {

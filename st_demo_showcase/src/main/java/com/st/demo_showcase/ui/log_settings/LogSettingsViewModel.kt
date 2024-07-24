@@ -34,7 +34,7 @@ import javax.inject.Inject
 class LogSettingsViewModel @Inject constructor(
     private val blueManager: BlueManager,
     @ApplicationContext context: Context,
-    @LogDirectoryPath val logDirectory: String,
+    @LogDirectoryPath val logDirectory: String
 ) : ViewModel() {
     private val packageName = context.packageName
     private val packageManager = context.packageManager

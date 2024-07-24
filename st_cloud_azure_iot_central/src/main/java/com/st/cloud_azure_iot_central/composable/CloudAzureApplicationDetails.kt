@@ -13,15 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Token
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -63,11 +61,11 @@ fun CloudAzureApplicationDetails(
     modifier: Modifier = Modifier,
     viewModel: CloudAzureIotCentralViewModel,
     appId: Int,
-    navController: NavHostController,
+    navController: NavHostController
 ) {
     val selectedApp = viewModel.listCloudApps.collectAsState().value[appId]
 
-    var openHelpDialog by remember { mutableStateOf(value = false) }
+    var openInfoDialog by remember { mutableStateOf(value = false) }
 
     var isValidToken by remember { mutableStateOf(selectedApp.apiToken != null) }
 
@@ -88,39 +86,15 @@ fun CloudAzureApplicationDetails(
             .padding(LocalDimensions.current.paddingNormal)
             .fillMaxSize()
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                text = selectedApp.cloudApp.name ?: "Configure Cloud Application"
-            )
 
-            Spacer(modifier = Modifier.weight(1f))
+        Text(
+            style = MaterialTheme.typography.bodyMedium,
+            color = Grey6,
+            text = "Here you can configure your Azure Iot Central application."
+        )
 
-            Icon(
-                modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
-                tint = if (selectedApp.authorizationKey != null)
-                    Grey6
-                else
-                    MaterialTheme.colorScheme.surface,
-                imageVector = Icons.Default.Key,
-                contentDescription = null
-            )
 
-            Icon(
-                tint = if (isValidToken) {
-                    if (isTokenExpired) ErrorText else Grey6
-                } else
-                    MaterialTheme.colorScheme.surface,
-                imageVector = Icons.Default.Token,
-                contentDescription = null
-            )
-        }
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
         Row(
             modifier = Modifier
@@ -131,16 +105,16 @@ fun CloudAzureApplicationDetails(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(0.9f),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Grey6,
                 text = buildAnnotatedString {
-                    append("Here you can configure your Azure Iot Central application. For more information click the '")
+                    append("For more information click the '")
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Bold
                         )
                     ) {
-                        append("Help")
+                        append("Info")
                     }
                     append("' button")
                 })
@@ -148,9 +122,9 @@ fun CloudAzureApplicationDetails(
             Icon(
                 modifier = Modifier
                     .size(size = LocalDimensions.current.iconSmall)
-                    .clickable { openHelpDialog = true },
+                    .clickable { openInfoDialog = true },
                 tint = MaterialTheme.colorScheme.primary,
-                imageVector = Icons.Default.Help,
+                imageVector = Icons.Default.Info,
                 contentDescription = null
             )
         }
@@ -230,6 +204,7 @@ fun CloudAzureApplicationDetails(
             OutlinedTextField(
                 modifier = Modifier.weight(3f),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                textStyle =MaterialTheme.typography.bodySmall,
                 value = urlAppName,
                 onValueChange = {
                     urlAppName = it
@@ -261,19 +236,14 @@ fun CloudAzureApplicationDetails(
                 text = "API Token"
             )
 
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
 
-            BlueMsButton(
-                text = "Configure with QR Code",
-                iconPainter = painterResource(id = R.drawable.qr_code_scanner),
-                onClick = { openCamera = true }
-            )
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                textStyle =MaterialTheme.typography.bodySmall,
                 singleLine = true,
                 value = authorizationKey,
                 onValueChange = {
@@ -315,20 +285,23 @@ fun CloudAzureApplicationDetails(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingMedium),
                     style = MaterialTheme.typography.bodySmall,
                     color = ErrorText,
-                    text = "Token Expired $tokenExpire!!"
+                    text = "Expired $tokenExpire!!"
                 )
             } else {
                 Text(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingMedium),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Grey6,
-                    text = "Token Expiry $tokenExpire"
+                    color = SuccessText,
+                    text = "Valid until $tokenExpire"
                 )
             }
 
             if (isTokenExpired) {
                 BlueMsButton(
-                    modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall, start = LocalDimensions.current.paddingMedium),
+                    modifier = Modifier.padding(
+                        top = LocalDimensions.current.paddingSmall,
+                        start = LocalDimensions.current.paddingMedium
+                    ),
                     text = "Token Update",
                     iconPainter = painterResource(id = R.drawable.cloud_token),
                     color = SuccessText,
@@ -350,9 +323,17 @@ fun CloudAzureApplicationDetails(
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
         }
 
+        BlueMsButton(
+            text = "Configure with QR Code",
+            //iconPainter = painterResource(id = R.drawable.qr_code_scanner),
+            onClick = { openCamera = true }
+        )
+
+        Spacer(modifier = Modifier.weight(2f))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
             BlueMsButton(
                 text = stringResource(id = android.R.string.cancel),
@@ -361,31 +342,33 @@ fun CloudAzureApplicationDetails(
                 }
             )
 
+            if (isValidToken) {
+                BlueMsButton(
+                    color = ErrorText,
+                    text = "Reset",
+                    onClick = {
+                        selectedApp.apiTokenExpired = false
+                        isValidToken = false
+                        selectedApp.apiToken = null
+                        selectedApp.authorizationKey = null
+                        authorizationKey = ""
+
+                        // Reset the current Saved Cloud App
+                        viewModel.resetSavedCurrentCloudApp(selectedApp)
+
+                        //Check if we had one application configured for the running fw
+                        viewModel.checkIfOneCloudAppIsConfigured()
+                    }
+                )
+            }
+
             BlueMsButton(
+                color = if (isTokenExpired) WarningText else null,
                 enabled = isValidToken,
-                color = ErrorText ,
-                text = "Reset",
-                onClick = {
-                    selectedApp.apiTokenExpired = false
-                    isValidToken = false
-                    selectedApp.apiToken=null
-                    selectedApp.authorizationKey =null
-                    authorizationKey = ""
-
-                    // Reset the current Saved Cloud App
-                    viewModel.resetSavedCurrentCloudApp(selectedApp)
-
-                    //Check if we had one application configured for the running fw
-                    viewModel.checkIfOneCloudAppIsConfigured()
-                }
-            )
-
-            BlueMsButton(
-                color = if(isTokenExpired) WarningText else null,
                 text = stringResource(id = android.R.string.ok),
                 onClick = {
                     //Set CloudApp Configuration Done
-                    if(isValidToken) {
+                    if (isValidToken) {
                         //Save the configured Cloud App
                         viewModel.saveCurrentCloudApp(selectedApp)
                         viewModel.cloudAppConfigurationDone()
@@ -396,9 +379,9 @@ fun CloudAzureApplicationDetails(
             )
         }
 
-        if (openHelpDialog) {
-            Dialog(onDismissRequest = { openHelpDialog = false }) {
-                CloudAzureHelpAppConfiguration(onDismissRequest = { openHelpDialog = false })
+        if (openInfoDialog) {
+            Dialog(onDismissRequest = { openInfoDialog = false }) {
+                CloudAzureInfoAppConfiguration(onDismissRequest = { openInfoDialog = false })
             }
         }
 

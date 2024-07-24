@@ -28,6 +28,7 @@ val regularDimension = AppDimension(
     imageNormal = 60.dp,
     imageMedium = 120.dp,
     imageLarge = 240.dp,
+    imageExtraLarge = 300.dp,
 
     iconSmall = 24.dp,
     iconNormal = 48.dp,
@@ -69,6 +70,7 @@ data class AppDimension(
     val imageNormal: Dp,
     val imageMedium: Dp,
     val imageLarge: Dp,
+    val imageExtraLarge: Dp,
 
     val iconSmall: Dp,
     val iconNormal: Dp,

@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -123,7 +123,7 @@ fun FlowDemoFlowExpertEditingScreen(
                     end = LocalDimensions.current.paddingNormal
                 ),
                 fontSize = 20.sp,
-                text = stringResource(id = R.string.app_input),
+                text = stringResource(id = R.string.app_input)
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -184,7 +184,7 @@ fun FlowDemoFlowExpertEditingScreen(
                     end = LocalDimensions.current.paddingNormal
                 ),
                 fontSize = 20.sp,
-                text = stringResource(id = R.string.app_function),
+                text = stringResource(id = R.string.app_function)
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -246,7 +246,7 @@ fun FlowDemoFlowExpertEditingScreen(
                     end = LocalDimensions.current.paddingNormal
                 ),
                 fontSize = 20.sp,
-                text = stringResource(id = R.string.app_output),
+                text = stringResource(id = R.string.app_output)
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -287,7 +287,7 @@ fun FlowDemoFlowExpertEditingScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = LocalDimensions.current.paddingNormal),
+                .padding(end = LocalDimensions.current.paddingNormal)
         ) {
             BlueMsButton(
                 text = stringResource(id = R.string.terminate_new_app),
@@ -402,14 +402,14 @@ fun FlowDemoInputsConfigurationList(
             iconId = getSensorIconResourceByName(sensor.icon),
             label = sensor.description,
             hasSettings = sensor.hasSettings(),
-            onConfig = { onConfig(sensor) },
+            onConfig = { onConfig(sensor) }
         )
     }
 }
 
 @Composable
 fun FlowDemoInputsFlowConfigurationList(
-    flows: List<Flow>,
+    flows: List<Flow>
 ) {
     flows.forEach { flow ->
         FlowDemoInputFunctionOutputConfigurationListItem(
@@ -424,7 +424,7 @@ fun FlowDemoInputsFlowConfigurationList(
                 }
             },
             label = flow.description,
-            hasSettings = false,
+            hasSettings = false
         )
     }
 }

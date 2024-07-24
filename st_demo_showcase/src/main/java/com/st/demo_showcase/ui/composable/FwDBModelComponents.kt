@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,9 +28,7 @@ fun ShowFwDBModel(
     catalogInfo: BoardFirmware,
     onDismissRequest: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-    ) {
+    BasicAlertDialog(onDismissRequest = onDismissRequest) {
         val format = Json { prettyPrint = true }
         Surface(
             modifier = Modifier
@@ -55,8 +53,8 @@ fun ShowFwDBModel(
                     fontSize = 14.sp,
                     lineHeight = 20.sp,
                     letterSpacing = 0.25.sp,
-                    color = Grey6,
-                )
+                    color = Grey6
+                    )
             }
 
         }

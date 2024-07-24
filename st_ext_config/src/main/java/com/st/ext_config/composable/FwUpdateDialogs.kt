@@ -44,12 +44,14 @@ fun FwUpdateProgressDialog(
         },
         text = {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = (progress ?: 0f) / FULL_PERCENT
-                )
+                    progress = {
+                        (progress ?: 0f) / FULL_PERCENT
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                    )
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),

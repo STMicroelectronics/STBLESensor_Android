@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,7 +41,7 @@ fun FirmwareListItem(
     listOfDemos: String,
     description: String,
     version: String,
-    fwMaturity: FirmwareMaturity = FirmwareMaturity.RELEASE,
+    fwMaturity: FirmwareMaturity = FirmwareMaturity.RELEASE
 ) {
     Surface(
         modifier = modifier
@@ -96,7 +96,7 @@ fun FirmwareListItem(
             )
 
             if(listOfDemos.isNotBlank()) {
-                Divider(modifier = Modifier.padding(top = LocalDimensions.current.paddingNormal,bottom = LocalDimensions.current.paddingNormal))
+                HorizontalDivider(modifier = Modifier.padding(top = LocalDimensions.current.paddingNormal,bottom = LocalDimensions.current.paddingNormal))
 
                 Text(
                     modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),

@@ -41,7 +41,7 @@ fun DeviceListItem(
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
     onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
     isExpert: Boolean = false,
-    onInfoClick: (Node) -> Unit = { /** NOOP**/ },
+    onInfoClick: (Node) -> Unit = { /** NOOP**/ }
 ) {
     DeviceListItem(
         modifier = modifier,
@@ -60,7 +60,7 @@ fun DeviceListItem(
         hasGeneralPurpose = item.hasGeneralPurpose,
         onNodeSelected = { onNodeSelected(item) },
         isExpert = isExpert,
-        onInfoClick = { onInfoClick(item) },
+        onInfoClick = { onInfoClick(item) }
     )
 }
 
@@ -179,7 +179,7 @@ fun DeviceListItem(
                 }
             }
 
-            Divider()
+            HorizontalDivider()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

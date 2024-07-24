@@ -127,7 +127,7 @@ fun DemoListItem(
 
             if (isLastOne.not()) {
                 Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-                Divider()
+                HorizontalDivider()
             }
         }
 

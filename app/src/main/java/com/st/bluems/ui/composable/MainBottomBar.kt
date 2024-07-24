@@ -8,7 +8,6 @@
 package com.st.bluems.ui.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FilterList
@@ -24,31 +23,37 @@ import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Shapes
-import androidx.compose.material.BottomAppBar as Material2BottomAppBar
+import androidx.compose.material3.BottomAppBar
+import com.st.ui.theme.PrimaryBlue3
 
 @Composable
 fun MainBottomBar(
-    modifier: Modifier = Modifier,
+    floatingActionButton: @Composable () -> Unit = {},
     openFilter: () -> Unit = { /** NOOP **/ },
     openCatalog: () -> Unit = { /** NOOP **/ }
 ) {
-    Material2BottomAppBar(
-        modifier = modifier.fillMaxWidth(),
-        backgroundColor = MaterialTheme.colorScheme.primary,
+    BottomAppBar(
+        modifier = Modifier.fillMaxWidth(),//
+        containerColor = PrimaryBlue3, //MaterialTheme.colorScheme.primary
         contentColor = Grey0,
-        cutoutShape = CircleShape,
         contentPadding =
         PaddingValues(all = LocalDimensions.current.paddingNormal)
     ) {
         BottomAppBarItem(
-            modifier = Modifier.weight(weight = 0.33f),
+            modifier = Modifier.weight(weight = 0.20f),//
             icon = Icons.Default.ContentCopy,
             label = stringResource(id = R.string.st_home_bottomBar_catalog),
             onClick = openCatalog
         )
-        Spacer(modifier = Modifier.weight(weight = 0.33f))
+        //Spacer(modifier = Modifier.size(LocalDimensions.current.paddingNormal))
+        Spacer(modifier = Modifier.weight(weight = 0.20f))
+
+        floatingActionButton()
+
+        Spacer(modifier = Modifier.weight(weight = 0.20f))
+
         BottomAppBarItem(
-            modifier = Modifier.weight(weight = 0.33f),
+            modifier = Modifier.weight(weight = 0.20f),//
             icon = Icons.Default.FilterList,
             label = stringResource(id = R.string.st_home_bottomBar_filter),
             onClick = openFilter
@@ -56,7 +61,6 @@ fun MainBottomBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomAppBarItem(
     modifier: Modifier = Modifier,
@@ -67,7 +71,8 @@ fun BottomAppBarItem(
     Surface(
         modifier = modifier,
         shape = Shapes.small,
-        color = MaterialTheme.colorScheme.primary,
+        //color = MaterialTheme.colorScheme.primary,
+        color = PrimaryBlue3,
         contentColor = Grey0,
         onClick = onClick
     ) {
@@ -83,6 +88,28 @@ fun BottomAppBarItem(
                 text = label
             )
         }
+    }
+}
+
+@Composable
+fun BottomAppBarItemNoText(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = modifier,
+        shape = Shapes.small,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = Grey0,
+        onClick = onClick
+    ) {
+        Icon(
+            modifier = Modifier.size(LocalDimensions.current.iconSmall),
+            imageVector = icon,
+            contentDescription = label
+        )
     }
 }
 

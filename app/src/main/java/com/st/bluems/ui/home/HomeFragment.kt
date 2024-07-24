@@ -107,7 +107,7 @@ class HomeFragment : Fragment() {
     fun onPairingRequest(context: Context?, intent: Intent) {
 
         val pairingPin = nfcViewModel.pairingPin.value
-        val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        @Suppress("DEPRECATION") val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
         } else {
             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)

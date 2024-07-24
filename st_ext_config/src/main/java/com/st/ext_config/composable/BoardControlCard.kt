@@ -42,7 +42,7 @@ fun BoardControlCard(
     showFwDownload: Boolean = true,
     onFwDownload: () -> Unit = { /** NOOP **/ },
     showSwap: Boolean = true,
-    onSwap: () -> Unit = { /** NOOP **/ },
+    onSwap: () -> Unit = { /** NOOP **/ }
 ) {
     var isOpen by rememberSaveable(showDFU, showFwDownload, showSwap, showOff) {
         mutableStateOf(
@@ -62,7 +62,7 @@ fun BoardControlCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = LocalDimensions.current.paddingNormal),
+                .padding(all = LocalDimensions.current.paddingNormal)
         ) {
             Header(
                 isOpen = isOpen,
@@ -100,12 +100,12 @@ fun BoardControlContentCard(
     showFwDownload: Boolean = true,
     onFwDownload: () -> Unit = { /** NOOP **/ },
     showSwap: Boolean = true,
-    onSwap: () -> Unit = { /** NOOP **/ },
+    onSwap: () -> Unit = { /** NOOP **/ }
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(all = LocalDimensions.current.paddingNormal)
     ) {
         val dfuTextColor = if (showDFU) Grey6 else Grey6.copy(alpha = 0.3f)
         Text(

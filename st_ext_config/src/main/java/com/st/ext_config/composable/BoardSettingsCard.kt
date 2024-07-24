@@ -86,7 +86,7 @@ fun BoardSettingsCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = LocalDimensions.current.paddingNormal),
+                .padding(all = LocalDimensions.current.paddingNormal)
         ) {
             Header(
                 isOpen = isOpen,
@@ -139,7 +139,7 @@ fun BoardSettingsCard(
                         Text(
                             text = "${name.length} / ${ExtConfigViewModel.MAX_NAME_LEN}",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End,
+                            textAlign = TextAlign.End
                         )
                     },
                     onValueChange = {
@@ -293,7 +293,7 @@ fun BoardSettingsContentCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(all = LocalDimensions.current.paddingNormal)
     ) {
         val nameTextColor = if (showSetName) Grey6 else Grey6.copy(alpha = 0.3f)
         Text(

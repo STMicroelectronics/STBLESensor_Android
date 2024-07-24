@@ -30,6 +30,7 @@ import com.st.core.GlobalConfig
 import com.st.ext_config.R
 import com.st.ext_config.model.FwUpdateState
 import com.st.ext_config.ui.fw_upgrade.FwUpgradeViewModel
+import com.st.ui.composables.BlueMSDialogCircularProgressIndicator
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.ErrorText
@@ -42,6 +43,7 @@ import com.st.ui.theme.Shapes
 fun FwUpgradeScreen(
     modifier: Modifier,
     viewModel: FwUpgradeViewModel,
+    fwLock: Boolean,
     nodeId: String,
     fwUrl: String
 ) {
@@ -66,6 +68,7 @@ fun FwUpgradeScreen(
     FwUpgradeScreen(
         modifier = modifier,
         state = fwUpdateState,
+        fwLock = fwLock,
         wbOta = viewModel.isWbOta(nodeId = nodeId),
         isRebootedYet = viewModel.isRebootedYet(nodeId = nodeId),
         fileSize = fwUpdateState.fwSize.toLongOrNull(),
@@ -77,6 +80,8 @@ fun FwUpgradeScreen(
         },
         onDismissErrorDialog = {
             viewModel.clearFwUpdateState()
+
+            GlobalConfig.navigateBack?.let { it(nodeId) }
         },
         onChangeFile = {
             //pickFileLauncher.launch(arrayOf("application/octet-stream"))
@@ -102,6 +107,7 @@ fun FwUpgradeScreen(
 fun FwUpgradeScreen(
     modifier: Modifier = Modifier,
     state: FwUpdateState,
+    fwLock: Boolean = false,
     wbOta: Boolean = false,
     isRebootedYet: Boolean = true,
     fileSize: Long? = null,
@@ -128,7 +134,7 @@ fun FwUpgradeScreen(
         Boards.Model.WBA5X_NUCLEO_BOARD,
         Boards.Model.WBA_DISCOVERY_BOARD,
 
-        Boards.Model.NUCLEO_WB09KE)
+        Boards.Model.WB0X_NUCLEO_BOARD)
 
     val supportedBoardModelsWB = listOf(
 
@@ -171,7 +177,7 @@ fun FwUpgradeScreen(
 
             Boards.Model.WBA5X_NUCLEO_BOARD,
             Boards.Model.WBA_DISCOVERY_BOARD,-> if(radioSelection == 0) "0x080000" else "0x0F6000"
-            Boards.Model.NUCLEO_WB09KE -> if(radioSelection == 0) "0x3F800" else "0x07E000"
+            Boards.Model.WB0X_NUCLEO_BOARD -> if(radioSelection == 0) "0x3F800" else "0x07E000"
             else -> "" //shouldn't happen
         }
     }
@@ -212,7 +218,7 @@ fun FwUpgradeScreen(
                 Boards.Model.WBA5X_NUCLEO_BOARD,
                 Boards.Model.WBA_DISCOVERY_BOARD -> WbOTAUtils.WBBoardType.WBA
 
-                Boards.Model.NUCLEO_WB09KE -> WbOTAUtils.WBBoardType.WB09
+                Boards.Model.WB0X_NUCLEO_BOARD -> WbOTAUtils.WBBoardType.WB09
                 else -> WbOTAUtils.WBBoardType.WBA
             }
         }
@@ -227,6 +233,16 @@ fun FwUpgradeScreen(
     }
 
     Column(modifier = modifier.fillMaxWidth()) {
+        if (state.downloadFinished.not()) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        LocalDimensions.current.paddingNormal
+                    )
+            )
+        }
+
         Surface(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -287,8 +303,7 @@ fun FwUpgradeScreen(
                         }
                         val radioOptions = mutableListOf(
                             stringResource(id = R.string.st_extConfig_fwUpgrade_otaOpt1),
-                            //stringResource(id = if(selectedBoardIndex == 2 || boardModel == Boards.Model.WBA_BOARD || boardModel == Boards.Model.NUCLEO_WB09KE) R.string.st_extConfig_fwUpgrade_otaOpt2bis else R.string.st_extConfig_fwUpgrade_otaOpt2)
-                            stringResource(id = if(selectedBoardIndex == 2 || isWBA || boardModel == Boards.Model.NUCLEO_WB09KE) R.string.st_extConfig_fwUpgrade_otaOpt2bis else R.string.st_extConfig_fwUpgrade_otaOpt2)
+                            stringResource(id = if(selectedBoardIndex == 2 || isWBA || boardModel == Boards.Model.WB0X_NUCLEO_BOARD) R.string.st_extConfig_fwUpgrade_otaOpt2bis else R.string.st_extConfig_fwUpgrade_otaOpt2)
                         )
 
                         radioOptions.forEachIndexed { index, text ->
@@ -298,7 +313,11 @@ fun FwUpgradeScreen(
                                     .selectable(selected = (index == radioSelection),
                                         onClick = {
                                             radioSelection = index
-                                            address = getDefaultAddress(boardModel, index, selectedBoardIndex)
+                                            address = getDefaultAddress(
+                                                boardModel,
+                                                index,
+                                                selectedBoardIndex
+                                            )
                                         }
                                     )
                                     .padding(horizontal = LocalDimensions.current.paddingNormal),
@@ -322,7 +341,7 @@ fun FwUpgradeScreen(
                         TextField(
                             value = address,
                             onValueChange = { address = it },
-                            label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_extConfig_fwUpgrade_address)) },
+                            label = { Text(text = stringResource(id = R.string.st_extConfig_fwUpgrade_address)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(height = 60.dp)
@@ -334,7 +353,7 @@ fun FwUpgradeScreen(
                             TextField(
                                 value = nbSectorsToErase,
                                 onValueChange = { nbSectorsToErase = it },
-                                label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_extConfig_fwUpgrade_nbSectors)) },
+                                label = { Text(text = stringResource(id = R.string.st_extConfig_fwUpgrade_nbSectors)) },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(height = 60.dp)
@@ -355,7 +374,7 @@ fun FwUpgradeScreen(
                 .padding(all = LocalDimensions.current.paddingNormal),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal,
-            onClick = onChangeFile
+            onClick = { if (fwLock.not()) onChangeFile() }
         ) {
             Column(modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal)) {
                 Text(
@@ -390,7 +409,7 @@ fun FwUpgradeScreen(
             Spacer(modifier = Modifier.weight(weight = 1f))
 
             BlueMsButton(
-                enabled = state.downloadFinished,
+                enabled = state.downloadFinished && state.error == null,
                 text = stringResource(id = R.string.st_extConfig_fwUpgrade_upgradeBtn),
                 onClick = {
                     isUploadStarted = true
@@ -418,7 +437,8 @@ fun FwUpgradeScreen(
     }
 
     if (state.isInProgress) {
-        FwUpdateProgressDialog(progress = state.progress)
+        //FwUpdateProgressDialog(progress = state.progress)
+        BlueMSDialogCircularProgressIndicator(percentage = state.progress, message = stringResource(id = R.string.st_extConfig_fwUpgrade_title), colorFill = null)
     }
 
     if (state.error != null) {

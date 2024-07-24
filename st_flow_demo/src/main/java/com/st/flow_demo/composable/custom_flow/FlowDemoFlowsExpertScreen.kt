@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -95,7 +95,7 @@ fun FlowDemoFlowsExpertScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = LocalDimensions.current.paddingNormal),
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.End
         ) {
             BlueMsButton(
                 text = stringResource(id = R.string.create_new_app),
@@ -135,7 +135,7 @@ fun FlowDemoFlowsExpertScreen(
                     top = LocalDimensions.current.paddingNormal,
                     bottom = LocalDimensions.current.paddingNormal
                 ),
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.End
         ) {
             BlueMsButton(
                 text = if (flowsCustomList.isEmpty())

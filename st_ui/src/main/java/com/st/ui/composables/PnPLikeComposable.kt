@@ -107,6 +107,7 @@ import com.st.ui.theme.Grey3
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
+import com.st.ui.theme.toInt
 import com.st.ui.theme.toLocalDateTime
 import com.st.ui.theme.toLocalTime
 import java.time.Instant
@@ -116,6 +117,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 val LocalLastStatusUpdatedAt = compositionLocalOf { 0L }
 
@@ -370,7 +372,7 @@ fun DateTimeProperty(
                 dismissButton = {
                     TextButton(
                         modifier = Modifier.wrapContentSize(),
-                        onClick = { showDatePicker = false },
+                        onClick = { showDatePicker = false }
                     ) {
                         Text(text = stringResource(id = android.R.string.cancel))
                     }
@@ -391,15 +393,15 @@ fun DateTimeProperty(
 
                                 onValueChange(internalStateDateTime?.format(formatter) ?: "")
                             }
-                        },
+                        }
                     ) {
                         Text(text = stringResource(id = android.R.string.ok))
                     }
                 }
             ) {
                 DatePicker(
-                    state = datePickerState,
-                )
+                    state = datePickerState
+                    )
             }
         }
 
@@ -415,7 +417,7 @@ fun DateTimeProperty(
                 dismissButton = {
                     TextButton(
                         modifier = Modifier.wrapContentSize(),
-                        onClick = { showTimePicker = false },
+                        onClick = { showTimePicker = false }
                     ) {
                         Text(text = stringResource(id = android.R.string.cancel))
                     }
@@ -432,15 +434,15 @@ fun DateTimeProperty(
                             internalStateDateTime = LocalDateTime.of(date, time)
 
                             onValueChange(internalStateDateTime?.format(formatter) ?: "")
-                        },
+                        }
                     ) {
                         Text(text = stringResource(id = android.R.string.ok))
                     }
                 }
             ) {
                 TimePicker(
-                    state = timePicker,
-                )
+                    state = timePicker
+                    )
             }
         }
     }
@@ -527,7 +529,7 @@ fun TimeProperty(
                 dismissButton = {
                     TextButton(
                         modifier = Modifier.wrapContentSize(),
-                        onClick = { showTimePicker = false },
+                        onClick = { showTimePicker = false }
                     ) {
                         Text(text = stringResource(id = android.R.string.cancel))
                     }
@@ -541,15 +543,15 @@ fun TimeProperty(
                             internalStateDateTime =
                                 LocalTime.of(timePicker.hour, timePicker.minute, 0)
                             onValueChange(internalStateDateTime?.format(formatter) ?: "")
-                        },
+                        }
                     ) {
                         Text(text = stringResource(id = android.R.string.ok))
                     }
                 }
             ) {
                 TimePicker(
-                    state = timePicker,
-                )
+                    state = timePicker
+                    )
             }
         }
     }
@@ -707,14 +709,20 @@ fun UploadFileResultProperty(
     }
 }
 
-private fun isCommentLine(line: String): Boolean {
+private fun isNotCommentLine(line: String): Boolean {
     return !line.startsWith("--")
 }
 
 private fun compressUCFString(ucfContent: String): String {
     val isSpace = "\\s+".toRegex()
-    return ucfContent.lineSequence().filter { isCommentLine(it) }
-        .map { it.replace(isSpace, "").drop(2) }.joinToString("")
+    val outPutString = ucfContent.lineSequence().filter { isNotCommentLine(it) }
+        .map {  if(it.contains("WAIT")) {
+              String.format(locale = Locale.getDefault(),"W%03d", it.substringAfter('T').toInt())
+            } else {
+                it.replace(isSpace, "").drop(2)
+            }
+        }.joinToString("")
+    return outPutString
 }
 
 const val LOAD_FILE_COMMAND_NAME = "load_file"

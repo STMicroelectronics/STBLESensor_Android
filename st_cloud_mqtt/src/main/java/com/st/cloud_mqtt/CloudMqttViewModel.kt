@@ -190,6 +190,16 @@ class CloudMqttViewModel
                     _sendFeatureValue.value = ""
                     _sendTopic.value = ""
                 }
+            } else {
+                coroutineScope.launch {
+                    //Disconnect the Device
+                    val client = CloudMqttV3Connection.provideCloudMqttConnection()
+                    _retValue.value = client.closeDeviceConnection()
+
+                    //Clean the last transmitted value
+                    _sendFeatureValue.value = ""
+                    _sendTopic.value = ""
+                }
             }
         }
     }

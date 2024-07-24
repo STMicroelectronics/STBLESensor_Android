@@ -161,7 +161,7 @@ class FwDownloadViewModel
                             extendedCommand =
                             ExtConfigCommands.buildConfigCommand(command = ExtConfigCommands.BANKS_SWAP),
                             hasResponse = false
-                        ),
+                        )
                     )
                 }
             }

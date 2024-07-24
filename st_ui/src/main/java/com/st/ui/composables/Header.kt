@@ -1,5 +1,6 @@
 package com.st.ui.composables
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +28,7 @@ import com.st.ui.R
 import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.WarningText
 
 @Composable
 fun Header(
@@ -36,6 +38,7 @@ fun Header(
     subtitle: String? = null,
     showArrows: Boolean = true,
     isOpen: Boolean = false,
+    isMounted: Boolean = true,
     content: @Composable () -> Unit = { /** NOOP **/ }
 ) {
     Header(
@@ -45,6 +48,7 @@ fun Header(
         showArrows = showArrows,
         isOpen = isOpen,
         content = content,
+        isMounted = isMounted,
         icon = {
             Icon(
                 modifier = Modifier.size(size = LocalDimensions.current.iconNormal),
@@ -92,6 +96,7 @@ private fun Header(
     subtitle: String?,
     showArrows: Boolean,
     isOpen: Boolean,
+    isMounted: Boolean = true,
     content: @Composable () -> Unit = { /** NOOP **/ }
 ) {
     Column(
@@ -104,10 +109,22 @@ private fun Header(
                 .fillMaxWidth()
                 .padding(bottom = LocalDimensions.current.paddingNormal),
             verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
             icon()
 
-            Spacer(modifier = Modifier.weight(weight = 1f))
+            //Spacer(modifier = Modifier.weight(weight = 1f))
+
+            if (!isMounted) {
+                Text(
+                    modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall),
+                    text = "Not Mounted", color = WarningText, fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    lineHeight = 22.68.sp,
+                    letterSpacing = 0.14.sp
+                    )
+            }
+            //Spacer(modifier = Modifier.weight(weight = 1f))
 
             if (showArrows) {
                 if (isOpen) {
@@ -128,7 +145,7 @@ private fun Header(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = LocalDimensions.current.paddingNormal),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal)) {
                 Text(
@@ -159,7 +176,7 @@ private fun Header(
         }
 
         if (isOpen) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(vertical = LocalDimensions.current.paddingNormal)
             )
         }
@@ -189,6 +206,7 @@ private fun HeaderWithoutSubtitlePreview() {
         Header(
             icon = R.drawable.ic_home,
             title = "title",
+            isMounted = false,
             showArrows = true,
             isOpen = true
         )

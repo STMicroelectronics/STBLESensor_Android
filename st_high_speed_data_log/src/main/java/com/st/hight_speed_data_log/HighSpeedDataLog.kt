@@ -11,27 +11,29 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +48,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -58,17 +62,22 @@ import com.st.hight_speed_data_log.composable.HsdlSensors
 import com.st.hight_speed_data_log.composable.HsdlTags
 import com.st.hight_speed_data_log.composable.StopLoggingDialog
 import com.st.hight_speed_data_log.composable.VespucciHsdlTags
-import com.st.ui.composables.BottomAppBarItem
+import com.st.pnpl.composable.PnPLInfoWarningSpontaneousMessage
+import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
+import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue2
 import com.st.ui.theme.SecondaryBlue
+import com.st.ui.theme.Shapes
 import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HighSpeedDataLog(
     modifier: Modifier,
@@ -90,6 +99,8 @@ fun HighSpeedDataLog(
     val isSDCardInserted by viewModel.isSDCardInserted.collectAsStateWithLifecycle()
     val acquisitionName by viewModel.acquisitionName.collectAsStateWithLifecycle()
     val vespucciTags by viewModel.vespucciTags.collectAsStateWithLifecycle()
+    val statusMessage by viewModel.statusMessage.collectAsStateWithLifecycle()
+    val isConnectionLost by viewModel.isConnectionLost.collectAsStateWithLifecycle()
 
     HighSpeedDataLog(
         modifier = modifier,
@@ -137,6 +148,64 @@ fun HighSpeedDataLog(
             }
         }
     )
+ 
+    statusMessage?.let {
+        PnPLInfoWarningSpontaneousMessage(messageType = statusMessage!!, onDismissRequest = { viewModel.cleanStatusMessage() })
+    }
+
+    if(isConnectionLost) {
+        BasicAlertDialog(onDismissRequest = { viewModel.resetConnectionLost() })
+        {
+            Surface(
+                modifier = Modifier
+                    //.wrapContentWidth()
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                shape = Shapes.medium
+            ) {
+                Column(modifier = Modifier.padding(all = LocalDimensions.current.paddingMedium)) {
+                    Text(
+                        text = "Warning:",
+                        modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 24.sp,
+                        letterSpacing = 0.15.sp,
+                        color = ErrorText
+                    )
+                    Text(
+                        text = "Lost Connection with the Node",
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.25.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Row(Modifier.fillMaxWidth()
+                        .padding(start = LocalDimensions.current.paddingSmall, end = LocalDimensions.current.paddingSmall, top= LocalDimensions.current.paddingNormal),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+
+                        BlueMsButton(
+                            modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
+                            text = "Close",
+                            onClick = {
+                                viewModel.disconnect()
+                            }
+                        )
+
+                        BlueMsButton(
+                            modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
+                            text = "Cancel",
+                            onClick = {
+                                viewModel.resetConnectionLost()
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -177,48 +246,51 @@ fun HighSpeedDataLog(
     val context = LocalContext.current
     Scaffold(
         modifier = modifier,
-        isFloatingActionButtonDocked = true,
         topBar = {
             HsdlConfig.hsdlTabBar?.invoke(currentTitle, isLoading)
         },
-        floatingActionButtonPosition = androidx.compose.material.FabPosition.Center,
-        floatingActionButton = {
-            FloatingActionButton(
-                backgroundColor = SecondaryBlue,
-                shape = CircleShape,
-                onClick = {
-                    if (isSDCardInserted) {
-                        if (isLogging) {
-                            onStartStopLog(false)
-                            openStopDialog = HsdlConfig.showStopDialog
-                        } else {
-                            onStartStopLog(true)
-                        }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.st_hsdl_missingSdCard),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            ) {
-                Icon(
-                    tint = MaterialTheme.colorScheme.primary,
-                    imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
-                    contentDescription = null
-                )
-            }
-        },
+//        floatingActionButtonPosition = FabPosition.EndOverlay,
+//        floatingActionButton = {
+//            FloatingActionButton(
+//                containerColor = SecondaryBlue,
+//                onClick = {
+//                    if (isSDCardInserted) {
+//                        if (isLogging) {
+//                            onStartStopLog(false)
+//                            openStopDialog = HsdlConfig.showStopDialog
+//                        } else {
+//                            onStartStopLog(true)
+//                        }
+//                    } else {
+//                        Toast.makeText(
+//                            context,
+//                            context.getString(R.string.st_hsdl_missingSdCard),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//            ) {
+//                Icon(
+//                    tint = MaterialTheme.colorScheme.primary,
+//                    imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
+//                    contentDescription = null
+//                )
+//            }
+//        },
         bottomBar = {
-            BottomNavigation(
+            NavigationBar(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Grey0
             ) {
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = Grey6,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2
+                    ),
                     selected = 0 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -237,19 +309,47 @@ fun HighSpeedDataLog(
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_sensors),
-                            contentDescription = stringResource(id = R.string.st_hsdl_sensors),
-                            tint =  if(0 == selectedIndex) {Grey0 } else {
-                                Grey6
-                            }
+                            contentDescription = stringResource(id = R.string.st_hsdl_sensors)
                         )
                     },
-                    label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_hsdl_sensors)) },
+                    label = { Text(text = stringResource(id = R.string.st_hsdl_sensors)) },
                     enabled = !isLoading
                 )
 
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = Grey6,
+                FloatingActionButton(
+                    containerColor = SecondaryBlue,
+                    onClick = {
+                        if (isSDCardInserted) {
+                            if (isLogging) {
+                                onStartStopLog(false)
+                                openStopDialog = HsdlConfig.showStopDialog
+                            } else {
+                                onStartStopLog(true)
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.st_hsdl_missingSdCard),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                ) {
+                    Icon(
+                        tint = MaterialTheme.colorScheme.primary,
+                        imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
+                        contentDescription = null
+                    )
+                }
+
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2
+                    ),
                     selected = 1 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -268,13 +368,10 @@ fun HighSpeedDataLog(
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_tags),
-                            contentDescription = stringResource(id = R.string.st_hsdl_tags),
-                            tint =  if(1 == selectedIndex) {Grey0 } else {
-                                Grey6
-                            }
+                            contentDescription = stringResource(id = R.string.st_hsdl_tags)
                         )
                     },
-                    label = { androidx.compose.material.Text(text = stringResource(id = R.string.st_hsdl_tags)) },
+                    label = { Text(text = stringResource(id = R.string.st_hsdl_tags)) },
                     enabled = !isLoading
                 )
             }
@@ -284,7 +381,7 @@ fun HighSpeedDataLog(
             NavHost(
                 modifier = modifier.padding(paddingValues),
                 navController = navController,
-                startDestination = "Sensors",
+                startDestination = "Sensors"
             ) {
                 composable(
                     route = "Sensors"

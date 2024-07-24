@@ -92,6 +92,7 @@ class DemoShowCaseViewModel @Inject constructor(
 
 
     private var familyType: Boards.Family = Boards.Family.OTHER_FAMILY
+    private var boardType: Boards.Model = Boards.Model.GENERIC
 
     private var activityResultRegistryOwner: ActivityResultRegistryOwner? = null
 
@@ -156,6 +157,7 @@ class DemoShowCaseViewModel @Inject constructor(
 
             firmwareInfo?.let {
                 familyType = firmwareInfo.familyType
+                boardType = firmwareInfo.boardType
 
                 checkFwUpdate()
 
@@ -399,7 +401,7 @@ class DemoShowCaseViewModel @Inject constructor(
         }
 
         //Add the FoTA only to WB/WBA boards
-        if ((familyType != Boards.Family.WB_FAMILY) && (familyType != Boards.Family.WBA_FAMILY)) {
+        if ((familyType != Boards.Family.WB_FAMILY) && (familyType != Boards.Family.WBA_FAMILY) && (boardType != Boards.Model.WB0X_NUCLEO_BOARD)) {
             buildDemoList.remove(Demo.WbsOtaFUOTA)
         }
 
@@ -473,7 +475,7 @@ class DemoShowCaseViewModel @Inject constructor(
     }
 
     fun initLoginManager(
-        activity: Activity,
+        activity: Activity
     ) {
         viewModelScope.launch {
             activityResultRegistryOwner = activity as ActivityResultRegistryOwner

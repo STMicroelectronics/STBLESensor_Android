@@ -24,7 +24,8 @@ mkdir -p ../../Android_App_STBLESensors_Pub/
 cp ./filesPublic/* ../../Android_App_STBLESensors_Pub/
 
 cp ../.gitignore ../../Android_App_STBLESensors_Pub/
-cp ../build.gradle ../../Android_App_STBLESensors_Pub/
+cp ../settings.gradle.kts ../../Android_App_STBLESensors_Pub/
+cp ../build.gradle.kts ../../Android_App_STBLESensors_Pub/
 cp ../detekt-config-compose.yml ../../Android_App_STBLESensors_Pub/
 cp ../License.md ../../Android_App_STBLESensors_Pub/
 cp ../README.md ../../Android_App_STBLESensors_Pub/
@@ -33,7 +34,7 @@ cp ../README.md ../../Android_App_STBLESensors_Pub/
 declare -a arr=("gradle")
 
 # Read list of module from public settings.gradle
-input="../settings.gradle"
+input="../settings.gradle.kts"
 VAR1="include"
 VAR2=0
 while IFS= read -r line; do
@@ -55,22 +56,22 @@ for i in "${arr[@]}"; do
   rm -fr ../../Android_App_STBLESensors_Pub/"$i"/.gradle
   rm -fr ../../Android_App_STBLESensors_Pub/"$i"/.idea
   # Strip publish plugin
-  if [ -f ../../Android_App_STBLESensors_Pub/"$i"/build.gradle ]; then
-    lineNum=$(awk "/publish.gradle/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle)
+  if [ -f ../../Android_App_STBLESensors_Pub/"$i"/build.gradle.kts ]; then
+    lineNum=$(awk "/publish.gradle/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle.kts)
     if [[ $lineNum =~ $re ]] && [ $lineNum -gt 0 ]; then
-      sed -i "$lineNum"d "../../Android_App_STBLESensors_Pub/$i/build.gradle"
+      sed -i "$lineNum"d "../../Android_App_STBLESensors_Pub/$i/build.gradle.kts"
     fi
   fi
   # Strip loco plugin
-  if [ -f ../../Android_App_STBLESensors_Pub/"$i"/build.gradle ]; then
-    lineNum=$(awk "/Loco/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle)
+  if [ -f ../../Android_App_STBLESensors_Pub/"$i"/build.gradle.kts ]; then
+    lineNum=$(awk "/Loco/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle.kts)
     if [[ $lineNum =~ $re ]] && [ $lineNum -gt 0 ]; then
-      sed -i "$lineNum",$(($lineNum + 7))d "../../Android_App_STBLESensors_Pub/$i/build.gradle"
-      lineNum=$(awk "/appswithlove/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle)
-      sed -i "$lineNum"d "../../Android_App_STBLESensors_Pub/$i/build.gradle"
-      lineNum=$(awk "/st_dependencies/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle)
+      sed -i "$lineNum",$(($lineNum + 7))d "../../Android_App_STBLESensors_Pub/$i/build.gradle.kts"
+      lineNum=$(awk "/appswithlove/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle.kts)
+      sed -i "$lineNum"d "../../Android_App_STBLESensors_Pub/$i/build.gradle.kts"
+      lineNum=$(awk "/st_dependencies/{ print NR ; exit }" ../../Android_App_STBLESensors_Pub/"$i"/build.gradle.kts)
       if [[ $lineNum =~ $re ]] &&  [ "$lineNum" -gt 0 ]; then
-        sed -i "$lineNum"d "../../Android_App_STBLESensors_Pub/$i/build.gradle"
+        sed -i "$lineNum"d "../../Android_App_STBLESensors_Pub/$i/build.gradle.kts"
       fi
     fi
   fi

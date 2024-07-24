@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,8 +42,8 @@ fun BoardDropdown(
             else -> {
                 mutableListOf(
                     stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard1),
-                    stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2),
-                )
+                    stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2)
+                    )
             }
         }
     if (!wbOnly) {
@@ -57,7 +57,7 @@ fun BoardDropdown(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
-            if (items.size>1 ) {
+            if (items.size > 1) {
                 expanded = !expanded
             }
         },
@@ -96,9 +96,7 @@ fun BoardDropdown(
                     selectedItem = selectedOption
                     onSelection(index)
                     expanded = false
-                }) {
-                    Text(text = selectedOption)
-                }
+                }, text = { Text(text = selectedOption) })
             }
         }
     }

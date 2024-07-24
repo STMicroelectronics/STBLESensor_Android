@@ -7,33 +7,18 @@
  */
 package com.st.catalog.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
-import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -41,13 +26,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,12 +41,9 @@ import com.st.catalog.CatalogViewModel
 import com.st.catalog.R
 import com.st.catalog.availableDemos
 import com.st.ui.composables.StTopBar
-import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
-import com.st.ui.theme.PrimaryBlue
 import com.st.ui.theme.SecondaryBlue
-import kotlinx.coroutines.launch
 
 @Composable
 fun CatalogList(
@@ -87,9 +66,10 @@ fun CatalogList(
         if (boards.isNotEmpty() && boardsDescription.isNotEmpty()) {
             CatalogList(
                 modifier = modifier,
-                boards = boards.distinctBy { it.bleDevId },
-                allBoards = boards,
-                boardsDescription = boardsDescription.distinctBy { it.bleDevId },
+                boardFirmwares = boards,
+                allBoardFirmwares = boards,
+                boardsDescription = boardsDescription,
+                isBeta = viewModel.isBeta,
                 onBack = onBack,
                 onBoardSelected = { bleDevId ->
                     navController.navigate(
@@ -104,31 +84,42 @@ fun CatalogList(
 @Composable
 fun CatalogList(
     modifier: Modifier = Modifier,
-    boards: List<BoardFirmware>,
-    allBoards: List<BoardFirmware>,
+    boardFirmwares: List<BoardFirmware>,
+    allBoardFirmwares: List<BoardFirmware>,
     boardsDescription: List<BoardDescription>,
+    isBeta: Boolean = false,
     onBack: () -> Unit = { /** NOOP **/ },
     onBoardSelected: (String) -> Unit = { /** NOOP **/ }
 ) {
     var openFilter by remember { mutableStateOf(value = false) }
     var boardOrder by remember { mutableStateOf(value = BoardOrder.NONE) }
     var filters by remember { mutableStateOf(value = CatalogFilter()) }
-    val filteredBoardDescriptions by remember(filters, boards, boardOrder) {
+    val filteredBoardDescriptions by remember(
+        filters,
+        boardsDescription,
+        boardFirmwares,
+        boardOrder
+    ) {
         derivedStateOf {
             val filteredBoards =
                 if (filters.demoGroups.isEmpty()) {
-                    boards.map {
-                        boardsDescription.first { board ->
-                            board.bleDevId == it.bleDevId
+                    if (isBeta) {
+                        boardsDescription
+                    } else {
+                        boardFirmwares.map {
+                            boardsDescription.first { board ->
+                                board.bleDevId == it.bleDevId
+                            }
                         }
                     }
+
                 } else {
-                    allBoards.filter { board ->
+                    allBoardFirmwares.filter { board ->
                         filters.demoGroups.firstOrNull { group ->
                             board.availableDemos().flatMap { it.group }.map { it.name }
                                 .contains(group)
                         } != null
-                    }.distinctBy { it.bleDevId }.map {
+                    }.map {
                         boardsDescription.first { board ->
                             board.bleDevId == it.bleDevId
                         }
@@ -146,12 +137,10 @@ fun CatalogList(
     val releaseDatesPresent = boardsDescription.firstOrNull { it.releaseDate != null } != null
 
     Scaffold(modifier = modifier.fillMaxSize(),
-        floatingActionButtonPosition = FabPosition.Center,
-        isFloatingActionButtonDocked = true,
+        floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(
-                backgroundColor = SecondaryBlue,
-                shape = CircleShape,
+                containerColor = SecondaryBlue,
                 onClick = { openFilter = true }) {
                 Icon(
                     tint = MaterialTheme.colorScheme.primary,
@@ -166,170 +155,49 @@ fun CatalogList(
                 onBack = onBack
             )
         },
-        bottomBar = {
-            BottomAppBar(
-                modifier = modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = Grey0,
-                cutoutShape = CircleShape,
-                contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-            ) { /** NOOP **/ }
-        }) { paddingValues ->
-        Column(
+//        bottomBar = {
+//            BottomAppBar(
+//                modifier = Modifier.fillMaxWidth(),
+//                containerColor = PrimaryBlue,
+//                contentColor = Grey0,
+//                contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+//            ) { BottomAppBarItem(
+//                modifier = Modifier.weight(weight = 0.25f),
+//                icon = Icons.Default.Close,
+//                label = "Back",
+//                onClick = onBack
+//            )
+//                Spacer(modifier = Modifier.weight(weight = 0.75f))
+//
+//            }
+//        }
+    ) { paddingValues ->
+        LazyColumn(
+            state = rememberLazyListState(),
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues),
+            contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+            verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var column by rememberSaveable {
-                mutableStateOf(true)
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = LocalDimensions.current.paddingNormal),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    text = "ListView",
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-                Icon(
-                    modifier = Modifier.clickable { column = !column },
-                    tint = PrimaryBlue,
-                    imageVector = if (column) {
-                        Icons.Default.GridView
+            items(filteredBoardDescriptions) {
+                CatalogListItem(
+                    boardName = it.boardName,
+                    boardVariant = it.boardVariant,
+                    friendlyName = it.friendlyName,
+                    boardStatus = it.status,
+                    description = it.description,
+                    boardTypeName = it.boardModel().name,
+                    releaseDate = if (boardOrder == BoardOrder.RELEASE_DATE) {
+                        it.releaseDate
                     } else {
-                        Icons.Default.ViewList
+                        null
                     },
-                    contentDescription = "Grid/List View"
+                    onClickItem = {
+                        onBoardSelected(it.bleDevId)
+                    }
                 )
-            }
-
-            if (column) {
-                Box(modifier = Modifier.weight(1f)) {
-                    val state = rememberLazyListState()
-
-                    val coroutineScope = rememberCoroutineScope()
-
-                    LazyColumn(
-                        state = state,
-                        modifier = Modifier
-                            .padding(paddingValues = paddingValues),
-                        contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-                        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(filteredBoardDescriptions) {
-                            CatalogListItem(
-                                boardName = it.boardName,
-                                boardVariant = it.boardVariant,
-                                friendlyName = it.friendlyName,
-                                boardStatus = it.status,
-                                description = it.description,
-                                boardTypeName = it.boardModel().name,
-                                releaseDate = if (boardOrder == BoardOrder.RELEASE_DATE) {
-                                    it.releaseDate
-                                } else {
-                                    null
-                                },
-                                onClickItem = {
-                                    onBoardSelected(it.bleDevId)
-                                }
-                            )
-                        }
-                    }
-
-                    val showButton by remember {
-                        derivedStateOf {
-                            state.firstVisibleItemIndex > 0
-                        }
-                    }
-
-                    if (showButton) {
-                        FloatingActionButton(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(LocalDimensions.current.paddingNormal),
-                            contentColor = SecondaryBlue,
-                            backgroundColor = Grey0,
-                            shape = CircleShape,
-                            onClick = {
-                                coroutineScope.launch {
-                                    state.animateScrollToItem(index = 0)
-                                }
-                            }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.primary,
-                                imageVector = Icons.Default.KeyboardDoubleArrowUp,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
-            } else {
-                Box(modifier = Modifier.weight(1f)) {
-                    val state = rememberLazyGridState()
-
-                    val coroutineScope = rememberCoroutineScope()
-
-                    LazyVerticalGrid(
-                        state = state,
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier
-                            .padding(paddingValues = paddingValues),
-                        contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-                        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal),
-                        horizontalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
-                    ) {
-                        items(filteredBoardDescriptions) {
-                            CatalogListThumbnailItem(
-                                boardName = it.boardName,
-                                boardVariant = it.boardVariant,
-                                friendlyName = it.friendlyName,
-                                boardStatus = it.status,
-                                boardTypeName = it.boardModel().name,
-                                releaseDate = if (boardOrder == BoardOrder.RELEASE_DATE) {
-                                    it.releaseDate
-                                } else {
-                                    null
-                                },
-                                onClickItem = {
-                                    onBoardSelected(it.bleDevId)
-                                }
-                            )
-                        }
-                    }
-
-                    val showButton by remember {
-                        derivedStateOf {
-                            state.firstVisibleItemIndex > 0
-                        }
-                    }
-
-                    if (showButton) {
-                        FloatingActionButton(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(LocalDimensions.current.paddingNormal),
-                            contentColor = SecondaryBlue,
-                            backgroundColor = Grey0,
-                            shape = CircleShape,
-                            onClick = {
-                                coroutineScope.launch {
-                                    state.animateScrollToItem(index = 0)
-                                }
-                            }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.primary,
-                                imageVector = Icons.Default.KeyboardDoubleArrowUp,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
             }
         }
     }
@@ -362,12 +230,12 @@ enum class BoardOrder {
 private fun CatalogListPreview() {
     PreviewBlueMSTheme {
         CatalogList(
-            boards = listOf(
+            boardFirmwares = listOf(
                 BoardFirmware.mock(),
                 BoardFirmware.mock(),
                 BoardFirmware.mock()
             ),
-            allBoards = listOf(
+            allBoardFirmwares = listOf(
                 BoardFirmware.mock(),
                 BoardFirmware.mock(),
                 BoardFirmware.mock()

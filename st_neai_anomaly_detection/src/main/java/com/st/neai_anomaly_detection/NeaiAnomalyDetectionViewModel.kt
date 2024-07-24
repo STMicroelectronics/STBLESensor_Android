@@ -28,8 +28,7 @@ import javax.inject.Inject
 class NeaiAnomalyDetectionViewModel @Inject constructor(
     private val blueManager: BlueManager,
     private val coroutineScope: CoroutineScope
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val features = mutableListOf<Feature<*>>()
 

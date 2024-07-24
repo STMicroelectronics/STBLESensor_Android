@@ -6,29 +6,30 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,6 +43,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -49,20 +52,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.st.blue_sdk.board_catalog.models.DtmiContent
+import com.st.pnpl.composable.PnPLInfoWarningSpontaneousMessage
 import com.st.smart_motor_control.MotorControlConfig
 import com.st.smart_motor_control.R
 import com.st.smart_motor_control.SmartMotorControlViewModel
 import com.st.smart_motor_control.model.MotorControlFault
-import com.st.ui.composables.BottomAppBarItem
-import com.st.ui.composables.BottomAppBarItemColor
+import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
+import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue2
 import com.st.ui.theme.SecondaryBlue
+import com.st.ui.theme.Shapes
 import kotlinx.serialization.json.JsonObject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MotorControlMainScreen(
     modifier: Modifier,
@@ -93,11 +100,16 @@ fun MotorControlMainScreen(
     val speedRef by viewModel.speedRef.collectAsStateWithLifecycle()
     val speedMeas by viewModel.speedMeas.collectAsStateWithLifecycle()
     val busVoltage by viewModel.busVoltage.collectAsStateWithLifecycle()
+    val neaiClassName by viewModel.neaiClassName.collectAsStateWithLifecycle()
+    val neaiClassProb by viewModel.neaiClassProb.collectAsStateWithLifecycle()
+
     val isMotorRunning by viewModel.isMotorRunning.collectAsStateWithLifecycle()
 
     val motorSpeed by viewModel.motorSpeed.collectAsStateWithLifecycle()
 
     val motorSpeedControl by viewModel.motorSpeedControl.collectAsStateWithLifecycle()
+    val statusMessage by viewModel.statusMessage.collectAsStateWithLifecycle()
+    val isConnectionLost by viewModel.isConnectionLost.collectAsStateWithLifecycle()
 
 
     val context = LocalContext.current
@@ -161,6 +173,8 @@ fun MotorControlMainScreen(
         speedRef = speedRef,
         speedMeas = speedMeas,
         busVoltage = busVoltage,
+        neaiClassName = neaiClassName,
+        neaiClassProb = neaiClassProb,
         isMotorRunning = isMotorRunning,
         motorSpeed = motorSpeed,
         motorSpeedControl = motorSpeedControl,
@@ -169,6 +183,64 @@ fun MotorControlMainScreen(
         speedMeasUnit = viewModel.speedMeasUnit,
         busVoltageUnit = viewModel.busVoltageUnit
     )
+
+    statusMessage?.let {
+        PnPLInfoWarningSpontaneousMessage(messageType = statusMessage!!, onDismissRequest = { viewModel.cleanStatusMessage() })
+    }
+
+    if(isConnectionLost) {
+        BasicAlertDialog(onDismissRequest = { viewModel.resetConnectionLost() })
+        {
+            Surface(
+                modifier = Modifier
+                    //.wrapContentWidth()
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                shape = Shapes.medium
+            ) {
+                Column(modifier = Modifier.padding(all = LocalDimensions.current.paddingMedium)) {
+                    Text(
+                        text = "Warning:",
+                        modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 24.sp,
+                        letterSpacing = 0.15.sp,
+                        color = ErrorText
+                    )
+                    Text(
+                        text = "Lost Connection with the Node",
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        letterSpacing = 0.25.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Row(Modifier.fillMaxWidth()
+                        .padding(start = LocalDimensions.current.paddingSmall, end = LocalDimensions.current.paddingSmall, top= LocalDimensions.current.paddingNormal),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+
+                        BlueMsButton(
+                            modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
+                            text = "Close",
+                            onClick = {
+                                viewModel.disconnect()
+                            }
+                        )
+
+                        BlueMsButton(
+                            modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
+                            text = "Cancel",
+                            onClick = {
+                                viewModel.resetConnectionLost()
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -193,6 +265,8 @@ fun SmartMotorControlScreen(
     speedRef: Int? = null,
     speedMeas: Int? = null,
     busVoltage: Int? = null,
+    neaiClassName: String? = null,
+    neaiClassProb: Float? = null,
     temperatureUnit: String,
     speedRefUnit: String,
     speedMeasUnit: String,
@@ -221,48 +295,52 @@ fun SmartMotorControlScreen(
     val context = LocalContext.current
     Scaffold(
         modifier = modifier,
-        isFloatingActionButtonDocked = true,
         topBar = {
             MotorControlConfig.motorControlTabBar?.invoke(currentTitle, isLoading)
         },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
-            FloatingActionButton(
-                backgroundColor = SecondaryBlue,
-                shape = CircleShape,
-                onClick = {
-                    if (isSDCardInserted) {
-                        if (isLogging) {
-                            onStartStopLog(false)
-                            openStopDialog = MotorControlConfig.showStopDialog
-                        } else {
-                            onStartStopLog(true)
-                        }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.st_motor_control_missingSdCard),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            ) {
-                Icon(
-                    tint = MaterialTheme.colorScheme.primary,
-                    imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
-                    contentDescription = null
-                )
-            }
-        },
+//        floatingActionButtonPosition = FabPosition.End,
+//        floatingActionButton = {
+//            FloatingActionButton(
+//                containerColor = SecondaryBlue,
+//                shape = CircleShape,
+//                onClick = {
+//                    if (isSDCardInserted) {
+//                        if (isLogging) {
+//                            onStartStopLog(false)
+//                            openStopDialog = MotorControlConfig.showStopDialog
+//                        } else {
+//                            onStartStopLog(true)
+//                        }
+//                    } else {
+//                        Toast.makeText(
+//                            context,
+//                            context.getString(R.string.st_motor_control_missingSdCard),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//            ) {
+//                Icon(
+//                    tint = MaterialTheme.colorScheme.primary,
+//                    imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
+//                    contentDescription = null
+//                )
+//            }
+//        },
         bottomBar = {
-            BottomNavigation(
+            NavigationBar(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Grey0
             ) {
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = Grey6,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2
+                    ),
                     selected = 0 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -281,22 +359,49 @@ fun SmartMotorControlScreen(
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_motor_control),
-                            contentDescription = stringResource(id = R.string.st_motor_control),
-                            tint = if (0 == selectedIndex) {
-                                Grey0
-                            } else {
-                                Grey6
-                            }
+                            contentDescription = stringResource(id = R.string.st_motor_control)
                         )
                     },
                     label = { Text(text = stringResource(id = R.string.st_motor_control)) },
                     enabled = !isLoading
                 )
 
+
+                FloatingActionButton(
+                    containerColor = SecondaryBlue,
+                    onClick = {
+                        if (isSDCardInserted) {
+                            if (isLogging) {
+                                onStartStopLog(false)
+                                openStopDialog = MotorControlConfig.showStopDialog
+                            } else {
+                                onStartStopLog(true)
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.st_motor_control_missingSdCard),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                ) {
+                    Icon(
+                        tint = MaterialTheme.colorScheme.primary,
+                        imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
+                        contentDescription = null
+                    )
+                }
+
                 if (isLogging) {
-                    BottomNavigationItem(
-                        selectedContentColor = Grey0,
-                        unselectedContentColor = Grey6,
+                    NavigationBarItem(
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Grey0,
+                            selectedTextColor = Grey0,
+                            unselectedIconColor = Grey6,
+                            unselectedTextColor = Grey6,
+                            indicatorColor = PrimaryBlue2
+                        ),
                         selected = 1 == selectedIndex,
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -315,21 +420,21 @@ fun SmartMotorControlScreen(
                         icon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_tags),
-                                contentDescription = stringResource(id = R.string.st_motor_control_tags),
-                                tint = if (1 == selectedIndex) {
-                                    Grey0
-                                } else {
-                                    Grey6
-                                }
+                                contentDescription = stringResource(id = R.string.st_motor_control_tags)
                             )
                         },
                         label = { Text(text = stringResource(id = R.string.st_motor_control_tags)) },
                         enabled = !isLoading
                     )
                 } else {
-                    BottomNavigationItem(
-                        selectedContentColor = Grey0,
-                        unselectedContentColor = Grey6,
+                    NavigationBarItem(
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Grey0,
+                            selectedTextColor = Grey0,
+                            unselectedIconColor = Grey6,
+                            unselectedTextColor = Grey6,
+                            indicatorColor = PrimaryBlue2
+                        ),
                         selected = 1 == selectedIndex,
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -348,12 +453,7 @@ fun SmartMotorControlScreen(
                         icon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_settings),
-                                contentDescription = stringResource(id = R.string.st_motor_control_configuration),
-                                tint = if (1 == selectedIndex) {
-                                    Grey0
-                                } else {
-                                    Grey6
-                                }
+                                contentDescription = stringResource(id = R.string.st_motor_control_configuration)
                             )
                         },
                         label = { Text(text = stringResource(id = R.string.st_motor_control_configuration)) },
@@ -368,7 +468,7 @@ fun SmartMotorControlScreen(
             NavHost(
                 modifier = modifier.padding(paddingValues),
                 navController = navController,
-                startDestination = "MotorControl",
+                startDestination = "MotorControl"
             ) {
 
                 composable(
@@ -393,6 +493,8 @@ fun SmartMotorControlScreen(
                         speedRef = speedRef,
                         speedMeas = speedMeas,
                         busVoltage = busVoltage,
+                        neaiClassName = neaiClassName,
+                        neaiClassProb = neaiClassProb,
                         isRunning = isMotorRunning,
                         isLogging = isLogging,
                         motorSpeed = motorSpeed,

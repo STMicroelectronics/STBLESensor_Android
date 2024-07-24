@@ -155,11 +155,13 @@ class NeaiAnomalyDetectionFragment : Fragment() {
     }
 
     private fun setSimilarityUI(similarity: Int) {
+        val text =
         if (similarity == 255) {
-            binding.tvSimilarity.text = resources.getString(R.string.st_neaiAnomalyDetection_text_noValue)
+            resources.getString(R.string.st_neaiAnomalyDetection_text_noValue)
         } else {
-            binding.tvSimilarity.text = similarity.toString()
+            "$similarity %"
         }
+        binding.tvSimilarity.text = text
     }
 
 
@@ -221,7 +223,6 @@ class NeaiAnomalyDetectionFragment : Fragment() {
     }
 
     private fun askIfForceStartCommand() {
-
         val dialog = AlertDialog.Builder(context)
             .setTitle("WARNING!")
             .setMessage("Resources are busy with another process. Do you want to stop it and start NEAI-Anomaly Detection anyway?")

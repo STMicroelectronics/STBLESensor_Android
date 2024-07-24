@@ -101,7 +101,7 @@ class HomeViewModel @Inject constructor(
         maxConnectionRetries: Int = MAX_RETRY_CONNECTION,
         maxPayloadSize: Int = 248,
         enableServer: Boolean,
-        onNodeReady: (() -> Unit)? = null,
+        onNodeReady: (() -> Unit)? = null
     ) {
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
@@ -167,7 +167,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun readBetaCatalog() {
+//    fun readBetaCatalog() {
 //        viewModelScope.launch {
 //            val url: String = BuildConfig.BLUESTSDK_DB_BASE_BETA_URL
 //            blueManager.reset(url)
@@ -175,8 +175,8 @@ class HomeViewModel @Inject constructor(
 //            //Log.i("DB","readBetaCatalog checkBoardsCatalogPresence = ${ _boardsDescription.value.size}")
 //
 //        }
-        //checkBoardsCatalogPresence()
-    }
+//        //checkBoardsCatalogPresence()
+//    }
 
     fun readReleaseCatalog() {
         viewModelScope.launch {
@@ -320,7 +320,7 @@ class HomeViewModel @Inject constructor(
                 //Move to Beta Version
                 stPreferences.setBetaApplicationFlag(true)
                 //Load the Beta Catalog
-                readBetaCatalog()
+                //readBetaCatalog()
                 _isBetaRelease.value = true
             }
             //Every time we switch between beta/release... rest the flag for disabling the hidden demos

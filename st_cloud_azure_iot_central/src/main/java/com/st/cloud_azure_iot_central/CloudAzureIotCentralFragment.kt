@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -23,7 +22,6 @@ import androidx.lifecycle.Lifecycle
 import com.st.cloud_azure_iot_central.composable.CloudAzureIotCentralStartScreen
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.BlueMSTheme
-import com.st.ui.theme.LocalDimensions
 import dagger.hilt.android.AndroidEntryPoint
 import com.st.core.ARG_NODE_ID
 

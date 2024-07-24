@@ -15,7 +15,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.runtime.derivedStateOf
@@ -132,7 +132,7 @@ class DemoShowCase : Fragment() {
                     val demoActions = currentDemoSelected?.settings.toActions(
                         navController = navController,
                         demo = currentDemoSelected,
-                        nodeId = nodeId,
+                        nodeId = nodeId
                     ) + if (hasPnplSettings) {
                         listOf(
                             ActionItem(
@@ -167,7 +167,7 @@ class DemoShowCase : Fragment() {
                         emptyList()
                     } + ActionItem(
                         label = "Disconnect",
-                        imageVector = Icons.Default.Logout,
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
                         action = {
                             viewModel.exitFromDemoShowCase(nodeId)
                         }
@@ -212,7 +212,7 @@ class DemoShowCase : Fragment() {
                                 )
 
 
-                                if((device?.familyType != Boards.Family.WB_FAMILY) && (device?.familyType != Boards.Family.WBA_FAMILY)) {
+                                if((device?.familyType != Boards.Family.WB_FAMILY) && (device?.familyType != Boards.Family.WBA_FAMILY) && (device?.boardType != Boards.Model.WB0X_NUCLEO_BOARD)) {
                                     currentAction.add(
                                         ActionItem(
                                             label = context.getString(R.string.st_demoShowcase_menuAction_fwUpdate),

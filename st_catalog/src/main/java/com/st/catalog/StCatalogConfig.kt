@@ -8,5 +8,5 @@ object StCatalogConfig {
 
     var boardModelFilter: List<Boards.Model> = emptyList()
 
-    var firmwareFilter: List<String> = emptyList()
+    var firmwareFamilyFilter: String? = null
 }

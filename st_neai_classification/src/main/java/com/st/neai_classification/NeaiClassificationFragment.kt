@@ -458,7 +458,7 @@ class NeaiClassificationFragment : Fragment() {
         useDefaultNames = pref.getBoolean("neai_classification_default_names",true)
 
         if(useDefaultNames) {
-            customNames.forEachIndexed { index, s ->
+            customNames.forEachIndexed { index, _ ->
                 customNames[index] = "CL ${index+1}"
             }
         }

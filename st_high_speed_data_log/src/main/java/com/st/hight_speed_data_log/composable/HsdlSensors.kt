@@ -1,10 +1,8 @@
 package com.st.hight_speed_data_log.composable
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -29,20 +27,23 @@ fun HsdlSensors(
     onSendCommand: (String, CommandRequest?) -> Unit
     ) {
     var isOpen by rememberSaveable(sensors) { mutableStateOf(value = "") }
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
+        //verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
     ) {
         itemsIndexed(sensors) { index, componentWithInterface ->
             val name = componentWithInterface.first.name
             val data = (status.find { it.containsKey(name) })?.get(name)
             Component(
+                modifier = modifier.padding(bottom = LocalDimensions.current.paddingMedium),
                 name = name,
                 data = data,
                 enabled = isLoading.not(),
                 enableCollapse = true,
                 isOpen = isOpen == name,
+                showNotMounted = false,
                 componentModel = componentWithInterface.first,
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },
@@ -52,9 +53,9 @@ fun HsdlSensors(
                 }
             )
 
-            if (sensors.lastIndex != index) {
-                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-            }
+//            if (sensors.lastIndex != index) {
+//                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+//            }
         }
     }
 }

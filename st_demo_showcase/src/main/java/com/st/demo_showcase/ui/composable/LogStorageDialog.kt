@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -59,7 +59,7 @@ fun LogStorageDialog(
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-            Divider()
+            HorizontalDivider()
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 

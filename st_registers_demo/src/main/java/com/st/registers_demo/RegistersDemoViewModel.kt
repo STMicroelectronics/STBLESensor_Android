@@ -7,7 +7,6 @@
  */
 package com.st.registers_demo
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
@@ -19,8 +18,9 @@ import com.st.registers_demo.common.RegistersDemoType
 import com.st.registers_demo.common.ValueLabelMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -38,9 +38,14 @@ class RegistersDemoViewModel
     private val REGISTER_INFO: Pattern = Pattern.compile("<(MLC|FSM_OUTS|STREDL)(\\d+)(_SRC)?>(.*)")
     private val VALUE_INFO: Pattern = Pattern.compile("(\\d+)='(.*)'")
 
-    private val _registersData = MutableSharedFlow<List<RegisterStatus>>()
-    val registersData: Flow<List<RegisterStatus>>
-        get() = _registersData
+    private val _registersData =
+        MutableStateFlow<List<RegisterStatus>>(
+            emptyList()
+        )
+    val registersData: StateFlow<List<RegisterStatus>>
+        get() = _registersData.asStateFlow()
+
+    private var registerValueToLabelMap: String? = null
 
     /**
      * object used to map the raw register value with a label,
@@ -79,26 +84,23 @@ class RegistersDemoViewModel
             }
         }
 
-        if (MlcConfig.registerValueToLabelMap == null) {
-
+        if (registerValueToLabelMap == null) {
             viewModelScope.launch {
                 val buffer = StringBuffer()
                 blueManager.getDebugMessages(nodeId = nodeId)?.collect {
-                    //Log.i("RegistersDemo DbGMsg",it.payload)
                     buffer.append(it.payload)
-                    //Log.i("RegistersDemo","buffersize=${buffer.length}")
                     if (buffer.endsWith('\n')) {
-                        //Log.i("RegistersDemo","fullRec")
+                        //Log.i("RegistersDemo","fullRec $buffer")
+                        registerValueToLabelMap = buffer.toString()
                         valueMapper = buildRegisterMapperFromString(buffer.removeSuffix("\n"))
                         buffer.delete(0,buffer.length)
                     }
                 }
             }
-            askLabelsToNode(nodeId, demoType)
-
+            //askLabelsToNode(nodeId, demoType)
         }
         else {
-            valueMapper = buildRegisterMapperFromString(MlcConfig.registerValueToLabelMap!!.removeSuffix("\n"))
+            valueMapper = buildRegisterMapperFromString(registerValueToLabelMap!!.removeSuffix("\n"))
         }
 
         feature?.let {
@@ -106,6 +108,9 @@ class RegistersDemoViewModel
                 blueManager.getFeatureUpdates(nodeId,
                     listOf(it),
                     onFeaturesEnabled = {
+                        if (registerValueToLabelMap == null) {
+                            askLabelsToNode(nodeId, demoType)
+                        }
                         readFeature(nodeId)
                     }
                 ).collect {
@@ -172,10 +177,12 @@ class RegistersDemoViewModel
                 RegistersDemoType.STRED -> "getSTREDLLabels"
             }
 
-            viewModelScope.launch {
-                blueManager.writeDebugMessage(
-                    nodeId = nodeId, msg = labelCommand
-                )
+            if (labelCommand.isNotEmpty()) {
+                viewModelScope.launch {
+                    blueManager.writeDebugMessage(
+                        nodeId = nodeId, msg = labelCommand
+                    )
+                }
             }
         }
     }
@@ -207,6 +214,7 @@ class RegistersDemoViewModel
     }
 
     fun stopDemo(nodeId: String) {
+        registerValueToLabelMap = null
         feature?.let {
             coroutineScope.launch {
                 blueManager.disableFeatures(nodeId, listOf(it))

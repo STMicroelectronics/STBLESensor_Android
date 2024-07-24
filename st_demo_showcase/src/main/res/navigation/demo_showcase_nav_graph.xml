@@ -220,6 +220,12 @@
         <action
             android:id="@+id/action_demoList_to_cloudMqttFragment"
             app:destination="@id/cloudMqttFragment" />
+        <action
+            android:id="@+id/action_demoList_to_neaiExtrapolationFragment"
+            app:destination="@id/neaiExtrapolationFragment" />
+        <action
+            android:id="@+id/action_demoList_to_medicalSignalFragment"
+            app:destination="@id/medicalSignalFragment" />
         <!-- *** NEW_DEMO_TEMPLATE ANCHOR3 *** -->
     </fragment>
     <fragment
@@ -234,6 +240,11 @@
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="fwLock"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
     </fragment>
     <fragment
         android:id="@+id/logSettings"
@@ -641,6 +652,22 @@
         android:id="@+id/cloudMqttFragment"
         android:name="com.st.cloud_mqtt.CloudMqttFragment"
         android:label="CloudMqttFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/neaiExtrapolationFragment"
+        android:name="com.st.neai_extrapolation.NeaiExtrapolationFragment"
+        android:label="NeaiExtrapolationFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/medicalSignalFragment"
+        android:name="com.st.medical_signal.MedicalSignalFragment"
+        android:label="MedicalSignalFragment">
         <argument
             android:name="nodeId"
             app:argType="string" />

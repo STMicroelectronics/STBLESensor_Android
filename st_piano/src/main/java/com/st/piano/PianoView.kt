@@ -19,6 +19,7 @@ import android.view.View
 class PianoView(context: Context?, attrs: AttributeSet?) :
     View(context, attrs) {
     private val black: Paint = Paint()
+    private val grey: Paint
     private val blue: Paint
     private val white: Paint
     private val line: Paint
@@ -61,6 +62,8 @@ class PianoView(context: Context?, attrs: AttributeSet?) :
 
     init {
         black.color = Color.BLACK
+        grey = Paint()
+        grey.color = Color.GRAY
         white = Paint()
         white.color = Color.WHITE
         white.style = Paint.Style.FILL
@@ -81,7 +84,7 @@ class PianoView(context: Context?, attrs: AttributeSet?) :
         for (i in 0 until numberWhiteKeys) {
             val top = i * keyWidth
             var rect = RectF(0F, top.toFloat(), h.toFloat(), (top + keyWidth).toFloat())
-            whiteKeys.add(PianoKey(rect, keyNumber, true))
+            whiteKeys.add(PianoKey(rect, null, keyNumber, true))
             keyNumber++
 
             //Add Black Keys
@@ -90,7 +93,11 @@ class PianoView(context: Context?, attrs: AttributeSet?) :
                     0.40f * heightW, i.toFloat() * keyWidth + 0.70f * keyWidth,
                     heightW.toFloat(), (i + 1).toFloat() * keyWidth + 0.30f * keyWidth
                 )
-                blackKeys.add(PianoKey(rect, keyNumber, false))
+                val rectInt =  RectF(
+                    0.45f * heightW, i.toFloat() * keyWidth + 0.80f * keyWidth,
+                    heightW.toFloat(), (i + 1).toFloat() * keyWidth + 0.20f * keyWidth
+                )
+                blackKeys.add(PianoKey(rect, rectInt, keyNumber, false))
                 keyNumber++
             }
         }
@@ -116,6 +123,11 @@ class PianoView(context: Context?, attrs: AttributeSet?) :
         //Draw Black Keys
         for (k in blackKeys) {
             canvas.drawRect(k.rect, if (k.pressed) blue else black)
+            k.rectInt?.let {
+                if (!k.pressed) {
+                    canvas.drawRect(k.rectInt!!, grey)
+                }
+            }
         }
 
         //Draw the top and Bottom Lines

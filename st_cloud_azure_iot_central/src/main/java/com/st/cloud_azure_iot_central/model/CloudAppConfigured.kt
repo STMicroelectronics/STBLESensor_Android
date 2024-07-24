@@ -14,7 +14,7 @@ data class CloudAppConfigured(
     @SerialName("apiToken")
     var apiToken: CloudAPIToken? = null,
     @SerialName("appIndex")
-    var appIndex: Int = 0,
+    var appIndex: Int = 0
 ) {
     //is the token expired?
     @Transient

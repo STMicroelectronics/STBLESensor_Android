@@ -62,7 +62,7 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback 
 
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(getResources().getColor(com.st.ui.R.color.green));
+        mPaint.setColor(getResources().getColor(com.st.ui.R.color.green,null));
         mPaint.setStrokeWidth(3);
         mPaint.setAntiAlias(true);
         getHolder().addCallback(this);

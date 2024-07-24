@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="st_neai_extrapolation_text_title">Extrapolation</string>
+    <string name="st_neai_extrapolation_text_commands">NEAI Commands</string>
+    <string name="st_neai_extrapolation_text_resourceBusy">Resource busy</string>
+    <string name="st_neai_extrapolation_text_aiengineTitle">AI Engine</string>
+    <string name="st_neai_extrapolation_text_phaseTitle">Phase:\u0020</string>
+    <string name="st_neai_extrapolation_aiengine_phase_idle">IDLE</string>
+    <string name="st_neai_extrapolation_text_stateTilte">State:\u0020</string>
+    <string name="st_neai_extrapolation_text_noValue">---</string>
+    <string name="st_neai_extrapolation_text_resultTitle">Result</string>
+    <string name="st_neai_extrapolation_text_statusTitle">Target:\u0020</string>
+    <string name="st_neai_extrapolation_text_stub">Demo Mode</string>
+    <string name="st_neai_extrapolation_text_library">Library</string>
+    <string name="st_neai_extrapolation_aiengine_phase_extrapolation">EXTRAPOLATION</string>
+    <string name="st_neai_extrapolation_aiengine_phase_busy">BUSY</string>
+    <string name="st_neai_extrapolation_aiengine_phase_null">NULL</string>
+    <string name="st_neai_extrapolation_aiengine_state_null">NULL</string>
+    <string name="st_neai_extrapolation_aiengine_state_ok">OK</string>
+    <string name="st_neai_extrapolation_aiengine_state_initNotCalled">KNOWLEDGE ERROR</string>
+    <string name="st_neai_extrapolation_aiengine_state_boardError">KNOWLEDGE ERROR</string>
+    <string name="st_neai_extrapolation_aiengine_state_knowledgeError">KNOWLEDGE ERROR</string>
+    <string name="st_neai_extrapolation_aiengine_state_notEnoughLearning">NOT ENOUGH LEARNING</string>
+    <string name="st_neai_extrapolation_aiengine_state_minimalLearningDone">MINIMAL LEARNING DONE</string>
+    <string name="st_neai_extrapolation_aiengine_state_unknownError">UNKNOWN ERROR</string>
+</resources>

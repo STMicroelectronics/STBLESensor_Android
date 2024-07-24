@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -55,7 +56,7 @@ fun FlowDemoAddFunctionDialog(
 
     var errorText by remember { mutableStateOf<String?>(value = null) }
 
-    AlertDialog(
+    BasicAlertDialog(
         //properties = DialogProperties(usePlatformDefaultWidth = false),
         //onDismiss we don't change the flow
         onDismissRequest = onDismissRequest
@@ -174,7 +175,7 @@ fun FlowDemoAddFunctionDialog(
                                     )
                                 } else {
                                     BlueMsButton(
-                                        modifier = Modifier.padding(end= LocalDimensions.current.paddingSmall),
+                                        modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
                                         text = "Cancel",
                                         onClick = {
                                             //we don't change the flow
@@ -187,7 +188,8 @@ fun FlowDemoAddFunctionDialog(
                                         onClick = {
                                             //save the current Modified Flow
                                             //  resetting outputs
-                                            val tmp2: MutableList<Output> = flowOnCreation.outputs.toMutableList()
+                                            val tmp2: MutableList<Output> =
+                                                flowOnCreation.outputs.toMutableList()
                                             tmp2.clear()
                                             flowOnCreation.outputs = tmp2.toList()
                                             viewModel.flowOnCreation = flowOnCreation

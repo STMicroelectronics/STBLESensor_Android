@@ -14,21 +14,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,7 +55,7 @@ import com.st.ui.theme.Shapes
 @Composable
 fun CloudMqttApplicationConfiguration(
     modifier: Modifier = Modifier,
-    viewModel: CloudMqttViewModel,
+    viewModel: CloudMqttViewModel
 ) {
 
     ComposableLifecycle { _, event ->
@@ -97,7 +99,9 @@ fun CloudMqttApplicationConfiguration(
 
     var showPassword by remember { mutableStateOf(value = false) }
 
-    var showHelp by remember { mutableStateOf(value = false) }
+    var showInfo by remember { mutableStateOf(value = false) }
+
+    var cloudConfigured by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -111,6 +115,26 @@ fun CloudMqttApplicationConfiguration(
             text = "MQTT Server Configuration"
         )
 
+        if (cloudConfigured) {
+            Text(
+                modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
+                style = MaterialTheme.typography.bodyLarge,
+                color = Grey6,
+                textAlign = TextAlign.Center,
+                text = buildAnnotatedString {
+                    append("Click on  '")
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    ) {
+                        append("Dev Upload")
+                    }
+                    append("'")
+                }
+            )
+        }
+
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
         Surface(
@@ -118,7 +142,7 @@ fun CloudMqttApplicationConfiguration(
                 .fillMaxWidth()
                 .padding(all = LocalDimensions.current.paddingNormal),
             shadowElevation = LocalDimensions.current.elevationNormal,
-            shape = Shapes.medium,
+            shape = Shapes.medium
         ) {
             Column(
                 modifier = Modifier
@@ -128,7 +152,7 @@ fun CloudMqttApplicationConfiguration(
                 //Host
                 Text(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingSmall),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     text = "Host Url"
                 )
                 OutlinedTextField(
@@ -136,6 +160,7 @@ fun CloudMqttApplicationConfiguration(
                         .fillMaxWidth()
                         .padding(start = LocalDimensions.current.paddingNormal),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     value = hostUrl,
                     placeholder = { Text("Broker URL", color = Grey6) },
                     onValueChange = {
@@ -145,13 +170,14 @@ fun CloudMqttApplicationConfiguration(
 
                 Text(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingSmall),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     text = "Port"
                 )
 
                 OutlinedTextField(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     value = hostPort.toString(),
                     onValueChange = {
                         hostPort = it.toIntOrNull() ?: 1883
@@ -162,7 +188,7 @@ fun CloudMqttApplicationConfiguration(
                 //User Name
                 Text(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingSmall),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     text = "User Name"
                 )
                 OutlinedTextField(
@@ -171,6 +197,7 @@ fun CloudMqttApplicationConfiguration(
                         .padding(start = LocalDimensions.current.paddingNormal),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     placeholder = { Text("Optional", color = Grey6) },
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     value = userName,
                     onValueChange = {
                         userName = it
@@ -180,7 +207,7 @@ fun CloudMqttApplicationConfiguration(
                 //Password
                 Text(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingSmall),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     text = "Password"
                 )
                 OutlinedTextField(
@@ -188,6 +215,7 @@ fun CloudMqttApplicationConfiguration(
                         .fillMaxWidth()
                         .padding(start = LocalDimensions.current.paddingNormal),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     value = userPassWd,
                     onValueChange = {
                         userPassWd = it
@@ -221,7 +249,7 @@ fun CloudMqttApplicationConfiguration(
                 //Client ID
                 Text(
                     modifier = Modifier.padding(start = LocalDimensions.current.paddingSmall),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     text = "Device ID"
                 )
                 OutlinedTextField(
@@ -229,6 +257,7 @@ fun CloudMqttApplicationConfiguration(
                         .fillMaxWidth()
                         .padding(start = LocalDimensions.current.paddingNormal),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     value = deviceId,
                     onValueChange = {
                         deviceId = it
@@ -237,60 +266,26 @@ fun CloudMqttApplicationConfiguration(
             }
         }
 
-        if (hostUrl.isNotEmpty() && deviceId.isNotEmpty()) {
-            Row(
+        Row(modifier = Modifier
+            .clickable { showInfo = !showInfo }
+            .padding(start = LocalDimensions.current.paddingNormal)) {
+            Icon(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(LocalDimensions.current.paddingNormal),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
+                    .padding(end = LocalDimensions.current.paddingMedium)
+                    .size(size = LocalDimensions.current.iconSmall),
+                tint = MaterialTheme.colorScheme.primary,
+                imageVector = Icons.Default.Info,
+                contentDescription = null
+            )
 
-                BlueMsButton(
-                    color = ErrorText,
-                    text = "Reset",
-                    onClick = {
-                        viewModel.resetAndDeletedSavedMqttCloudApp()
-                    }
-                )
-
-
-                BlueMsButton(
-                    text = stringResource(id = android.R.string.ok),
-                    onClick = {
-                        viewModel.configureAndSaveMqttCloudApp(
-                            CloudMqttServerConfig(
-                                hostUrl = hostUrl,
-                                hostPort = hostPort,
-                                userName = userName,
-                                userPassWd = userPassWd,
-                                deviceId = deviceId
-                            )
-                        )
-                    }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-        Row(modifier = Modifier.clickable { showHelp = !showHelp }) {
             Text(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
-                text = "Help"
-            )
-
-            Icon(
-                modifier = Modifier
-                    .padding(start = LocalDimensions.current.paddingMedium)
-                    .size(size = LocalDimensions.current.iconSmall),
-                tint = MaterialTheme.colorScheme.primary,
-                imageVector = Icons.Default.Help,
-                contentDescription = null
+                text = if (showInfo) "Hide Info" else "Show Info"
             )
         }
 
-        if (showHelp) {
+        if (showInfo) {
             Text(
                 modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall),
                 style = MaterialTheme.typography.bodySmall,
@@ -338,6 +333,44 @@ fun CloudMqttApplicationConfiguration(
                     }
                 }
             )
+        }
+
+        Spacer(modifier = Modifier.weight(2f))
+
+        if (hostUrl.isNotEmpty() && deviceId.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(LocalDimensions.current.paddingNormal),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+
+                BlueMsButton(
+                    color = ErrorText,
+                    text = "Reset",
+                    onClick = {
+                        cloudConfigured = false
+                        viewModel.resetAndDeletedSavedMqttCloudApp()
+                    }
+                )
+
+
+                BlueMsButton(
+                    text = stringResource(id = android.R.string.ok),
+                    onClick = {
+                        cloudConfigured = true
+                        viewModel.configureAndSaveMqttCloudApp(
+                            CloudMqttServerConfig(
+                                hostUrl = hostUrl,
+                                hostPort = hostPort,
+                                userName = userName,
+                                userPassWd = userPassWd,
+                                deviceId = deviceId
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
 }

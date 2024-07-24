@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -52,6 +52,7 @@ fun BoardHeader(
     modifier: Modifier = Modifier,
     board: BoardFirmware,
     boardDescOrNull: BoardDescription? = null,
+    showGoToFw: Boolean = true,
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ }
 ) {
@@ -84,8 +85,8 @@ fun BoardHeader(
                     fontSize = 14.sp,
                     lineHeight = 20.sp,
                     letterSpacing = 0.25.sp,
-                    color = Grey6,
-                )
+                    color = Grey6
+                    )
             }
 
             Box(
@@ -137,24 +138,26 @@ fun BoardHeader(
                 }
             }
 
-            Divider()
+            HorizontalDivider()
 
             Row(modifier = Modifier.fillMaxWidth()) {
-                TextButton(
-                    modifier = Modifier.weight(0.4f), onClick = goToFw
-                ) {
-                    Text(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 16.sp,
-                        letterSpacing = 1.25.sp,
-                        color = SecondaryBlue,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = LocalDimensions.current.paddingNormal),
-                        textAlign = TextAlign.Left,
-                        text = stringResource(id = R.string.st_catalog_board_fwBtn).uppercase()
-                    )
+                if(showGoToFw) {
+                    TextButton(
+                        modifier = Modifier.weight(0.4f), onClick = goToFw
+                    ) {
+                        Text(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 16.sp,
+                            letterSpacing = 1.25.sp,
+                            color = SecondaryBlue,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = LocalDimensions.current.paddingNormal),
+                            textAlign = TextAlign.Left,
+                            text = stringResource(id = R.string.st_catalog_board_fwBtn).uppercase()
+                        )
+                    }
                 }
 
                 boardDescOrNull?.let {
@@ -224,7 +227,7 @@ private fun BoardHeaderNrndPreview() {
                 description = "",
                 docURL = "www",
                 orderURL = "www",
-                videoURL = "www",
+                videoURL = "www"
             )
         )
     }
@@ -259,7 +262,7 @@ private fun BoardHeaderActivePreview() {
                 description = "",
                 docURL = "www",
                 orderURL = "www",
-                videoURL = "www",
+                videoURL = "www"
             )
         )
     }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,16 +35,14 @@ fun DialogBoardComponents(
     compList: List<String>,
     onDismissRequest: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-    ) {
+    BasicAlertDialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight(),
             shape = Shapes.medium
         ) {
-            Column(modifier = Modifier.padding(all= LocalDimensions.current.paddingMedium)) {
+            Column(modifier = Modifier.padding(all = LocalDimensions.current.paddingMedium)) {
                 Text(
                     text = "On board components:",
                     modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
@@ -64,7 +63,7 @@ fun DialogBoardComponents(
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
                             letterSpacing = 0.25.sp,
-                            color = Grey6,
+                            color = Grey6
                         )
                     }
                 }

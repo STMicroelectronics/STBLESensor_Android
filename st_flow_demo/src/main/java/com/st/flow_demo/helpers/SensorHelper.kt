@@ -278,12 +278,13 @@ fun parseUcfFile(
     uri: Uri,
     sensorConfiguration: SensorConfiguration,
     isMLC: Boolean,
-    board: Boards.Model
+    board: Boards.Model,
+    sensorModel: String
 ): String? {
     var errorTest: String? = null
     var regConfig = ""
     var labels = ""
-    var steval_supported = false
+    var sensor_supported = false
     var stmc_page = false
     var mlc_enabled = false
     var fsm_enabled = false
@@ -306,18 +307,12 @@ fun parseUcfFile(
         try {
             while (myReader.readLine().also { myDataRow = it } != null) {
 
-                // Check steval is correct
-                if (board == Boards.Model.SENSOR_TILE_BOX) {
-                    if (myDataRow!!.contains("LSM6DSOX")) {
-                        steval_supported = true
-                    }
-                } else if (board == Boards.Model.SENSOR_TILE_BOX_PRO || board == Boards.Model.SENSOR_TILE_BOX_PROB) {
-                    if (myDataRow!!.contains("LSM6DSV16X")) {
-                        steval_supported = true
-                    }
+                // Check if it's the program for the right sensor
+                if (myDataRow!!.contains(sensorModel)) {
+                    sensor_supported = true
                 }
 
-                if (steval_supported) {
+                if (sensor_supported) {
                     // MLC labels in ucf header
                     if (myDataRow!!.contains("<MLC") && myDataRow!!.contains("_SRC>")) {
                         myDataRow = myDataRow!!.substring(3)
@@ -369,14 +364,14 @@ fun parseUcfFile(
 
             myReader.close()
         } catch (e: Exception) {
-            steval_supported = false
+            sensor_supported = false
         }
 
         //Close the Input Stream
         inputStream.close()
     }
 
-    if (steval_supported) {
+    if (sensor_supported) {
         val ucfFilename = context.contentResolver.query(uri, null, null, null, null)
             ?.use { cursor ->
                 val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -407,11 +402,7 @@ fun parseUcfFile(
             }
         }
     } else {
-        errorTest = if (board == Boards.Model.SENSOR_TILE_BOX) {
-            context.getString(R.string.ucf_file_steval_mksbox1v1_unsupported)
-        } else {
-            context.getString(R.string.ucf_file_steval_mkboxpro_unsupported)
-        }
+        errorTest = "The selected ucf file is not compatible with the $sensorModel device"
     }
     return errorTest
 }

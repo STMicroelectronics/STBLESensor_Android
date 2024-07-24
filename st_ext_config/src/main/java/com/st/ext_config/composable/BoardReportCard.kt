@@ -68,7 +68,7 @@ fun BoardReportCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = LocalDimensions.current.paddingNormal),
+                .padding(all = LocalDimensions.current.paddingNormal)
         ) {
             Header(
                 isOpen = isOpen,
@@ -115,7 +115,7 @@ fun BoardReportContentCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(all = LocalDimensions.current.paddingNormal)
     ) {
         val uidTextColor = if (showGetUID) Grey6 else Grey6.copy(alpha = 0.3f)
         Text(

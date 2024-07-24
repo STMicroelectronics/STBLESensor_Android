@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -132,7 +132,7 @@ fun FlowDemoFunctionConfigurationScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = LocalDimensions.current.paddingNormal),
+                    .padding(end = LocalDimensions.current.paddingNormal)
             ) {
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -175,7 +175,7 @@ fun FlowDemoFunctionConfigurationScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = LocalDimensions.current.paddingNormal),
+                    .padding(end = LocalDimensions.current.paddingNormal)
             ) {
                 BlueMsButton(
                     text = "Cancel",

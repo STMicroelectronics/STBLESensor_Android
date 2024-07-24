@@ -21,7 +21,7 @@ data class DeviceFlow(
     @SerialName(value = "version")
     var version: Int = 0,
     @SerialName(value = "ex_app")
-    var ex_app: Int,
+    var ex_app: Int
 ) {
 
     companion object {

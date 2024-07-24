@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -125,7 +125,7 @@ fun DeviceHeader(
             }
 
             if (runningFw != null) {
-                Divider(modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall))
+                HorizontalDivider(modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall))
 
                 Text(
                     modifier = Modifier

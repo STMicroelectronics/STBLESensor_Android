@@ -1,6 +1,5 @@
 package com.st.smart_motor_control.composable
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,13 +15,13 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material.Text
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -66,6 +66,7 @@ import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Shapes
 import com.st.ui.theme.SuccessText
 import com.st.ui.theme.WarningPressed
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +83,8 @@ fun MotorControl(
     speedRef: Int? = null,
     speedMeas: Int? = null,
     busVoltage: Int? = null,
+    neaiClassName: String? = null,
+    neaiClassProb: Float? = null,
     temperatureUnit: String,
     speedRefUnit: String,
     speedMeasUnit: String,
@@ -89,7 +92,6 @@ fun MotorControl(
     onSendCommand: (String, CommandRequest?) -> Unit = { _, _ -> /** NOOP**/ },
     onValueChange: (String, Pair<String, Any>) -> Unit = { _, _ -> /** NOOP**/ }
 ) {
-
     var openSettingMotorSpeedDialog by rememberSaveable { mutableStateOf(value = false) }
 
     Column(
@@ -113,114 +115,118 @@ fun MotorControl(
                     .padding(all = LocalDimensions.current.paddingSmall),
                 verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingSmall)
             ) {
-                Icon(
-                    modifier = Modifier
-                        .size(size = LocalDimensions.current.iconMedium)
-                        .padding(
-                            start = LocalDimensions.current.paddingNormal,
-                            top = LocalDimensions.current.paddingNormal
-                        ),
-                    painter = painterResource(R.drawable.smart_motor_control_icon),
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = null
-                )
-
-                Text(
-                    modifier = Modifier
-                        .padding(
-                            top = LocalDimensions.current.paddingSmall,
-                            start = LocalDimensions.current.paddingNormal,
-                            end = LocalDimensions.current.paddingNormal
-                        ),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    text = "Motor Information"
-                )
-
-                if (!isRunning) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                top = LocalDimensions.current.paddingSmall,
-                                start = LocalDimensions.current.paddingNormal,
-                                end = LocalDimensions.current.paddingNormal
-                            ),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                     ) {
-
-                        val modId = "modIcon"
-                        val textButton = buildAnnotatedString {
-                            appendInlineContent(modId, "[icon]")
-                            append(" STOPPED")
-
-                        }
-                        val inlineContent = mapOf(
-                            Pair(
-                                // This tells the [CoreText] to replace the placeholder string "[icon]" by
-                                // the composable given in the [InlineTextContent] object.
-                                modId,
-                                InlineTextContent(
-                                    // Placeholder tells text layout the expected size and vertical alignment of
-                                    // children composable.
-                                    Placeholder(
-                                        width = 20.sp,
-                                        height = 20.sp,
-                                        placeholderVerticalAlign = PlaceholderVerticalAlign.Center
-                                    )
-                                ) {
-                                    // This Icon will fill maximum size, which is specified by the [Placeholder]
-                                    // above. Notice the width and height in [Placeholder] are specified in TextUnit,
-                                    // and are converted into pixel by text layout.
-
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(size = LocalDimensions.current.iconSmall),
-                                        painter = painterResource(R.drawable.ic_close),
-                                        tint = ErrorText,
-                                        contentDescription = null
-                                    )
-                                }
-                            )
+                    Column {
+                        Icon(
+                            modifier = Modifier
+                                .size(size = LocalDimensions.current.iconMedium)
+                                .padding(
+                                    start = LocalDimensions.current.paddingNormal,
+                                    top = LocalDimensions.current.paddingNormal
+                                ),
+                            painter = painterResource(R.drawable.smart_motor_control_icon),
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = null
                         )
 
                         Text(
                             modifier = Modifier
                                 .padding(
-                                    start = LocalDimensions.current.paddingNormal
+                                    top = LocalDimensions.current.paddingSmall,
+                                    start = LocalDimensions.current.paddingNormal,
+                                    end = LocalDimensions.current.paddingNormal
                                 ),
-                            style = MaterialTheme.typography.bodySmall,
-                            text = textButton,
-                            color = ErrorText,
-                            inlineContent = inlineContent
-                        )
-
-                        BlueMsButton(
-                            text = "START",
-                            color = SuccessText,
-                            onClick = {
-                                val command =
-                                    CommandRequest(commandType = "", commandName = "start_motor")
-
-                                onSendCommand(MOTOR_CONTROLLER_JSON_KEY, command)
-                            }
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            text = "Motor Information"
                         )
                     }
-                } else {
-                    when (faultStatus) {
-                        MotorControlFault.None -> {
-                            Row(
+
+                    Column(
+                        modifier = Modifier.padding(end = LocalDimensions.current.paddingNormal),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        if (!isRunning) {
+                            BlueMsButton(
+                                text = "START",
+                                color = SuccessText,
+                                onClick = {
+                                    val command =
+                                        CommandRequest(
+                                            commandType = "",
+                                            commandName = "start_motor"
+                                        )
+
+                                    onSendCommand(MOTOR_CONTROLLER_JSON_KEY, command)
+                                }
+                            )
+
+                            val modId = "modIcon"
+                            val textButton = buildAnnotatedString {
+                                appendInlineContent(modId, "[icon]")
+                                append(" STOPPED")
+
+                            }
+                            val inlineContent = mapOf(
+                                Pair(
+                                    // This tells the [CoreText] to replace the placeholder string "[icon]" by
+                                    // the composable given in the [InlineTextContent] object.
+                                    modId,
+                                    InlineTextContent(
+                                        // Placeholder tells text layout the expected size and vertical alignment of
+                                        // children composable.
+                                        Placeholder(
+                                            width = 20.sp,
+                                            height = 20.sp,
+                                            placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                                        )
+                                    ) {
+                                        // This Icon will fill maximum size, which is specified by the [Placeholder]
+                                        // above. Notice the width and height in [Placeholder] are specified in TextUnit,
+                                        // and are converted into pixel by text layout.
+
+                                        Icon(
+                                            modifier = Modifier
+                                                .size(size = LocalDimensions.current.iconSmall),
+                                            painter = painterResource(R.drawable.ic_close),
+                                            tint = ErrorText,
+                                            contentDescription = null
+                                        )
+                                    }
+                                )
+                            )
+
+                            Text(
                                 modifier = Modifier
-                                    .fillMaxWidth()
                                     .padding(
-                                        top = LocalDimensions.current.paddingSmall,
-                                        start = LocalDimensions.current.paddingNormal,
-                                        end = LocalDimensions.current.paddingNormal
+                                        start = LocalDimensions.current.paddingNormal
                                     ),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                text = textButton,
+                                color = ErrorText,
+                                inlineContent = inlineContent
+                            )
+                        } else {
+                            if (faultStatus == MotorControlFault.None) {
+
+
+                                BlueMsButton(
+                                    text = "STOP",
+                                    color = ErrorText,
+                                    onClick = {
+                                        val command = CommandRequest(
+                                            commandType = "",
+                                            commandName = "stop_motor"
+                                        )
+                                        onSendCommand(MOTOR_CONTROLLER_JSON_KEY, command)
+                                    }
+                                )
 
                                 val modId = "modIcon"
                                 val textButton = buildAnnotatedString {
@@ -264,49 +270,24 @@ fun MotorControl(
                                         ),
                                     style = MaterialTheme.typography.bodySmall,
                                     text = textButton,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                     color = SuccessText,
                                     inlineContent = inlineContent
                                 )
+                            } else {
 
                                 BlueMsButton(
-                                    text = "STOP",
-                                    color = ErrorText,
+                                    text = "FAULT ACK",
+                                    color = PrimaryYellow,
                                     onClick = {
                                         val command = CommandRequest(
                                             commandType = "",
-                                            commandName = "stop_motor"
+                                            commandName = "ack_fault"
                                         )
                                         onSendCommand(MOTOR_CONTROLLER_JSON_KEY, command)
                                     }
                                 )
-                            }
-
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        start = LocalDimensions.current.paddingNormal,
-                                        end = LocalDimensions.current.paddingNormal
-                                    ),
-                                style = MaterialTheme.typography.bodySmall,
-                                text = "No fault message"
-                            )
-                        }
-
-                        else -> {
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        top = LocalDimensions.current.paddingSmall,
-                                        start = LocalDimensions.current.paddingNormal,
-                                        end = LocalDimensions.current.paddingNormal
-                                    ),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-
                                 val modId = "modIcon"
                                 val textButton = buildAnnotatedString {
                                     appendInlineContent(modId, "[icon]")
@@ -349,61 +330,68 @@ fun MotorControl(
                                         ),
                                     style = MaterialTheme.typography.bodySmall,
                                     text = textButton,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                     color = WarningPressed,
                                     inlineContent = inlineContent
                                 )
-
-                                BlueMsButton(
-                                    text = "FAULT ACK",
-                                    color = PrimaryYellow,
-                                    onClick = {
-                                        val command = CommandRequest(
-                                            commandType = "",
-                                            commandName = "ack_fault"
-                                        )
-                                        onSendCommand(MOTOR_CONTROLLER_JSON_KEY, command)
-                                    }
-                                )
                             }
-
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        start = LocalDimensions.current.paddingNormal,
-                                        end = LocalDimensions.current.paddingNormal
-                                    ),
-                                style = MaterialTheme.typography.bodySmall,
-                                text = buildAnnotatedString {
-                                    //append("FAULT ")
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    ) {
-                                        append("FAULT: '")
-                                        append(faultStatus.getErrorStringFromCode())
-                                        append("'")
-                                    }
-                                    append("\nA problem has been detected, click on '")
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    ) {
-                                        append("FAULT ACK")
-                                    }
-                                    append("' to restart the motor.")
-                                },
-                                color = WarningPressed
-                            )
                         }
                     }
                 }
 
 
+
+                if (isRunning) {
+                    if (faultStatus == MotorControlFault.None) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = LocalDimensions.current.paddingNormal,
+                                    end = LocalDimensions.current.paddingNormal
+                                ),
+                            style = MaterialTheme.typography.bodySmall,
+                            text = "No fault message"
+                        )
+                    } else {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = LocalDimensions.current.paddingNormal,
+                                    end = LocalDimensions.current.paddingNormal
+                                ),
+                            style = MaterialTheme.typography.bodySmall,
+                            text = buildAnnotatedString {
+                                //append("FAULT ")
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                ) {
+                                    append("FAULT: '")
+                                    append(faultStatus.getErrorStringFromCode())
+                                    append("'")
+                                }
+                                append("\nA problem has been detected, click on '")
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                ) {
+                                    append("FAULT ACK")
+                                }
+                                append("' to restart the motor.")
+                            },
+                            color = WarningPressed
+                        )
+                    }
+                }
+
+
                 if ((isRunning) && (faultStatus == MotorControlFault.None)) {
-                    Divider(modifier = Modifier.fillMaxWidth())
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
                     Text(
                         modifier = Modifier
@@ -442,7 +430,7 @@ fun MotorControl(
                             colors = SliderDefaults.colors(
                                 thumbColor = SecondaryBlue,
                                 activeTrackColor = SecondaryBlue,
-                                inactiveTrackColor = Grey6,
+                                inactiveTrackColor = Grey6
                             ),
                             valueRange = if (motorSpeedControl != null) {
 
@@ -526,7 +514,7 @@ fun MotorControl(
                             }
                             append("' button")
                         },
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 } else {
                     Text(
@@ -556,7 +544,7 @@ fun MotorControl(
                             }
                             append(" button")
                         },
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
 
@@ -591,6 +579,14 @@ fun MotorControl(
                             label = "Bus Voltage",
                             value = it,
                             unit = busVoltageUnit
+                        )
+                    }
+
+                    if ((neaiClassName != null) || neaiClassProb != null) {
+                        SlowTelemetry(
+                            id = R.drawable.neai_icon,
+                            label = if (neaiClassName != null) "Class: $neaiClassName" else "Class: Undef",
+                            value = neaiClassProb ?: 0f
                         )
                     }
 
@@ -642,10 +638,10 @@ fun SettingMotorSpeedDialog(
                 Text(
                     text = "Set Motor Speed",
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                )
+                    fontWeight = FontWeight.Bold
+                    )
 
-                Divider()
+                HorizontalDivider()
 
                 CircularProgressIndicator(
                     Modifier.padding(top = LocalDimensions.current.paddingNormal),
@@ -668,7 +664,7 @@ fun SlowTelemetry(@DrawableRes id: Int, label: String, value: Int, unit: String)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = LocalDimensions.current.paddingNormal),
+                .padding(all = LocalDimensions.current.paddingSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -721,15 +717,82 @@ fun SlowTelemetry(@DrawableRes id: Int, label: String, value: Int, unit: String)
                 fontStyle = FontStyle.Italic
             )
         }
-        Divider(
+        HorizontalDivider(
             Modifier
                 .fillMaxWidth()
-                .padding(all = LocalDimensions.current.paddingNormal),
+                .padding(all = LocalDimensions.current.paddingSmall),
             thickness = 1.dp, color = PrimaryBlue
         )
     }
 }
 
+
+@Composable
+fun SlowTelemetry(@DrawableRes id: Int, label: String, value: Float) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = LocalDimensions.current.paddingSmall),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Icon(
+                modifier = Modifier
+                    .weight(1f, true)
+                    .size(size = LocalDimensions.current.iconSmall),
+                painter = painterResource(id),
+                contentDescription = null
+            )
+
+            Text(
+                modifier = Modifier
+                    .weight(4f, true)
+                    .padding(
+                        start = LocalDimensions.current.paddingNormal
+                    ),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
+                text = label
+            )
+
+            Surface(
+                modifier = Modifier
+                    .weight(2f, true)
+                    .padding(start = LocalDimensions.current.paddingNormal),
+                shape = Shapes.small,
+                color = Grey3
+            ) {
+
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            all = LocalDimensions.current.paddingNormal
+                        ),
+                    textAlign = TextAlign.Center,
+                    text = String.format(locale = Locale.getDefault(),"%.2f",  value)
+                )
+            }
+            Text(
+                modifier = Modifier
+                    .weight(2f, true)
+                    .padding(
+                        start = LocalDimensions.current.paddingNormal
+                    ),
+                text = "",
+                textAlign = TextAlign.Start,
+                fontStyle = FontStyle.Italic
+            )
+        }
+        HorizontalDivider(
+            Modifier
+                .fillMaxWidth()
+                .padding(all = LocalDimensions.current.paddingSmall),
+            thickness = 1.dp, color = PrimaryBlue
+        )
+    }
+}
 
 @Composable
 fun SliderLabel(label: String, minWidth: Dp, modifier: Modifier = Modifier) {
@@ -760,26 +823,6 @@ private fun SettingMotorSpeedDialogPreview() {
         isLoading = true,
         onDismiss = {}
     )
-}
-
-@Preview
-@Composable
-private fun MotorControlPreviewStopped() {
-    PreviewBlueMSTheme {
-        MotorControl(
-            dataRawPnpLFeature = "Slow telemetries values...",
-            isRunning = false,
-            faultStatus = MotorControlFault.None,
-            temperature = null,
-            speedRef = null,
-            speedMeas = null,
-            busVoltage = null,
-            temperatureUnit = "temp",
-            speedRefUnit = "speed",
-            speedMeasUnit = "speed",
-            busVoltageUnit = "voltage"
-        )
-    }
 }
 
 @Preview
@@ -843,6 +886,25 @@ private fun MotorControlPreviewRunningTel2() {
     }
 }
 
+@Preview
+@Composable
+private fun MotorControlPreviewStopped() {
+    PreviewBlueMSTheme {
+        MotorControl(
+            dataRawPnpLFeature = "Slow telemetries values...",
+            isRunning = false,
+            faultStatus = MotorControlFault.None,
+            temperature = null,
+            speedRef = null,
+            speedMeas = null,
+            busVoltage = null,
+            temperatureUnit = "temp",
+            speedRefUnit = "speed",
+            speedMeasUnit = "speed",
+            busVoltageUnit = "voltage"
+        )
+    }
+}
 
 @Preview
 @Composable

@@ -21,7 +21,7 @@ enum class ProfileType(
     ),
     SALES(
         permissions = listOf(
-            AuthorizedActions.EXPLORE_CATALOG,
+            AuthorizedActions.EXPLORE_CATALOG
         )
     ),
     OTHER(

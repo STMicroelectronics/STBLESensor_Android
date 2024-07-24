@@ -22,7 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.FloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterAltOff
@@ -50,7 +50,6 @@ import com.st.catalog.CatalogViewModel
 import com.st.catalog.R
 import com.st.catalog.availableDemos
 import com.st.ui.composables.StTopBar
-import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
@@ -80,7 +79,7 @@ fun FirmwareList(
 fun FirmwareList(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = { /** NOOP **/ },
-    firmwareList: List<BoardFirmware>,
+    firmwareList: List<BoardFirmware>
 ) {
 
     var onlyLatest by remember { mutableStateOf(value = true) }
@@ -168,7 +167,6 @@ fun FirmwareList(
                         .align(Alignment.TopEnd)
                         .padding(LocalDimensions.current.paddingNormal),
                     contentColor = SecondaryBlue,
-                    backgroundColor = Grey0,
                     shape = CircleShape,
                     onClick = {
                         coroutineScope.launch {

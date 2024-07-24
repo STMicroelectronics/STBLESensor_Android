@@ -9,7 +9,10 @@ package com.st.binary_content
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,10 +25,10 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
+import com.st.blue_sdk.models.ChunkProgress
 import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flowOn
@@ -41,14 +44,20 @@ import javax.inject.Inject
 @HiltViewModel
 class BinaryContentViewModel @Inject constructor(
     private val blueManager: BlueManager,
-    private val coroutineScope: CoroutineScope,
+    //private val coroutineScope: CoroutineScope,
     private val stPreferences: StPreferences,
     private val application: Application
 ) : ViewModel() {
 
     private var observeFeaturePnPLJob: Job? = null
+    private var observeChunkProgressJob: Job? = null
 
-    var maxPayloadSize: Int = 20
+    //var maxBinaryContentWriteSize: Int = 20
+
+    private val _maxBinaryContentWriteSize = mutableIntStateOf(value = 20)
+    val maxBinaryContentWriteSize: State<Int>
+        get() = _maxBinaryContentWriteSize
+
 
     private val _modelUpdates =
         mutableStateOf<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>(
@@ -65,11 +74,15 @@ class BinaryContentViewModel @Inject constructor(
     val isLoading: State<Boolean>
         get() = _isLoading
 
+    private val _isSendingOperationOnGoing = mutableStateOf(value = false)
+    val isSendingOperationOnGoing: State<Boolean>
+        get() = _isSendingOperationOnGoing
+
     private val _enableCollapse = mutableStateOf(value = false)
     val enableCollapse: State<Boolean>
         get() = _enableCollapse
 
-    private val _lastStatusUpdatedAt = mutableStateOf(value = 0L)
+    private val _lastStatusUpdatedAt = mutableLongStateOf(value = 0L)
     val lastStatusUpdatedAt: State<Long>
         get() = _lastStatusUpdatedAt
 
@@ -90,13 +103,17 @@ class BinaryContentViewModel @Inject constructor(
 
     var fileOperationResult: String? = null
 
-    private val _bytesRec = mutableStateOf(value = 0)
+    private val _bytesRec = mutableIntStateOf(value = 0)
     val bytesRec: State<Int>
         get() = _bytesRec
 
-    private val _numberPackets = mutableStateOf(value = 0)
+    private val _numberPackets = mutableIntStateOf(value = 0)
     val numberPackets: State<Int>
         get() = _numberPackets
+
+    private val _chunkProgress = mutableStateOf<ChunkProgress?>(null)
+    val chunkProgress: State<ChunkProgress?>
+        get() = _chunkProgress
 
     private fun sendGetAllCommand(nodeId: String) {
         viewModelScope.launch {
@@ -133,16 +150,6 @@ class BinaryContentViewModel @Inject constructor(
                     )
                 )
             }
-        }
-    }
-
-    fun setDtmiModel(nodeId: String, fileUri: Uri) {
-        viewModelScope.launch {
-            _modelUpdates.value = blueManager.setDtmiModel(
-                nodeId = nodeId,
-                fileUri = fileUri,
-                contentResolver = application.contentResolver
-            )?.extractComponent(compName = "control") ?: emptyList()
         }
     }
 
@@ -188,7 +195,6 @@ class BinaryContentViewModel @Inject constructor(
                         )
                     )
 
-                    //sendGetAllCommand(nodeId = nodeId)
                     sendGetComponentStatus(nodeId = nodeId, compName = name)
                 }
             }
@@ -219,7 +225,6 @@ class BinaryContentViewModel @Inject constructor(
                         featureCommand = featureCommand
                     )
 
-                    //sendGetAllCommand(nodeId = nodeId)
                     sendGetComponentStatus(nodeId = nodeId, compName = name)
                 }
             }
@@ -236,14 +241,11 @@ class BinaryContentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val stream = file?.let { contentResolver.openInputStream(it) } ?: return@launch
-                // val stream = file?.let { contentResolver.openInputStream(it) }
-                // stream?.let {
                 byteArrayContentToBoard = stream.readBytes()
                 stream.close()
-                fileOperationResult = "File read correctly"
+                fileOperationResult = "File read [${byteArrayContentToBoard!!.size} Bytes]"
                 _fileOperationResultVisible.value = true
                 _binaryContentReadyForSending.value = true
-                // }
                 return@launch
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
@@ -267,7 +269,7 @@ class BinaryContentViewModel @Inject constructor(
 
                 stream.write(byteArrayContentFromBoard)
                 stream.close()
-                fileOperationResult = "File written correctly"
+                fileOperationResult = "File written"
                 _binaryContentReceived.value = false
                 _fileOperationResultVisible.value = true
                 return@launch
@@ -293,8 +295,19 @@ class BinaryContentViewModel @Inject constructor(
                 val feature = it as BinaryContent
                 //Set the MaxPayloadSize to the node
                 //20 byte is the default size
-                feature.setMaxPayLoadSize(maxPayloadSize)
+                feature.setMaxPayLoadSize(maxBinaryContentWriteSize.value)
+
+                //Get the chunk progress
+                observeChunkProgressJob?.cancel()
+                observeChunkProgressJob =viewModelScope.launch {
+                    blueManager.resetChunkProgressUpdates(nodeId = nodeId)
+                    blueManager.getChunkProgressUpdates(nodeId = nodeId)?.collect { chunkProgress ->
+                        _chunkProgress.value = chunkProgress
+                    }
+                }
+
                 viewModelScope.launch(Dispatchers.IO) {
+                    _isSendingOperationOnGoing.value = true
                     blueManager.writeFeatureCommand(
                         responseTimeout = 0,
                         nodeId = nodeId,
@@ -303,10 +316,12 @@ class BinaryContentViewModel @Inject constructor(
                             data = byteArrayContentToBoard!!
                         )
                     )
+                    _isSendingOperationOnGoing.value = false
+                    observeChunkProgressJob?.cancel()
                     byteArrayContentToBoard = null
                     _binaryContentReadyForSending.value = false
-                    _numberPackets.value = 0
-                    _bytesRec.value = 0
+                    _numberPackets.intValue = 0
+                    _bytesRec.intValue = 0
                 }
             }
         }
@@ -314,8 +329,8 @@ class BinaryContentViewModel @Inject constructor(
 
     fun startDemo(nodeId: String) {
         observeFeaturePnPLJob?.cancel()
-        _numberPackets.value = 0
-        _bytesRec.value = 0
+        _numberPackets.intValue = 0
+        _bytesRec.intValue = 0
 
         //Set the maxPayload size used for writing to node..
 //        val node = blueManager.getNode(nodeId)
@@ -337,6 +352,9 @@ class BinaryContentViewModel @Inject constructor(
                             // //getModel(nodeId = nodeId, demoName = null)
                             _isLoading.value = true
 
+                            val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
+
+
                             _modelUpdates.value =
                                 blueManager.getDtmiModel(
                                     nodeId = nodeId,
@@ -354,11 +372,22 @@ class BinaryContentViewModel @Inject constructor(
 //                            }
                             // //
 
-                            // //sendGetAllCommand(nodeId = nodeId)
                             val featurePnPL =
                                 blueManager.nodeFeatures(nodeId).find { it.name == PnPL.NAME }
 
                             if (featurePnPL is PnPL) {
+
+                                var maxWriteLength =
+                                    node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
+
+                                maxWriteLength?.let {
+
+                                    if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                        maxWriteLength = (node.maxPayloadSize)
+                                    }
+                                    featurePnPL.setMaxPayLoadSize(maxWriteLength!!)
+                                }
+
                                 blueManager.writeFeatureCommand(
                                     responseTimeout = 0,
                                     nodeId = nodeId,
@@ -367,6 +396,22 @@ class BinaryContentViewModel @Inject constructor(
                                         cmd = PnPLCmd.ALL
                                     )
                                 )
+                            }
+
+                            //Search the max write for Binary Content
+                            val binaryFeature = blueManager.nodeFeatures(nodeId = nodeId).find {it.name == BinaryContent.NAME}
+                            if (binaryFeature is BinaryContent) {
+                                var maxWriteLength =
+                                    node.catalogInfo?.characteristics?.firstOrNull { it.name == BinaryContent.NAME }?.maxWriteLength
+                                maxWriteLength?.let {
+
+                                    if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                        maxWriteLength = (node.maxPayloadSize)
+                                    }
+
+                                    binaryFeature.setMaxPayLoadSize(maxWriteLength!!)
+                                    _maxBinaryContentWriteSize.intValue = maxWriteLength!!
+                                }
                             }
                             // //
                         }
@@ -377,7 +422,7 @@ class BinaryContentViewModel @Inject constructor(
 
                     if (data is PnPLConfig) {
                         data.deviceStatus.value?.components?.let { json ->
-                            _lastStatusUpdatedAt.value = System.currentTimeMillis()
+                            _lastStatusUpdatedAt.longValue = System.currentTimeMillis()
                             _componentStatusUpdates.value = json
                             _isLoading.value = false
                         }
@@ -387,8 +432,8 @@ class BinaryContentViewModel @Inject constructor(
                             byteArrayContentFromBoard = data.data.value
                             _binaryContentReceived.value = true
                         }
-                        _numberPackets.value = data.numberPackets.value
-                        _bytesRec.value = data.bytesRec.value
+                        _numberPackets.intValue = data.numberPackets.value
+                        _bytesRec.intValue = data.bytesRec.value
 
                     }
                 }.launchIn(viewModelScope)
@@ -417,5 +462,9 @@ class BinaryContentViewModel @Inject constructor(
                 nodeId = nodeId, features = features
             )
         }
+    }
+
+    fun setMaxBinaryContentWriteSize(newValue: Int) {
+     _maxBinaryContentWriteSize.intValue = newValue
     }
 }

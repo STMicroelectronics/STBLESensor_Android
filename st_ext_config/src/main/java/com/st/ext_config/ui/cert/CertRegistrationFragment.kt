@@ -173,7 +173,7 @@ fun CertRegistrationScreen(
             Text(
                 style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
                 modifier = Modifier.fillMaxWidth(),
-                text = cert,
+                text = cert
             )
         }
     }

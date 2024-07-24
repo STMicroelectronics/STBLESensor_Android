@@ -18,8 +18,9 @@ import com.st.blue_sdk.features.acceleration_event.request.EnableDetectionAccele
 import com.st.blue_sdk.models.Boards
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,9 +33,12 @@ class AccelerationEventViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _accEventData = MutableSharedFlow<AccelerationEventInfo>()
-    val accEventData: Flow<AccelerationEventInfo>
-        get() = _accEventData
+    private val _accEventData =
+        MutableStateFlow<Pair<AccelerationEventInfo, Long?>>(
+            Pair(AccelerationEventInfo.emptyAccelerationEventInfo(), null)
+        )
+    val accEventData: StateFlow<Pair<AccelerationEventInfo, Long?>>
+        get() = _accEventData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (feature == null) {
@@ -50,7 +54,11 @@ class AccelerationEventViewModel
                 blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
                     val data = it.data
                     if (data is AccelerationEventInfo) {
-                        _accEventData.emit(data)
+//                        Log.i(
+//                            "AccelerationEventViewModel",
+//                            "Ts=[${it.timeStamp}] AC=[${data.accEvent}] S=[${data.numSteps}]"
+//                        )
+                        _accEventData.emit(Pair(data, it.timeStamp))
                     }
                 }
             }
@@ -81,6 +89,7 @@ class AccelerationEventViewModel
                         enable = enable
                     )
                 )
+                _accEventData.emit(Pair(AccelerationEventInfo.emptyAccelerationEventInfo(), null))
             }
         }
     }

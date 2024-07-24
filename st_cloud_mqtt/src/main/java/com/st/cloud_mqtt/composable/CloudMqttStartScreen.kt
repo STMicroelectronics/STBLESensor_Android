@@ -5,12 +5,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,6 +33,7 @@ import com.st.cloud_mqtt.CloudMqttViewModel
 import com.st.cloud_mqtt.R
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.PrimaryBlue2
 
 @Composable
 fun CloudMqttStartScreen(
@@ -54,14 +56,21 @@ fun CloudMqttStartScreen(
             CloudMqttConfig.CloudTabBar?.invoke("Cloud MQTT")
         },
         bottomBar = {
-            BottomNavigation(
+            NavigationBar(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Grey0
             ) {
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = Grey6,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2,
+                        disabledIconColor = MaterialTheme.colorScheme.primary,
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     selected = 0 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -79,15 +88,22 @@ fun CloudMqttStartScreen(
                     },
                     icon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_construction_24),
+                            painter = painterResource(id = R.drawable.cloud_app_config),
                             contentDescription = stringResource(id = R.string.navigation_tab_cloud_config)
                         )
                     },
                     label = { Text(text = stringResource(id = R.string.navigation_tab_cloud_config)) })
 
-                BottomNavigationItem(
-                    selectedContentColor = Grey0,
-                    unselectedContentColor = if (isBrokerConfigured) Grey6 else MaterialTheme.colorScheme.primary,
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Grey0,
+                        selectedTextColor = Grey0,
+                        unselectedIconColor = Grey6,
+                        unselectedTextColor = Grey6,
+                        indicatorColor = PrimaryBlue2,
+                        disabledIconColor = MaterialTheme.colorScheme.primary,
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     enabled = isBrokerConfigured,
                     selected = 1 == selectedIndex,
                     onClick = {
@@ -106,7 +122,7 @@ fun CloudMqttStartScreen(
                     },
                     icon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.cloud_sync),
+                            painter = painterResource(id = R.drawable.cloud_dev_upload),
                             contentDescription = stringResource(id = R.string.navigation_tab_device_connection)
                         )
                     },

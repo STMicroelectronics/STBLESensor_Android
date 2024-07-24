@@ -8,8 +8,14 @@
 
 apply plugin: 'maven-publish'
 
+def LIB_VERSION = '1.0.0'
 def LIB_GROUP_ID = 'com.st.event_counter'
 def LIB_ARTIFACT_ID = 'st-event_counter'
+
+tasks.register('sourceJar', Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set('sources')
+}
 
 afterEvaluate {
     publishing {
@@ -33,6 +39,7 @@ afterEvaluate {
                 artifactId LIB_ARTIFACT_ID
                 version LIB_VERSION
                 artifact("$buildDir/outputs/aar/st_event_counter-release.aar")
+                artifact(sourceJar)
 
                 pom.withXml {
                     def dependenciesNode = asNode().appendNode('dependencies')

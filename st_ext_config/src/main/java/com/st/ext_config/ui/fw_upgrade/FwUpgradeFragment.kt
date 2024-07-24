@@ -48,7 +48,8 @@ class FwUpgradeFragment : Fragment() {
                             .padding(all = LocalDimensions.current.paddingNormal),
                         viewModel = viewModel,
                         nodeId = nodeId,
-                        fwUrl = url
+                        fwUrl = url,
+                        fwLock = false
                     )
                 }
             }

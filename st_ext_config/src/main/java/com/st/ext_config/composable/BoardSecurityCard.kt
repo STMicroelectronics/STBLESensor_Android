@@ -76,7 +76,7 @@ fun BoardSecurityCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = LocalDimensions.current.paddingNormal),
+                .padding(all = LocalDimensions.current.paddingNormal)
         ) {
             Header(
                 isOpen = isOpen,
@@ -121,7 +121,7 @@ fun BoardSecurityCard(
                         Text(
                             text = "${pin.length} / ${ExtConfigViewModel.MAX_PIN_LEN}",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End,
+                            textAlign = TextAlign.End
                         )
                     },
                     onValueChange = {
@@ -164,7 +164,7 @@ fun BoardSecurityContentCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(all = LocalDimensions.current.paddingNormal)
     ) {
         val pinTextColor = if (showChangePin) Grey6 else Grey6.copy(alpha = 0.3f)
         Text(

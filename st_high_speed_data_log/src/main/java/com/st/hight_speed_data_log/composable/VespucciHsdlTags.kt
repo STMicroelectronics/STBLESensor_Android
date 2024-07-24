@@ -14,7 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -218,7 +218,7 @@ fun TagsInfo(
 
             Spacer(modifier = Modifier.height(LocalDimensions.current.paddingNormal))
 
-            Divider()
+            HorizontalDivider()
 
             Spacer(modifier = Modifier.height(LocalDimensions.current.paddingNormal))
 

@@ -8,6 +8,8 @@
 package com.st.bluems
 
 import android.os.Bundle
+//import android.util.Log
+//import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -15,6 +17,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+//import com.google.firebase.Firebase
+//import com.google.firebase.remoteconfig.ConfigUpdate
+//import com.google.firebase.remoteconfig.ConfigUpdateListener
+//import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+//import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
+//import com.google.firebase.remoteconfig.get
+//import com.google.firebase.remoteconfig.remoteConfig
+//import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.st.bluems.ui.home.HomeFragmentDirections
 import com.st.core.GlobalConfig
 import com.st.core.api.ApplicationAnalyticsService.ApplicationNameEtna
@@ -53,6 +63,58 @@ class MainActivity : AppCompatActivity() {
                 this
             )
         }
+//
+//        //Singleton
+//        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+//        val configSettings = remoteConfigSettings {
+//            minimumFetchIntervalInSeconds = 3600
+//        }
+//        remoteConfig.setConfigSettingsAsync(configSettings)
+//
+//        //Set the Default Values
+//        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+//
+//        //Read the Default Value
+//        val numberDefault = remoteConfig.getLong(LOADING_PHRASE_CONFIG_KEY)
+//        Log.d(TAG,"Default number=${numberDefault}")
+//        TODO: Save on GlobalConfig
+//
+//        remoteConfig.fetchAndActivate()
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    val updated = task.result
+//                    Log.d(TAG, "Config params updated: $updated")
+//                    Toast.makeText(
+//                        this,
+//                        "Fetch and activate succeeded",
+//                        Toast.LENGTH_SHORT,
+//                    ).show()
+//                } else {
+//                    Toast.makeText(
+//                        this,
+//                        "Fetch failed",
+//                        Toast.LENGTH_SHORT,
+//                    ).show()
+//                }
+//            }
+//
+//        remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
+//            override fun onUpdate(configUpdate : ConfigUpdate) {
+//                Log.d(TAG, "Updated keys: " + configUpdate.updatedKeys);
+//
+//                if (configUpdate.updatedKeys.contains(LOADING_PHRASE_CONFIG_KEY)) {
+//                    remoteConfig.activate().addOnCompleteListener {
+//                        val number = remoteConfig[LOADING_PHRASE_CONFIG_KEY].asLong()
+//                        Log.d(TAG,"New number=${number}")
+//                        TODO: Save on GlobalConfig
+//                    }
+//                }
+//            }
+//
+//            override fun onError(error : FirebaseRemoteConfigException) {
+//                Log.w(TAG, "Config update error with code: " + error.code, error)
+//            }
+//        })
 
         //for using NFC deep Link node autoconnect
         val nfcIntent = intent
@@ -177,4 +239,9 @@ class MainActivity : AppCompatActivity() {
             navController.popBackStack()
         }
     }
+//
+//    companion object {
+//        private const val TAG = "FireBase"
+//        private const val LOADING_PHRASE_CONFIG_KEY = "D183G"
+//    }
 }

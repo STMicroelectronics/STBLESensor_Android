@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -32,17 +33,19 @@ fun MotorControlSensors(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
+        //verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
     ) {
-        itemsIndexed(sensorsActuators) { index, componentWithInterface ->
+        itemsIndexed(sensorsActuators) { _, componentWithInterface ->
             val name = componentWithInterface.first.name
             val data = (status.find { it.containsKey(name) })?.get(name)
             Component(
+                modifier = modifier.padding(bottom = LocalDimensions.current.paddingMedium),
                 name = name,
                 data = data,
                 enabled = isLoading.not(),
                 enableCollapse = true,
                 isOpen = isOpen == name,
+                showNotMounted = false,
                 componentModel = componentWithInterface.first,
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },
@@ -52,9 +55,9 @@ fun MotorControlSensors(
                 }
             )
 
-            if (sensorsActuators.lastIndex != index) {
-                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-            }
+//            if (sensorsActuators.lastIndex != index) {
+//                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+//            }
         }
     }
 }

@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,8 +81,8 @@ fun FlowDemoInputFunctionOutputConfigurationListItem(
                         .clickable { onConfig() },
                     painter = painterResource(id = R.drawable.ic_settings),
                     tint = PrimaryBlue,
-                    contentDescription = null,
-                )
+                    contentDescription = null
+                    )
             }
 
             if(couldBeDeleted) {
@@ -93,8 +93,8 @@ fun FlowDemoInputFunctionOutputConfigurationListItem(
                         .clickable { onDelete() },
                     painter = painterResource(id = R.drawable.ic_delete),
                     tint = ErrorText,
-                    contentDescription = null,
-                )
+                    contentDescription = null
+                    )
             }
         }
     }

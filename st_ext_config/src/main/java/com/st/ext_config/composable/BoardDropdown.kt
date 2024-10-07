@@ -9,8 +9,11 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,7 +69,7 @@ fun BoardDropdown(
             .padding(horizontal = 8.dp)
     ) {
         // text field
-        TextField(
+        OutlinedTextField(
             value = selectedItem,
             onValueChange = {},
             readOnly = true,
@@ -80,13 +83,14 @@ fun BoardDropdown(
                 .fillMaxWidth()
                 .height(height = 60.dp)
                 .wrapContentHeight()
-                .menuAnchor(),
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
+            colors =  OutlinedTextFieldDefaults.colors()
         )
         // menu
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            containerColor = MaterialTheme.colorScheme.surface
         ) {
             // this is a column scope
             // all the items are added vertically

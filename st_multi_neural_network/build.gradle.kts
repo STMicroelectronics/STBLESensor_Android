@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.appswithloveLoco)
+    alias(libs.plugins.composeCompiler)
 }
 
 apply {
@@ -55,8 +56,13 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
         viewBinding = true
+    }
+
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
 }
 
@@ -84,6 +90,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigationFragment)
+    implementation(project(":st_motion_intensity"))
     ksp(libs.hilt.compiler)
 
     // Dependency required for API desugaring.

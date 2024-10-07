@@ -11,12 +11,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.extended.gesture_navigation.GestureNavigation
+import com.st.blue_sdk.features.extended.gesture_navigation.GestureNavigationButton
+import com.st.blue_sdk.features.extended.gesture_navigation.GestureNavigationGestureType
 import com.st.blue_sdk.features.extended.gesture_navigation.GestureNavigationInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,9 +32,23 @@ class GestureNavigationViewModel @Inject constructor(
 
     private val features = mutableListOf<Feature<*>>()
 
-    private val _gestureData = MutableSharedFlow<GestureNavigationInfo>()
-    val gestureData: Flow<GestureNavigationInfo>
-        get() = _gestureData
+    private val _gestureData =
+        MutableStateFlow<Pair<GestureNavigationInfo, Long?>>(
+            Pair(
+                GestureNavigationInfo(
+                    gesture = FeatureField(
+                        name = "Gesture",
+                        value = GestureNavigationGestureType.Undefined
+                    ),
+                    button = FeatureField(
+                        name = "Button",
+                        value = GestureNavigationButton.Undefined
+                    )
+                ), null
+            )
+        )
+    val gestureData: StateFlow<Pair<GestureNavigationInfo, Long?>>
+        get() = _gestureData.asStateFlow()
 
     fun startDemo(nodeId: String) {
 
@@ -45,7 +63,9 @@ class GestureNavigationViewModel @Inject constructor(
             blueManager.getFeatureUpdates(nodeId, features).collect {
                 val data = it.data
                 if (data is GestureNavigationInfo) {
-                    _gestureData.emit(data)
+                    if ((data.button.value != GestureNavigationButton.Error) && (data.gesture.value != GestureNavigationGestureType.Error)) {
+                        _gestureData.emit(Pair(data, it.timeStamp))
+                    }
                 }
             }
         }

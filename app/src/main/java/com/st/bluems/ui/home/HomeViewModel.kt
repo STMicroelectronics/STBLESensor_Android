@@ -158,25 +158,22 @@ class HomeViewModel @Inject constructor(
         return node
     }
 
-    fun setLocalBoardCatalog(fileUri: Uri) {
-        viewModelScope.launch {
-            blueManager.setBoardCatalog(
+    fun setLocalBoardCatalog(fileUri: Uri): String? {
+        val result: String?
+        runBlocking {
+            val catalogResult = blueManager.setBoardCatalog(
                 fileUri = fileUri,
                 contentResolver = contentResolver
             )
+            result = catalogResult.second
         }
+        //Log.i("DB", "setLocalBoardCatalog = $result")
+        return result
     }
 
-//    fun readBetaCatalog() {
-//        viewModelScope.launch {
-//            val url: String = BuildConfig.BLUESTSDK_DB_BASE_BETA_URL
-//            blueManager.reset(url)
-//            _boardsDescription.value = blueManager.getBoardsDescription()
-//            //Log.i("DB","readBetaCatalog checkBoardsCatalogPresence = ${ _boardsDescription.value.size}")
-//
-//        }
-//        //checkBoardsCatalogPresence()
-//    }
+    fun readBetaCatalog() {
+        //checkBoardsCatalogPresence()
+    }
 
     fun readReleaseCatalog() {
         viewModelScope.launch {
@@ -320,7 +317,7 @@ class HomeViewModel @Inject constructor(
                 //Move to Beta Version
                 stPreferences.setBetaApplicationFlag(true)
                 //Load the Beta Catalog
-                //readBetaCatalog()
+                readBetaCatalog()
                 _isBetaRelease.value = true
             }
             //Every time we switch between beta/release... rest the flag for disabling the hidden demos

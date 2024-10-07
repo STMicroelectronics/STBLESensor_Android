@@ -173,6 +173,7 @@ class FwUpgradeViewModel
 
                                 _fwUpdateState.value = _fwUpdateState.value.copy(
                                     fwUri = it,
+                                    fwUrl = fwUrl,
                                     downloadFinished = downloaded,
                                     fwName = fileName,
                                     fwSize = fwSize,

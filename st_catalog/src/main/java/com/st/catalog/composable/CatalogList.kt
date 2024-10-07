@@ -30,9 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardDescription
@@ -42,7 +40,6 @@ import com.st.catalog.R
 import com.st.catalog.availableDemos
 import com.st.ui.composables.StTopBar
 import com.st.ui.theme.LocalDimensions
-import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
 
 @Composable
@@ -51,7 +48,7 @@ fun CatalogList(
     nodeId: String? = null,
     navController: NavController,
     onBack: () -> Unit = { /** NOOP **/ },
-    viewModel: CatalogViewModel = hiltViewModel()
+    viewModel: CatalogViewModel
 ) {
     if (nodeId != null) {
         //remove the catalog list fragment before to navigate to board details
@@ -71,9 +68,9 @@ fun CatalogList(
                 boardsDescription = boardsDescription,
                 isBeta = viewModel.isBeta,
                 onBack = onBack,
-                onBoardSelected = { bleDevId ->
+                onBoardSelected = { boardPart ->
                     navController.navigate(
-                        "detail/${bleDevId}"
+                        "detail/${boardPart}"
                     )
                 }
             )
@@ -127,9 +124,9 @@ fun CatalogList(
                 }
 
             when (boardOrder) {
-                BoardOrder.NONE -> filteredBoards
-                BoardOrder.ALPHABETICAL -> filteredBoards.sortedBy { it.boardName }
-                BoardOrder.RELEASE_DATE -> filteredBoards.sortedByDescending { it.releaseDate }
+                BoardOrder.NONE -> filteredBoards.distinctBy{ it.boardPart}
+                BoardOrder.ALPHABETICAL -> filteredBoards.distinctBy{ it.boardPart}.sortedBy { it.boardName }
+                BoardOrder.RELEASE_DATE -> filteredBoards.distinctBy{ it.boardPart}.sortedByDescending { it.releaseDate }
             }
         }
     }
@@ -183,8 +180,7 @@ fun CatalogList(
         ) {
             items(filteredBoardDescriptions) {
                 CatalogListItem(
-                    boardName = it.boardName,
-                    boardVariant = it.boardVariant,
+                    boardPart = it.boardPart,
                     friendlyName = it.friendlyName,
                     boardStatus = it.status,
                     description = it.description,
@@ -195,7 +191,7 @@ fun CatalogList(
                         null
                     },
                     onClickItem = {
-                        onBoardSelected(it.bleDevId)
+                        onBoardSelected(it.boardPart)
                     }
                 )
             }
@@ -225,22 +221,22 @@ enum class BoardOrder {
 
 /** ----------------------- PREVIEW --------------------------------------- **/
 
-@Preview(showBackground = true)
-@Composable
-private fun CatalogListPreview() {
-    PreviewBlueMSTheme {
-        CatalogList(
-            boardFirmwares = listOf(
-                BoardFirmware.mock(),
-                BoardFirmware.mock(),
-                BoardFirmware.mock()
-            ),
-            allBoardFirmwares = listOf(
-                BoardFirmware.mock(),
-                BoardFirmware.mock(),
-                BoardFirmware.mock()
-            ),
-            boardsDescription = emptyList()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun CatalogListPreview() {
+//    PreviewBlueMSTheme {
+//        CatalogList(
+//            boardFirmwares = listOf(
+//                BoardFirmware.mock(),
+//                BoardFirmware.mock(),
+//                BoardFirmware.mock()
+//            ),
+//            allBoardFirmwares = listOf(
+//                BoardFirmware.mock(),
+//                BoardFirmware.mock(),
+//                BoardFirmware.mock()
+//            ),
+//            boardsDescription = emptyList()
+//        )
+//    }
+//}

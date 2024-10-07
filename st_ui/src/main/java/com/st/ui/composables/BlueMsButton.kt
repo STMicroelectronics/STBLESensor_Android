@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,6 +64,48 @@ fun BlueMsButton(
                 contentDescription = text
             )
         }
+        Text(
+            textAlign = TextAlign.Center,
+            text = text.uppercase(),
+            maxLines = BTN_MAX_LINES,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+fun BlueMsButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color?=null,
+    enabled: Boolean = true,
+    imageVector:  ImageVector,
+    onClick: () -> Unit = { /** NOOP **/ }
+) {
+    val buttonColors =
+        if(color!=null) {
+            ButtonDefaults.buttonColors(containerColor = color,
+                contentColor = Grey0)
+        } else {
+            ButtonDefaults.buttonColors()
+        }
+
+    Button(
+        shape = Shapes.small,
+        modifier = modifier
+            .defaultMinSize(
+                minWidth = LocalDimensions.current.btnMinWidth,
+                minHeight = LocalDimensions.current.btnMinHeight
+            ),
+        onClick = onClick,
+        enabled = enabled,
+        colors = buttonColors
+    ) {
+        Icon(
+            modifier = Modifier.padding(end = LocalDimensions.current.paddingMedium),
+            imageVector = imageVector,
+            contentDescription = text
+        )
         Text(
             textAlign = TextAlign.Center,
             text = text.uppercase(),

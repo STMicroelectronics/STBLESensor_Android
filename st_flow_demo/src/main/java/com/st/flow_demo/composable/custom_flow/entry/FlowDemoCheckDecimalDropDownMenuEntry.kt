@@ -10,10 +10,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -138,22 +140,23 @@ fun FlowDemoCheckDecimalDropDownMenuEntry(
                         expanded = newValue
                     }
                 ) {
-                    TextField(
+                    OutlinedTextField(
                         value = selectedValueDropDown,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                        modifier = Modifier.menuAnchor()
+                        colors = OutlinedTextFieldDefaults.colors(),
+                        modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                     )
 
                     ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = {
                             expanded = false
-                        }
+                        },
+                        containerColor = MaterialTheme.colorScheme.surface
                     ) {
                         values.forEach { string ->
                         //values.forEachIndexed { _, string ->

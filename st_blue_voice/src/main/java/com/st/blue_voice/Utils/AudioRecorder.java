@@ -5,7 +5,7 @@
  * the root directory of this software component.
  * If no LICENSE file comes with this software, it is provided AS-IS.
  */
-package com.st.blue_voice.Utils;
+package com.st.blue_voice.utils;
 
 import android.content.Context;
 import android.os.Environment;
@@ -120,8 +120,9 @@ public class AudioRecorder {
      */
     private boolean openRecFile(String fileSuffix) {
         try {
-            mDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/STMicroelectronics/logs";
-            SimpleDateFormat DATE_FORMAT_PREFIX = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            mDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/record";
+            //SimpleDateFormat DATE_FORMAT_PREFIX = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            SimpleDateFormat DATE_FORMAT_PREFIX = new SimpleDateFormat("MMdd_HHmm", Locale.getDefault());
             Date mStartLog = new Date();
             String logPrefixName = DATE_FORMAT_PREFIX.format(mStartLog);
             mFileName = String.format("%s/%s_%s.wav", mDirectoryPath, logPrefixName, fileSuffix);
@@ -136,6 +137,10 @@ public class AudioRecorder {
             e.printStackTrace();
             return false;
         }//try-catch
+    }
+
+    public String getFileName() {
+        return mFileName;
     }
 
     /**

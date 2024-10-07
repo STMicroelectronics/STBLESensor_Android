@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -13,17 +14,20 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import com.st.cloud_azure_iot_central.model.AzureCloudDevice
@@ -41,6 +45,8 @@ fun AzureCloudAddDeviceDialog(
     onDismiss: () -> Unit = { /** NOOP**/ },
     onConfirmation: (AzureCloudDevice) -> Unit = { /** NOOP**/ }
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val deviceTemplatesList = cloudTemplates.map {
         it.displayName ?: "Default Name"
@@ -83,11 +89,18 @@ fun AzureCloudAddDeviceDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = LocalDimensions.current.paddingNormal),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text).copy(
+                        imeAction = ImeAction.Done
+                    ),
                     value = deviceName,
                     onValueChange = {
                         deviceName = it
-                    }
+                    },
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                        }
+                    )
                 )
 
                 Text(
@@ -99,11 +112,18 @@ fun AzureCloudAddDeviceDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = LocalDimensions.current.paddingNormal),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text).copy(
+                        imeAction = ImeAction.Done
+                    ),
                     value = uniqueId,
                     onValueChange = {
                         uniqueId = it
-                    }
+                    },
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                        }
+                    )
                 )
 
                 Text(
@@ -121,22 +141,23 @@ fun AzureCloudAddDeviceDialog(
                         expanded = newValue
                     }
                 ) {
-                    TextField(
+                    OutlinedTextField(
                         value = selectedTemplate,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                        colors = OutlinedTextFieldDefaults.colors(),
+                        modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).fillMaxWidth()
                     )
 
                     ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = {
                             expanded = false
-                        }
+                        },
+                        containerColor = MaterialTheme.colorScheme.surface
                     ) {
                         deviceTemplatesList.forEach {
                             DropdownMenuItem(

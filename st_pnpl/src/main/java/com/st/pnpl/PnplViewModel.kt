@@ -43,6 +43,8 @@ class PnplViewModel @Inject constructor(
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
+    private var enableStopDemo = true
+
     private var observeFeatureJob: Job? = null
 
     private var pnplBleResponses: Boolean = false
@@ -252,6 +254,10 @@ class PnplViewModel @Inject constructor(
         }
     }
 
+    fun setEnableStopDemo(value: Boolean) {
+        enableStopDemo = value
+    }
+
     fun startDemo(nodeId: String, demoName: String?) {
         observeFeatureJob?.cancel()
 
@@ -297,6 +303,21 @@ class PnplViewModel @Inject constructor(
                         val message = searchInfoWarningError(json)
                         message?.let {
                             _statusMessage.emit(message)
+                            if (pnplBleResponses) {
+                                if (message == PnPLSpontaneousMessageType.ERROR) {
+                                    //Remove the command from the list and send Next One
+                                    commandQueue.removeFirst()
+                                    if (commandQueue.isNotEmpty()) {
+                                        blueManager.writeFeatureCommand(
+                                            responseTimeout = 0,
+                                            nodeId = nodeId, featureCommand = PnPLCommand(
+                                                feature = featurePnPL!!,
+                                                cmd = commandQueue[0].pnpLCommand
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         }
 
                         if (pnplBleResponses) {
@@ -375,17 +396,22 @@ class PnplViewModel @Inject constructor(
     }
 
     fun stopDemo(nodeId: String) {
-        observeFeatureJob?.cancel()
+        if (enableStopDemo) {
+            observeFeatureJob?.cancel()
 
-        _componentStatusUpdates.value = emptyList()
+            _componentStatusUpdates.value = emptyList()
 
-        //coroutineScope.launch {
-        runBlocking {
-            val features = blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
+            //coroutineScope.launch {
+            runBlocking {
+                val features =
+                    blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
 
-            blueManager.disableFeatures(
-                nodeId = nodeId, features = features
-            )
+                blueManager.disableFeatures(
+                    nodeId = nodeId, features = features
+                )
+            }
+        } else {
+            enableStopDemo = true
         }
     }
 }

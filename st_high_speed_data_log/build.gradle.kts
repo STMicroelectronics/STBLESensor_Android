@@ -92,6 +92,9 @@ dependencies {
     // Blue ST SDK
     implementation(libs.st.sdk)
 
+    // MPAndroid Chart
+    implementation(libs.philjay.mpandroidchart)
+
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigationFragment)

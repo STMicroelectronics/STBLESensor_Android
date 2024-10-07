@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -35,7 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.st.blue_sdk.bt.advertise.getFwInfo
 import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.models.Node
 import com.st.bluems.NFCConnectionViewModel
@@ -49,6 +49,9 @@ import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Grey6
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.unit.IntOffset
+import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import com.st.ui.theme.SecondaryBlue
 
 @Composable
@@ -116,9 +119,20 @@ fun DeviceListScreen(
             if (boardsDescription.isEmpty()) {
                 Toast.makeText(context, "Boards Catalog not Available", Toast.LENGTH_SHORT).show()
             } else {
-                navController.navigate(
-                    HomeFragmentDirections.actionHomeFragmentToCatalog()
-                )
+
+                val navOptions: NavOptions = navOptions {
+                    anim {
+                        enter = com.st.ui.R.anim.slide_in_from_left
+                        exit = com.st.ui.R.anim.fade_out
+                        popEnter = com.st.ui.R.anim.fade_in
+                        popExit = com.st.ui.R.anim.slide_out_to_left
+                    }
+                }
+                navController.navigate(directions = HomeFragmentDirections.actionHomeFragmentToCatalog(), navOptions = navOptions)
+
+//                navController.navigate(
+//                    HomeFragmentDirections.actionHomeFragmentToCatalog()
+//                )
             }
         },
         goToSourceCode = {
@@ -138,8 +152,8 @@ fun DeviceListScreen(
         },
         readBetaCatalog = {
             forceScan = true
-            //viewModel.readBetaCatalog()
-            Toast.makeText(context, "Loaded Beta Catalog Not Implemented", Toast.LENGTH_SHORT).show()
+            viewModel.readBetaCatalog()
+            Toast.makeText(context, "Loaded Beta Catalog", Toast.LENGTH_SHORT).show()
         },
         readReleaseCatalog = {
             forceScan = true
@@ -175,22 +189,19 @@ fun DeviceListScreen(
                 )
             }
         },
-        onInfoClick = { node ->
-            if (boardsDescription.isNotEmpty()) {
-                val deviceId = node.advertiseInfo?.getFwInfo()?.deviceId
-                deviceId?.let {
-                    navController.navigate(
-                        HomeFragmentDirections.actionHomeFragmentToCatalogBoard(deviceId)
-                    )
-                }
-            }
-        },
         onStartScan = {
             viewModel.startScan()
         },
         onAddCatalogEntryFromFile = { fileUri ->
             forceScan = true
-            viewModel.setLocalBoardCatalog(fileUri = fileUri)
+            val result = viewModel.setLocalBoardCatalog(fileUri = fileUri)
+            result?.let { res ->
+                if(res.startsWith("Added")) {
+                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, result, Toast.LENGTH_LONG).show()
+                }
+            }
         }
     )
 }
@@ -230,7 +241,6 @@ fun DeviceListWithPermissionsCheck(
     onEnableBle: () -> Unit,
     onEnableLocation: () -> Unit,
     onNodeSelected: (Node) -> Unit,
-    onInfoClick: (Node) -> Unit,
     onAddCatalogEntryFromFile: (Uri) -> Unit
 ) {
     val context = LocalContext.current
@@ -291,7 +301,6 @@ fun DeviceListWithPermissionsCheck(
                     switchServerForced = switchServerForced,
                     onStartScan = onStartScan,
                     onNodeSelected = onNodeSelected,
-                    onInfoClick = onInfoClick,
                     onAddCatalogEntryFromFile = onAddCatalogEntryFromFile
                 )
             }
@@ -465,8 +474,7 @@ fun DeviceList(
     switchServerForced: () -> Unit = { /** NOP **/ },
     onStartScan: () -> Unit = { /** NOOP**/ },
     onAddCatalogEntryFromFile: (Uri) -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
-    onInfoClick: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
 ) {
     var filters by remember { mutableStateOf(value = DeviceListFilter()) }
     var openFilterDialog by rememberSaveable { mutableStateOf(value = false) }
@@ -548,9 +556,7 @@ fun DeviceList(
             pinnedDevices = pinnedDevices,
             onPinChange = onPinChange,
             goToCatalog = goToCatalog,
-            onNodeSelected = onNodeSelected,
-            isExpert = isExpert,
-            onInfoClick = onInfoClick
+            onNodeSelected = onNodeSelected
         )
     }
 
@@ -564,6 +570,7 @@ fun DeviceList(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DeviceList(
     modifier: Modifier = Modifier,
@@ -571,9 +578,7 @@ fun DeviceList(
     pinnedDevices: List<String>,
     onPinChange: (String, Boolean) -> Unit,
     goToCatalog: () -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
-    isExpert: Boolean = false,
-    onInfoClick: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
 ) {
     Column(
         modifier = modifier
@@ -604,14 +609,18 @@ fun DeviceList(
 
                 itemsIndexed(items = filteredDevices) { _, item ->
                     DeviceListItem(
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = null, fadeOutSpec = null, placementSpec = spring(
+                                stiffness = Spring.StiffnessMediumLow,
+                                visibilityThreshold = IntOffset.VisibilityThreshold
+                            )
+                        ),
                         isPin = pinnedDevices.contains(item.device.address),
                         item = item,
                         onNodeSelected = onNodeSelected,
                         onPinChange = { change ->
                             onPinChange(item.device.address, change)
-                        },
-                        isExpert = isExpert,
-                        onInfoClick = onInfoClick
+                        }
                     )
                 }
 

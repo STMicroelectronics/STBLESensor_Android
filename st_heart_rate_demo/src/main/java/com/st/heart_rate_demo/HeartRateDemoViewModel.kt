@@ -12,13 +12,16 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.external.std.BodySensorLocation
 import com.st.blue_sdk.features.external.std.BodySensorLocationInfo
+import com.st.blue_sdk.features.external.std.BodySensorLocationType
 import com.st.blue_sdk.features.external.std.HeartRate
 import com.st.blue_sdk.features.external.std.HeartRateInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,13 +37,19 @@ class HeartRateDemoViewModel
 
     private var features: MutableList<Feature<*>> = mutableListOf()
 
-    private val _heartData = MutableSharedFlow<HeartRateInfo>()
-    val heartData: Flow<HeartRateInfo>
-        get() = _heartData
+    private val _heartData =
+        MutableStateFlow<HeartRateInfo?>(
+            null
+        )
+    val heartData: StateFlow<HeartRateInfo?>
+        get() = _heartData.asStateFlow()
 
-    private val _locationData = MutableSharedFlow<BodySensorLocationInfo>()
-    val locationData: Flow<BodySensorLocationInfo>
-        get() = _locationData
+    private val _locationData =
+        MutableStateFlow(
+            BodySensorLocationInfo(bodySensorLocation = FeatureField(value= BodySensorLocationType.NotKnown, name = "Body Sensor Location"))
+        )
+    val locationData: StateFlow<BodySensorLocationInfo>
+        get() = _locationData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (features.isEmpty()) {

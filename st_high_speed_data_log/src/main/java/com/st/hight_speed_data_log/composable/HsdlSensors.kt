@@ -11,7 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.st.blue_sdk.board_catalog.models.DtmiContent
+import com.st.hight_speed_data_log.ComponentWithInterface
 import com.st.pnpl.composable.Component
 import com.st.ui.composables.CommandRequest
 import com.st.ui.theme.LocalDimensions
@@ -21,9 +21,11 @@ import kotlinx.serialization.json.JsonObject
 fun HsdlSensors(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    sensors: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
+    sensors: List<ComponentWithInterface> = emptyList(),
     status: List<JsonObject>,
     onValueChange: (String, Pair<String, Any>) -> Unit,
+    onBeforeUcf:() -> Unit,
+    onAfterUcf:() -> Unit,
     onSendCommand: (String, CommandRequest?) -> Unit
     ) {
     var isOpen by rememberSaveable(sensors) { mutableStateOf(value = "") }
@@ -48,6 +50,8 @@ fun HsdlSensors(
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },
                 onSendCommand = { onSendCommand(name, it) },
+                onBeforeUcf = onBeforeUcf,
+                onAfterUcf = onAfterUcf,
                 onOpenComponent = {
                     isOpen = if (it == isOpen) "" else it
                 }

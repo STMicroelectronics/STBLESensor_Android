@@ -7,26 +7,26 @@
 #
 [versions]
 # @pin https://github.com/google/accompanist#compose-versions
-accompanist = "0.34.0"
-androidGradlePlugin = "8.5.1"
-androidxActivity = "1.9.0"
+accompanist = "0.36.0"
+androidGradlePlugin = "8.5.2"
+androidxActivity = "1.9.2"
 androidxCompat = "1.7.0"
 # @pin https://developer.android.com/jetpack/androidx/releases/compose#versions
-androidxComposeBom = "2024.06.00"
+androidxComposeBom = "2024.09.01"
 androidxConstraintlayout = "2.1.4"
 androidxCore = "1.13.1"
 androidxDatastore = "1.1.1"
 androidxEspresso = "3.6.1"
-androidxFragment = "1.8.1"
+androidxFragment = "1.8.3"
 androidxGridLayout = "1.0.0"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLegacy = "1.0.0"
 # https://issuetracker.google.com/issues/336842920
 # @pin
-androidxLifecycle = "2.8.3"
-androidxLifecycleViewmodel = "2.8.3"
+androidxLifecycle = "2.8.5"
+androidxLifecycleViewmodel = "2.8.5"
 androidxMaterial = "1.12.0"
-androidxSafeargs = "2.7.7"
+androidxSafeargs = "2.8.0"
 androidxPreference = "1.2.1"
 androidxRoom = "2.6.1"
 androidxSplash = "1.1.0-rc01"
@@ -38,12 +38,12 @@ appCenterSdkVersion = "5.0.4"
 appauth = "0.11.1"
 benManes = "0.51.0"
 androidxCamera = "1.3.4"
-coil = "2.6.0"
-desugar_jdk_libs_nio = "2.0.4"
+coil = "2.7.0"
+desugar_jdk_libs_nio = "2.1.2"
 glide = "5.0.0-rc01"
 googleCodeScanner = "16.1.0"
 arturboschDetekt = "1.23.6"
-googleHilt = "2.51.1"
+googleHilt = "2.52"
 hiltNavigationFragment = "1.2.0"
 iotDeviceClient = "2.5.0"
 jacksonAnnotations = "2.17.2"
@@ -51,16 +51,16 @@ javaJwt = "4.4.0"
 junit4 = "4.13.2"
 jwt = "2.0.2"
 # @pin https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-kotlin = "2.0.0"
-kotlinxCoroutines = "1.9.0-RC"
-kotlinxSerializationJson = "1.7.1"
+kotlin = "2.0.10"
+kotlinxCoroutines = "1.9.0-RC.2"
+kotlinxSerializationJson = "1.7.2"
 # @pin
-devtoolsKsp = "2.0.0-1.0.22"
+devtoolsKsp = "2.0.10-1.0.24"
 jlleitschuhKtlint = "12.1.1"
 littlerobotsVersionCatalogUpdate = "0.8.4"
 appswithloveLoco = "0.3.1"
-media3Version = "1.3.1"
-mlkitBarcode = "17.2.0"
+media3Version = "1.4.1"
+mlkitBarcode = "17.3.0"
 mpChart = "3.1.0"
 okhttp = "4.12.0"
 orgEclipsePahoClientMqttv3 = "1.2.5"
@@ -68,8 +68,10 @@ provisioningDeviceClient = "2.1.3"
 reorderable = "0.9.6"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
-stSdk = "1.2.0"
+stSdk = "1.2.4"
+stOpus= "1.0.0"
 ytPlayer = "12.1.0"
+runtimeLivedata = "1.7.1"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
@@ -151,6 +153,8 @@ provisioning-device-client = { module = "com.microsoft.azure.sdk.iot.provisionin
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-kotlinserialization = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializationJson" }
 st-sdk = { module = "com.st.blue.sdk:st-blue-sdk", version.ref = "stSdk" }
+st-opus = { module = "com.st.blue.sdk:st-opus", version.ref = "stOpus" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [bundles]
 accompanist = [

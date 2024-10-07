@@ -3,7 +3,11 @@
     <string name="st_hsdl_sensors">Sensors</string>
     <string name="st_hsdl_tags">Tags</string>
     <string name="st_hsdl_logging">Device is logging</string>
+    <string name="st_hsdl_logging_vespucci">Device is logging\nSelect a sensor to view its stream in real time</string>
+    <string name="st_hsdl_waiting_vespucci">Waiting…</string>
+    <string name="st_hsdl_buffering_vespucci">Buffering…</string>
     <string name="st_hsdl_missingSdCard">Missing SD Card</string>
+    <string name="st_hsdl_missingSensors">Enable at least one sensor</string>
     <string name="st_hsdl_tags_description1">To begin</string>
     <string name="st_hsdl_tags_description2">labelling the data</string>
     <string name="st_hsdl_tags_description3">you must first start the acquistion by pressing the Play button.</string>
@@ -12,4 +16,15 @@
     <string name="st_hsdl_datalog_stopDialogTitle">Data Logging completed</string>
     <string name="st_hsdl_datalog_stopDialogMessage">You can start another acquisition using the Play button or upload the collected data to your dataset by using the Storage button.</string>
     <string name="st_hsdl_datalog_stopDialogClose">Close</string>
+    <string name="st_hsdl_datalog_chartToggleAll">All</string>
+    <string name="st_hsdl_datalog_chartToggleSum">Mod</string>
+    <array name="dataSetColor">
+        <item>#1B3AA8</item>  <!-- InfoText -->
+        <item>#A8251B</item>  <!-- ErrorText -->
+        <item>#1E8537</item>  <!-- SuccessText -->
+        <item>#000000</item>  <!-- Grey10 -->
+        <item>#3CB4E6</item>  <!-- SecondaryBlue -->
+        <item>#E6007E</item>  <!-- PrimaryPink -->
+    </array>
+
 </resources>

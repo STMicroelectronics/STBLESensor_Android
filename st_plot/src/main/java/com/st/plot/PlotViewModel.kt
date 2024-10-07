@@ -1,31 +1,23 @@
-/*
- * Copyright (c) 2022(-0001) STMicroelectronics.
- * All rights reserved.
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- */
 package com.st.plot
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
 import com.st.blue_sdk.features.FeatureUpdate
 import com.st.plot.utils.PLOTTABLE_FEATURE
-import com.st.plot.utils.toPlotDesc
-import com.st.plot.utils.toPlotEntry
+import com.st.plot.utils.PlotBoundary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.FileNotFoundException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,182 +26,155 @@ class PlotViewModel
     private val blueManager: BlueManager,
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
+
     companion object {
-        const val TAG = "PlotViewModel"
+        private const val SECONDS_TO_PLOT_DEFAULT = 5
+        private const val MIN_DEFAULT = -100.0f
+        private const val MAX_DEFAULT = 100.0f
     }
 
-    private var nodeId: String = ""
-    private var featureUpdates: Flow<FeatureUpdate<*>> = emptyFlow()
-    private var plottableFeatures: MutableList<Feature<*>> = mutableListOf()
+    var snap: Bitmap? = null
 
-    private val _debugMessages = MutableStateFlow<String?>(null)
-    val debugMessages: StateFlow<String?> = _debugMessages.asStateFlow()
+    private val _plottableFeatures =
+        MutableStateFlow<List<Feature<*>>>(listOf())
+    val plottableFeatures: StateFlow<List<Feature<*>>>
+        get() = _plottableFeatures.asStateFlow()
+
+    private var privatePlottableFeatures: MutableList<Feature<*>> = mutableListOf()
+
+    private val _selectedFeature =
+        MutableStateFlow<Feature<*>?>(null)
+    val selectedFeature: StateFlow<Feature<*>?>
+        get() = _selectedFeature.asStateFlow()
+
+    private val _featureUpdate =
+        MutableStateFlow<FeatureUpdate<*>?>(null)
+    val featureUpdate: StateFlow<FeatureUpdate<*>?>
+        get() = _featureUpdate.asStateFlow()
+
+    private val _isPlotting = MutableStateFlow(false)
+    val isPlotting: StateFlow<Boolean>
+        get() = _isPlotting.asStateFlow()
+
+    private var _boundary = MutableStateFlow(PlotBoundary(min = null, max = null))
+    val boundary: StateFlow<PlotBoundary>
+        get() = _boundary.asStateFlow()
+
+    var secondsToPlot = SECONDS_TO_PLOT_DEFAULT
+
+    var autoScaleEnable: Boolean = true
+    var minValue: Float = MIN_DEFAULT
+    var maxValue: Float = MAX_DEFAULT
 
     fun startDemo(nodeId: String) {
-        Log.d(TAG, "startDemo")
-        this.nodeId = nodeId
         viewModelScope.launch {
-            plottableFeatures.addAll(
+            privatePlottableFeatures.addAll(
                 blueManager.nodeFeatures(nodeId = nodeId)
                     .filter { PLOTTABLE_FEATURE.contains(it.name) }
             )
+            _plottableFeatures.emit(privatePlottableFeatures.toList())
+            _selectedFeature.emit(privatePlottableFeatures.first())
+        }
+    }
 
-            featureUpdates = blueManager.getFeatureUpdates(
-                nodeId = nodeId,
-                features = plottableFeatures,
-                autoEnable = false
-            )
+    fun stopDemo(nodeId: String) {
+        privatePlottableFeatures.clear()
+        stopPlottingBlocking(nodeId)
+    }
 
-            featureUpdates.collect { update ->
-                mCurrentPlottingFeature?.let {
-                    val plotEntry =
-                        update.toPlotEntry(feature = it, xOffset = mFirstNotificationTimeStamp)
-                    val plotDesc = update.toPlotDesc(feature = it)
-                    val lastX = _lastPlotData.value?.x ?: Long.MIN_VALUE
-                    if (plotEntry != null) {
-                        if (plotEntry.x >= lastX) {
-                            _lastPlotData.postValue(plotEntry)
-                            plotDesc?.let { desc ->
-                                _lastDataDescription.postValue(desc)
-                            }
-                        }
-                    }
+    fun startPlotting(nodeId: String) {
+        selectedFeature.value?.let {feature ->
+            viewModelScope.launch {
+                _isPlotting.emit(true)
+                blueManager.getFeatureUpdates(
+                    nodeId,
+                    listOf(feature)
+                ).collect { data ->
+                    _featureUpdate.emit(data)
                 }
             }
         }
     }
 
-    fun stopDemo(nodeId: String) {
-        Log.d(TAG, "stopDemo")
-        coroutineScope.launch {
-            blueManager.disableFeatures(nodeId = nodeId, features = plottableFeatures)
+    fun stopPlotting(nodeId: String) {
+        selectedFeature.value?.let { feature ->
+            viewModelScope.launch {
+                blueManager.disableFeatures(nodeId = nodeId, features = listOf(feature))
+                _isPlotting.emit(false)
+            }
         }
     }
 
-    private var _lastDataDescription = MutableLiveData<String>()
+    private fun stopPlottingBlocking(nodeId: String) {
+        if(_isPlotting.value) {
+            selectedFeature.value?.let { feature ->
+                runBlocking {
+                    blueManager.disableFeatures(nodeId = nodeId, features = listOf(feature))
+                    _isPlotting.emit(false)
+                }
+            }
+        }
+    }
 
-    val lastDataDescription: LiveData<String>
-        get() = _lastDataDescription
+    fun setFeature(featureName: String) {
+        viewModelScope.launch {
+            val runningFeature = privatePlottableFeatures.firstOrNull { it.name == featureName }
 
-    private val _isPlotting = MutableLiveData<Boolean>(false)
-    val isPlotting: LiveData<Boolean>
-        get() = _isPlotting
+            val boundary = PlotBoundary.getDefaultFor(featureName)
+            _boundary.emit(boundary)
+            autoScaleEnable = boundary.enableAutoScale
 
-    private var mFirstNotificationTimeStamp: Long = 0
-    private var mCurrentPlottingFeature: Feature<*>? = null
-    private var mNotificationEnabled = false
+            minValue = boundary.min ?: minValue
+            maxValue = boundary.max ?: maxValue
 
-    private var _lastPlotData = MutableLiveData<PlotEntry?>()
-    val lastPlotData: LiveData<PlotEntry?>
-        get() = _lastPlotData
+            _selectedFeature.emit(runningFeature)
+        }
+    }
 
-    private suspend fun notificationStartStop() {
-        Log.d(TAG, "notificationStartStop")
-        mCurrentPlottingFeature?.apply {
-            mNotificationEnabled = if (mNotificationEnabled) {
-                Log.d(TAG, "mNotificationEnabled")
-                blueManager.disableFeatures(
-                    nodeId = nodeId, listOf(this)
-                )
-                false
+    fun saveImage(context: Context, file: Uri?) : Boolean {
+        snap?.let { image ->
+            file?.let {
+                try {
+                    val stream = context.contentResolver.openOutputStream(file)
+                    stream?.let {
+                        image.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        stream.close()
+                        return true
+                    }
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                    return false
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                    return false
+                }
+            }
+        }
+        return false
+    }
+
+    fun maxValue(max: Float) {
+        maxValue = max
+        viewModelScope.launch {
+            _boundary.emit(_boundary.value.copy(min = minValue, max = maxValue))
+        }
+    }
+
+    fun minValue(min: Float) {
+        minValue = min
+        viewModelScope.launch {
+            _boundary.emit(_boundary.value.copy(min = minValue, max = maxValue))
+        }
+    }
+
+    fun autoScaleValue(autoscale: Boolean) {
+        autoScaleEnable = autoscale
+        viewModelScope.launch {
+            if(autoscale) {
+                _boundary.emit(_boundary.value.copy(min = null, max = null))
             } else {
-                Log.d(TAG, "not mNotificationEnabled")
-                blueManager.enableFeatures(
-                    nodeId = nodeId, listOf(this)
-                )
-                true
+                _boundary.emit(_boundary.value.copy(min = minValue, max = maxValue))
             }
         }
-    }
-
-    fun startPlotFeature(f: Feature<*>) {
-        viewModelScope.launch {
-            startPlot(f)
-        }
-    }
-
-    private suspend fun startPlot(f: Feature<*>) {
-        Log.d(TAG, "startPlot")
-        stopPlot()
-        mFirstNotificationTimeStamp = System.currentTimeMillis()
-        _isPlotting.value = true
-        mCurrentPlottingFeature = f
-        resetPlot()
-
-        if (!mNotificationEnabled) {
-            notificationStartStop()
-        }
-    }
-
-    fun resetPlot() {
-        _lastPlotData.postValue(null)
-    }
-
-    fun stopPlotFeature() {
-        viewModelScope.launch {
-            stopPlot()
-        }
-    }
-
-    private suspend fun stopPlot() {
-        Log.d(TAG, "stopPlot")
-        mCurrentPlottingFeature?.apply {
-            if (mNotificationEnabled) {
-                notificationStartStop()
-            }
-        }
-        _isPlotting.value = false
-        mCurrentPlottingFeature = null
-    }
-
-    fun onStartStopButtonPressed(selectedFeature: Feature<*>) {
-        viewModelScope.launch {
-            if (_isPlotting.value == true) {
-                stopPlot()
-            } else {
-                startPlotFeature(selectedFeature)
-            }
-        }
-    }
-
-    fun onResumePauseButtonPressed() {
-        viewModelScope.launch {
-            notificationStartStop()
-        }
-    }
-
-    fun stopReceiveDebugMessage() {
-        _debugMessages.value = null
-    }
-
-    fun startReceiveDebugMessage() {
-        viewModelScope.launch {
-            blueManager.getDebugMessages(nodeId)?.collect {
-                val message = it.payload
-                _debugMessages.value = message
-            }
-        }
-    }
-}
-
-data class PlotEntry(
-    val x: Long, val y: FloatArray
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PlotEntry
-
-        if (x != other.x) return false
-        if (!y.contentEquals(other.y)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = x.hashCode()
-        result = 31 * result + y.contentHashCode()
-        return result
     }
 }

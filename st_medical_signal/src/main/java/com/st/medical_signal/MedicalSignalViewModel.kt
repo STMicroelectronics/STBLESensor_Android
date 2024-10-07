@@ -7,9 +7,6 @@
  */
 package com.st.medical_signal
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
@@ -35,13 +32,13 @@ import com.st.blue_sdk.features.extended.raw_controlled.readRawPnPLFormat
 import com.st.preferences.StPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonObject
 import java.lang.StringBuilder
 import javax.inject.Inject
 
@@ -60,50 +57,45 @@ class MedicalSignalViewModel
     private var observeFeatureJob24: Job? = null
     private var observeFeaturePnPLJob: Job? = null
 
-    private var TAG = "MedicalSignalViewModel"
+    private val _isMed16Streaming =
+        MutableStateFlow<Boolean>(false)
+    val isMed16Streaming: StateFlow<Boolean>
+        get() = _isMed16Streaming.asStateFlow()
 
-    var isMed16Streaming: Boolean = false
-    var isMed24Streaming: Boolean = false
+    private val _isMed24Streaming =
+        MutableStateFlow<Boolean>(false)
+    val isMed24Streaming: StateFlow<Boolean>
+        get() = _isMed24Streaming.asStateFlow()
 
-    private val _dataFeature16 = MutableSharedFlow<MedicalInfo?>()
-    val dataFeature16: Flow<MedicalInfo?>
-        get() = _dataFeature16
+    private val _dataFeature16 =
+        MutableStateFlow<MedicalInfo?>(null)
+    val dataFeature16: StateFlow<MedicalInfo?>
+        get() = _dataFeature16.asStateFlow()
 
-    private val _dataFeature24 = MutableSharedFlow<MedicalInfo?>()
-    val dataFeature24: Flow<MedicalInfo?>
-        get() = _dataFeature24
+    private val _dataFeature24 =
+        MutableStateFlow<MedicalInfo?>(null)
+    val dataFeature24: StateFlow<MedicalInfo?>
+        get() = _dataFeature24.asStateFlow()
 
 
-    private val _modelUpdates =
-        mutableStateOf<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>(
-            emptyList()
-        )
-    val modelUpdates: State<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>
-        get() = _modelUpdates
-
-    private val _componentStatusUpdates = mutableStateOf<List<JsonObject>>(emptyList())
-    val componentStatusUpdates: State<List<JsonObject>>
-        get() = _componentStatusUpdates
-
-    private val _enableCollapse = mutableStateOf(value = false)
-    val enableCollapse: State<Boolean>
-        get() = _enableCollapse
-
-    private val _lastStatusUpdatedAt = mutableLongStateOf(value = 0L)
-    val lastStatusUpdatedAt: State<Long>
-        get() = _lastStatusUpdatedAt
+    private var modelUpdates: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> =
+        emptyList()
 
     private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
 
-    private val _syntheticData = MutableSharedFlow<String>()
-    val syntheticData: Flow<String>
+    private val _syntheticData = MutableStateFlow<String?>(null)
+    val syntheticData: StateFlow<String?>
         get() = _syntheticData
 
-
     fun startMed16(nodeId: String) {
-        isMed16Streaming = true
+
         observeFeatureJob16?.cancel()
         medical16Feature?.let { feature ->
+
+            viewModelScope.launch {
+                _isMed16Streaming.emit(true)
+            }
+
             observeFeatureJob16 = blueManager.getFeatureUpdates(
                 nodeId = nodeId,
                 features = listOf(feature)
@@ -121,10 +113,10 @@ class MedicalSignalViewModel
     }
 
     fun stopMed16(nodeId: String) {
-        isMed16Streaming = false
         observeFeatureJob16?.cancel()
         medical16Feature?.let { feature ->
-            coroutineScope.launch {
+            viewModelScope.launch {
+                _isMed16Streaming.emit(false)
                 blueManager.disableFeatures(
                     nodeId = nodeId, features = listOf(feature)
                 )
@@ -133,9 +125,13 @@ class MedicalSignalViewModel
     }
 
     fun startMed24(nodeId: String) {
-        isMed24Streaming = true
         observeFeatureJob24?.cancel()
         medical24Feature?.let { feature ->
+
+            viewModelScope.launch {
+                _isMed24Streaming.emit(true)
+            }
+
             observeFeatureJob24 = blueManager.getFeatureUpdates(
                 nodeId = nodeId,
                 features = listOf(feature)
@@ -153,10 +149,10 @@ class MedicalSignalViewModel
     }
 
     fun stopMed24(nodeId: String) {
-        isMed24Streaming = false
         observeFeatureJob24?.cancel()
         medical24Feature?.let { feature ->
-            coroutineScope.launch {
+            viewModelScope.launch {
+                _isMed24Streaming.emit(false)
                 blueManager.disableFeatures(
                     nodeId = nodeId, features = listOf(feature)
                 )
@@ -165,8 +161,6 @@ class MedicalSignalViewModel
     }
 
     fun startDemo(nodeId: String) {
-        isMed16Streaming = false
-        isMed24Streaming = false
 
         observeFeaturePnPLJob?.cancel()
 
@@ -198,13 +192,11 @@ class MedicalSignalViewModel
                     onFeaturesEnabled = {
                         launch {
 
-                            _modelUpdates.value = blueManager.getDtmiModel(
+                            modelUpdates = blueManager.getDtmiModel(
                                 nodeId = nodeId,
                                 isBeta = stPreferences.isBetaApplication()
                             )?.filterComponentsByProperty(propName = PROPERTY_NAME_ST_BLE_STREAM)
                                 ?: emptyList()
-
-                            _enableCollapse.value = true
 
                             val featurePnPL =
                                 blueManager.nodeFeatures(nodeId).find { it.name == PnPL.NAME }
@@ -237,14 +229,12 @@ class MedicalSignalViewModel
 
                     if (data is PnPLConfig) {
                         data.deviceStatus.value?.components?.let { json ->
-                            _lastStatusUpdatedAt.longValue = System.currentTimeMillis()
-                            _componentStatusUpdates.value = json
 
                             //Search the RawPnPL Format
                             readRawPnPLFormat(
                                 rawPnPLFormat = rawPnPLFormat,
                                 json = json,
-                                modelUpdates = _modelUpdates.value
+                                modelUpdates = modelUpdates
                             )
                         }
                     } else if (data is RawControlledInfo) {
@@ -273,10 +263,10 @@ class MedicalSignalViewModel
                                         }
                                         count++
 
-                                        if(formatRawPnpLEntry.format.channels!= 1) {
+                                        if (formatRawPnpLEntry.format.channels != 1) {
                                             //The channels are interleaved
                                             string.append("[ ")
-                                            if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                            if (formatRawPnpLEntry.format.multiplyFactor != null) {
                                                 val values =
                                                     formatRawPnpLEntry.format.valuesFloat.chunked(
                                                         formatRawPnpLEntry.format.channels
@@ -305,7 +295,7 @@ class MedicalSignalViewModel
                                         } else {
                                             string.append("[ ")
 
-                                            if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                            if (formatRawPnpLEntry.format.multiplyFactor != null) {
                                                 formatRawPnpLEntry.format.valuesFloat.forEach { value ->
                                                     string.append("$value ")
                                                 }

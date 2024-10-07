@@ -15,8 +15,9 @@ import com.st.blue_sdk.features.extended.color_ambient_light.ColorAmbientLight
 import com.st.blue_sdk.features.extended.color_ambient_light.ColorAmbientLightInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,9 +30,12 @@ class ColorAmbientLightViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _colorData = MutableSharedFlow<ColorAmbientLightInfo>()
-    val colorData: Flow<ColorAmbientLightInfo>
-        get() = _colorData
+    private val _colorData =
+        MutableStateFlow<ColorAmbientLightInfo?>(
+            null
+        )
+    val colorData: StateFlow<ColorAmbientLightInfo?>
+        get() = _colorData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (feature == null) {

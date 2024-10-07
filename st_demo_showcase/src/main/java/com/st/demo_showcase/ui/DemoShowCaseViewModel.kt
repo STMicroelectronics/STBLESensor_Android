@@ -21,7 +21,6 @@ import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.models.Node
 import com.st.blue_sdk.services.audio.AudioService
 import com.st.blue_sdk.services.debug.DebugMessage
-import com.st.blue_voice.full_duplex.BlueVoiceFullDuplexFragment
 import com.st.core.api.ApplicationAnalyticsService
 import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.utils.DTMIModelLoadedStatus
@@ -39,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -228,7 +228,10 @@ class DemoShowCaseViewModel @Inject constructor(
         }
 
         _availableDemo.value = emptyList()
-        viewModelScope.launch {
+        runBlocking {
+            //unsubscribes for all the ble chars
+            val nodeFeatures = blueManager.nodeFeatures(nodeId)
+            val result = blueManager.disableFeatures(nodeId, nodeFeatures)
             blueManager.disconnect(nodeId = nodeId)
         }
     }

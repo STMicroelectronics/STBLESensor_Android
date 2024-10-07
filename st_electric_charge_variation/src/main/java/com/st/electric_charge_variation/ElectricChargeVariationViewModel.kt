@@ -15,8 +15,9 @@ import com.st.blue_sdk.features.extended.qvar.QVAR
 import com.st.blue_sdk.features.extended.qvar.QVARInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,9 +30,10 @@ class ElectricChargeVariationViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _qvarData = MutableSharedFlow<QVARInfo>()
-    val qvarData: Flow<QVARInfo>
-        get() = _qvarData
+    private val _qvarData =
+        MutableStateFlow<QVARInfo?>(null)
+    val qvarData: StateFlow<QVARInfo?>
+        get() = _qvarData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (feature == null) {

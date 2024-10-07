@@ -34,6 +34,7 @@ class HighSpeedDataLogFragment : Fragment() {
         val nodeId = arguments?.getString(ARG_NODE_ID)
             ?: HsdlConfig.nodeId
             ?: throw IllegalArgumentException("Missing string $ARG_NODE_ID arguments")
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

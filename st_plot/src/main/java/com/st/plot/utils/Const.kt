@@ -43,10 +43,8 @@ import com.st.blue_sdk.features.sensor_fusion.MemsSensorFusionCompat
 import com.st.blue_sdk.features.sensor_fusion.MemsSensorFusionInfo
 import com.st.blue_sdk.features.temperature.Temperature
 import com.st.blue_sdk.features.temperature.TemperatureInfo
-import com.st.plot.PlotEntry
 import java.lang.StringBuilder
 
-const val PLOT_SETTINGS = "Plot Settings"
 
 val PLOTTABLE_FEATURE = listOf(
     Acceleration.NAME,

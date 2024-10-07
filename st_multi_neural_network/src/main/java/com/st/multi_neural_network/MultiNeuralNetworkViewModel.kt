@@ -7,8 +7,6 @@
  */
 package com.st.multi_neural_network
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
@@ -19,9 +17,11 @@ import com.st.blue_sdk.features.activity.ActivityInfo
 import com.st.blue_sdk.features.extended.audio_classification.AudioClassification
 import com.st.blue_sdk.features.extended.audio_classification.AudioClassificationInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -43,20 +43,24 @@ class MultiNeuralNetworkViewModel
 
     private var features: MutableList<Feature<*>> = mutableListOf()
 
-    private val _activityInfo = MutableSharedFlow<ActivityInfo>()
-    val activityInfo: Flow<ActivityInfo>
-        get() = _activityInfo
-
-    private val _audioClassificationInfo = MutableSharedFlow<AudioClassificationInfo>()
-    val audioClassificationInfo: Flow<AudioClassificationInfo>
-        get() = _audioClassificationInfo
+    private val _activityInfo =
+        MutableStateFlow<ActivityInfo?>(null)
+    val activityInfo: StateFlow<ActivityInfo?>
+        get() = _activityInfo.asStateFlow()
 
 
-    private val _currentAlgorithm = MutableLiveData<AvailableAlgorithm?>(null)
-    val currentAlgorithm: LiveData<AvailableAlgorithm?>
-        get() = _currentAlgorithm
+    private val _audioClassificationInfo =
+        MutableStateFlow<AudioClassificationInfo?>(null)
+    val audioClassificationInfo: StateFlow<AudioClassificationInfo?>
+        get() = _audioClassificationInfo.asStateFlow()
 
-    val algorithmsList : MutableLiveData<List<AvailableAlgorithm>?> = MutableLiveData(null)
+
+    private val _algorithmsList =
+        MutableStateFlow<List<AvailableAlgorithm>>(
+            listOf()
+        )
+    val algorithmsList: StateFlow<List<AvailableAlgorithm>>
+        get() = _algorithmsList.asStateFlow()
 
 
     private fun writeMessageOnDebugConsole(nodeId: String,message: String) {
@@ -105,11 +109,16 @@ class MultiNeuralNetworkViewModel
                     buffer.delete(0,buffer.length)
                     val algorithms = extractAlgorithms(rawData)
 
-                    if(algorithms?.isEmpty()==false) {
-                        algorithmsList.postValue(algorithms)
+                    if(algorithms.isNotEmpty()) {
+                        _algorithmsList.emit (algorithms)
                     } else {
-                        algorithmsList.postValue(null)
+                        _algorithmsList.emit(listOf())
                     }
+                    buffer.delete(0,buffer.length)
+                }
+
+                if(buffer.contains("NNconfidence") || buffer.contains("Sending: ASC")) {
+                    buffer.delete(0,buffer.length)
                 }
             }
         }
@@ -118,7 +127,7 @@ class MultiNeuralNetworkViewModel
         getAvailableAlgorithm(nodeId = nodeId)
     }
 
-    private fun extractAlgorithms(rawData: String): List<AvailableAlgorithm>? {
+    private fun extractAlgorithms(rawData: String): List<AvailableAlgorithm> {
         return rawData.split(',').mapNotNull { algo ->
             val component = algo.split('-')
             val index = component.getOrNull(0)?.toIntOrNull()
@@ -139,14 +148,13 @@ class MultiNeuralNetworkViewModel
     }
 
     fun selectAlgorithm(nodeId: String,selected: AvailableAlgorithm) {
-        _currentAlgorithm.postValue(selected)
         //disable features... stopDemo?
-        val cmd = String.format(SET_ALGORITHM_FORMAT,selected.index)
+        val cmd = String.format(Locale.getDefault(),SET_ALGORITHM_FORMAT,selected.index)
         writeMessageOnDebugConsole(nodeId, cmd)
         //enable features...startDemo
     }
 
-    fun getAvailableAlgorithm(nodeId: String) {
+    private fun getAvailableAlgorithm(nodeId: String) {
         writeMessageOnDebugConsole(nodeId,GET_AVAILABLE_ALGORITHMS)
     }
 }

@@ -50,7 +50,8 @@ fun FwUpdateProgressDialog(
                     progress = {
                         (progress ?: 0f) / FULL_PERCENT
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    drawStopIndicator = {}
                     )
 
                 Text(

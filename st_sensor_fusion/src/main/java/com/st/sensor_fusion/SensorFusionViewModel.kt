@@ -7,14 +7,12 @@
  */
 package com.st.sensor_fusion
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.CalibrationStatus
 import com.st.blue_sdk.features.Feature
-import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.acceleration_event.AccelerationEvent
 import com.st.blue_sdk.features.acceleration_event.AccelerationEventInfo
 import com.st.blue_sdk.features.acceleration_event.AccelerationType
@@ -31,8 +29,9 @@ import com.st.blue_sdk.services.calibration.CalibrationService
 import com.st.blue_sdk.services.calibration.CalibrationServiceImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,27 +48,41 @@ class SensorFusionViewModel
     private var featureProximity: Feature<*>? = null
     private var featureFreeFall: Feature<*>? = null
 
-    private val _fusionData = MutableSharedFlow<Quaternion>()
-    val fusionData: Flow<Quaternion>
-        get() = _fusionData
+    private val _fusionData =
+        MutableStateFlow<Quaternion?>(null)
+    val fusionData: StateFlow<Quaternion?>
+        get() = _fusionData.asStateFlow()
 
-    private val _proximityData = MutableSharedFlow<Int>()
-    val proximity: Flow<Int>
-        get() = _proximityData
+    private val _proximityData =
+        MutableStateFlow<Int?>(null)
+    val proximity: StateFlow<Int?>
+        get() = _proximityData.asStateFlow()
 
-    private val _freeFallData = MutableSharedFlow<Boolean>()
-    val freeFall: Flow<Boolean>
-        get() = _freeFallData
+    private val _freeFallData =
+        MutableStateFlow<Pair<Boolean,Long?>>(Pair(false,null))
+    val freeFall: StateFlow<Pair<Boolean,Long?>>
+        get() = _freeFallData.asStateFlow()
 
-    val calibrationStatus = MutableLiveData<Boolean>()
-    val resetCube = MutableLiveData<Boolean>()
+    private val _calibrationStatus =
+        MutableStateFlow(false)
+    val calibrationStatus: StateFlow<Boolean>
+        get() = _calibrationStatus.asStateFlow()
 
     private suspend fun getCalibration(feature: Feature<*>, nodeId: String) {
         calibrationService.getCalibration(
             feature = feature,
             nodeId = nodeId
         ).also {
-            calibrationStatus.postValue(it.status)
+            _calibrationStatus.emit(it.status)
+        }
+    }
+
+    private suspend fun startCalibration(feature: Feature<*>, nodeId: String) {
+        calibrationService.startCalibration(
+            feature = feature,
+            nodeId = nodeId
+        ).also {
+            _calibrationStatus.emit(it.status)
         }
     }
 
@@ -97,7 +110,7 @@ class SensorFusionViewModel
     }
 
     fun startDemo(nodeId: String) {
-        resetCube.postValue(false)
+        //_resetCube.emit(false)
 
         //Sensor Fusion Feature
         if (featureSensorFusion == null) {
@@ -112,7 +125,7 @@ class SensorFusionViewModel
             viewModelScope.launch {
                 blueManager.getConfigControlUpdates(nodeId = nodeId).collect {
                     if (it is CalibrationStatus) {
-                        calibrationStatus.postValue(it.status)
+                        _calibrationStatus.emit(it.status)
                     }
                 }
             }
@@ -128,16 +141,16 @@ class SensorFusionViewModel
                         if (data.quaternions.size == 1) {
                             _fusionData.emit(data.quaternions[0].value)
                         } else {
-//                            var prevTimeStamp: Long = -1
-//                            for (current in data.quaternions) {
-//                                val currentTimeStamp = current.value.timeStamp
-//                                if (prevTimeStamp != -1L) {
-//                                    delay(currentTimeStamp - prevTimeStamp)
-//                                }
-//                                _fusionData.emit(current.value)
-//                                prevTimeStamp = currentTimeStamp
-//                            }
-                            _fusionData.emit(data.quaternions[0].value)
+                            var prevTimeStamp: Long = -1
+                            for (current in data.quaternions) {
+                                val currentTimeStamp = current.value.timeStamp
+                                if (prevTimeStamp != -1L) {
+                                    delay(currentTimeStamp - prevTimeStamp)
+                                }
+                                _fusionData.emit(current.value)
+                                prevTimeStamp = currentTimeStamp
+                            }
+                           // _fusionData.emit(data.quaternions[0].value)
                         }
                     }
                 }
@@ -151,7 +164,7 @@ class SensorFusionViewModel
                 if (message.isNotEmpty()) {
                     val matcher = CalibrationServiceImpl.STATUS_PARSER.matcher(message)
                     if (matcher.matches()) {
-                        calibrationStatus.postValue(true)
+                        _calibrationStatus.emit(true)
                     }
                 }
             }
@@ -199,7 +212,7 @@ class SensorFusionViewModel
                     if (data is AccelerationEventInfo) {
                         if (data.accEvent.map { event -> event.value }
                                 .firstOrNull { event -> event == AccelerationType.FreeFall } != null) {
-                            _freeFallData.emit(true)
+                            _freeFallData.emit(Pair(true,it.timeStamp))
                         }
                     }
                 }
@@ -249,8 +262,12 @@ class SensorFusionViewModel
         }
     }
 
-    fun resetCubePosition() {
-        resetCube.postValue(true)
+    fun resetCubeCalibration(nodeId: String) {
+        coroutineScope.launch {
+            featureSensorFusion?.let { feature ->
+                startCalibration(feature,nodeId)
+            }
+        }
     }
 
     fun getNode(nodeId: String): Boards.Model {

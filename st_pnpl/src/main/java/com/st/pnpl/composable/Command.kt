@@ -35,6 +35,8 @@ fun Command(
     data: JsonElement?,
     enabled: Boolean,
     content: DtmiContent.DtmiCommandContent,
+    onBeforeUcf:() -> Unit,
+    onAfterUcf:() -> Unit,
     onSendCommand: (CommandRequest?) -> Unit
 ) {
     if (content.name == LOAD_FILE_COMMAND_NAME) {
@@ -43,6 +45,8 @@ fun Command(
             modifier = modifier.fillMaxWidth(),
             commandType = content.commandType,
             commandName = content.name,
+            onBeforeUcf = onBeforeUcf,
+            onAfterUcf = onAfterUcf,
             onSendCommand = onSendCommand
         )
     } else {

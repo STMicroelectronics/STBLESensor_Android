@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
@@ -58,13 +57,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun FirmwareList(
     modifier: Modifier = Modifier,
-    boardId: String,
+    boardPart: String,
     navController: NavController,
-    viewModel: CatalogViewModel = hiltViewModel()
+    viewModel: CatalogViewModel
 ) {
-    LaunchedEffect(key1 = boardId) {
-        viewModel.getFirmwareList(boardId)
+
+    LaunchedEffect(key1 = boardPart) {
+        viewModel.getFirmwareListForBoardPart(boardPart)
     }
+
     val firmwareList by viewModel.firmwareList.collectAsStateWithLifecycle()
     FirmwareList(
         modifier = modifier,
@@ -86,10 +87,14 @@ fun FirmwareList(
 
     val firmwareListDisplayed by remember(key1 = onlyLatest, key2 = firmwareList) {
         derivedStateOf {
+            //Remove duplicated firmwares
+            val firmwareListWithoutDuplicate =  firmwareList.groupBy { it.fwName }.map { list -> list.value.distinctBy { it.fwVersion } }.flatten()
+
             if (onlyLatest) {
-                firmwareList.groupBy { it.fwName }.map { list -> list.value.maxByOrNull { it.fwVersion }!! }
+                firmwareListWithoutDuplicate.groupBy { it.fwName }
+                    .map { list -> list.value.maxByOrNull { it.fwVersion }!! }
             } else {
-                firmwareList
+                firmwareListWithoutDuplicate
             }
         }
     }
@@ -117,10 +122,12 @@ fun FirmwareList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(LocalDimensions.current.paddingSmall)
-                .clickable { onlyLatest = !onlyLatest
+                .clickable {
+                    onlyLatest = !onlyLatest
                     coroutineScope.launch {
                         state.animateScrollToItem(index = 0)
-                    }},
+                    }
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {

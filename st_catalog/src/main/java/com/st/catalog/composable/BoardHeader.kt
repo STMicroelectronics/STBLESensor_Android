@@ -76,6 +76,7 @@ fun BoardHeader(
                 letterSpacing = 0.15.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+
             if (boardDescOrNull != null) {
                 Text(
                     modifier = Modifier
@@ -222,6 +223,7 @@ private fun BoardHeaderNrndPreview() {
                 uniqueDevId = 0,
                 boardName = LoremIpsum(words = 5).asString(),
                 boardVariant = LoremIpsum(words = 5).asString(),
+                boardPart = LoremIpsum(words = 5).asString(),
                 friendlyName = LoremIpsum(words = 5).asString(),
                 status = BoardStatus.NRND,
                 description = "",
@@ -258,6 +260,7 @@ private fun BoardHeaderActivePreview() {
                 boardName = LoremIpsum(words = 5).asString(),
                 boardVariant = LoremIpsum(words = 5).asString(),
                 friendlyName = LoremIpsum(words = 5).asString(),
+                boardPart = LoremIpsum(words = 5).asString(),
                 status = BoardStatus.ACTIVE,
                 description = "",
                 docURL = "www",

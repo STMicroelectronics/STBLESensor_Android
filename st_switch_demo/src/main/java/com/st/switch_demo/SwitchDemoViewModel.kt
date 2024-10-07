@@ -19,8 +19,9 @@ import com.st.blue_sdk.features.switchfeature.request.SwitchOn
 import com.st.blue_sdk.models.Boards
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,12 +34,18 @@ class SwitchDemoViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _switchData = MutableSharedFlow<SwitchFeatureInfo>()
-    val switchData: Flow<SwitchFeatureInfo>
-        get() = _switchData
+    var boardType: Boards. Model = Boards.Model.GENERIC
+
+    private val _switchData =
+        MutableStateFlow<SwitchFeatureInfo?>(null)
+    val switchData: StateFlow<SwitchFeatureInfo?>
+        get() = _switchData.asStateFlow()
 
 
     fun startDemo(nodeId: String) {
+
+        boardType = getNode(nodeId)
+
         if (feature == null) {
             blueManager.nodeFeatures(nodeId).find {
                 SwitchFeature.NAME == it.name

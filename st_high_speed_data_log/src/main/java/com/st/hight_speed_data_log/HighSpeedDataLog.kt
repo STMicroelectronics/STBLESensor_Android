@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -27,17 +25,19 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,13 +55,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.high_speed_data_log.R
 import com.st.hight_speed_data_log.composable.HsdlSensors
 import com.st.hight_speed_data_log.composable.HsdlTags
 import com.st.hight_speed_data_log.composable.StopLoggingDialog
+import com.st.hight_speed_data_log.composable.VespucciCharts
 import com.st.hight_speed_data_log.composable.VespucciHsdlTags
+import com.st.hight_speed_data_log.model.StreamData
 import com.st.pnpl.composable.PnPLInfoWarningSpontaneousMessage
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
@@ -86,13 +88,19 @@ fun HighSpeedDataLog(
 ) {
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId = nodeId)
-            Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
+            Lifecycle.Event.ON_STOP -> {
+                viewModel.stopDemo(nodeId = nodeId)
+            }
+            Lifecycle.Event.ON_CREATE -> {
+                viewModel.startDemo(nodeId = nodeId)
+            }
             else -> Unit
         }
     }
+
     val isLogging by viewModel.isLogging.collectAsStateWithLifecycle()
     val sensors by viewModel.sensors.collectAsStateWithLifecycle()
+    val streamSensors by viewModel.streamSensors.collectAsStateWithLifecycle()
     val tags by viewModel.tags.collectAsStateWithLifecycle()
     val status by viewModel.componentStatusUpdates.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
@@ -101,13 +109,20 @@ fun HighSpeedDataLog(
     val vespucciTags by viewModel.vespucciTags.collectAsStateWithLifecycle()
     val statusMessage by viewModel.statusMessage.collectAsStateWithLifecycle()
     val isConnectionLost by viewModel.isConnectionLost.collectAsStateWithLifecycle()
+    val currentSensorEnabled by viewModel.currentSensorEnabled.collectAsStateWithLifecycle()
+    val streamData by viewModel.streamData.collectAsStateWithLifecycle()
+    val enableLog by viewModel.enableLog.collectAsStateWithLifecycle()
 
     HighSpeedDataLog(
         modifier = modifier,
         sensors = sensors,
+        streamSensors = streamSensors,
         tags = tags,
         status = status,
+        enableLog = enableLog,
         isSDCardInserted = isSDCardInserted,
+        currentSensorEnabled = currentSensorEnabled,
+        streamData = streamData,
         isLogging = isLogging,
         isLoading = isLoading,
         vespucciTags = vespucciTags,
@@ -124,12 +139,14 @@ fun HighSpeedDataLog(
                 )
             }
         },
+        onBeforeUcf = {viewModel.setEnableStopDemo(false)},
+        onAfterUcf = {},
         onSendCommand = { name, value ->
             if (isLoading.not()) {
                 viewModel.sendCommand(
                     nodeId = nodeId,
                     name = name,
-                    value = value
+                    commandRequest = value
                 )
             }
         },
@@ -146,14 +163,19 @@ fun HighSpeedDataLog(
             if (isLogging.not() && isLoading.not()) {
                 viewModel.refresh(nodeId)
             }
+        },
+        onSensorSelected = {
+            viewModel.enableStreamSensor(nodeId = nodeId, sensor = it)
         }
     )
- 
+
     statusMessage?.let {
-        PnPLInfoWarningSpontaneousMessage(messageType = statusMessage!!, onDismissRequest = { viewModel.cleanStatusMessage() })
+        PnPLInfoWarningSpontaneousMessage(
+            messageType = statusMessage!!,
+            onDismissRequest = { viewModel.cleanStatusMessage() })
     }
 
-    if(isConnectionLost) {
+    if (isConnectionLost) {
         BasicAlertDialog(onDismissRequest = { viewModel.resetConnectionLost() })
         {
             Surface(
@@ -181,16 +203,23 @@ fun HighSpeedDataLog(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    Row(Modifier.fillMaxWidth()
-                        .padding(start = LocalDimensions.current.paddingSmall, end = LocalDimensions.current.paddingSmall, top= LocalDimensions.current.paddingNormal),
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = LocalDimensions.current.paddingSmall,
+                                end = LocalDimensions.current.paddingSmall,
+                                top = LocalDimensions.current.paddingNormal
+                            ),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
                         BlueMsButton(
                             modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
                             text = "Close",
                             onClick = {
-                                viewModel.disconnect()
+                                viewModel.disconnect(nodeId = nodeId)
                             }
                         )
 
@@ -212,15 +241,22 @@ fun HighSpeedDataLog(
 @Composable
 fun HighSpeedDataLog(
     modifier: Modifier,
-    sensors: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
-    tags: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
+    sensors: List<ComponentWithInterface> = emptyList(),
+    streamSensors: List<ComponentWithInterface> = emptyList(),
+    tags: List<ComponentWithInterface> = emptyList(),
+    streamData: StreamData? = null,
     status: List<JsonObject>,
     vespucciTags: Map<String, Boolean>,
+    enableLog: Boolean,
     isLogging: Boolean,
     isSDCardInserted: Boolean = false,
     isLoading: Boolean = false,
+    currentSensorEnabled: String = "",
     acquisitionName: String = "",
+    onSensorSelected: (String) -> Unit,
     onValueChange: (String, Pair<String, Any>) -> Unit,
+    onBeforeUcf:() -> Unit,
+    onAfterUcf:() -> Unit,
     onSendCommand: (String, CommandRequest?) -> Unit,
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ },
     onStartStopLog: (Boolean) -> Unit = { /**NOOP **/ },
@@ -237,8 +273,12 @@ fun HighSpeedDataLog(
         onRefresh = onRefresh
     )
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+    val selectedIndex by remember(key1 = currentRoute) {
+        derivedStateOf {
+            if (currentRoute == "Tags") 1 else 0
+        }
     }
 
     val haptic = LocalHapticFeedback.current
@@ -249,34 +289,6 @@ fun HighSpeedDataLog(
         topBar = {
             HsdlConfig.hsdlTabBar?.invoke(currentTitle, isLoading)
         },
-//        floatingActionButtonPosition = FabPosition.EndOverlay,
-//        floatingActionButton = {
-//            FloatingActionButton(
-//                containerColor = SecondaryBlue,
-//                onClick = {
-//                    if (isSDCardInserted) {
-//                        if (isLogging) {
-//                            onStartStopLog(false)
-//                            openStopDialog = HsdlConfig.showStopDialog
-//                        } else {
-//                            onStartStopLog(true)
-//                        }
-//                    } else {
-//                        Toast.makeText(
-//                            context,
-//                            context.getString(R.string.st_hsdl_missingSdCard),
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            ) {
-//                Icon(
-//                    tint = MaterialTheme.colorScheme.primary,
-//                    imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
-//                    contentDescription = null
-//                )
-//            }
-//        },
         bottomBar = {
             NavigationBar(
                 modifier = Modifier.fillMaxWidth(),
@@ -294,7 +306,6 @@ fun HighSpeedDataLog(
                     selected = 0 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        selectedIndex = 0
                         currentTitle = sensorsTitle
                         navController.navigate("Sensors") {
                             navController.graph.startDestinationRoute?.let { screenRoute ->
@@ -319,17 +330,25 @@ fun HighSpeedDataLog(
                 FloatingActionButton(
                     containerColor = SecondaryBlue,
                     onClick = {
-                        if (isSDCardInserted) {
-                            if (isLogging) {
-                                onStartStopLog(false)
-                                openStopDialog = HsdlConfig.showStopDialog
+                        if(enableLog){
+                            if (isSDCardInserted) {
+                                if (isLogging) {
+                                    onStartStopLog(false)
+                                    openStopDialog = HsdlConfig.showStopDialog
+                                } else {
+                                    onStartStopLog(true)
+                                }
                             } else {
-                                onStartStopLog(true)
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.st_hsdl_missingSdCard),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        } else {
+                        }else{
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.st_hsdl_missingSdCard),
+                                context.getString(R.string.st_hsdl_missingSensors),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -353,7 +372,6 @@ fun HighSpeedDataLog(
                     selected = 1 == selectedIndex,
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        selectedIndex = 1
                         currentTitle = tagsTitle
                         navController.navigate("Tags") {
                             navController.graph.startDestinationRoute?.let { screenRoute ->
@@ -392,18 +410,31 @@ fun HighSpeedDataLog(
                             status = status,
                             isLoading = isLoading,
                             onValueChange = onValueChange,
+                            onAfterUcf = onAfterUcf,
+                            onBeforeUcf = onBeforeUcf,
                             onSendCommand = onSendCommand
                         )
                     } else {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = stringResource(id = R.string.st_hsdl_logging))
-                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        if (HsdlConfig.tags.isEmpty()) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(text = stringResource(id = R.string.st_hsdl_logging))
+                                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                            }
+                        } else {
+                            VespucciCharts(
+                                sensors = streamSensors,
+                                status = status,
+                                streamData = streamData,
+                                currentSensorEnabled = currentSensorEnabled,
+                                vespucciTags = vespucciTags,
+                                onSensorSelected = onSensorSelected,
+                                showTagsEnabled = true
+                            )
                         }
-
                     }
                 }
 

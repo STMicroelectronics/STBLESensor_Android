@@ -13,32 +13,45 @@ import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.blue_sdk.board_catalog.models.DtmiType
+import com.st.blue_sdk.features.Feature
 import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled.Companion.STREAM_ID_NOT_FOUND
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlledInfo
+import com.st.blue_sdk.features.extended.raw_controlled.decodeRawData
+import com.st.blue_sdk.features.extended.raw_controlled.model.RawStreamIdEntry
+import com.st.blue_sdk.features.extended.raw_controlled.readRawPnPLFormat
 import com.st.blue_sdk.models.NodeState
 import com.st.core.GlobalConfig
+import com.st.hight_speed_data_log.model.StreamData
+import com.st.hight_speed_data_log.model.StreamDataChannel
 import com.st.pnpl.composable.PnPLSpontaneousMessageType
 import com.st.pnpl.composable.searchInfoWarningError
 import com.st.pnpl.util.PnPLTypeOfCommand
 import com.st.pnpl.util.SetCommandPnPLRequest
 import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
+import com.st.ui.composables.ENABLE_PROPERTY_NAME
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.jsonObject
@@ -49,83 +62,209 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-private typealias ComponentWithInterface = Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>
+typealias ComponentWithInterface = Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>
 
 @HiltViewModel
 class HighSpeedDataLogViewModel @Inject constructor(
     private val blueManager: BlueManager,
-    private val stPreferences: StPreferences,
-    private val coroutineScope: CoroutineScope
+    private val stPreferences: StPreferences
 ) : ViewModel() {
 
+    private var enableStopDemo = true
     private var observeFeatureJob: Job? = null
     private var observeNodeStatusJob: Job? = null
-    private val pnplFeatures: MutableList<PnPL> = mutableListOf()
+    private var pnplFeature: PnPL? = null
+    private var rawFeature: RawControlled? = null
+    private var features: List<Feature<*>> = emptyList()
     private var shouldInitDemo: Boolean = true
     private var setShouldInitDemoAtResponse: Boolean = false
     private var shouldRenameTags: Boolean = true
-
-    private var nodeIdLocal: String? = null
-
     private var pnplBleResponses: Boolean = false
-
-    private var numberOfTags = 4
-
+    private var streamDataBuffer = mutableListOf<StreamDataChannel>()
     private var commandQueue: MutableList<SetCommandPnPLRequest> = mutableListOf()
+    private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
+    private val tagNames: MutableList<String> = mutableListOf()
 
-    private val _tags =
-        MutableStateFlow<List<ComponentWithInterface>>(
-            emptyList()
-        )
-    val tags: StateFlow<List<ComponentWithInterface>>
-        get() = _tags.asStateFlow()
-
-    private val _vespucciTags =
-        MutableStateFlow<Map<String, Boolean>>(
-            mutableMapOf()
-        )
-    val vespucciTags: StateFlow<Map<String, Boolean>>
-        get() = _vespucciTags.asStateFlow()
-
-    private val _acquisitionName =
-        MutableStateFlow("")
-    val acquisitionName: StateFlow<String>
-        get() = _acquisitionName.asStateFlow()
-
-    private val _sensors =
-        MutableStateFlow<List<ComponentWithInterface>>(
-            emptyList()
-        )
-    val sensors: StateFlow<List<ComponentWithInterface>>
-        get() = _sensors.asStateFlow()
-
-    private val _componentStatusUpdates = MutableStateFlow<List<JsonObject>>(emptyList())
-    val componentStatusUpdates: StateFlow<List<JsonObject>>
-        get() = _componentStatusUpdates.asStateFlow()
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean>
-        get() = _isLoading.asStateFlow()
-
-    private val _isLogging = MutableStateFlow(false)
-    val isLogging = _isLogging.asStateFlow()
-
-    private val _isSDCardInserted = MutableStateFlow(false)
-    val isSDCardInserted = _isSDCardInserted.asStateFlow()
-
+    private val _tags = MutableStateFlow<List<ComponentWithInterface>>(value = emptyList())
+    private val _currentSensorEnabled: MutableStateFlow<String> = MutableStateFlow(value = "")
+    private val _vespucciTags = MutableStateFlow<Map<String, Boolean>>(value = mutableMapOf())
+    private val _acquisitionName = MutableStateFlow(value = "")
+    private val _modelUpdates =
+        MutableStateFlow<List<ComponentWithInterface>>(value = emptyList())
+    private val _sensors = MutableStateFlow<List<ComponentWithInterface>>(value = emptyList())
+    private val _streamSensors = MutableStateFlow<List<ComponentWithInterface>>(value = emptyList())
+    private val _componentStatusUpdates = MutableStateFlow<List<JsonObject>>(value = emptyList())
+    private val _streamDataBuffered = MutableStateFlow<StreamData?>(value = null)
+    private val _streamData = MutableStateFlow<StreamData?>(value = null)
+    private val _isLogging = MutableStateFlow(value = false)
+    private val _isSDCardInserted = MutableStateFlow(value = false)
+    private val _isLoading = MutableStateFlow(value = false)
+    private val _isConnectionLost = MutableStateFlow(value = false)
+    private val _enableLog = MutableStateFlow(value = false)
     private val _statusMessage: MutableStateFlow<PnPLSpontaneousMessageType?> =
-        MutableStateFlow(null)
-    val statusMessage: StateFlow<PnPLSpontaneousMessageType?>
-        get() = _statusMessage.asStateFlow()
+        MutableStateFlow(value = null)
 
-    private val _isConnectionLost = MutableStateFlow(false)
-    val isConnectionLost: StateFlow<Boolean>
-        get() = _isConnectionLost.asStateFlow()
+    val tags: StateFlow<List<ComponentWithInterface>> = _tags.asStateFlow()
+    val currentSensorEnabled = _currentSensorEnabled.asStateFlow()
+    val vespucciTags: StateFlow<Map<String, Boolean>> = _vespucciTags.asStateFlow()
+    val acquisitionName: StateFlow<String> = _acquisitionName.asStateFlow()
+    val streamData = _streamDataBuffered.asStateFlow()
+    val sensors: StateFlow<List<ComponentWithInterface>> = _sensors.asStateFlow()
+    val streamSensors: StateFlow<List<ComponentWithInterface>> = _streamSensors.asStateFlow()
+    val componentStatusUpdates: StateFlow<List<JsonObject>> = _componentStatusUpdates.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    val isLogging = _isLogging.asStateFlow()
+    val isSDCardInserted = _isSDCardInserted.asStateFlow()
+    val statusMessage: StateFlow<PnPLSpontaneousMessageType?> = _statusMessage.asStateFlow()
+    val isConnectionLost: StateFlow<Boolean> = _isConnectionLost.asStateFlow()
+    val enableLog: StateFlow<Boolean> = _enableLog.asStateFlow()
+
+    private var sensorsActive = listOf<String>()
+
+    private var componentWithInterface: List<ComponentWithInterface> = listOf()
+
+    private fun <T> MutableList<T>.removeFirstElements(count: Int): List<T> {
+        val subList = this.subList(0, minOf(count, this.size)).toList()
+        if (count in 0..this.size) {
+            this.subList(0, count).clear()
+        }
+        return subList
+    }
+
+    private fun List<StreamDataChannel>.normalize(newSize: Int = 20): List<StreamDataChannel> {
+        return (0..<newSize).map { i -> this[i * this.size / newSize] }
+    }
+
+    init {
+        viewModelScope.launch {
+            while (true) {
+                val odr = _streamData.value?.odr ?: 1
+                val plotSize = if (odr < 10) 1 else (odr / 10)
+                val bufferSize = streamDataBuffer.size
+
+                if (plotSize in 1..<bufferSize) {
+                    Log.w(TAG, "Buffer size = $bufferSize")
+                    _streamDataBuffered.update {
+                        _streamData.value?.copy(
+                            data = streamDataBuffer
+                                .removeFirstElements(count = plotSize)
+                                .normalize(newSize = 1)
+                        )
+                    }
+                } else {
+                    if (_currentSensorEnabled.value.isNotEmpty()) {
+                        Log.w(TAG, "Buffering...")
+                    }
+                }
+
+                delay(timeMillis = 100L)
+            }
+        }
+
+        _streamData
+            .onEach { data ->
+                Log.w(TAG, "${data?.streamId} data = ${data?.data?.map { it.data }}")
+                if (data == null) {
+                    streamDataBuffer.clear()
+                    _streamDataBuffered.update { null }
+                } else {
+                    streamDataBuffer.addAll(elements = data.data)
+                }
+            }
+            .launchIn(scope = viewModelScope)
+
+        viewModelScope.launch {
+            _sensors
+                .combine(_componentStatusUpdates) { sensors, status ->
+                    val sensorsEnabled = mutableListOf<String>()
+                    val sensorsActiveLocal = mutableListOf<String>()
+
+                    sensors.forEach { sensor ->
+                        val name = sensor.first.name
+                        val interfaceModel = sensor.second
+                        val data = (status.find { it.containsKey(name) })?.get(name)
+
+                        val isMounted = interfaceModel.contents
+                            .filterIsInstance<DtmiContent.DtmiPropertyContent.DtmiBooleanPropertyContent>()
+                            .find { it.name == "mounted" }
+                            ?.let { enableProperty ->
+                                val defaultData = true
+                                var booleanData = true
+                                if (data is JsonObject && data[enableProperty.name] is JsonPrimitive) {
+                                    booleanData =
+                                        (data[enableProperty.name] as JsonPrimitive).booleanOrNull
+                                            ?: defaultData
+                                }
+                                if (data == null) {
+                                    booleanData = false
+                                }
+                                booleanData
+                            } ?: true
+
+                        if (isMounted) {
+                            sensorsActiveLocal.add(name)
+
+                            val isEnabled = interfaceModel.contents
+                                .filterIsInstance<DtmiContent.DtmiPropertyContent.DtmiBooleanPropertyContent>()
+                                .find { it.name == ENABLE_PROPERTY_NAME }
+                                ?.let { enableProperty ->
+                                    val defaultData = enableProperty.initValue
+                                    var booleanData = false
+                                    if (data is JsonObject && data[enableProperty.name] is JsonPrimitive) {
+                                        booleanData =
+                                            (data[enableProperty.name] as JsonPrimitive).booleanOrNull
+                                                ?: defaultData
+                                    }
+
+                                    booleanData
+                                } ?: false
+
+                            if (isEnabled) {
+                                sensorsEnabled.add(name)
+                            }
+                        }
+                    }
+                    //Update List of active sensors
+                    sensorsActive = sensorsActiveLocal.toList()
+
+                    sensorsEnabled
+                }
+                .collect { sensorsEnabled ->
+                    Log.d(TAG, "sensorsEnabled = ${sensorsEnabled.joinToString(", ")}")
+
+                    _enableLog.update { sensorsEnabled.isNotEmpty() }
+                }
+        }
+
+        viewModelScope.launch {
+            isLogging.collect { value ->
+                HsdlConfig.isLogging = value
+                updateTags()
+            }
+        }
+    }
 
     private fun sensorPropNamePredicate(name: String): Boolean =
-        name == "odr" || name == "fs" ||
-                name == "enable" || name == "aop" ||
-                name == "load_file" || name == "ucf_status" || name == "mounted"
+        name == "odr" ||
+                name == "fs" ||
+                name == "enable" ||
+                name == "aop" ||
+                name == "load_file" ||
+                name == "ucf_status" ||
+                name == "mounted" ||
+                name == "resolution" ||
+                name == "ranging_mode" ||
+                name == "integration_time" ||
+                name == "exposure_time" ||
+                name == "intermeasurement_time" ||
+                name == "transmittance" ||
+                name == "embedded_compensation" ||
+                name == "software_compensation" ||
+                name == "compensation_type" ||
+                name == "sw_presence_threshold" ||
+                name == "sw_motion_threshold" ||
+                name == "adc_conversion_time"
+
 
     private fun tagsNamePredicate(name: String): Boolean =
         name == TAGS_INFO_JSON_KEY || name == ACQUISITION_INFO_JSON_KEY
@@ -134,7 +273,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
         name == "name" || name == "description"
 
     private fun tagsPropNamePredicate(name: String): Boolean =
-        name != "max_tags_num"
+        name != "max_tags_num" && name.startsWith("hw_tag").not()
 
     private fun List<DtmiContent>.hsdl2TagPropertyFilter() =
         filter { content -> acquisitionPropNamePredicate(content.name) }
@@ -142,22 +281,21 @@ class HighSpeedDataLogViewModel @Inject constructor(
     private fun List<DtmiContent>.hsdl2SensorPropertyFilter() =
         filter { content -> sensorPropNamePredicate(content.name) }
 
-    private fun List<ComponentWithInterface>.hsdl2SensorsFilter() =
-        filter {
-            it.first.contentType == DtmiContent.DtmiComponentContent.ContentType.SENSOR
-        }.map {
-            Pair(
-                it.first,
-                it.second.copy(contents = it.second.contents.hsdl2SensorPropertyFilter())
-            )
-        }
+    private fun List<ComponentWithInterface>.hsdl2SensorsFilter() = filter {
+        it.first.contentType == DtmiContent.DtmiComponentContent.ContentType.SENSOR
+    }.map {
+        Pair(
+            it.first, it.second.copy(contents = it.second.contents.hsdl2SensorPropertyFilter())
+        )
+    }
 
-    init {
-        viewModelScope.launch {
-            isLogging.collect { value ->
-                HsdlConfig.isLogging = value
-            }
-        }
+    private fun List<ComponentWithInterface>.streamSensorsFilter() = filter {
+        it.first.contentType == DtmiContent.DtmiComponentContent.ContentType.SENSOR &&
+                it.second.contents.find { it.name == "st_ble_stream" } != null
+    }.map {
+        Pair(
+            it.first, it.second.copy(contents = it.second.contents.hsdl2SensorPropertyFilter())
+        )
     }
 
     private fun List<DtmiContent>.hideDisabledTagWhenLoggingFilter() =
@@ -237,51 +375,53 @@ class HighSpeedDataLogViewModel @Inject constructor(
         }
 
     private fun List<ComponentWithInterface>.hsdl2TagsFilter() =
-        filter { tagsNamePredicate(it.first.name) }
-            .map { contentWithInterface ->
-                when (contentWithInterface.first.name) {
-                    TAGS_INFO_JSON_KEY -> {
-                        Pair(
-                            contentWithInterface.first,
-                            contentWithInterface.second.copy(
-                                contents = contentWithInterface.second.contents
-                                    .filter { content -> tagsPropNamePredicate(content.name) }
-                                    .enableOrStatusPropertyMap()
-                                    .enablePropertyMap()
-                                    .hideDisabledTagWhenLoggingFilter()
-                                    .hideDisabledTagWhenConfigHasTag()
-                            )
+        filter { tagsNamePredicate(it.first.name) }.map { contentWithInterface ->
+            when (contentWithInterface.first.name) {
+                TAGS_INFO_JSON_KEY -> {
+                    Pair(
+                        contentWithInterface.first,
+                        contentWithInterface.second.copy(
+                            contents = contentWithInterface.second.contents.filter { content ->
+                                tagsPropNamePredicate(
+                                    content.name
+                                )
+                            }.enableOrStatusPropertyMap().enablePropertyMap()
+                                .hideDisabledTagWhenLoggingFilter()
+                                .hideDisabledTagWhenConfigHasTag()
                         )
-                    }
-
-                    ACQUISITION_INFO_JSON_KEY -> {
-                        Pair(
-                            contentWithInterface.first,
-                            contentWithInterface.second.copy(
-                                contents = contentWithInterface.second.contents.hsdl2TagPropertyFilter()
-                            )
-                        )
-                    }
-
-                    else -> contentWithInterface
+                    )
                 }
-            }
-            .sortedBy { it.first.name }
 
+                ACQUISITION_INFO_JSON_KEY -> {
+                    Pair(
+                        contentWithInterface.first, contentWithInterface.second.copy(
+                            contents = contentWithInterface.second.contents.hsdl2TagPropertyFilter()
+                        )
+                    )
+                }
+
+                else -> contentWithInterface
+            }
+        }.sortedBy { it.first.name }
 
     private suspend fun getModel(nodeId: String) {
-        _isLoading.value = true
+        _isLoading.update { true }
 
-        val componentWithInterface =
+        componentWithInterface =
             blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())
-                ?.extractComponents(demoName = null)
-                ?: emptyList()
+                ?.extractComponents(demoName = null) ?: emptyList()
 
-        _sensors.value = componentWithInterface.hsdl2SensorsFilter()
+        _sensors.update { componentWithInterface.hsdl2SensorsFilter() }
 
-        _tags.value = componentWithInterface.hsdl2TagsFilter()
+        _streamSensors.update { componentWithInterface.streamSensorsFilter() }
 
-        _isLoading.value = false
+        _tags.update { componentWithInterface.hsdl2TagsFilter() }
+
+        _isLoading.update { false }
+    }
+
+    private fun updateTags() {
+        _tags.update { componentWithInterface.hsdl2TagsFilter() }
     }
 
     private suspend fun addCommandToQueueAndCheckSend(
@@ -290,252 +430,622 @@ class HighSpeedDataLogViewModel @Inject constructor(
     ) {
         commandQueue.add(newCommand)
         //if it's the only one command in the list... send it
-        if (commandQueue.size == 1) {
-            _isLoading.value = true
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-                nodeId = nodeId, featureCommand = PnPLCommand(
-                    feature = pnplFeatures.first(),
-                    cmd = commandQueue[0].pnpLCommand
+
+        pnplFeature?.let {
+            if (commandQueue.size == 1) {
+                _isLoading.update { true }
+
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0, nodeId = nodeId, featureCommand = PnPLCommand(
+                        feature = it, cmd = commandQueue[0].pnpLCommand
+                    )
+                )
+            }
+        }
+    }
+
+    private suspend fun sendCommand(
+        nodeId: String,
+        typeOfCmd: PnPLTypeOfCommand,
+        cmd: PnPLCmd,
+        askTheStatus: Boolean
+    ) {
+        if (pnplBleResponses) {
+            addCommandToQueueAndCheckSend(
+                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
+                    typeOfCommand = typeOfCmd,
+                    pnpLCommand = cmd,
+                    askTheStatus = askTheStatus
                 )
             )
+        } else {
+            _isLoading.update { true }
+
+            pnplFeature?.let {
+                blueManager.writeFeatureCommand(
+                    responseTimeout = 0, nodeId = nodeId, featureCommand = PnPLCommand(
+                        feature = it, cmd = cmd
+                    )
+                )
+            }
+
+            if (askTheStatus) {
+                cmd.component?.let { compName ->
+                    sendGetStatusComponentInfoCommand(name = compName, nodeId = nodeId)
+                }
+            }
         }
     }
 
     private suspend fun sendGetAllCommand(nodeId: String) {
-        if (pnplBleResponses) {
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd.ALL
-                )
-            )
-        } else {
-            _isLoading.value = true
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-                nodeId = nodeId,
-                featureCommand = PnPLCommand(feature = pnplFeatures.first(), cmd = PnPLCmd.ALL)
-            )
-        }
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Status,
+            cmd = PnPLCmd.ALL,
+            askTheStatus = false
+        )
     }
 
     private suspend fun sendGetLogControllerCommand(nodeId: String) {
-        if (pnplBleResponses) {
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd.LOG_CONTROLLER
-                )
-            )
-        } else {
-            _isLoading.value = true
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-                nodeId = nodeId, featureCommand = PnPLCommand(
-                    feature = pnplFeatures.first(), cmd = PnPLCmd.LOG_CONTROLLER
-                )
-            )
-        }
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Status,
+            cmd = PnPLCmd.LOG_CONTROLLER,
+            askTheStatus = false
+        )
     }
 
     private suspend fun sendGetTagsInfoCommand(nodeId: String) {
-        if (pnplBleResponses) {
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd.TAGS_INFO
-                )
-            )
-        } else {
-            _isLoading.value = true
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-                nodeId = nodeId, featureCommand = PnPLCommand(
-                    feature = pnplFeatures.first(),
-                    cmd = PnPLCmd.TAGS_INFO
-                )
-            )
-        }
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Status,
+            cmd = PnPLCmd.TAGS_INFO,
+            askTheStatus = false
+        )
     }
-
 
     private suspend fun sendGetStatusComponentInfoCommand(name: String, nodeId: String) {
-        if (pnplBleResponses) {
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Status,
-                    pnpLCommand = PnPLCmd(command = "get_status", request = name)
-                )
+        val sensorName = name.substringBefore("_")
+
+//        if (name == "tags_info") {
+//            sendCommand(
+//                nodeId = nodeId,
+//                typeOfCmd = PnPLTypeOfCommand.Status,
+//                cmd = PnPLCmd.TAGS_INFO,
+//                askTheStatus = false
+//            )
+//        } else {
+//            sensorsActive.filter {
+//                it.startsWith(sensorName)
+//            }.forEach {
+//                sendCommand(
+//                    nodeId = nodeId,
+//                    typeOfCmd = PnPLTypeOfCommand.Status,
+//                    cmd = PnPLCmd(command = "get_status", request = it),
+//                    askTheStatus = false
+//                )
+//            }
+//        }
+
+        if(sensorsActive.none { it.startsWith(sensorName) }) {
+            //In this way... we are here for any component that it's not a sensor
+            sendCommand(
+                nodeId = nodeId,
+                typeOfCmd = PnPLTypeOfCommand.Status,
+                cmd = PnPLCmd(command = "get_status", request = name),
+                askTheStatus = false
             )
         } else {
-            _isLoading.value = true
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-                nodeId = nodeId, featureCommand =
-                PnPLCommand(
-                    feature = pnplFeatures.first(),
-                    cmd = PnPLCmd(command = "get_status", request = name)
+            sensorsActive.filter {
+                it.startsWith(sensorName)
+            }.forEach {
+                sendCommand(
+                    nodeId = nodeId,
+                    typeOfCmd = PnPLTypeOfCommand.Status,
+                    cmd = PnPLCmd(command = "get_status", request = it),
+                    askTheStatus = false
                 )
-            )
+            }
         }
     }
 
-    private suspend fun setTime(nodeId: String) {
+    private suspend fun sendSetTimeCommand(nodeId: String) {
         val calendar = Calendar.getInstance()
         val timeInMillis = calendar.timeInMillis
         val sdf = SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.ROOT)
         val datetime = sdf.format(Date(timeInMillis))
 
-        if (pnplBleResponses) {
-            //add the command to the list
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
-                        component = LOG_CONTROLLER_JSON_KEY,
-                        command = "set_time",
-                        fields = mapOf("datetime" to datetime)
-                    ),
-                    askTheStatus = false
-                )
-            )
-        } else {
-            _sendCommand(
-                nodeId = nodeId, name = LOG_CONTROLLER_JSON_KEY,
-                value = CommandRequest(
-                    commandName = "set_time",
-                    commandType = "",
-                    request = mapOf("datetime" to datetime)
-                )
-            )
-        }
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            cmd = PnPLCmd(
+                component = LOG_CONTROLLER_JSON_KEY,
+                command = "set_time",
+                fields = mapOf("datetime" to datetime)
+            ),
+            askTheStatus = false
+        )
     }
 
-    private suspend fun setName(nodeId: String) {
+    private suspend fun sendSetNameCommand(nodeId: String) {
         val calendar = Calendar.getInstance()
         val timeInMillis = calendar.timeInMillis
         val nameFormatter = HsdlConfig.datalogNameFormat ?: "EEE MMM d yyyy HH:mm:ss"
         val sdf = SimpleDateFormat(nameFormatter, Locale.UK)
         val datetime = sdf.format(Date(timeInMillis))
 
-        _acquisitionName.emit(datetime)
+        _acquisitionName.update { datetime }
 
-        if (pnplBleResponses) {
-            //add the command to the list
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
-                        component = "",
-                        command = ACQUISITION_INFO_JSON_KEY,
-                        fields = mapOf(NAME_JSON_KEY to datetime)
-                    ),
-                    askTheStatus = false
-                )
-            )
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            cmd = PnPLCmd(
+                component = "",
+                command = ACQUISITION_INFO_JSON_KEY,
+                fields = mapOf(NAME_JSON_KEY to datetime)
+            ),
+            askTheStatus = false
+        )
 
-            addCommandToQueueAndCheckSend(
-                nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
-                        component = "",
-                        command = ACQUISITION_INFO_JSON_KEY,
-                        fields = mapOf(DESC_JSON_KEY to "Empty")
-                    ),
-                    askTheStatus = false
-                )
-            )
-        } else {
-            _sendCommand(
-                nodeId = nodeId, name = "", value = CommandRequest(
-                    commandName = ACQUISITION_INFO_JSON_KEY,
-                    commandType = "",
-                    request = mapOf(NAME_JSON_KEY to datetime)
-                )
-            )
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            cmd = PnPLCmd(
+                component = "",
+                command = ACQUISITION_INFO_JSON_KEY,
+                fields = mapOf(DESC_JSON_KEY to "Empty")
+            ),
+            askTheStatus = false
+        )
+    }
 
-            _sendCommand(
-                nodeId = nodeId, name = "", value = CommandRequest(
-                    commandName = ACQUISITION_INFO_JSON_KEY,
-                    commandType = "",
-                    request = mapOf(DESC_JSON_KEY to "Empty")
-                )
-            )
+    private fun onFeaturesEnabled(nodeId: String) {
+        viewModelScope.launch {
+            val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
+
+            var maxWriteLength =
+                node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
+            maxWriteLength?.let {
+                if (maxWriteLength!! > (node.maxPayloadSize)) {
+                    maxWriteLength = (node.maxPayloadSize)
+                }
+                pnplFeature?.setMaxPayLoadSize(maxWriteLength!!)
+            }
+
+            if (_sensors.value.isEmpty() || _tags.value.isEmpty()) {
+                getModel(nodeId = nodeId)
+
+                // Now can sand GetAllCommand at **
+                // sendGetLogControllerCommand(nodeId = nodeId)
+
+                if (HsdlConfig.tags.isNotEmpty()) {
+                    sendDisableAllSensorCommand(nodeId = nodeId)
+                }
+            }
+
+            _modelUpdates.update {
+                blueManager.getDtmiModel(
+                    nodeId = nodeId,
+                    isBeta = stPreferences.isBetaApplication()
+                )?.filterComponentsByProperty(propName = STREAM_JSON_KEY) ?: emptyList()
+            }
+
+            // **
+            sendGetAllCommand(nodeId = nodeId)
+            // **
         }
     }
 
-    fun cleanStatusMessage() {
-        viewModelScope.launch {
-            _statusMessage.emit(null)
-        }
-    }
+    private fun handleRawControlledUpdate(data: RawControlledInfo) {
+        val streamId = decodeRawData(data = data.data, rawFormat = rawPnPLFormat)
 
-    fun startLog(nodeId: String) {
+        if (streamId != STREAM_ID_NOT_FOUND) {
+            rawPnPLFormat.firstOrNull { it.streamId == streamId }?.let { foundStream ->
+                if (_currentSensorEnabled.value.isEmpty()) {
+                    _currentSensorEnabled.update {
+                        rawPnPLFormat.firstOrNull { it.streamId == streamId }?.componentName ?: ""
+                    }
+                }
+                _streamData.update {
+                    foundStream.formats.filter { it.format.enable }.map { rawEntry ->
+                        StreamData(
+                            streamId = streamId,
+                            odr = rawEntry.format.odr ?: 1,
+                            name = if (rawEntry.displayName != null) {
+                                rawEntry.displayName ?: ""
+                            } else {
+                                rawEntry.name
+                            },
+                            uom = rawEntry.format.unit ?: "",
+                            max = rawEntry.format.max,
+                            min = rawEntry.format.min,
+                            data = when {
+                                rawEntry.format.channels != 1 && rawEntry.format.multiplyFactor != null ->
+                                    rawEntry.format.valuesFloat.chunked(size = rawEntry.format.channels)
+                                        .map { StreamDataChannel(data = it) }
 
-        viewModelScope.launch {
-            setTime(nodeId)
+                                rawEntry.format.channels != 1 && rawEntry.format.multiplyFactor == null ->
+                                    rawEntry.format.values.chunked(size = rawEntry.format.channels)
+                                        .filterIsInstance<List<Float>>()
+                                        .map { StreamDataChannel(data = it) }
 
-            //For Avoiding to change again the Acquisition name
-            //setName(nodeId)
+                                rawEntry.format.channels == 1 && rawEntry.format.multiplyFactor != null ->
+                                    rawEntry.format.valuesFloat.map {
+                                        StreamDataChannel(
+                                            data = listOf(
+                                                it
+                                            )
+                                        )
+                                    }
 
-            if (pnplBleResponses) {
-                //add the command to the list
-                addCommandToQueueAndCheckSend(
-                    nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                        typeOfCommand = PnPLTypeOfCommand.Log, pnpLCommand = PnPLCmd.START_LOG,
-                        askTheStatus = true
-                    )
-                )
-            } else {
-                _isLoading.value = true
+                                rawEntry.format.channels == 1 && rawEntry.format.multiplyFactor == null ->
+                                    rawEntry.format.values
+                                        .filterIsInstance<Float>()
+                                        .map { StreamDataChannel(data = listOf(it)) }
 
-                blueManager.writeFeatureCommand(
-                    responseTimeout = 0,
-                    nodeId = nodeId, featureCommand = PnPLCommand(
-                        feature = pnplFeatures.first(), cmd = PnPLCmd.START_LOG
-                    )
-                )
-
-                sendGetLogControllerCommand(nodeId = nodeId)
+                                else -> emptyList()
+                            }
+                        )
+                    }
+                        .firstOrNull()
+                }
             }
         }
     }
 
-    fun stopLog(nodeId: String) {
-        viewModelScope.launch {
-            if (pnplBleResponses) {
-                //add the command to the list
-                addCommandToQueueAndCheckSend(
-                    nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                        typeOfCommand = PnPLTypeOfCommand.Log, pnpLCommand = PnPLCmd.STOP_LOG,
-                        askTheStatus = true
-                    )
-                )
-                setShouldInitDemoAtResponse = true
+    private suspend fun sendRenameTagCommand(
+        nodeId: String,
+        index: Int,
+        askTheStatus: Boolean = false
+    ) {
+        val newTagName = HsdlConfig.tags[index]
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            cmd = PnPLCmd(
+                command = TAGS_INFO_JSON_KEY,
+                request = tagNames[index],
+                fields = mapOf(LABEL_JSON_KEY to newTagName)
+            ),
+            askTheStatus = askTheStatus
+        )
+    }
+
+    private suspend fun sendDisableTagCommand(
+        nodeId: String,
+        index: Int,
+        askTheStatus: Boolean = false
+    ) {
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            PnPLCmd(
+                command = TAGS_INFO_JSON_KEY,
+                request = tagNames[index],
+                fields = mapOf(ENABLED_JSON_KEY to false)
+            ),
+            askTheStatus = askTheStatus
+        )
+    }
+
+    private suspend fun sendEnableTagCommand(
+        nodeId: String,
+        index: Int,
+        askTheStatus: Boolean = false
+    ) {
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            PnPLCmd(
+                command = TAGS_INFO_JSON_KEY,
+                request = tagNames[index],
+                fields = mapOf(ENABLED_JSON_KEY to true)
+            ),
+            askTheStatus = askTheStatus
+        )
+    }
+
+    private suspend fun sendDisableAllSensorCommand(
+        nodeId: String,
+        askTheStatus: Boolean = false
+    ) {
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            PnPLCmd(
+                component = LOG_CONTROLLER_JSON_KEY,
+                command = ENABLE_ALL_JSON_KEY,
+                fields = mapOf(STATUS_JSON_KEY to false)
+            ),
+            askTheStatus = askTheStatus
+        )
+    }
+
+    private suspend fun handlePnplResponses(nodeId: String, data: PnPLConfig) {
+        data.deviceStatus.value?.components?.let { json ->
+            //Search the Spontaneous messages
+            val message = searchInfoWarningError(json)
+
+            message?.let {
+                _statusMessage.update { message }
+                if (pnplBleResponses) {
+                    if (message == PnPLSpontaneousMessageType.ERROR) {
+                        //Remove the command from the list and send Next One
+                        if (commandQueue.isNotEmpty()) {
+                            commandQueue.removeFirst()
+                            if (commandQueue.isNotEmpty()) {
+                                pnplFeature?.let {
+                                    blueManager.writeFeatureCommand(
+                                        responseTimeout = 0,
+                                        nodeId = nodeId, featureCommand = PnPLCommand(
+                                            feature = it,
+                                            cmd = commandQueue[0].pnpLCommand
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Search the Set/Command Response if they are allowed for the fw
+            //data.setCommandResponse.value?.let { setCommandResponse ->
+            if (data.setCommandResponse.value != null) {
+                if (data.setCommandResponse.value?.response != null) {
+                    if (data.setCommandResponse.value?.response?.status == false) {
+                        //Report one Message...
+                        val messageStatus = PnPLSpontaneousMessageType.ERROR
+                        messageStatus.message =
+                            data.setCommandResponse.value?.response?.message ?: "Generic Error"
+                        _statusMessage.update { messageStatus }
+                    }
+
+                    //Ask the status
+                    commandQueue.firstOrNull()?.let { firstOneCmd ->
+
+                        //Remove the command from the list and send Next One
+                        if (commandQueue.isNotEmpty()) {
+                            commandQueue.removeAt(index = 0)
+                        }
+
+                        if (commandQueue.isNotEmpty()) {
+                            _isLoading.update { true }
+
+                            pnplFeature?.let {
+                                blueManager.writeFeatureCommand(
+                                    responseTimeout = 0,
+                                    nodeId = nodeId,
+                                    featureCommand = PnPLCommand(
+                                        feature = it,
+                                        cmd = commandQueue[0].pnpLCommand
+                                    )
+                                )
+                            }
+                        }
+
+                        if (firstOneCmd.askTheStatus) {
+                            when (firstOneCmd.typeOfCommand) {
+                                PnPLTypeOfCommand.Command -> {
+                                    firstOneCmd.pnpLCommand.component?.let { compName ->
+                                        sendGetStatusComponentInfoCommand(
+                                            name = compName,
+                                            nodeId = nodeId
+                                        )
+                                    }
+                                }
+
+                                PnPLTypeOfCommand.Set -> sendGetStatusComponentInfoCommand(
+                                    name = firstOneCmd.pnpLCommand.command,
+                                    nodeId = nodeId
+                                )
+
+                                PnPLTypeOfCommand.Log -> sendGetLogControllerCommand(
+                                    nodeId = nodeId
+                                )
+
+                                else -> Unit
+                            }
+                        }
+                    }
+                } else {
+                    if (commandQueue.isNotEmpty()) {
+                        commandQueue.firstOrNull()?.let { firstOneCmd ->
+                            if (firstOneCmd.typeOfCommand != PnPLTypeOfCommand.Status) {
+                                val messageStatus = PnPLSpontaneousMessageType.ERROR
+                                messageStatus.message =
+                                    "Status Message from a not Get Status Command[${firstOneCmd.typeOfCommand}]"
+                                _statusMessage.update { messageStatus }
+                            } else {
+
+                                if (commandQueue.isNotEmpty()) {
+                                    commandQueue.removeAt(index = 0)
+                                }
+
+                                if (commandQueue.isNotEmpty()) {
+                                    pnplFeature?.let {
+                                        _isLoading.update { true }
+                                        blueManager.writeFeatureCommand(
+                                            responseTimeout = 0,
+                                            nodeId = nodeId,
+                                            featureCommand = PnPLCommand(
+                                                feature = it, cmd = commandQueue[0].pnpLCommand
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun initDemo(nodeId: String, data: PnPLConfig) {
+        data.deviceStatus.value?.components?.let { json ->
+            readRawPnPLFormat(
+                rawPnPLFormat = rawPnPLFormat,
+                json = json,
+                modelUpdates = _modelUpdates.value
+            )
+
+            if (shouldInitDemo) {
+                shouldInitDemo = false
+                if (_isLogging.value) {
+                    sendGetTagsInfoCommand(nodeId)
+                } else {
+                    sendSetNameCommand(nodeId = nodeId)
+
+                    if (shouldRenameTags) {
+                        shouldRenameTags = false
+                        for (index in 0..<tagNames.size) {
+                            if (index in 0..HsdlConfig.tags.lastIndex) {
+                                sendRenameTagCommand(nodeId = nodeId, index = index)
+                                sendEnableTagCommand(
+                                    nodeId = nodeId,
+                                    index = index,
+                                    index == HsdlConfig.tags.lastIndex
+                                )
+                            } else {
+                                sendDisableTagCommand(nodeId = nodeId, index = index)
+                            }
+                        }
+                    }
+                    sendGetAllCommand(nodeId)
+                }
+            }
+        }
+    }
+
+    private fun updateUIStatus(data: PnPLConfig) {
+        data.deviceStatus.value?.components?.let { json ->
+            if (json.size == 1) {
+                json.find { it.containsKey(PNPL_RESPONSE_JSON_KEY) } ?: run {
+                    _componentStatusUpdates.update {
+                        it.filter { jo -> jo.keys != json.first().keys } + json
+                    }
+                }
             } else {
+                _componentStatusUpdates.update { json }
+            }
+        }
+    }
+
+    private fun handleHsdlFeatureUpdate(data: PnPLConfig) {
+        data.deviceStatus.value?.components?.let { json ->
+            if (json.size != 1) { // TODO: ask if is correct
+                readRawPnPLFormat(
+                    rawPnPLFormat = rawPnPLFormat,
+                    json = json,
+                    modelUpdates = _modelUpdates.value
+                )
+            }
+
+            json.find { it.containsKey(LOG_CONTROLLER_JSON_KEY) }
+                ?.get(LOG_CONTROLLER_JSON_KEY)?.jsonObject?.let { logControllerJson ->
+                    _isSDCardInserted.update {
+                        logControllerJson[SD_JSON_KEY]?.jsonPrimitive?.booleanOrNull ?: false
+                    }
+                    _isLogging.update {
+                        logControllerJson[LOG_STATUS_JSON_KEY]?.jsonPrimitive?.booleanOrNull
+                            ?: false
+                    }
+
+                    if (!_isLogging.value && setShouldInitDemoAtResponse) {
+                        setShouldInitDemoAtResponse = false
+                        shouldInitDemo = true
+                    }
+
+                    Log.d(TAG, "isLoading ${_isLoading.value}")
+                    Log.d(TAG, "isLogging ${_isLogging.value}")
+                    Log.d(TAG, "isSDCardInserted ${_isSDCardInserted.value}")
+                }
+
+            json.find { it.containsKey(TAGS_INFO_JSON_KEY) }
+                ?.get(TAGS_INFO_JSON_KEY)?.jsonObject?.let { tags ->
+
+                    val vespucciTagsMap = mutableMapOf<String, Boolean>()
+                    tags.forEach {
+                        val key = it.key
+                        val value = it.value
+                        if (tagNames.contains(key)) {
+                            if (value is JsonObject) {
+                                val enabledJsonElement = value.getOrDefault(ENABLED_JSON_KEY, null)
+                                enabledJsonElement?.let { enabled ->
+                                    val labelJsonElement = value.getOrDefault(LABEL_JSON_KEY, null)
+                                    labelJsonElement?.let { label ->
+                                        val statusJsonElement =
+                                            value.getOrDefault(STATUS_JSON_KEY, null)
+                                        statusJsonElement?.let { status ->
+                                            if (enabled.jsonPrimitive.booleanOrNull == true) {
+                                                vespucciTagsMap[label.jsonPrimitive.content] =
+                                                    status.jsonPrimitive.boolean
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    _vespucciTags.update { vespucciTagsMap }
+                }
+        }
+    }
+
+    private suspend fun sendEnableDisableStreamCommand(
+        nodeId: String,
+        sensor: String,
+        enable: Boolean
+    ) {
+        sendCommand(
+            nodeId = nodeId,
+            typeOfCmd = PnPLTypeOfCommand.Set,
+            cmd = PnPLCmd(
+                command = sensor,
+                request = STREAM_JSON_KEY,
+                fields = mapOf(sensor.split("_").last() to mapOf(ENABLE_JSON_KEY to enable))
+            ),
+            askTheStatus = false
+        )
+    }
+
+    private suspend fun _sendCommand(nodeId: String, name: String, value: CommandRequest?) {
+        pnplFeature?.let { pnplFeature ->
+            value?.let {
                 _isLoading.value = true
-                shouldInitDemo = true
                 blueManager.writeFeatureCommand(
                     responseTimeout = 0,
                     nodeId = nodeId,
                     featureCommand = PnPLCommand(
-                        feature = pnplFeatures.first(),
-                        cmd = PnPLCmd.STOP_LOG
+                        feature = pnplFeature,
+                        cmd = PnPLCmd(
+                            component = name,
+                            command = it.commandName,
+                            fields = it.request
+                        )
                     )
                 )
-                sendGetLogControllerCommand(nodeId = nodeId)
             }
         }
     }
 
-    fun sendCommand(nodeId: String, name: String, value: CommandRequest?) {
-        value?.let {
+    fun sendCommand(nodeId: String, name: String, commandRequest: CommandRequest?) {
+        commandRequest?.let {
             if (pnplBleResponses) {
                 //add the command to the list
                 viewModelScope.launch {
                     addCommandToQueueAndCheckSend(
-                        nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                            typeOfCommand = PnPLTypeOfCommand.Command, pnpLCommand = PnPLCmd(
+                        nodeId = nodeId,
+                        newCommand = SetCommandPnPLRequest(
+                            typeOfCommand = PnPLTypeOfCommand.Command,
+                            pnpLCommand = PnPLCmd(
                                 component = name,
-                                command = value.commandName,
-                                fields = value.request
+                                command = commandRequest.commandName,
+                                fields = commandRequest.request
                             ),
-                            askTheStatus = it.commandName != "load_file"
+                            //askTheStatus = it.commandName != "load_file"
+                            askTheStatus = true
                         )
                     )
                 }
@@ -546,480 +1056,252 @@ class HighSpeedDataLogViewModel @Inject constructor(
                         // before to finish the load process
                         //Without the sendGetAllCommand, because when the HSDataLogFragment will start...
                         // it triggers a get status command
-                        _sendCommand(nodeId, name, value)
+                        _sendCommand(nodeId = nodeId, name = name, value = commandRequest)
                     }
                 } else {
                     viewModelScope.launch {
-                        _sendCommand(nodeId, name, value)
-                        sendGetAllCommand(nodeId)
+                        _sendCommand(nodeId = nodeId, name = name, value = commandRequest)
+                        sendGetAllCommand(nodeId = nodeId)
                     }
                 }
             }
-        }
-    }
-
-    private suspend fun _sendCommand(nodeId: String, name: String, value: CommandRequest?) {
-        value?.let {
-            _isLoading.value = true
-            blueManager.writeFeatureCommand(
-                responseTimeout = 0,
-                nodeId = nodeId, featureCommand = PnPLCommand(
-                    feature = pnplFeatures.first(), cmd = PnPLCmd(
-                        component = name, command = it.commandName, fields = it.request
-                    )
-                )
-            )
         }
     }
 
     fun sendChange(nodeId: String, name: String, value: Pair<String, Any>) {
-        value.let {
-            viewModelScope.launch {
-                if (pnplBleResponses) {
-                    //add the command to the list
-                    addCommandToQueueAndCheckSend(
-                        nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                            typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
-                                command = name,
-                                fields = mapOf(it)
-                            )
-                        )
-                    )
-                } else {
-                    _isLoading.value = true
-                    //Write the Command ans ask immediately after for the status
-                    val featureCommand = PnPLCommand(
-                        feature = pnplFeatures.first(), cmd = PnPLCmd(
-                            command = name, fields = mapOf(it)
-                        )
-                    )
-
-                    blueManager.writeFeatureCommand(
-                        responseTimeout = 0,
-                        nodeId = nodeId, featureCommand = featureCommand
-                    )
-
-                    sendGetStatusComponentInfoCommand(name = name, nodeId = nodeId)
-                }
-            }
-        }
-    }
-
-    fun disconnect() {
-        nodeIdLocal?.let { nodeId ->
-            GlobalConfig.navigateBack?.let { it1 -> it1(nodeId) }
+        viewModelScope.launch {
+            sendCommand(
+                nodeId = nodeId,
+                typeOfCmd = PnPLTypeOfCommand.Set,
+                PnPLCmd(
+                    command = name,
+                    fields = mapOf(value)
+                ),
+                askTheStatus = true
+            )
         }
     }
 
     fun resetConnectionLost() {
         viewModelScope.launch {
-            _isConnectionLost.emit(false)
+            _isConnectionLost.update { false }
         }
+    }
+
+    fun disconnect(nodeId: String) {
+        GlobalConfig.navigateBack?.invoke(nodeId)
+    }
+
+    fun cleanStatusMessage() {
+        viewModelScope.launch {
+            _statusMessage.update { null }
+        }
+    }
+
+    fun startLog(nodeId: String) {
+        viewModelScope.launch {
+            _currentSensorEnabled.update { "" }
+            _streamData.update { null }
+
+            sendSetTimeCommand(nodeId = nodeId)
+
+            //For Avoiding to change again the Acquisition name
+            //setName(nodeId)
+
+            sendCommand(
+                nodeId = nodeId,
+                typeOfCmd = PnPLTypeOfCommand.Log,
+                cmd = PnPLCmd.START_LOG,
+                askTheStatus = true
+            )
+
+            if (pnplBleResponses.not()) {
+                sendGetLogControllerCommand(nodeId = nodeId)
+            }
+        }
+    }
+
+    fun stopLog(nodeId: String) {
+        viewModelScope.launch {
+            sendCommand(
+                nodeId = nodeId,
+                typeOfCmd = PnPLTypeOfCommand.Log,
+                cmd = PnPLCmd.STOP_LOG,
+                askTheStatus = true
+            )
+
+            if (pnplBleResponses) {
+                setShouldInitDemoAtResponse = true
+            } else {
+                shouldInitDemo = true
+            }
+
+            if (_currentSensorEnabled.value.isNotEmpty()) {
+                sendEnableDisableStreamCommand(
+                    nodeId = nodeId,
+                    sensor = _currentSensorEnabled.value,
+                    enable = false
+                )
+                _currentSensorEnabled.update { "" }
+                _streamData.update { null }
+            }
+        }
+
+    }
+
+    fun setEnableStopDemo(value: Boolean) {
+        enableStopDemo = value
     }
 
     fun startDemo(nodeId: String) {
         observeFeatureJob?.cancel()
         observeNodeStatusJob?.cancel()
+        tagNames.clear()
 
-        nodeIdLocal = nodeId
-
-        //We need to know the number of Sw Tags before to start
         runBlocking {
             val tags = blueManager.getDtmiModel(
-                nodeId = nodeId,
-                isBeta = stPreferences.isBetaApplication()
+                nodeId = nodeId, isBeta = stPreferences.isBetaApplication()
             )?.extractComponent(compName = TAGS_INFO_JSON_KEY)?.firstOrNull()
 
             tags?.let {
-                numberOfTags = tags.second.contents.filter{tagsPropNamePredicate(it.name)}.size
+                tagNames.addAll(tags.second.contents
+                    .filter { tagsPropNamePredicate(it.name) }
+                    .map { it.name })
             }
         }
 
-        //Make the disconnection if the we lost the node
         observeNodeStatusJob = viewModelScope.launch {
-            blueManager.getNodeStatus(nodeId = nodeId).collect {
-                if (it.connectionStatus.prev == NodeState.Ready && it.connectionStatus.current == NodeState.Disconnected) {
-                    //GlobalConfig.navigateBack?.let { it1 -> it1(nodeId) }
-                    _isConnectionLost.emit(true)
+            blueManager.getNodeStatus(nodeId = nodeId)
+                .collect {
+                    if (it.connectionStatus.prev == NodeState.Ready &&
+                        it.connectionStatus.current == NodeState.Disconnected
+                    ) {
+                        _isConnectionLost.update { true }
+                    }
                 }
+        }
+
+        if (pnplFeature == null) {
+            pnplFeature =
+                blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
+                    .filterIsInstance<PnPL>().firstOrNull()
+
+            if (HsdlConfig.tags.isNotEmpty()) {
+                rawFeature =
+                    blueManager.nodeFeatures(nodeId = nodeId)
+                        .filter { it.name == RawControlled.NAME }
+                        .filterIsInstance<RawControlled>().firstOrNull()
             }
-        }
 
-        if (pnplFeatures.isEmpty()) {
-            pnplFeatures.addAll(
-                blueManager.nodeFeatures(nodeId = nodeId)
-                    .filter { it.name == PnPL.NAME }.filterIsInstance<PnPL>()
-            )
-        }
+            features = if (pnplFeature == null) emptyList() else listOf(pnplFeature!!) +
+                    if (rawFeature == null) emptyList<Feature<*>>() else listOf(rawFeature!!)
 
-        observeFeatureJob = blueManager.getFeatureUpdates(nodeId = nodeId,
-            features = pnplFeatures,
-            onFeaturesEnabled = {
-                viewModelScope.launch {
-                    val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
-                    var maxWriteLength =
-                        node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
-                    maxWriteLength?.let {
-                        if (maxWriteLength!! > (node.maxPayloadSize)) {
-                            maxWriteLength = (node.maxPayloadSize)
-                        }
-                        pnplFeatures.firstOrNull { it.name == PnPL.NAME }
-                            ?.setMaxPayLoadSize(maxWriteLength!!)
-                    }
+            observeFeatureJob = blueManager.getFeatureUpdates(nodeId = nodeId,
+                features = features,
+                onFeaturesEnabled = { onFeaturesEnabled(nodeId = nodeId) })
+                .flowOn(context = Dispatchers.IO).map { it.data }.onEach { data ->
+                    if (data is PnPLConfig) {
+                        initDemo(nodeId = nodeId, data = data)
 
-                    if (_sensors.value.isEmpty() || _tags.value.isEmpty()) {
                         getModel(nodeId = nodeId)
-
-                        sendGetLogControllerCommand(nodeId)
-                    }
-                }
-            }).flowOn(Dispatchers.IO).onEach { featureUpdate ->
-            featureUpdate.data.let { data ->
-                if (data is PnPLConfig) {
-                    data.deviceStatus.value?.components?.let { json ->
 
                         //Check if the BLE Responses are == true
                         data.deviceStatus.value?.pnplBleResponses?.let { value ->
                             pnplBleResponses = value
                         }
 
-                        //Search the Spontaneous messages
-                        val message = searchInfoWarningError(json)
-                        message?.let {
-                            _statusMessage.emit(message)
-                        }
-
-
                         if (pnplBleResponses) {
-                            //Search the Set/Command Response if they are allowed for the fw
-                            //data.setCommandResponse.value?.let { setCommandResponse ->
-                            if (data.setCommandResponse.value != null) {
-                                if (data.setCommandResponse.value!!.response != null) {
-                                    if (!data.setCommandResponse.value!!.response!!.status) {
-                                        //Report one Message...
-                                        val messageStatus = PnPLSpontaneousMessageType.ERROR
-                                        messageStatus.message =
-                                            data.setCommandResponse.value!!.response!!.message
-                                                ?: "Generic Error"
-                                        _statusMessage.emit(messageStatus)
-                                    }
-
-                                    //Ask the status
-                                    val firstOne = commandQueue.first()
-
-                                    //Remove the command from the list and send Next One
-                                    commandQueue.removeFirst()
-                                    if (commandQueue.isNotEmpty()) {
-                                        _isLoading.value = true
-                                        blueManager.writeFeatureCommand(
-                                            responseTimeout = 0,
-                                            nodeId = nodeId, featureCommand = PnPLCommand(
-                                                feature = pnplFeatures.first(),
-                                                cmd = commandQueue[0].pnpLCommand
-                                            )
-                                        )
-                                    }
-
-                                    if (firstOne.askTheStatus) {
-                                        when (firstOne.typeOfCommand) {
-                                            PnPLTypeOfCommand.Command -> sendGetStatusComponentInfoCommand(
-                                                name = firstOne.pnpLCommand.command,
-                                                nodeId = nodeId
-                                            )
-
-                                            PnPLTypeOfCommand.Set -> sendGetStatusComponentInfoCommand(
-                                                name = firstOne.pnpLCommand.command,
-                                                nodeId = nodeId
-                                            )
-
-                                            PnPLTypeOfCommand.Log -> sendGetLogControllerCommand(
-                                                nodeId = nodeId
-                                            )
-
-                                            else -> {}
-                                        }
-                                    }
-                                } else {
-                                    if (commandQueue.isNotEmpty()) {
-                                        val firstOne = commandQueue.first()
-                                        if (firstOne.typeOfCommand != PnPLTypeOfCommand.Status) {
-                                            val messageStatus = PnPLSpontaneousMessageType.ERROR
-                                            messageStatus.message =
-                                                "Status Message from a not Get Status Command[${firstOne.typeOfCommand}]"
-                                            _statusMessage.emit(messageStatus)
-                                        } else {
-
-                                            commandQueue.removeFirst()
-                                            if (commandQueue.isNotEmpty()) {
-                                                _isLoading.value = true
-                                                blueManager.writeFeatureCommand(
-                                                    responseTimeout = 0,
-                                                    nodeId = nodeId, featureCommand = PnPLCommand(
-                                                        feature = pnplFeatures.first(),
-                                                        cmd = commandQueue[0].pnpLCommand
-                                                    )
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            handlePnplResponses(nodeId = nodeId, data = data)
                         }
 
+                        handleHsdlFeatureUpdate(data = data)
 
-                        json.find { it.containsKey(LOG_CONTROLLER_JSON_KEY) }
-                            ?.get(LOG_CONTROLLER_JSON_KEY)?.jsonObject?.let { logControllerJson ->
-                                _isSDCardInserted.value =
-                                    logControllerJson[SD_JSON_KEY]?.jsonPrimitive?.booleanOrNull
-                                        ?: false
-                                _isLogging.value =
-                                    logControllerJson[LOG_STATUS_JSON_KEY]?.jsonPrimitive?.booleanOrNull
-                                        ?: false
-
-                                if (!_isLogging.value && setShouldInitDemoAtResponse) {
-                                    setShouldInitDemoAtResponse = false
-                                    shouldInitDemo = true
-                                }
-
-                                Log.d(TAG, "isLoading ${_isLoading.value}")
-                                Log.d(TAG, "isLogging ${_isLogging.value}")
-                                Log.d(TAG, "isSDCardInserted ${_isSDCardInserted.value}")
-                            }
-
-                        json.find { it.containsKey(TAGS_INFO_JSON_KEY) }
-                            ?.get(TAGS_INFO_JSON_KEY)?.jsonObject?.let { tags ->
-
-                                val vespucciTagsMap = mutableMapOf<String, Boolean>()
-                                tags.forEach {
-                                    val key = it.key
-                                    val value = it.value
-                                    if (key.startsWith(TAG_JSON_KEY)) {
-                                        if (value is JsonObject) {
-                                            val enabledJsonElement =
-                                                value.getOrDefault(ENABLED_JSON_KEY, null)
-                                            enabledJsonElement?.let { enabled ->
-                                                val labelJsonElement =
-                                                    value.getOrDefault(LABEL_JSON_KEY, null)
-                                                labelJsonElement?.let { label ->
-                                                    val statusJsonElement =
-                                                        value.getOrDefault(STATUS_JSON_KEY, null)
-                                                    statusJsonElement?.let { status ->
-                                                        if (enabled.jsonPrimitive.booleanOrNull == true) {
-                                                            vespucciTagsMap[label.jsonPrimitive.content] =
-                                                                status.jsonPrimitive.boolean
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                _vespucciTags.emit(vespucciTagsMap)
-                            }
-
-                        if (shouldInitDemo) {
-                            shouldInitDemo = false
-                            if (_isLogging.value) {
-                                sendGetTagsInfoCommand(nodeId)
-                            } else {
-                                setName(nodeId = nodeId)
-                                if (shouldRenameTags) {
-                                    shouldRenameTags = false
-                                    //for (index in 0..4) {
-                                    for (index in 0..<numberOfTags) {
-                                        if (index in 0..HsdlConfig.tags.lastIndex) {
-                                            val tagName = HsdlConfig.tags[index]
-
-                                            if (pnplBleResponses) {
-                                                //add the command to the list
-                                                addCommandToQueueAndCheckSend(
-                                                    nodeId = nodeId,
-                                                    newCommand = SetCommandPnPLRequest(
-                                                        typeOfCommand = PnPLTypeOfCommand.Set,
-                                                        pnpLCommand = PnPLCmd(
-                                                            command = TAGS_INFO_JSON_KEY,
-                                                            request = "$TAG_JSON_KEY$index",
-                                                            fields = mapOf(LABEL_JSON_KEY to tagName)
-                                                        ),
-                                                        askTheStatus = false
-                                                    )
-                                                )
-
-                                                //add the command to the list
-                                                addCommandToQueueAndCheckSend(
-                                                    nodeId = nodeId,
-                                                    newCommand = SetCommandPnPLRequest(
-                                                        typeOfCommand = PnPLTypeOfCommand.Set,
-                                                        pnpLCommand = PnPLCmd(
-                                                            command = TAGS_INFO_JSON_KEY,
-                                                            request = "$TAG_JSON_KEY$index",
-                                                            fields = mapOf(ENABLED_JSON_KEY to true)
-                                                        ),
-                                                        askTheStatus = index == HsdlConfig.tags.lastIndex
-                                                    )
-                                                )
-                                            } else {
-                                                _isLoading.value = true
-                                                val renameCommand = PnPLCommand(
-                                                    feature = pnplFeatures.first(),
-                                                    cmd = PnPLCmd(
-                                                        command = TAGS_INFO_JSON_KEY,
-                                                        request = "$TAG_JSON_KEY$index",
-                                                        fields = mapOf(LABEL_JSON_KEY to tagName)
-                                                    )
-                                                )
-
-                                                blueManager.writeFeatureCommand(
-                                                    responseTimeout = 0,
-                                                    nodeId = nodeId, featureCommand = renameCommand
-                                                )
-
-
-                                                val enableCommand = PnPLCommand(
-                                                    feature = pnplFeatures.first(),
-                                                    cmd = PnPLCmd(
-                                                        command = TAGS_INFO_JSON_KEY,
-                                                        request = "$TAG_JSON_KEY$index",
-                                                        fields = mapOf(ENABLED_JSON_KEY to true)
-                                                    )
-                                                )
-
-                                                //delay(50L)
-
-                                                blueManager.writeFeatureCommand(
-                                                    responseTimeout = 0,
-                                                    nodeId = nodeId, featureCommand = enableCommand
-                                                )
-                                            }
-                                        } else {
-                                            if (pnplBleResponses) {
-                                                //add the command to the list
-                                                addCommandToQueueAndCheckSend(
-                                                    nodeId = nodeId,
-                                                    newCommand = SetCommandPnPLRequest(
-                                                        typeOfCommand = PnPLTypeOfCommand.Set,
-                                                        pnpLCommand = PnPLCmd(
-                                                            command = TAGS_INFO_JSON_KEY,
-                                                            request = "$TAG_JSON_KEY$index",
-                                                            fields = mapOf(ENABLED_JSON_KEY to false)
-                                                        ),
-                                                        askTheStatus = false
-                                                    )
-                                                )
-                                            } else {
-                                                _isLoading.value = true
-                                                val disableCommand = PnPLCommand(
-                                                    feature = pnplFeatures.first(),
-                                                    cmd = PnPLCmd(
-                                                        command = TAGS_INFO_JSON_KEY,
-                                                        request = "$TAG_JSON_KEY$index",
-                                                        fields = mapOf(ENABLED_JSON_KEY to false)
-                                                    )
-                                                )
-                                                blueManager.writeFeatureCommand(
-                                                    responseTimeout = 0,
-                                                    nodeId = nodeId, featureCommand = disableCommand
-                                                )
-                                            }
-                                        }
-
-                                        //delay(50L)
-                                    }
-                                    //delay(100L)
-                                }
-                                sendGetAllCommand(nodeId)
-                            }
-                        }
-
-                        getModel(nodeId = nodeId)
-
-                        if (json.size == 1) {
-                            _componentStatusUpdates.update {
-                                it.filter { jo -> jo.keys != json.first().keys } + json
-                            }
-                        } else {
-                            _componentStatusUpdates.value = json
-                        }
+                        updateUIStatus(data = data)
                     }
-                }
-            }
-        }.launchIn(viewModelScope)
+
+                    if (data is RawControlledInfo) {
+                        handleRawControlledUpdate(data = data)
+                    }
+                }.launchIn(scope = viewModelScope)
+        }
     }
 
     fun stopDemo(nodeId: String) {
-        observeFeatureJob?.cancel()
-        observeNodeStatusJob?.cancel()
+        if (enableStopDemo) {
+            observeFeatureJob?.cancel()
+            observeNodeStatusJob?.cancel()
 
-        _componentStatusUpdates.value = emptyList()
-        shouldInitDemo = true
-        shouldRenameTags = true
+            _componentStatusUpdates.update { emptyList() }
 
-//        val job = coroutineScope.launch {
-//            blueManager.disableFeatures(
-//                nodeId = nodeId, features = pnplFeatures
-//            )
-//        }
-        //Not optimal... but in this way... I am able to see the get status if demo is customized
-        runBlocking {
-            blueManager.disableFeatures(
-                nodeId = nodeId, features = pnplFeatures
-            )
+            shouldInitDemo = true
+            shouldRenameTags = true
+            tagNames.clear()
 
-            //pnplFeatures.clear()
-            _sensors.value = emptyList()
-            _tags.value = emptyList()
+            //Not optimal... but in this way... I am able to see the get status if demo is customized
+            runBlocking {
+                blueManager.disableFeatures(nodeId = nodeId, features = features)
+
+                //pnplFeatures.clear()
+                _sensors.update { emptyList() }
+                _streamSensors.update { emptyList() }
+                _tags.update { emptyList() }
+
+                pnplFeature = null
+                rawFeature = null
+                features = emptyList()
+            }
+        } else {
+            enableStopDemo = true
         }
     }
 
     fun refresh(nodeId: String) {
         viewModelScope.launch {
-            sendGetAllCommand(nodeId)
+            sendGetAllCommand(nodeId = nodeId)
         }
     }
 
     fun onTagChangeState(nodeId: String, tag: String, newState: Boolean) {
         viewModelScope.launch {
-            if (pnplBleResponses) {
-                //add the command to the list
-                addCommandToQueueAndCheckSend(
-                    nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                        typeOfCommand = PnPLTypeOfCommand.Set, pnpLCommand = PnPLCmd(
-                            command = TAGS_INFO_JSON_KEY,
-                            request = "$TAG_JSON_KEY${HsdlConfig.tags.indexOf(tag)}",
-                            fields = mapOf(STATUS_JSON_KEY to newState)
-                        ),
-                        askTheStatus = false
-                    )
-                )
+            sendCommand(
+                nodeId = nodeId,
+                typeOfCmd = PnPLTypeOfCommand.Set,
+                cmd = PnPLCmd(
+                    command = TAGS_INFO_JSON_KEY,
+                    request = tagNames[HsdlConfig.tags.indexOf(tag)],
+                    fields = mapOf(STATUS_JSON_KEY to newState)
+                ),
+                askTheStatus = false
+            )
 
-                val oldTagsStatus = _vespucciTags.value.toMutableMap()
-                oldTagsStatus[tag] = newState
+            val oldTagsStatus = _vespucciTags.value.toMutableMap()
+            oldTagsStatus[tag] = newState
 
-                _vespucciTags.emit(oldTagsStatus)
+            _vespucciTags.update { oldTagsStatus }
+        }
+    }
 
-            } else {
-                val enableCommand = PnPLCommand(
-                    feature = pnplFeatures.first(),
-                    cmd = PnPLCmd(
-                        command = TAGS_INFO_JSON_KEY,
-                        request = "$TAG_JSON_KEY${HsdlConfig.tags.indexOf(tag)}",
-                        fields = mapOf(STATUS_JSON_KEY to newState)
-                    )
-                )
+    fun enableStreamSensor(nodeId: String, sensor: String) {
+        viewModelScope.launch {
+            if (_currentSensorEnabled.value == sensor) return@launch
 
-                val oldTagsStatus = _vespucciTags.value.toMutableMap()
-                oldTagsStatus[tag] = newState
+            _streamData.update { null }
 
-                _vespucciTags.emit(oldTagsStatus)
-
-                //delay(50L)
-
-                blueManager.writeFeatureCommand(
-                    responseTimeout = 0,
-                    nodeId = nodeId,
-                    featureCommand = enableCommand
+            if (_currentSensorEnabled.value.isNotEmpty()) {
+                sendEnableDisableStreamCommand(
+                    sensor = _currentSensorEnabled.value, nodeId = nodeId, enable = false
                 )
             }
+
+            _currentSensorEnabled.update { sensor }
+
+            sendEnableDisableStreamCommand(
+                sensor = _currentSensorEnabled.value,
+                nodeId = nodeId,
+                enable = true
+            )
+
+            sendGetStatusComponentInfoCommand(nodeId = nodeId, name = sensor)
         }
     }
 
@@ -1028,10 +1310,13 @@ class HighSpeedDataLogViewModel @Inject constructor(
         private const val SD_JSON_KEY = "sd_mounted"
         private const val LOG_CONTROLLER_JSON_KEY = "log_controller"
         private const val TAGS_INFO_JSON_KEY = "tags_info"
+        private const val PNPL_RESPONSE_JSON_KEY = "PnPL_Response"
         private const val ACQUISITION_INFO_JSON_KEY = "acquisition_info"
         private const val LABEL_JSON_KEY = "label"
-        private const val TAG_JSON_KEY = "sw_tag"
         private const val ENABLED_JSON_KEY = "enabled"
+        private const val ENABLE_JSON_KEY = "enable"
+        private const val ENABLE_ALL_JSON_KEY = "enable_all"
+        private const val STREAM_JSON_KEY = "st_ble_stream"
         private const val DESC_JSON_KEY = "description"
         private const val NAME_JSON_KEY = "name"
         private const val STATUS_JSON_KEY = "status"

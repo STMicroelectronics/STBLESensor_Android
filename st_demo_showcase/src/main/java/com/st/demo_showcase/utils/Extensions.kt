@@ -10,7 +10,6 @@ package com.st.demo_showcase.utils
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Label
-import androidx.compose.material.icons.filled.AreaChart
 import androidx.compose.material.icons.filled.Settings
 import androidx.navigation.NavController
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
@@ -18,8 +17,6 @@ import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.models.LOG_SETTINGS
 import com.st.neai_classification.NEAI_CLASSIFICATION_SETTINGS
 import com.st.neai_classification.NeaiClassificationFragmentDirections
-import com.st.plot.PlotFragmentDirections
-import com.st.plot.utils.PLOT_SETTINGS
 import com.st.ui.composables.ActionItem
 
 fun List<String>?.toActions(
@@ -33,7 +30,6 @@ fun List<String>?.toActions(
             label = it,
             imageVector = when (it) {
                 LOG_SETTINGS -> Icons.Default.Settings
-                PLOT_SETTINGS -> Icons.Default.AreaChart
                 NEAI_CLASSIFICATION_SETTINGS -> Icons.AutoMirrored.Filled.Label
                 else -> null
             },
@@ -41,7 +37,6 @@ fun List<String>?.toActions(
                 val direction = when (demo) {
                     Demo.Plot ->
                         when (it) {
-                            PLOT_SETTINGS -> PlotFragmentDirections.actionDemoPlotToPlotSettingsFragment()
                             LOG_SETTINGS -> DemoShowcaseNavGraphDirections.globalActionToLogSettings()
                             else -> null
                         }

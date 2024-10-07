@@ -268,6 +268,8 @@ fun BinaryScreenScreen(
                                     value = value
                                 )
                             },
+                            onBeforeUcf = {},
+                            onAfterUcf = {},
                             onOpenComponent = {
                                 isOpen = if (it == isOpen) "" else it
                             }

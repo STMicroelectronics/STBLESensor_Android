@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.appswithloveLoco)
+    alias(libs.plugins.composeCompiler)
 }
 
 apply {
@@ -56,8 +57,13 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
         viewBinding = true
+    }
+
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
 }
 

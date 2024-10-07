@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="PredictiveStatusView">
-        <attr name="title" format="string"/>
-        <attr name="valueFormat" format="string"/>
-    </declare-styleable>
-</resources>

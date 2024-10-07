@@ -46,6 +46,8 @@ fun MotorControlTags(
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },
                 onSendCommand = { onSendCommand(name, it) },
+                onBeforeUcf = {},
+                onAfterUcf = {},
                 onOpenComponent = { /** NOOP **/ }
             )
 

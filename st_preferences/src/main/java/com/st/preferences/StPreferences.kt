@@ -74,4 +74,8 @@ interface StPreferences {
     fun getConfiguredMqttCloudApp(): String?
 
     fun deleteConfiguredMqttCloudApp()
+
+    fun setCustomStringForKey(key: String, serializedString: String)
+
+    fun getCustomStringFromKey(key: String) : String?
 }

@@ -46,7 +46,7 @@ fun StPnplScreen(
 ) {
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId = nodeId, demoName = demoName)
+            Lifecycle.Event.ON_CREATE -> viewModel.startDemo(nodeId = nodeId, demoName = demoName)
             Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
             else -> Unit
         }
@@ -118,6 +118,8 @@ fun PnplScreen(
                                     value = value
                                 )
                             },
+                            onAfterUcf = {},
+                            onBeforeUcf = {viewModel.setEnableStopDemo(false)},
                             onOpenComponent = {
                                 isOpen = if (it == isOpen) "" else it
                             }

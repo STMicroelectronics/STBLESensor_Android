@@ -214,6 +214,16 @@ class StPreferencesImpl @Inject constructor(
         }
     }
 
+    override fun setCustomStringForKey(key: String, serializedString: String) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs[stringPreferencesKey(key)] = serializedString }
+        }
+    }
+
+    override fun getCustomStringFromKey(key: String): String? {
+        return runBlocking { dataStore.data.first()[stringPreferencesKey(key)] }
+    }
+
     override fun getFavouriteDevices(): Flow<List<String>> = dataStore.data
         .map { preferences ->
             preferences[FAVOURITE_DEVICES_KEY]?.split(", ") ?: emptyList()

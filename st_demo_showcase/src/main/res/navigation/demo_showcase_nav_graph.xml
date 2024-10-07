@@ -61,11 +61,7 @@
             app:destination="@id/fitnessActivityDemoFragment" />
         <action
             android:id="@+id/action_demoList_to_compassDemoGraph"
-            app:destination="@id/compass_nav_graph">
-            <argument
-                android:name="nodeId"
-                app:argType="string" />
-        </action>
+            app:destination="@id/compassDemoFragment" />
         <action
             android:id="@+id/action_demoList_to_highSpeedDataLogFragment"
             app:destination="@id/highSpeedDataLogFragment" />
@@ -184,14 +180,14 @@
             app:destination="@id/heartRateDemoFragment" />
         <action
             android:id="@+id/action_demoList_to_sensorFusionFragment"
-            app:destination="@id/sensor_fusion_nav_graph">
+            app:destination="@id/sensorFusionDemoFragment">
             <argument
                 android:name="nodeId"
                 app:argType="string" />
         </action>
         <action
             android:id="@+id/action_demoList_to_fftAmplitudeFragment"
-            app:destination="@id/fft_amplitude_nav_graph">
+            app:destination="@id/fftAmplitudeDemoFragment">
             <argument
                 android:name="nodeId"
                 app:argType="string" />
@@ -276,9 +272,6 @@
             android:name="nodeId"
             app:argType="string" />
     </fragment>
-    <include app:graph="@navigation/compass_nav_graph" />
-    <include app:graph="@navigation/sensor_fusion_nav_graph" />
-    <include app:graph="@navigation/fft_amplitude_nav_graph" />
 
     <action
         android:id="@+id/action_user_profiling_nav_graph_to_demo_list"
@@ -295,6 +288,16 @@
             android:name="nodeId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/compassDemoFragment"
+        android:name="com.st.compass.CompassFragment"
+        android:label="CompassDemo">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+
     <fragment
         android:id="@+id/highSpeedDataLogFragment"
         android:name="com.st.hight_speed_data_log.HighSpeedDataLogFragment"
@@ -388,14 +391,7 @@
         <argument
             android:name="isExpert"
             app:argType="boolean" />
-        <action
-            android:id="@+id/action_demoPlot_to_plotSettingsFragment"
-            app:destination="@id/plotSettingsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/plotSettingsFragment"
-        android:name="com.st.plot.PlotSettingsFragment"
-        android:label="PlotSettingsFragment" />
     <fragment
         android:id="@+id/neaiClassificationSettingFragment"
         android:name="com.st.neai_classification.NeaiClassificationSettingFragment"
@@ -592,6 +588,24 @@
             android:name="nodeId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/sensorFusionDemoFragment"
+        android:name="com.st.sensor_fusion.SensorFusionFragment"
+        android:label="SensorFusionFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fftAmplitudeDemoFragment"
+        android:name="com.st.fft_amplitude.FFTAmplitudeFragment"
+        android:label="FFTAmplitudeFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+
     <fragment
         android:id="@+id/predictedMaintenanceFragment"
         android:name="com.st.predicted_maintenance.PredictedMaintenanceFragment"

@@ -78,6 +78,8 @@ fun RawPnplScreenContent(
                             value = value
                         )
                     },
+                    onAfterUcf = {},
+                    onBeforeUcf = {},
                     onOpenComponent = {
                         isOpen = if (it == isOpen) "" else it
                     }

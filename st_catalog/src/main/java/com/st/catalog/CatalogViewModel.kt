@@ -73,6 +73,17 @@ class CatalogViewModel
         }
     }
 
+    fun getFirmwareListForBoardPart(boardPart: String) {
+        viewModelScope.launch {
+            val boards = _boardsDescription.value.filter { it.boardPart == boardPart}
+            val firmwareList = mutableListOf<BoardFirmware>()
+            boards.forEach { board ->
+                firmwareList.addAll(blueManager.getBoardCatalog().filter { it.bleDevId == board.bleDevId })
+            }
+            _firmwareList.value = firmwareList.toList()
+        }
+    }
+
 
     init {
         viewModelScope.launch {
@@ -82,6 +93,7 @@ class CatalogViewModel
                 else
                     true
             }.distinctBy { it.bleDevId }
+
             _boardsDescription.value = blueManager.getBoardsDescription().filter {
                 if (StCatalogConfig.boardModelFilter.isNotEmpty())
                     StCatalogConfig.boardModelFilter.contains(it.boardModel())

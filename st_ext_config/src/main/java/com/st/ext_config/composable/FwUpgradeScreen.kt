@@ -38,6 +38,7 @@ import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.Shapes
+import com.st.ui.theme.WarningText
 
 @Composable
 fun FwUpgradeScreen(
@@ -182,8 +183,8 @@ fun FwUpgradeScreen(
         }
     }
 
-    var radioSelection by remember { mutableStateOf(value = 0) }
-    var selectedBoardIndex by remember { mutableStateOf(value = 0) }
+    var radioSelection by remember { mutableIntStateOf(value = 0) }
+    var selectedBoardIndex by remember { mutableIntStateOf(value = 0) }
 
     var address by remember { mutableStateOf(value = getDefaultAddress(boardModel, radioSelection, 0)) }
     val selectFileText = stringResource(id = R.string.st_extConfig_fwUpgrade_selectFile)
@@ -377,11 +378,21 @@ fun FwUpgradeScreen(
             onClick = { if (fwLock.not()) onChangeFile() }
         ) {
             Column(modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal)) {
-                Text(
-                    color = Grey6,
-                    style = MaterialTheme.typography.bodyLarge,
-                    text = stringResource(id = R.string.st_extConfig_fwUpgrade_selectedLabel)
-                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        color = Grey6,
+                        style = MaterialTheme.typography.bodyLarge,
+                        text = stringResource(id = R.string.st_extConfig_fwUpgrade_selectedLabel)
+                    )
+
+                    if(state.fwUrl.toString().contains("SW-Platforms")) {
+                        Text(
+                            color = WarningText,
+                            style = MaterialTheme.typography.bodyLarge,
+                            text = "(Pre-Prod)"
+                        )
+                    }
+                }
                 Text(
                     color = Grey6,
                     style = MaterialTheme.typography.bodyLarge,

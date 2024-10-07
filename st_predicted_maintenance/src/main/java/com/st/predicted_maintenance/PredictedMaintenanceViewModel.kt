@@ -21,12 +21,16 @@ import com.st.blue_sdk.features.extended.predictive.PredictiveFrequencyStatusInf
 import com.st.blue_sdk.features.extended.predictive.PredictiveSpeedStatus
 import com.st.blue_sdk.features.extended.predictive.PredictiveSpeedStatusInfo
 import com.st.blue_sdk.features.extended.predictive.Status
+import com.st.blue_sdk.models.RssiData
 import com.st.predicted_maintenance.utilities.Point
 import com.st.predicted_maintenance.utilities.ViewStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,17 +45,20 @@ class PredictedMaintenanceViewModel
     private var featureAccelerationStatus: Feature<*>? = null
     private var featureFrequencyStatus: Feature<*>? = null
 
-    private val _speedData = MutableSharedFlow<ViewStatus>()
-    val speedData: Flow<ViewStatus>
-        get() = _speedData
+    private val _speedData =
+        MutableStateFlow<ViewStatus?>(null)
+    val speedData: StateFlow<ViewStatus?>
+        get() = _speedData.asStateFlow()
 
-    private val _accData = MutableSharedFlow<ViewStatus>()
-    val accData: Flow<ViewStatus>
-        get() = _accData
+    private val _accData =
+        MutableStateFlow<ViewStatus?>(null)
+    val accData: StateFlow<ViewStatus?>
+        get() = _accData.asStateFlow()
 
-    private val _freqData = MutableSharedFlow<ViewStatus>()
-    val freqData: Flow<ViewStatus>
-        get() = _freqData
+    private val _freqData =
+        MutableStateFlow<ViewStatus?>(null)
+    val freqData: StateFlow<ViewStatus?>
+        get() = _freqData.asStateFlow()
 
     val mSpeedStatusVisibility = MutableLiveData(false)
     val mAccStatusVisibility = MutableLiveData(false)

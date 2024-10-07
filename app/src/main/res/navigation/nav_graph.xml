@@ -38,15 +38,6 @@
         <action
             android:id="@+id/action_homeFragment_to_catalog"
             app:destination="@id/catalog" />
-
-        <action
-            android:id="@+id/action_homeFragment_to_catalog_board"
-            app:destination="@id/catalog">
-            <argument
-                android:name="boardId"
-                app:argType="string" />
-        </action>
-
     </fragment>
 
     <fragment

@@ -1,0 +1,101 @@
+package com.st.textual_monitor.composable
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.st.ui.theme.LocalDimensions
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextualMonitorDropDownMenu(
+    modifier: Modifier = Modifier,
+    title: String,
+    values: List<String>,
+    initialValue: String,
+    onValueSelected: (String) -> Unit = { /** NOOP **/ }
+) {
+    var expanded by remember { mutableStateOf(value = false) }
+    var selectedValue by remember(initialValue) { mutableStateOf(value = initialValue) }
+
+    Row(
+        modifier = modifier.padding(LocalDimensions.current.paddingSmall),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(
+                    end = LocalDimensions.current.paddingSmall
+                )
+                .weight(0.25f),
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            text = title
+        )
+
+        ExposedDropdownMenuBox(
+            modifier = Modifier
+                .padding(end = LocalDimensions.current.paddingSmall)
+                .weight(0.75f),
+            expanded = expanded,
+            onExpandedChange = { newValue ->
+                expanded = newValue
+            }
+        ) {
+            OutlinedTextField(
+                value = selectedValue,
+                onValueChange = {},
+                textStyle = MaterialTheme.typography.bodySmall,
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                colors = OutlinedTextFieldDefaults.colors(),
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                },
+                containerColor = MaterialTheme.colorScheme.surface
+            ) {
+                values.forEach {
+                    DropdownMenuItem(
+                        onClick = {
+                            onValueSelected(it)
+
+                            selectedValue = it
+                            expanded = false
+                        },
+                        text = {
+                            Text(
+                                text = it,
+                                fontSize = 12.sp
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+}

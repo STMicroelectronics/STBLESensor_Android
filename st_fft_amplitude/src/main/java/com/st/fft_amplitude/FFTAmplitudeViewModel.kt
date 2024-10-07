@@ -7,6 +7,9 @@
  */
 package com.st.fft_amplitude
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,9 +23,11 @@ import com.st.fft_amplitude.utilites.FFTPoint
 import com.st.fft_amplitude.utilites.TimeDomainStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.FileNotFoundException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,31 +40,39 @@ class FFTAmplitudeViewModel
     private val features: MutableList<Feature<*>> = mutableListOf()
     private lateinit var featureFFTAmplitudeFeature: FFTAmplitudeFeature
 
-    private val _loadingStatus = MutableSharedFlow<Int>()
-    val loadingStatus: Flow<Int>
-        get() = _loadingStatus
+    var snap: Bitmap? = null
 
-    private val _mFftData = MutableSharedFlow<List<FloatArray>>()
-    val mFftData: Flow<List<FloatArray>>
-        get() = _mFftData
+    private val _loadingStatus =
+        MutableStateFlow(0)
+    val loadingStatus: StateFlow<Int>
+        get() = _loadingStatus.asStateFlow()
 
-    var mFreqStep: Float=0f
+    private val _mFftData =
+        MutableStateFlow<List<FloatArray>>(mutableListOf())
+    val mFftData: StateFlow<List<FloatArray>>
+        get() = _mFftData.asStateFlow()
 
-    private val _mXStats = MutableSharedFlow<TimeDomainStats>()
-    val mXStats: Flow<TimeDomainStats>
-        get() = _mXStats
+    var mFreqStep: Float = 0f
 
-    private val _mYStats = MutableSharedFlow<TimeDomainStats>()
-    val mYStats: Flow<TimeDomainStats>
-        get() = _mYStats
+    private val _mXStats =
+        MutableStateFlow<TimeDomainStats?>(null)
+    val mXStats: StateFlow<TimeDomainStats?>
+        get() = _mXStats.asStateFlow()
 
-    private val _mZStats = MutableSharedFlow<TimeDomainStats>()
-    val mZStats: Flow<TimeDomainStats>
-        get() = _mZStats
+    private val _mYStats =
+        MutableStateFlow<TimeDomainStats?>(null)
+    val mYStats: StateFlow<TimeDomainStats?>
+        get() = _mYStats.asStateFlow()
 
-    private val _mFftMax = MutableSharedFlow<List<FFTPoint>>()
-    val mFftMax: Flow<List<FFTPoint>>
-        get() = _mFftMax
+    private val _mZStats =
+        MutableStateFlow<TimeDomainStats?>(null)
+    val mZStats: StateFlow<TimeDomainStats?>
+        get() = _mZStats.asStateFlow()
+
+    private val _mFftMax =
+        MutableStateFlow<List<FFTPoint>>(listOf())
+    val mFftMax: StateFlow<List<FFTPoint>>
+        get() = _mFftMax.asStateFlow()
 
     val timeParameterAvailable = MutableLiveData(false)
 
@@ -77,7 +90,7 @@ class FFTAmplitudeViewModel
 
     fun startDemo(nodeId: String) {
 
-        if(features.isEmpty()) {
+        if (features.isEmpty()) {
             viewModelScope.launch {
                 blueManager.nodeFeatures(nodeId).filter {
                     FFTAmplitudeFeature.NAME == it.name || MotorTimeParameter.NAME == it.name
@@ -94,7 +107,7 @@ class FFTAmplitudeViewModel
         }
 
 
-        if(features.isNotEmpty()) {
+        if (features.isNotEmpty()) {
             viewModelScope.launch {
                 blueManager.getFeatureUpdates(nodeId, features).collect {
                     val data = it.data
@@ -131,7 +144,7 @@ class FFTAmplitudeViewModel
                         var speed = data.rmsSpeedX.value
                         if ((!acc.isNaN()) && (!speed.isNaN())) {
                             _mXStats.emit(TimeDomainStats(acc, speed))
-                            if(timeParameterAvailable.value==false) {
+                            if (timeParameterAvailable.value == false) {
                                 timeParameterAvailable.postValue(true)
                             }
                         }
@@ -160,14 +173,36 @@ class FFTAmplitudeViewModel
     }
 
     fun stopDemo(nodeId: String) {
-        if(features.isNotEmpty()) {
+        if (features.isNotEmpty()) {
             coroutineScope.launch {
                 val retValue = blueManager.disableFeatures(nodeId, features)
-                if(!retValue) {
+                if (!retValue) {
                     //This should be not necessary... but just in order to be sure...
                     featureFFTAmplitudeFeature.resetFeature()
                 }
             }
         }
+    }
+
+    fun saveImage(context: Context, file: Uri?): Boolean {
+        snap?.let { image ->
+            file?.let {
+                try {
+                    val stream = context.contentResolver.openOutputStream(file)
+                    stream?.let {
+                        image.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        stream.close()
+                        return true
+                    }
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                    return false
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                    return false
+                }
+            }
+        }
+        return false
     }
 }

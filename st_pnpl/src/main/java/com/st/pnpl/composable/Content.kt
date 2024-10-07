@@ -22,6 +22,8 @@ fun Content(
     enabled: Boolean,
     content: DtmiContent,
     onValueChange: (Pair<String, Any>) -> Unit,
+    onBeforeUcf:() -> Unit,
+    onAfterUcf:() -> Unit,
     onSendCommand: (CommandRequest?) -> Unit
 ) {
     when (content) {
@@ -39,6 +41,8 @@ fun Content(
             enabled = enabled,
             data = data,
             content = content,
+            onBeforeUcf = onBeforeUcf,
+            onAfterUcf = onAfterUcf,
             onSendCommand = onSendCommand
         )
 

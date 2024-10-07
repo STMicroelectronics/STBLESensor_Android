@@ -23,6 +23,11 @@ val SensorType.imageResource: Int
         SensorType.CLASS -> R.drawable.sensor_type_algorithm
         SensorType.STREDL -> R.drawable.sensor_type_algorithm
         SensorType.Unknown -> R.drawable.sensor_type_unknown
+        SensorType.TimeOfFlight -> R.drawable.sensor_type_tof
+        SensorType.AmbientLightSensor -> R.drawable.sensor_type_als
+        SensorType.TmosInfrared -> R.drawable.sensor_type_tmos
+        SensorType.PowerMeter -> R.drawable.sensor_type_pow
+        SensorType.ISPU -> R.drawable.sensor_type_ispu
     }
 
 val SensorType.nameResource: Int
@@ -38,6 +43,11 @@ val SensorType.nameResource: Int
         SensorType.CLASS -> R.string.subSensor_type_class
         SensorType.STREDL -> R.string.subSensor_type_stredl
         SensorType.Unknown -> R.string.subSensor_type_unknown
+        SensorType.TimeOfFlight ->  R.string.subSensor_type_tof
+        SensorType.AmbientLightSensor ->  R.string.subSensor_type_als
+        SensorType.TmosInfrared ->  R.string.subSensor_type_tmos
+        SensorType.PowerMeter ->  R.string.subSensor_type_pow
+        SensorType.ISPU -> R.string.subSensor_type_ispu
     }
 
 val SensorType.previewNameResource: Int
@@ -53,4 +63,9 @@ val SensorType.previewNameResource: Int
         SensorType.CLASS -> R.string.subSensor_previewType_class
         SensorType.STREDL -> R.string.subSensor_previewType_stredl
         SensorType.Unknown -> R.string.subSensor_previewType_unknown
+        SensorType.TimeOfFlight -> R.string.subSensor_previewType_tof
+        SensorType.AmbientLightSensor -> R.string.subSensor_previewType_als
+        SensorType.TmosInfrared -> R.string.subSensor_previewType_tmos
+        SensorType.PowerMeter -> R.string.subSensor_previewType_pow
+        SensorType.ISPU -> R.string.subSensor_previewType_ispu
     }

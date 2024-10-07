@@ -13,5 +13,5 @@
         android:fillColor="#FFFFFF"
         android:pathData="M105.4,59.4h-7.2c-0.8,0 -1.4,-0.6 -1.4,-1.4v-14c0,-0.8 0.6,-1.4 1.4,-1.4h7.2c0.8,0 1.4,0.6 1.4,1.4v14C106.8,58.8 106.2,59.4 105.4,59.4z"
         android:strokeWidth="2"
-        android:strokeColor="#3CB4E6" />
+        android:strokeColor="#2B8EC5" />
 </vector>

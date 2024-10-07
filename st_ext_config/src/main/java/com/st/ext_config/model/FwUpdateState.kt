@@ -13,6 +13,7 @@ import com.st.blue_sdk.services.ota.FwUploadError
 
 data class FwUpdateState(
     val fwUri: Uri? = null,
+    val fwUrl: String? = null,
     val fwName: String = "",
     val fwSize: String = "",
     val downloadFinished: Boolean = true,

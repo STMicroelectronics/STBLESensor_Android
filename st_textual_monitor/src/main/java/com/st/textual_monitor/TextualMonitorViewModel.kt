@@ -7,8 +7,6 @@
  */
 package com.st.textual_monitor
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
@@ -34,8 +32,6 @@ import com.st.preferences.StPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,23 +59,19 @@ class TextualMonitorViewModel
 
     private var currentDesc: BleCharacteristic? = null
 
-    private val _dataFeature = MutableSharedFlow<String>()
-    val dataFeature: Flow<String>
-        get() = _dataFeature
+    var dataValues: MutableList<String> = mutableListOf()
 
-    private val _debugMessages = MutableStateFlow<String?>(null)
-    val debugMessages: StateFlow<String?> = _debugMessages.asStateFlow()
-
-    private val _modelUpdates =
-        mutableStateOf<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>(
-            emptyList()
+    private val _featureTime: MutableStateFlow<Long?> =
+        MutableStateFlow(
+            null
         )
-    val modelUpdates: State<List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>>>
-        get() = _modelUpdates
+    val featureTime: StateFlow<Long?>
+        get() = _featureTime.asStateFlow()
 
-    private val _componentStatusUpdates = mutableStateOf<List<JsonObject>>(emptyList())
-    val componentStatusUpdates: State<List<JsonObject>>
-        get() = _componentStatusUpdates
+    private var modelUpdates: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> =
+        emptyList()
+
+    private var componentStatusUpdates: List<JsonObject> = emptyList()
 
     private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
 
@@ -95,30 +87,49 @@ class TextualMonitorViewModel
         return blueManager.nodeFeatures(nodeId)
     }
 
+    private fun getNodeDataNotifyFeatures(nodeId: String): List<Feature<*>> {
+        return blueManager.nodeFeatures(nodeId).filter { it.isDataNotifyFeature }
+    }
+
+    fun getNodeFeatureList(nodeId: String): List<GenericTextualFeature> {
+        val features = getNodeDataNotifyFeatures(nodeId)
+        //retrieve the Fw model
+        val fwModel = getNodeFwModel(nodeId)
+
+        return features.map {
+            retrieveBleCharDescription(it, fwModel)
+        }
+    }
+
     fun setSelectedFeature(selectedFeature: Feature<*>, desc: BleCharacteristic?) {
         feature = selectedFeature
         currentDesc = desc
     }
 
+    private suspend fun addToListAndEmit(value: String, time: Long) {
+        dataValues.add(0, value)
+        dataValues.add(0, "\nTS =$time:\n")
+        dataValues = dataValues.take(24).toMutableList()
+        _featureTime.emit(time)
+    }
+
     fun startDemo(nodeId: String) {
         observeFeatureJob?.cancel()
+        dataValues.clear()
         feature?.let {
             observeFeatureJob = viewModelScope.launch {
                 blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
                     if (feature!!.type != Feature.Type.GENERAL_PURPOSE) {
-                        if(feature!!.name != RawControlled.NAME) {
+                        if (feature!!.name != RawControlled.NAME) {
                             val data = it.data
-                            _dataFeature.emit("\nTS =${it.timeStamp}:\n")
-                            _dataFeature.emit(data.toString())
+                            addToListAndEmit(data.toString(), it.timeStamp)
                         } else {
                             val data = it.data
-                            _dataFeature.emit("\nTS =${it.timeStamp}:\n")
-                            _dataFeature.emit(data.toString())
+                            addToListAndEmit(data.toString(), it.timeStamp)
                         }
                     } else {
-                        _dataFeature.emit("\nTS =${it.timeStamp}:\n")
                         val featureDataString = generalPurposeFeatureDataString(it)
-                        _dataFeature.emit(featureDataString)
+                        addToListAndEmit(featureDataString, it.timeStamp)
                     }
                 }
             }
@@ -135,69 +146,80 @@ class TextualMonitorViewModel
 
                     //we Skip the timestamp
                     if (field.name != "timestamp") {
-                        val data = (it.data as GeneralPurposeInfo).data.map { value -> value.value}.toByteArray()
+                        val data = (it.data as GeneralPurposeInfo).data.map { value -> value.value }
+                            .toByteArray()
                         var value: Float? = null
                         when (field.type) {
                             Field.Type.Float -> {
                                 value =
                                     NumberConversion.LittleEndian.bytesToFloat(data, offset)
                             }
+
                             Field.Type.Int64 -> {
                                 sampleValues.append(" Int64 not supported.. skip sample\n")
                             }
+
                             Field.Type.UInt32 -> {
                                 value = NumberConversion.LittleEndian.bytesToUInt32(
                                     data,
                                     offset
                                 ).toFloat()
                             }
+
                             Field.Type.Int32 -> {
                                 value =
                                     NumberConversion.LittleEndian.bytesToInt32(data, offset)
                                         .toFloat()
                             }
+
                             Field.Type.UInt16 -> {
                                 value = NumberConversion.LittleEndian.bytesToUInt16(
                                     data,
                                     offset
                                 ).toFloat()
                             }
+
                             Field.Type.Int16 -> {
                                 value =
                                     NumberConversion.LittleEndian.bytesToInt16(data, offset)
                                         .toFloat()
                             }
+
                             Field.Type.UInt8 -> {
                                 value = NumberConversion.byteToUInt8(data, offset).toFloat()
                             }
+
                             Field.Type.Int8 -> {
                                 value = data[offset].toFloat()
 
                             }
+
                             Field.Type.ByteArray -> {
                                 sampleValues.append(" ByteArray not supported.. skip sample\n")
                             }
+
                             null -> {
                                 sampleValues.append(" type not present.. skip sample\n")
                             }
+
                             else -> {
                                 sampleValues.append(" type not supported.. skip sample\n")
                             }
                         }
                         if (value != null) {
-                            if(field.scalefactor!=null) {
+                            if (field.scalefactor != null) {
                                 value *= field.scalefactor!!
                             }
 
-                            if(field.offset!=null) {
+                            if (field.offset != null) {
                                 value += field.offset!!
                             }
 
                             sampleValues.append(" ${field.name} = $value")
 
-                            field.unit?.let { sampleValues.append(" [${field.unit}]")}
+                            field.unit?.let { sampleValues.append(" [${field.unit}]") }
 
-                            if((field.min!=null) || (field.max!=null)){
+                            if ((field.min != null) || (field.max != null)) {
                                 sampleValues.append(" <")
                                 field.min?.let { sampleValues.append("${field.min}") }
 
@@ -211,7 +233,7 @@ class TextualMonitorViewModel
                             sampleValues.append("\n")
                         }
                         //Move to next sample
-                        if(field.length!=null) {
+                        if (field.length != null) {
                             offset += field.length!!
                         }
                     }
@@ -238,36 +260,23 @@ class TextualMonitorViewModel
         }
     }
 
-    fun startReceiveDebugMessage(nodeId: String) {
-        viewModelScope.launch {
-            blueManager.getDebugMessages(nodeId = nodeId)?.collect {
-                val message = it.payload
-                _debugMessages.value = message
-            }
-        }
-    }
-
-    fun stopReceiveDebugMessage() {
-        _debugMessages.value = null
-    }
-
     fun startRawPnPLDemo(nodeId: String) {
         observeFeatureJob?.cancel()
 
         featuresPnPL = blueManager.nodeFeatures(nodeId)
             .filter { it.name == PnPL.NAME || it.name == RawControlled.NAME }
 
-        if(featuresPnPL.isNotEmpty()) {
+        if (featuresPnPL.isNotEmpty()) {
             observeFeatureJob = blueManager.getFeatureUpdates(
                 nodeId = nodeId,
                 features = featuresPnPL,
                 onFeaturesEnabled = {
                     launch {
-                        _dataFeature.emit("Status Requested\n")
-                        _modelUpdates.value = blueManager.getDtmiModel(
+                        modelUpdates = blueManager.getDtmiModel(
                             nodeId = nodeId,
                             isBeta = stPreferences.isBetaApplication()
-                        )?.filterComponentsByProperty(propName = RawControlled.PROPERTY_NAME_ST_BLE_STREAM)
+                        )
+                            ?.filterComponentsByProperty(propName = RawControlled.PROPERTY_NAME_ST_BLE_STREAM)
                             ?: emptyList()
 
                         val featurePnPL =
@@ -304,13 +313,13 @@ class TextualMonitorViewModel
 
                 if (data is PnPLConfig) {
                     data.deviceStatus.value?.components?.let { json ->
-                        _componentStatusUpdates.value = json
+                        componentStatusUpdates = json
 
                         //Search the RawPnPL Format
                         readRawPnPLFormat(
                             rawPnPLFormat = rawPnPLFormat,
                             json = json,
-                            modelUpdates = _modelUpdates.value
+                            modelUpdates = modelUpdates
                         )
                     }
                 } else if (data is RawControlledInfo) {
@@ -340,10 +349,10 @@ class TextualMonitorViewModel
                                     }
                                     count++
 
-                                    if(formatRawPnpLEntry.format.channels!= 1) {
+                                    if (formatRawPnpLEntry.format.channels != 1) {
                                         //The channels are interleaved
                                         string.append("[ ")
-                                        if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                        if (formatRawPnpLEntry.format.multiplyFactor != null) {
                                             val values =
                                                 formatRawPnpLEntry.format.valuesFloat.chunked(
                                                     formatRawPnpLEntry.format.channels
@@ -372,7 +381,7 @@ class TextualMonitorViewModel
                                     } else {
                                         string.append("[ ")
 
-                                        if(formatRawPnpLEntry.format.multiplyFactor!=null) {
+                                        if (formatRawPnpLEntry.format.multiplyFactor != null) {
                                             formatRawPnpLEntry.format.valuesFloat.forEach { value ->
                                                 string.append("$value ")
                                             }
@@ -418,7 +427,7 @@ class TextualMonitorViewModel
                             }
                         }
                     }
-                    _dataFeature.emit(string.toString())
+                    addToListAndEmit(string.toString(), featureUpdate.timeStamp)
                 }
             }.launchIn(viewModelScope)
         }
@@ -426,7 +435,7 @@ class TextualMonitorViewModel
 
     fun stopRawPnPLDemo(nodeId: String) {
         observeFeatureJob?.cancel()
-        _componentStatusUpdates.value = emptyList()
+        componentStatusUpdates = emptyList()
         runBlocking {
             blueManager.disableFeatures(
                 nodeId = nodeId,
@@ -436,4 +445,25 @@ class TextualMonitorViewModel
         featuresPnPL = emptyList()
         feature = null
     }
+
+    //retrieve the Feature Description from Fw Model if the feature is a General Purpose
+    private fun retrieveBleCharDescription(
+        it: Feature<*>,
+        fwModel: BoardFirmware?
+    ): GenericTextualFeature {
+        var bleCharDesc: BleCharacteristic? = null
+        val uuid = it.uuid
+        if (it.type == Feature.Type.GENERAL_PURPOSE) {
+            bleCharDesc = fwModel?.characteristics?.firstOrNull { it.uuid == uuid.toString() }
+        }
+
+        val name: String = if (bleCharDesc == null) {
+            it.name
+        } else {
+            "GP " + bleCharDesc.name
+        }
+        val desc: String = bleCharDesc?.name ?: it.name
+        return GenericTextualFeature(name, desc, it, bleCharDesc)
+    }
 }
+

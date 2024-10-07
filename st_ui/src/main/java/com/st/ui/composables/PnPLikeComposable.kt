@@ -249,7 +249,7 @@ fun StringProperty(
                 internalState = it
 
                 if (commandBehavior) {
-                    val valid =  when {
+                    val valid = when {
                         minLength != null && maxLength != null ->
                             minLength <= it.length && it.length <= maxLength
 
@@ -401,7 +401,7 @@ fun DateTimeProperty(
             ) {
                 DatePicker(
                     state = datePickerState
-                    )
+                )
             }
         }
 
@@ -442,7 +442,7 @@ fun DateTimeProperty(
             ) {
                 TimePicker(
                     state = timePicker
-                    )
+                )
             }
         }
     }
@@ -551,7 +551,7 @@ fun TimeProperty(
             ) {
                 TimePicker(
                     state = timePicker
-                    )
+                )
             }
         }
     }
@@ -564,6 +564,7 @@ fun <T : Any> EnumProperty(
     label: String = "",
     unit: String = "",
     enabled: Boolean = true,
+    dropDownColor: Color = Color.Unspecified,
     color: String = "",
     description: String = "",
     comment: String = "",
@@ -596,74 +597,74 @@ fun <T : Any> EnumProperty(
         var expanded by remember { mutableStateOf(value = false) }
         var fieldSize by remember { mutableStateOf(Size.Zero) }
 
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(
                     border = BorderStroke(1.dp, Grey3),
                     shape = Shapes.small
                 )
+                .background(
+                    color = dropDownColor,
+                    shape = Shapes.small
+                )
+                .clickable {
+                    expanded = !expanded
+                }
                 .padding(LocalDimensions.current.paddingNormal)
+                .onGloballyPositioned { coordinates ->
+                    //This value is used to assign to the DropDown the same width
+                    fieldSize = coordinates.size.toSize()
+                },
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
+            val text = values.firstOrNull { it.second == internalState }?.first ?: ""
+            Text(
+                fontSize = 15.sp,
+                lineHeight = 24.sp,
+                color = MaterialTheme.colorScheme.primary,
+                text = text
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Icon(
+                tint = Grey6,
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null
+            )
+
+            DropdownMenu(
                 modifier = Modifier
-                    .clickable {
-                        expanded = !expanded
-                    }
-                    .onGloballyPositioned { coordinates ->
-                        //This value is used to assign to the DropDown the same width
-                        fieldSize = coordinates.size.toSize()
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val text = values.firstOrNull { it.second == internalState }?.first ?: ""
-                Text(
-                    fontSize = 15.sp,
-                    lineHeight = 24.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                    text = text
-                )
+                    .background(Grey0)
+                    .width(with(LocalDensity.current) { fieldSize.width.toDp() }),
+                expanded = expanded, onDismissRequest = {
+                    expanded = false
+                }) {
+                values.forEach {
+                    DropdownMenuItem(
+                        colors = MenuDefaults.itemColors(
+                            textColor = MaterialTheme.colorScheme.primary,
 
-                Spacer(modifier = Modifier.weight(1f))
-
-                Icon(
-                    tint = Grey6,
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = null
-                )
-
-                DropdownMenu(
-                    modifier = Modifier
-                        .background(Grey0)
-                        .width(with(LocalDensity.current) { fieldSize.width.toDp() }),
-                    expanded = expanded, onDismissRequest = {
-                        expanded = false
-                    }) {
-                    values.forEach {
-                        DropdownMenuItem(
-                            colors = MenuDefaults.itemColors(
-                                textColor = MaterialTheme.colorScheme.primary,
-
-                                ),
-                            onClick = {
-                                internalState = it.second
-                                if (enabled) {
-                                    onValueChange(internalState)
-                                }
-                                expanded = false
-                            },
-                            text = {
-                                Text(
-                                    text = it.first,
-                                    maxLines = 1,
-                                    fontSize = 15.sp,
-                                    lineHeight = 24.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                            ),
+                        onClick = {
+                            internalState = it.second
+                            if (enabled) {
+                                onValueChange(internalState)
                             }
-                        )
-                    }
+                            expanded = false
+                        },
+                        text = {
+                            Text(
+                                text = it.first,
+                                maxLines = 1,
+                                fontSize = 15.sp,
+                                lineHeight = 24.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -716,8 +717,9 @@ private fun isNotCommentLine(line: String): Boolean {
 private fun compressUCFString(ucfContent: String): String {
     val isSpace = "\\s+".toRegex()
     val outPutString = ucfContent.lineSequence().filter { isNotCommentLine(it) }
-        .map {  if(it.contains("WAIT")) {
-              String.format(locale = Locale.getDefault(),"W%03d", it.substringAfter('T').toInt())
+        .map {
+            if (it.contains("WAIT")) {
+                String.format(locale = Locale.getDefault(), "W%03d", it.substringAfter('T').toInt())
             } else {
                 it.replace(isSpace, "").drop(2)
             }
@@ -746,9 +748,12 @@ fun UCF(
     label: String,
     commandType: String,
     commandName: String,
+    onBeforeUcf:() -> Unit,
+    onAfterUcf:() -> Unit,
     onSendCommand: (CommandRequest?) -> Unit
 ) {
     val context = LocalContext.current
+
     val pickFileLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { fileUri ->
             if (fileUri != null) {
@@ -771,6 +776,7 @@ fun UCF(
                     if (fileExt == FILE_UCF) {
                         postProcFile = compressUCFString(fileContent)
                     }
+                    onAfterUcf()
                     onSendCommand(
                         CommandRequest(
                             commandType = commandType,
@@ -784,6 +790,8 @@ fun UCF(
                         )
                     )
                 }
+            } else {
+                onAfterUcf()
             }
         }
 
@@ -795,6 +803,7 @@ fun UCF(
         BlueMsButton(
             modifier = Modifier.align(alignment = Alignment.End),
             onClick = {
+                onBeforeUcf()
                 pickFileLauncher.launch(arrayOf(BIN_FILE_TYPE))
             },
             text = stringResource(id = R.string.command_uploadBtn)

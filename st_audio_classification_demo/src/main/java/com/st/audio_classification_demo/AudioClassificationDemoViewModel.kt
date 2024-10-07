@@ -7,18 +7,20 @@
  */
 package com.st.audio_classification_demo
 
-import android.provider.MediaStore.Audio
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
+import com.st.blue_sdk.features.extended.audio_classification.AudioClassType
 import com.st.blue_sdk.features.extended.audio_classification.AudioClassification
 import com.st.blue_sdk.features.extended.audio_classification.AudioClassificationInfo
-import com.st.blue_sdk.features.pedometer.PedometerInfo
+import com.st.blue_sdk.features.extended.audio_classification.AudioClassificationInfo.Companion.ALGORITHM_NOT_DEFINED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,9 +33,23 @@ class AudioClassificationDemoViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _audioClassificationData = MutableSharedFlow<AudioClassificationInfo>()
-    val audioClassificationData: Flow<AudioClassificationInfo>
-        get() = _audioClassificationData
+
+    private val _audioClassificationData =
+        MutableStateFlow<Pair<AudioClassificationInfo, Long?>>(
+            Pair(AudioClassificationInfo(
+                classification = FeatureField(
+                    value = AudioClassType.Unknown,
+                    name = "AudioClassification"
+                ),
+                algorithm =  FeatureField(
+                    value = ALGORITHM_NOT_DEFINED,
+                    name = "Algorithm"
+                )
+            ),null)
+        )
+    val audioClassificationData: StateFlow<Pair<AudioClassificationInfo, Long?>>
+        get() = _audioClassificationData.asStateFlow()
+
 
     fun startDemo(nodeId: String) {
         if (feature == null) {
@@ -55,14 +71,14 @@ class AudioClassificationDemoViewModel
                 ).collect {
                     val data = it.data
                     if (data is AudioClassificationInfo) {
-                        _audioClassificationData.emit(data)
+                        _audioClassificationData.emit(Pair(data,it.timeStamp))
                     }
                 }
             }
         }
     }
 
-    fun readFeature(
+    private fun readFeature(
         nodeId: String,
         timeout: Long = 2000
     ) {
@@ -72,7 +88,7 @@ class AudioClassificationDemoViewModel
                 data.forEach { featureUpdate ->
                     val dataFeature = featureUpdate.data
                     if (dataFeature is AudioClassificationInfo) {
-                        _audioClassificationData.emit(dataFeature)
+                        _audioClassificationData.emit(Pair(dataFeature,featureUpdate.timeStamp))
                     }
                 }
             }

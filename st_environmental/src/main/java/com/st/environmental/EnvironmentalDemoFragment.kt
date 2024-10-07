@@ -16,7 +16,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,10 +25,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -259,16 +257,16 @@ fun EnvironmentalWidget(
     onModifierChanged: (String) -> Unit = { /** NOOP **/ }
 ) {
 
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(intrinsicSize = IntrinsicSize.Min)
+
+    Surface(
+        modifier = modifier.fillMaxWidth()
             .padding(all = LocalDimensions.current.paddingSmall),
-        colors = CardDefaults.cardColors(),
-        shape = Shapes.small
+        shape = Shapes.small,
+        shadowElevation = LocalDimensions.current.elevationNormal
     ) {
+
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -292,13 +290,17 @@ fun EnvironmentalWidget(
             }
 
             Column(
-                modifier = Modifier.padding(all = LocalDimensions.current.paddingSmall),
+                modifier = Modifier.padding(start = LocalDimensions.current.paddingSmall,
+                    top = LocalDimensions.current.paddingSmall,
+                    bottom = LocalDimensions.current.paddingSmall,
+                    end = LocalDimensions.current.paddingNormal),
                 horizontalAlignment = Alignment.End
             ) {
                 topWidget()
-                Spacer(modifier = Modifier.weight(weight = 1f))
-                Text(modifierLabel)
-                Spacer(modifier = Modifier.height(8.dp))
+                Text(modifier = Modifier.padding(
+                    top = LocalDimensions.current.paddingSmall,
+                    bottom = LocalDimensions.current.paddingSmall),
+                    text = modifierLabel)
                 OutlinedTextField(
                     modifier = Modifier.width(width = 80.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),

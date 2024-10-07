@@ -10,21 +10,17 @@ package com.st.catalog.composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
-import androidx.compose.ui.unit.dp
 import com.st.blue_sdk.board_catalog.models.BoardStatus
 import com.st.ui.theme.*
 import com.st.ui.utils.asString
@@ -33,8 +29,7 @@ import com.st.ui.utils.getBlueStBoardImages
 @Composable
 fun CatalogListItem(
     modifier: Modifier = Modifier,
-    boardName: String,
-    boardVariant: String? = null,
+    boardPart: String,
     friendlyName: String? = null,
     boardStatus: BoardStatus? = null,
     description: String? = null,
@@ -73,21 +68,13 @@ fun CatalogListItem(
             ) {
                 Text(
                     modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
-                    text = boardName,
+                    text = boardPart,
                     maxLines = TITLE_MAX_LINES,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                if (boardVariant != null) {
-                    Text(
-                        modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
-                        text = boardVariant,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+
 
                 if (friendlyName != null) {
                     Text(
@@ -102,7 +89,7 @@ fun CatalogListItem(
                 if (releaseDate != null) {
                     Text(
                         modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
-                        text = releaseDate.replace('_','/'),
+                        text = releaseDate.replace('_', '/'),
                         maxLines = 1,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
@@ -162,8 +149,7 @@ fun CatalogListItem(
 private fun CatalogListItemPreview() {
     PreviewBlueMSTheme {
         CatalogListItem(
-            boardName = "BlueCoin Starter Kit",
-            boardVariant = "Variant2",
+            boardPart = "BlueCoin Starter Kit",
             friendlyName = "STEVAL-BCNKT01V1",
             boardStatus = BoardStatus.NRND,
             description = LoremIpsum(words = 20).asString(),

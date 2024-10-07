@@ -360,16 +360,6 @@ class RawPnplViewModel
 
         _componentStatusUpdates.value = emptyList()
 
-//        coroutineScope.launch {
-//            val features = blueManager.nodeFeatures(nodeId)
-//                .filter { it.name == RawPnPLControlled.NAME || it.name == PnPL.NAME }
-//
-//            blueManager.disableFeatures(
-//                nodeId = nodeId,
-//                features = features
-//            )
-//        }
-        //Not optimal... but in this way... I am able to see the get status if demo is customized
         runBlocking {
             val features = blueManager.nodeFeatures(nodeId)
                 .filter { it.name == RawControlled.NAME || it.name == PnPL.NAME }

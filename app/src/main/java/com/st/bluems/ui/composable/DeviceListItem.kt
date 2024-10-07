@@ -10,7 +10,7 @@ package com.st.bluems.ui.composable
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PushPin
@@ -20,8 +20,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,9 +37,7 @@ fun DeviceListItem(
     item: Node,
     isPin: Boolean = false,
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
-    isExpert: Boolean = false,
-    onInfoClick: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
 ) {
     DeviceListItem(
         modifier = modifier,
@@ -58,9 +54,7 @@ fun DeviceListItem(
         isSleeping = item.isSleeping,
         isCustomFw = item.isCustomFw,
         hasGeneralPurpose = item.hasGeneralPurpose,
-        onNodeSelected = { onNodeSelected(item) },
-        isExpert = isExpert,
-        onInfoClick = { onInfoClick(item) }
+        onNodeSelected = { onNodeSelected(item) }
     )
 }
 
@@ -81,24 +75,12 @@ fun DeviceListItem(
     isSleeping: Boolean,
     hasGeneralPurpose: Boolean,
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
-    onNodeSelected: () -> Unit = { /** NOOP**/ },
-    isExpert: Boolean = false,
-    onInfoClick: () -> Unit = { /** NOOP**/ }
+    onNodeSelected: () -> Unit = { /** NOOP**/ }
 ) {
-    val haptics = LocalHapticFeedback.current
-
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .combinedClickable(
-                onClick = onNodeSelected,
-                onLongClick = {
-                    if (isExpert) {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onInfoClick()
-                    }
-                }
-            ),
+            .clickable { onNodeSelected() },
         shape = Shapes.small,
         shadowElevation = LocalDimensions.current.elevationNormal
     ) {

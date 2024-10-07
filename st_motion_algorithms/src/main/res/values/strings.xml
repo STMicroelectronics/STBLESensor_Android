@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="motionAlgo_algoValues">
-        <item>None</item>
-        <item>Pose Estimation</item>
-        <item>Desktop Type</item>
-        <item>Vertical Context</item>
-    </string-array>
-
     <string name="motionAlgo_desktop_standing">Standing Desk</string>
     <string name="motionAlgo_desktop_sitting">Sitting Desk</string>
     <string name="motionAlgo_unknown">Unknown</string>

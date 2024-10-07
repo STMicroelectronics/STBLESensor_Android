@@ -11,12 +11,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.extended.euler_angle.EulerAngle
 import com.st.blue_sdk.features.extended.euler_angle.EulerAngleInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,9 +30,23 @@ class LevelViewModel @Inject constructor(
 
     private val features = mutableListOf<Feature<*>>()
 
-    private val _levelData = MutableSharedFlow<EulerAngleInfo>()
-    val levelData: Flow<EulerAngleInfo>
-        get() = _levelData
+    private val _levelData =
+        MutableStateFlow(EulerAngleInfo(
+            yaw = FeatureField(
+                value = 0f,
+                name = "Yaw"
+            ),
+            pitch = FeatureField(
+                value = 0f,
+                name = "Pitch"
+            ),
+            roll = FeatureField(
+                value = 0f,
+                name = "Roll"
+            )
+        ))
+    val levelData: StateFlow<EulerAngleInfo>
+        get() = _levelData.asStateFlow()
 
     fun startDemo(nodeId: String) {
 

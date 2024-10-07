@@ -52,28 +52,29 @@ class AccelerationEventFragment : Fragment() {
             }
         }
     }
-
-    @Composable
-    fun AccelerationEventDemoScreen(
-        modifier: Modifier,
-        viewModel: AccelerationEventViewModel,
-        nodeId: String
-    ) {
-        ComposableLifecycle { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_START -> {
-                    viewModel.startDemo(nodeId = nodeId)
-                }
-
-                Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
-                else -> Unit
-            }
-        }
-
-        AccelerationEventDemoContent(
-            modifier = modifier,
-            viewModel = viewModel,
-            nodeId = nodeId
-        )
-    }
 }
+
+@Composable
+fun AccelerationEventDemoScreen(
+    modifier: Modifier,
+    viewModel: AccelerationEventViewModel,
+    nodeId: String
+) {
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_START -> {
+                viewModel.startDemo(nodeId = nodeId)
+            }
+
+            Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
+            else -> Unit
+        }
+    }
+
+    AccelerationEventDemoContent(
+        modifier = modifier,
+        viewModel = viewModel,
+        nodeId = nodeId
+    )
+}
+

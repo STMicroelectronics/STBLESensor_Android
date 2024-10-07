@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="multiNN_algoSelectDesc">Select the algorithm to enable</string>
-    <string name="multiNN_audioSceneDesc">Audio Scene Classification</string>
-    <string name="multiNN_humanActivityDesc">Human Activity Classification</string>
-    <string name="multiNN_comboDesc">MultiNN Classification</string>
-    <string name="algorithm_running" translatable="false">Running</string>
-    <string name="algorithm_paused" translatable="false">Paused</string>
     <string name="activityRecognition_unknownImageDesc">Unknown</string>
     <string name="activityRecognition_stationaryImageDesc">Stationary</string>
     <string name="activityRecognition_walkingImageDesc">Walking</string>
@@ -16,10 +10,6 @@
     <string name="activityRecognition_stairsImageDesc">Stairs</string>
     <string name="activityRecognition_adultNotInCar">Adult is not in the Car</string>
     <string name="activityRecognition_adultInCar">Adult is in the Car</string>
-    <string name="activityRecognition_started">Activity recognition started</string>
-    <string name="activityRecognition_waitingData">Waiting data…</string>
-    <string name="audioClassification_waitingData">Waiting data…</string>
-    <string name="audioScene_indoor" translatable="false">Indoor</string>
 
     <string name="audio_scene_unknown" translatable="false">Unknown</string>
     <string name="audio_scene_inVehicle" translatable="false">In vehicle</string>

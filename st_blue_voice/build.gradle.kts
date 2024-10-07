@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.appswithloveLoco)
+    alias(libs.plugins.composeCompiler)
 }
 
 apply {
@@ -55,8 +56,13 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
         viewBinding = true
+    }
+
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
 }
 
@@ -81,9 +87,16 @@ dependencies {
     // Blue ST SDK
     implementation(libs.st.sdk)
 
+    // ST Opus Library
+    implementation(libs.st.opus)
+
+    // MPAndroid Chart
+    implementation(libs.philjay.mpandroidchart)
+
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigationFragment)
+    implementation(libs.androidx.runtime.livedata)
     ksp(libs.hilt.compiler)
 
     // Dependency required for API desugaring.

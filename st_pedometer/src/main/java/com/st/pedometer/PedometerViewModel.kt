@@ -11,12 +11,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.pedometer.Pedometer
 import com.st.blue_sdk.features.pedometer.PedometerInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,9 +31,23 @@ class PedometerViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _stepData = MutableSharedFlow<PedometerInfo>()
-    val stepData: Flow<PedometerInfo>
-        get() = _stepData
+    private val _stepData =
+        MutableStateFlow<Pair<PedometerInfo, Long?>>(
+            Pair(
+                PedometerInfo(
+                    steps = FeatureField(
+                        name = "Steps",
+                        value = 0
+                    ),
+                    frequency = FeatureField(
+                        name = "Frequency",
+                        value = 0
+                    )
+                ), null
+            )
+        )
+    val stepData: StateFlow<Pair<PedometerInfo, Long?>>
+        get() = _stepData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (feature == null) {
@@ -52,7 +68,7 @@ class PedometerViewModel
                 ).collect {
                     val data = it.data
                     if (data is PedometerInfo) {
-                        _stepData.emit(data)
+                        _stepData.emit(Pair(data, it.timeStamp))
                     }
                 }
             }
@@ -77,7 +93,7 @@ class PedometerViewModel
                 data.forEach { featureUpdate ->
                     val dataFeature = featureUpdate.data
                     if (dataFeature is PedometerInfo) {
-                        _stepData.emit(dataFeature)
+                        _stepData.emit(Pair(dataFeature, featureUpdate.timeStamp))
                     }
                 }
             }

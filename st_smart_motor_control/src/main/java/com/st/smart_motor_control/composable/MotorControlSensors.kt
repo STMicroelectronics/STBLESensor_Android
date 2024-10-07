@@ -50,6 +50,8 @@ fun MotorControlSensors(
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },
                 onSendCommand = { onSendCommand(name, it) },
+                onBeforeUcf = {},
+                onAfterUcf = {},
                 onOpenComponent = {
                     isOpen = if (it == isOpen) "" else it
                 }

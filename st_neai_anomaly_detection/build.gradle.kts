@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.appswithloveLoco)
     alias(libs.plugins.androidxSafeargs)
+    alias(libs.plugins.composeCompiler)
 }
 
 apply {
@@ -56,8 +57,13 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
         viewBinding = true
+    }
+
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
 }
 
@@ -89,4 +95,7 @@ dependencies {
 
     // Dependency required for API desugaring.
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
+
+    // For animating the GIF image
+    api(libs.bundles.coil)
 }

@@ -11,13 +11,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.activity.Activity
 import com.st.blue_sdk.features.activity.ActivityInfo
+import com.st.blue_sdk.features.activity.ActivityType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,9 +33,28 @@ class ActivityRecognitionViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _activityData = MutableSharedFlow<ActivityInfo>()
-    val activityData: Flow<ActivityInfo>
-        get() = _activityData
+    private val _activityData =
+        MutableStateFlow<Pair<ActivityInfo, Long?>>(
+            Pair(
+                ActivityInfo(
+                    activity = FeatureField(
+                        value = ActivityType.NoActivity,
+                        name = "Activity"
+                    ),
+                    algorithm = FeatureField(
+                        value = ActivityInfo.ALGORITHM_NOT_DEFINED,
+                        name = "Algorithm"
+                    ),
+                    date = FeatureField(
+                        value = Date(),
+                        name = "Date"
+                    )
+                ), null
+            )
+        )
+    val activityData: StateFlow<Pair<ActivityInfo, Long?>>
+        get() = _activityData.asStateFlow()
+
 
     fun startDemo(nodeId: String) {
         if (feature == null) {
@@ -44,15 +67,36 @@ class ActivityRecognitionViewModel
 
         feature?.let {
             viewModelScope.launch {
-                blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
+                blueManager.getFeatureUpdates(nodeId, listOf(it),
+                    onFeaturesEnabled = {
+                        readFeature(nodeId)
+                    }).collect {
                     val data = it.data
                     if (data is ActivityInfo) {
-                        _activityData.emit(data)
+                        _activityData.emit(Pair(data, it.timeStamp))
                     }
                 }
             }
         }
     }
+
+    private fun readFeature(
+        nodeId: String,
+        timeout: Long = 2000
+    ) {
+        feature?.let {
+            coroutineScope.launch {
+                val data = blueManager.readFeature(nodeId, it, timeout)
+                data.forEach { featureUpdate ->
+                    val dataFeature = featureUpdate.data
+                    if (dataFeature is ActivityInfo) {
+                        _activityData.emit(Pair(dataFeature,featureUpdate.timeStamp))
+                    }
+                }
+            }
+        }
+    }
+
 
     fun stopDemo(nodeId: String) {
         feature?.let {

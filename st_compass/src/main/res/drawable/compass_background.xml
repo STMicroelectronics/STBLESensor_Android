@@ -37,11 +37,11 @@ C253.976,216.378,216.379,253.976,170,253.976
 C123.622,253.976,86.0243,216.378,86.0243,169.999
 C86.0243,123.621,123.622,86.0234,170,86.0234 Z"
         android:strokeWidth="7.73321438"
-        android:strokeColor="#3CB4E6"
+        android:strokeColor="#2B8EC5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:fillColor="#3CB4E6"
+        android:fillColor="#2B8EC5"
         android:fillType="evenOdd"
         android:pathData="M170,10.0004 L148,148 L10,170 L148,192 L170,330 L192,192 L330,170 L192,148
 L170,10 Z"

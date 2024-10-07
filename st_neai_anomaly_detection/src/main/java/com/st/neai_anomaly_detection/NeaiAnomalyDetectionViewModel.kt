@@ -19,8 +19,9 @@ import com.st.blue_sdk.features.extended.neai_anomaly_detection.request.WriteRes
 import com.st.blue_sdk.features.extended.neai_anomaly_detection.request.WriteStopCommand
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,9 +33,12 @@ class NeaiAnomalyDetectionViewModel @Inject constructor(
 
     private val features = mutableListOf<Feature<*>>()
 
-    private val _anomalyDetectionData = MutableSharedFlow<NeaiAnomalyDetectionInfo>()
-    val anomalyDetectionData: Flow<NeaiAnomalyDetectionInfo>
-        get() = _anomalyDetectionData
+    private val _anomalyDetectionData =
+        MutableStateFlow<NeaiAnomalyDetectionInfo?>(
+            null
+        )
+    val anomalyDetectionData: StateFlow<NeaiAnomalyDetectionInfo?>
+        get() = _anomalyDetectionData.asStateFlow()
 
     fun writeStopCommand(nodeId: String) {
         blueManager.nodeFeatures(nodeId = nodeId).find {

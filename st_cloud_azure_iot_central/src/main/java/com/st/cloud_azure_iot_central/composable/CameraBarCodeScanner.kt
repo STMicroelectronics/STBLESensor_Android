@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
     val barCodeVal = remember { mutableStateOf("") }
     Surface(

@@ -7,18 +7,18 @@
  */
 package com.st.fitness
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
-import com.st.blue_sdk.features.FeatureUpdate
 import com.st.blue_sdk.features.extended.fitness_activity.FitnessActivity
 import com.st.blue_sdk.features.extended.fitness_activity.FitnessActivityInfo
 import com.st.blue_sdk.features.extended.fitness_activity.FitnessActivityType
 import com.st.blue_sdk.features.extended.fitness_activity.request.EnableActivityDetection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,15 +29,21 @@ class FitnessActivityViewModel
     private val blueManager: BlueManager,
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
-    private val mCurrentActivity = MutableLiveData<FitnessActivityType>()
-    private val mCurrentCounter = MutableLiveData<Int>()
+
+    private val _currentActivity =
+        MutableStateFlow(
+            FitnessActivityType.NoActivity
+        )
+    val currentActivity: StateFlow<FitnessActivityType>
+        get() = _currentActivity.asStateFlow()
+
+    private val _currentCounter =
+        MutableStateFlow(0)
+    val currentCounter: StateFlow<Int>
+        get() = _currentCounter.asStateFlow()
+    
     private var fitnessActivityFeature: FitnessActivity? = null
 
-    val currentActivity: LiveData<FitnessActivityType>
-        get() = mCurrentActivity
-
-    val currentCounter: LiveData<Int>
-        get() = mCurrentCounter
 
     fun setActivity(nodeId: String, type: FitnessActivityType) {
         viewModelScope.launch {
@@ -68,10 +74,10 @@ class FitnessActivityViewModel
                     if(data is FitnessActivityInfo) {
                         // Update UI livedata
                         data.count.value.let { count ->
-                            mCurrentCounter.postValue(count)
+                            _currentCounter.emit(count)
                         }
                         data.activity.value.let { type ->
-                            mCurrentActivity.postValue(type)
+                            _currentActivity.emit(type)
                         }
                     }
                 }

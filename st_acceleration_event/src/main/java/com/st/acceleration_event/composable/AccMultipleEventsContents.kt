@@ -1,19 +1,19 @@
 package com.st.acceleration_event.composable
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.sp
 import com.st.acceleration_event.model.getDefaultIconResource
 import com.st.acceleration_event.model.getEventIconResource
 import com.st.acceleration_event.model.isOrientationEvent
@@ -33,7 +32,6 @@ import com.st.blue_sdk.features.acceleration_event.AccelerationType
 import com.st.blue_sdk.features.acceleration_event.DetectableEventType
 import com.st.ui.theme.LocalDimensions
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AccMultipleEventsContents(
     modifier: Modifier = Modifier,
@@ -80,7 +78,7 @@ fun AccMultipleEventsContents(
                 Icon(
                     modifier = Modifier
                         .size(size = LocalDimensions.current.imageMedium)
-                        .graphicsLayer(alpha = 0.4f),
+                        .graphicsLayer(alpha = 0.3f),
                     painter = painterResource(
                         getDefaultIconResource(eventType = DetectableEventType.Orientation)
                     ),
@@ -99,7 +97,7 @@ fun AccMultipleEventsContents(
             }
 
             Text(
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 text = "Orientation"
             )
 
@@ -107,7 +105,7 @@ fun AccMultipleEventsContents(
                 Icon(
                     modifier = Modifier
                         .size(size = LocalDimensions.current.imageMedium)
-                        .graphicsLayer(alpha = 0.4f),
+                        .graphicsLayer(alpha = 0.3f),
                     painter = painterResource(
                         getDefaultIconResource(eventType = DetectableEventType.SingleTap)
                     ),
@@ -127,14 +125,14 @@ fun AccMultipleEventsContents(
             }
 
             Text(
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 text = "Tap"
             )
             if (localDoubleTap == null) {
                 Icon(
                     modifier = Modifier
                         .size(size = LocalDimensions.current.imageMedium)
-                        .graphicsLayer(alpha = 0.4f),
+                        .graphicsLayer(alpha = 0.3f),
                     painter = painterResource(
                         getDefaultIconResource(eventType = DetectableEventType.DoubleTap)
                     ),
@@ -154,7 +152,7 @@ fun AccMultipleEventsContents(
 
 
             Text(
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 text = "Double Tap"
             )
 
@@ -169,7 +167,7 @@ fun AccMultipleEventsContents(
                 Icon(
                     modifier = Modifier
                         .size(size = LocalDimensions.current.imageMedium)
-                        .graphicsLayer(alpha = 0.4f),
+                        .graphicsLayer(alpha = 0.3f),
                     painter = painterResource(
                         getDefaultIconResource(eventType = DetectableEventType.Pedometer)
                     ),
@@ -189,7 +187,7 @@ fun AccMultipleEventsContents(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyLarge,
                     text = "Num Steps:"
                 )
                 AnimatedContent(
@@ -200,13 +198,13 @@ fun AccMultipleEventsContents(
                         if (targetState > initialState) {
                             // If the target number is larger, it slides up and fades in
                             // while the initial (smaller) number slides up and fades out.
-                            slideInVertically { height -> height } + fadeIn() with
-                                    slideOutVertically { height -> -height } + fadeOut()
+                            (slideInVertically { height -> height } + fadeIn()).togetherWith(
+                                slideOutVertically { height -> -height } + fadeOut())
                         } else {
                             // If the target number is smaller, it slides down and fades in
                             // while the initial number slides down and fades out.
-                            slideInVertically { height -> -height } + fadeIn() with
-                                    slideOutVertically { height -> height } + fadeOut()
+                            (slideInVertically { height -> -height } + fadeIn()).togetherWith(
+                                slideOutVertically { height -> height } + fadeOut())
                         }.using(
                             // Disable clipping since the faded slide-in/out should
                             // be displayed out of bounds.
@@ -216,7 +214,7 @@ fun AccMultipleEventsContents(
                 ) { steps ->
 
                     Text(
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         text = "$steps"
                     )
                 }
@@ -226,7 +224,7 @@ fun AccMultipleEventsContents(
                 Icon(
                     modifier = Modifier
                         .size(size = LocalDimensions.current.imageMedium)
-                        .graphicsLayer(alpha = 0.4f),
+                        .graphicsLayer(alpha = 0.3f),
                     painter = painterResource(
                         getDefaultIconResource(eventType = DetectableEventType.FreeFall)
                     ),
@@ -246,7 +244,7 @@ fun AccMultipleEventsContents(
             }
 
             Text(
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 text = "Free Fall"
             )
 
@@ -273,7 +271,7 @@ fun AccMultipleEventsContents(
             }
 
             Text(
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 text = "Tilt"
             )
         }

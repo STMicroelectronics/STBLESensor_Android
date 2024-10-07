@@ -204,7 +204,7 @@ fun BoardSettingsCard(
                         value = psw,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Password,
-                            autoCorrect = false
+                            autoCorrectEnabled = false
                         ),
                         trailingIcon = {
                             if (showPassword) {

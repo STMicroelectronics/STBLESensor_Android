@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,6 +38,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class CatalogFragment : Fragment() {
 
+    private val viewModel: CatalogViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,7 +51,7 @@ class CatalogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 BlueMSTheme {
-                    CatalogScreen(nodeId = directNodeId) {
+                    CatalogScreen(nodeId = directNodeId,viewModel = viewModel) {
                         findNavController().popBackStack()
                     }
                 }
@@ -59,6 +63,7 @@ class CatalogFragment : Fragment() {
 @Composable
 fun CatalogScreen(
     nodeId: String? = null,
+    viewModel: CatalogViewModel,
     onCloseCatalog: () -> Unit = { /** NOOP**/ }
 ) {
     var jumpDirectFirstTime by remember { mutableStateOf(true) }
@@ -74,37 +79,43 @@ fun CatalogScreen(
                 CatalogList(
                     nodeId = nodeId,
                     navController = navController,
+                    viewModel = viewModel,
                     onBack = onCloseCatalog
                 )
             } else {
                 CatalogList(
-                    //nodeId = nodeId,
                     navController = navController,
+                    viewModel = viewModel,
                     onBack = onCloseCatalog
                 )
             }
         }
 
         composable(
-            route = "detail/{boardId}",
-            arguments = listOf(navArgument(name = "boardId") { type = NavType.StringType })
+            route = "detail/{boardPart}",
+            arguments = listOf(navArgument(name = "boardPart") { type = NavType.StringType })
         ) { backStackEntry ->
-            backStackEntry.arguments?.getString("boardId")?.let { boardId ->
+            backStackEntry.arguments?.getString("boardPart")?.let { boardPart ->
+                val boardId = viewModel.boardsDescription.value.first { it.boardPart == boardPart }.bleDevId
                 BoardScreen(
                     boardId = boardId,
-                    navController = navController
+                    boardPart = boardPart,
+                    navController = navController,
+                    viewModel = viewModel
                 )
             }
         }
 
         composable(
-            route = "detail/{boardId}/firmwares",
-            arguments = listOf(navArgument(name = "boardId") { type = NavType.StringType })
+            route = "detail/{boardPart}/firmwares",
+            arguments = listOf(navArgument(name = "boardPart") { type = NavType.StringType })
         ) { backStackEntry ->
-            backStackEntry.arguments?.getString("boardId")?.let { boardId ->
+            backStackEntry.arguments?.getString("boardPart")?.let { boardPart ->
+
                 FirmwareList(
-                    boardId = boardId,
-                    navController = navController
+                    boardPart = boardPart,
+                    navController = navController,
+                    viewModel = viewModel
                 )
             }
         }
@@ -117,6 +128,6 @@ fun CatalogScreen(
 @Composable
 private fun CatalogScreenPreview() {
     BlueMSTheme {
-        CatalogScreen()
+        CatalogScreen(viewModel = hiltViewModel())
     }
 }

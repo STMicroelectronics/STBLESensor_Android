@@ -10,6 +10,8 @@ package com.st.demo_showcase.models
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.acceleration_event.AccelerationEvent
 import com.st.blue_sdk.features.activity.Activity
@@ -66,7 +68,6 @@ import com.st.demo_showcase.R
 import com.st.demo_showcase.ui.demo_list.DemoListFragmentDirections
 import com.st.neai_classification.NEAI_CLASSIFICATION_SETTINGS
 import com.st.plot.utils.PLOTTABLE_FEATURE
-import com.st.plot.utils.PLOT_SETTINGS
 import com.st.blue_sdk.features.compass.Compass as CompassFeature
 import com.st.blue_sdk.features.event_counter.EventCounter as EventCounterFeature
 import com.st.blue_sdk.features.extended.fitness_activity.FitnessActivity as FitnessActivityFeature
@@ -104,8 +105,7 @@ enum class Demo(
         displayName = "Plot Data",
         group = listOf(DemoGroup.Graphs, DemoGroup.Log),
         icon = com.st.plot.R.drawable.plot_icon,
-        features = PLOTTABLE_FEATURE,
-        settings = listOf(LOG_SETTINGS, PLOT_SETTINGS)
+        features = PLOTTABLE_FEATURE
     ),
     FftAmplitude(
         displayName = "FFT Amplitude",
@@ -166,7 +166,6 @@ enum class Demo(
         displayName = "Board Configuration",
         group = listOf(DemoGroup.Configuration),
         icon = com.st.ext_config.R.drawable.ext_config_icon,
-        requireAllFeatures = true,
         features = listOf(ExtConfiguration.NAME)
     ),
     SwitchDemo(
@@ -725,7 +724,19 @@ enum class Demo(
             WbsOtaFUOTA -> DemoListFragmentDirections.actionDemoListToFwUpgrade(nodeId)
         }
 
-        direction.let { navController.navigate(directions = it) }
+        direction.let {
+            val navOptions: NavOptions = navOptions {
+                anim {
+                    enter = com.st.ui.R.anim.slide_in_from_right
+                    exit = com.st.ui.R.anim.fade_out
+                    popEnter = com.st.ui.R.anim.fade_in
+                    popExit = com.st.ui.R.anim.slide_out_to_right
+                }
+            }
+            navController.navigate(directions = it, navOptions = navOptions)
+        }
+
+        //direction.let { navController.navigate(directions = it) }
     }
 
     companion object {

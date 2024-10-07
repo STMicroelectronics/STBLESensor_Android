@@ -11,12 +11,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.event_counter.EventCounter
 import com.st.blue_sdk.features.event_counter.EventCounterInfo
+import com.st.blue_sdk.features.extended.color_ambient_light.ColorAmbientLightInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,10 +34,12 @@ class EventCounterViewModel @Inject constructor(
 
     private val features = mutableListOf<Feature<*>>()
 
-    private val _eventCounterData = MutableSharedFlow<EventCounterInfo>()
-    val eventCounterData: Flow<EventCounterInfo>
-        get() = _eventCounterData
-
+    private val _eventCounterData =
+        MutableStateFlow(
+            EventCounterInfo(count = FeatureField(name = "Event", value = 0))
+        )
+    val eventCounterData: StateFlow<EventCounterInfo>
+        get() = _eventCounterData.asStateFlow()
 
     fun startDemo(nodeId: String) {
 

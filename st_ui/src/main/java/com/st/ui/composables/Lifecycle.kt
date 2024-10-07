@@ -16,7 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 
 @Composable
 fun ComposableLifecycle(
-    lifeCycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    lifeCycleOwner: LifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current,
     onEvent: (LifecycleOwner, Lifecycle.Event) -> Unit
 ) {
     DisposableEffect(key1 = lifeCycleOwner) {

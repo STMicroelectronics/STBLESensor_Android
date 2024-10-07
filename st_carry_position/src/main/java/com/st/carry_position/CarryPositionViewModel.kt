@@ -11,13 +11,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
+import com.st.blue_sdk.features.activity.ActivityInfo
+import com.st.blue_sdk.features.activity.ActivityType
 import com.st.blue_sdk.features.carry_position.CarryPosition
 import com.st.blue_sdk.features.carry_position.CarryPositionInfo
+import com.st.blue_sdk.features.carry_position.CarryPositionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,9 +35,20 @@ class CarryPositionViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _positionData = MutableSharedFlow<CarryPositionInfo>()
-    val positionData: Flow<CarryPositionInfo>
-        get() = _positionData
+    private val _positionData =
+        MutableStateFlow<Pair<CarryPositionInfo, Long?>>(
+            Pair(
+                CarryPositionInfo(
+                    position = FeatureField(
+                        name = "Carry Position",
+                        value = CarryPositionType.Unknown
+                    )
+                ), null
+            )
+        )
+    val positionData: StateFlow<Pair<CarryPositionInfo, Long?>>
+        get() = _positionData.asStateFlow()
+
 
     fun startDemo(nodeId: String) {
         if (feature == null) {
@@ -47,7 +64,7 @@ class CarryPositionViewModel
                 blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
                     val data = it.data
                     if (data is CarryPositionInfo) {
-                        _positionData.emit(data)
+                        _positionData.emit(Pair(data, it.timeStamp))
                     }
                 }
             }

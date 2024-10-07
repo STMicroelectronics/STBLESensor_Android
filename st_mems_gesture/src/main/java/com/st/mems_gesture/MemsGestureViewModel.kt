@@ -7,16 +7,20 @@
  */
 package com.st.mems_gesture
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.mems_gesture.MemsGesture
 import com.st.blue_sdk.features.mems_gesture.MemsGestureInfo
+import com.st.blue_sdk.features.mems_gesture.MemsGestureType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,9 +33,16 @@ class MemsGestureViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _gestureData = MutableSharedFlow<MemsGestureInfo>()
-    val gestureData: Flow<MemsGestureInfo>
-        get() = _gestureData
+    private val _gestureData =
+        MutableStateFlow<Pair<MemsGestureInfo, Long?>>(
+            Pair(
+                MemsGestureInfo(gesture = FeatureField(
+                    value = MemsGestureType.Unknown,
+                    name = "Gesture"
+                )),null)
+        )
+    val gestureData: StateFlow<Pair<MemsGestureInfo, Long?>>
+        get() = _gestureData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (feature == null) {
@@ -47,7 +58,9 @@ class MemsGestureViewModel
                 blueManager.getFeatureUpdates(nodeId, listOf(it)).collect {
                     val data = it.data
                     if (data is MemsGestureInfo) {
-                        _gestureData.emit(data)
+                        if(data.gesture.value != MemsGestureType.Unknown) {
+                            _gestureData.emit(Pair(data, it.timeStamp))
+                        }
                     }
                 }
             }

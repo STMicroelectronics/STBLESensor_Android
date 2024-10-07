@@ -15,10 +15,14 @@ import com.st.blue_sdk.features.direction_of_arrival.DirectionOfArrival
 import com.st.blue_sdk.features.direction_of_arrival.DirectionOfArrivalInfo
 import com.st.blue_sdk.features.direction_of_arrival.request.SetSensitivityHigh
 import com.st.blue_sdk.features.direction_of_arrival.request.SetSensitivityLow
+import com.st.blue_sdk.features.extended.tof_multi_object.ToFMultiObjectInfo
 import com.st.blue_sdk.models.Boards
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,11 +35,16 @@ class SourceLocalizationViewModel
 
     private var feature: DirectionOfArrival? = null
 
-    private val _directionData = MutableSharedFlow<DirectionOfArrivalInfo>()
-    val directionData: Flow<DirectionOfArrivalInfo>
-        get() = _directionData
+    var lowSensitivity: Boolean = false
 
-    fun startDemo(nodeId: String, lowSensitivity: Boolean) {
+    private val _directionData =
+        MutableStateFlow<DirectionOfArrivalInfo?>(
+            null
+        )
+    val directionData: StateFlow<DirectionOfArrivalInfo?>
+        get() = _directionData.asStateFlow()
+
+    fun startDemo(nodeId: String) {
         if (feature == null) {
             blueManager.nodeFeatures(nodeId).find {
                 DirectionOfArrival.NAME == it.name
@@ -70,10 +79,11 @@ class SourceLocalizationViewModel
         return boardType
     }
 
-    fun enableLowSensitivity(nodeId: String, lowSensitivity: Boolean) {
+    fun enableLowSensitivity(nodeId: String, sensitivityLow: Boolean) {
         feature?.let {
+            lowSensitivity = sensitivityLow
             viewModelScope.launch {
-                if (lowSensitivity) {
+                if (sensitivityLow) {
                     blueManager.writeFeatureCommand(
                         nodeId = nodeId,
                         featureCommand = SetSensitivityLow(feature = it)

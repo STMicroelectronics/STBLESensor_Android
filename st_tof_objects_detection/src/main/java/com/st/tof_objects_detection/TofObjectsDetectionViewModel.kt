@@ -16,8 +16,9 @@ import com.st.blue_sdk.features.extended.tof_multi_object.ToFMultiObjectInfo
 import com.st.blue_sdk.features.extended.tof_multi_object.request.CommandPresenceRecognition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,9 +33,12 @@ class TofObjectsDetectionViewModel
 
     var mPresenceDemo = false
 
-    private val _tofData = MutableSharedFlow<ToFMultiObjectInfo>()
-    val tofData: Flow<ToFMultiObjectInfo>
-        get() = _tofData
+    private val _tofData =
+        MutableStateFlow<ToFMultiObjectInfo?>(
+            null
+        )
+    val tofData: StateFlow<ToFMultiObjectInfo?>
+        get() = _tofData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (feature == null) {

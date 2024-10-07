@@ -54,6 +54,8 @@ fun Component(
     componentModel: DtmiContent.DtmiComponentContent,
     onValueChange: (Pair<String, Any>) -> Unit,
     onSendCommand: (CommandRequest?) -> Unit,
+    onBeforeUcf:() -> Unit,
+    onAfterUcf:() -> Unit,
     onOpenComponent: (String) -> Unit
 ) {
 
@@ -170,6 +172,8 @@ fun Component(
                                 content = content,
                                 data = contentData,
                                 onValueChange = onValueChange,
+                                onBeforeUcf = onBeforeUcf,
+                                onAfterUcf = onAfterUcf,
                                 onSendCommand = onSendCommand
                             )
 

@@ -162,7 +162,8 @@ class SmartMotorControlViewModel
     private val _motorSpeed = MutableStateFlow(1024)
     val motorSpeed = _motorSpeed.asStateFlow()
 
-    private val _statusMessage: MutableStateFlow<PnPLSpontaneousMessageType?> = MutableStateFlow(null)
+    private val _statusMessage: MutableStateFlow<PnPLSpontaneousMessageType?> =
+        MutableStateFlow(null)
     val statusMessage: StateFlow<PnPLSpontaneousMessageType?>
         get() = _statusMessage.asStateFlow()
 
@@ -170,7 +171,7 @@ class SmartMotorControlViewModel
     val isConnectionLost: StateFlow<Boolean>
         get() = _isConnectionLost.asStateFlow()
 
-    private var nodeIdLocal: String?=null
+    private var nodeIdLocal: String? = null
 
     var temperatureUnit: String = "°C"
     var speedRefUnit: String = "rpm"
@@ -442,7 +443,8 @@ class SmartMotorControlViewModel
         if (pnplBleResponses) {
             addCommandToQueueAndCheckSend(
                 nodeId = nodeId, newCommand = SetCommandPnPLRequest(
-                    typeOfCommand = PnPLTypeOfCommand.Status, pnpLCommand = PnPLCmd(command = "get_status", request = compName)
+                    typeOfCommand = PnPLTypeOfCommand.Status,
+                    pnpLCommand = PnPLCmd(command = "get_status", request = compName)
                 )
             )
         } else {
@@ -754,14 +756,14 @@ class SmartMotorControlViewModel
             )?.extractComponent(compName = TAGS_INFO_JSON_KEY)?.firstOrNull()
 
             tags?.let {
-                numberOfTags = tags.second.contents.filter{tagsPropNamePredicate(it.name)}.size
+                numberOfTags = tags.second.contents.filter { tagsPropNamePredicate(it.name) }.size
             }
         }
 
         //Make the disconnection if the we lost the node
         observeNodeStatusJob = viewModelScope.launch {
             blueManager.getNodeStatus(nodeId = nodeId).collect {
-                if( it.connectionStatus.prev == NodeState.Ready && it.connectionStatus.current == NodeState.Disconnected) {
+                if (it.connectionStatus.prev == NodeState.Ready && it.connectionStatus.current == NodeState.Disconnected) {
                     //GlobalConfig.navigateBack?.let { it1 -> it1(nodeId) }
                     _isConnectionLost.emit(true)
                 }
@@ -779,12 +781,15 @@ class SmartMotorControlViewModel
                 viewModelScope.launch {
 
                     val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
-                    var maxWriteLength = node.catalogInfo?.characteristics?.firstOrNull { it.name ==  PnPL.NAME }?.maxWriteLength
+                    var maxWriteLength =
+                        node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
                     maxWriteLength?.let {
                         if (maxWriteLength!! > (node.maxPayloadSize)) {
                             maxWriteLength = (node.maxPayloadSize)
                         }
-                        (pnplFeatures.firstOrNull { it.name == PnPL.NAME } as PnPL?)?.setMaxPayLoadSize(maxWriteLength!!)
+                        (pnplFeatures.firstOrNull { it.name == PnPL.NAME } as PnPL?)?.setMaxPayLoadSize(
+                            maxWriteLength!!
+                        )
                     }
 
                     if (_sensorsActuators.value.isEmpty() || _tags.value.isEmpty()) {
@@ -807,6 +812,22 @@ class SmartMotorControlViewModel
                         val message = searchInfoWarningError(json)
                         message?.let {
                             _statusMessage.emit(message)
+                            if (pnplBleResponses) {
+                                if (message == PnPLSpontaneousMessageType.ERROR) {
+                                    //Remove the command from the list and send Next One
+                                    commandQueue.removeFirst()
+                                    if (commandQueue.isNotEmpty()) {
+                                        blueManager.writeFeatureCommand(
+                                            responseTimeout = 0,
+                                            nodeId = nodeId, featureCommand = PnPLCommand(
+                                                feature = pnplFeatures.filterIsInstance<PnPL>()
+                                                    .first(),
+                                                cmd = commandQueue[0].pnpLCommand
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         }
 
                         //Search the RawPnPL Format
@@ -874,7 +895,8 @@ class SmartMotorControlViewModel
                                         blueManager.writeFeatureCommand(
                                             responseTimeout = 0,
                                             nodeId = nodeId, featureCommand = PnPLCommand(
-                                                feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                                                feature = pnplFeatures.filterIsInstance<PnPL>()
+                                                    .first(),
                                                 cmd = commandQueue[0].pnpLCommand
                                             )
                                         )
@@ -915,7 +937,8 @@ class SmartMotorControlViewModel
                                                 blueManager.writeFeatureCommand(
                                                     responseTimeout = 0,
                                                     nodeId = nodeId, featureCommand = PnPLCommand(
-                                                        feature = pnplFeatures.filterIsInstance<PnPL>().first(),
+                                                        feature = pnplFeatures.filterIsInstance<PnPL>()
+                                                            .first(),
                                                         cmd = commandQueue[0].pnpLCommand
                                                     )
                                                 )
@@ -1184,13 +1207,15 @@ class SmartMotorControlViewModel
                             }
 
                             //Search NeaiClassName
-                            value = foundStream.formats.firstOrNull { entry -> entry.name == "class_neai"}?.format?.values?.firstOrNull()
+                            value =
+                                foundStream.formats.firstOrNull { entry -> entry.name == "class_neai" }?.format?.values?.firstOrNull()
                             if (value is String) {
                                 _neaiClassName.emit(value)
                             }
 
                             //Search NeaiClassProbability
-                            value = foundStream.formats.firstOrNull { entry -> entry.name == "probability_neai"}?.format?.values?.firstOrNull()
+                            value =
+                                foundStream.formats.firstOrNull { entry -> entry.name == "probability_neai" }?.format?.values?.firstOrNull()
                             if (value is Float) {
                                 _neaiClassProb.emit(value)
                             }
@@ -1210,12 +1235,6 @@ class SmartMotorControlViewModel
         shouldInitDemo = true
         shouldRenameTags = true
 
-//        coroutineScope.launch {
-//            blueManager.disableFeatures(
-//                nodeId = nodeId, features = pnplFeatures
-//            )
-//        }
-        //Not optimal... but in this way... I am able to see the get status if demo is customized
         runBlocking {
             blueManager.disableFeatures(
                 nodeId = nodeId, features = pnplFeatures

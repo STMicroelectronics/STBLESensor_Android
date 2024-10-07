@@ -12,7 +12,6 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.AudioTrack
 import android.media.MediaRecorder
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,7 +47,7 @@ class BlueVoiceViewModel @Inject constructor(
 
     private lateinit var audioRecord: AudioRecord
     private var sendAudioJob: Job? = null
-    private var beamformingFeature: BeamForming? = null
+    private var beamFormingFeature: BeamForming? = null
 
     private val _beamFormingEnabled = MutableLiveData(false)
     val beamFormingEnabled: LiveData<Boolean>
@@ -57,11 +56,11 @@ class BlueVoiceViewModel @Inject constructor(
     fun startDemo(nodeId: String) {
         blueManager.nodeFeatures(nodeId)
             .firstOrNull { featureName -> featureName.name == BeamForming.NAME }
-            ?.let { beamformingFeature = it as BeamForming }
+            ?.let { beamFormingFeature = it as BeamForming }
 
 
         viewModelScope.launch {
-            beamformingFeature?.let { feature ->
+            beamFormingFeature?.let { feature ->
                 blueManager.getFeatureUpdates(nodeId, listOf(feature), onFeaturesEnabled = {postDelayEnableBeamForming()})
             }
         }
@@ -78,13 +77,13 @@ class BlueVoiceViewModel @Inject constructor(
         coroutineScope.launch {
             sendAudioJob?.cancel()
             audioService.destroy(nodeId)
-            if (beamformingFeature != null) {
+            if (beamFormingFeature != null) {
                 blueManager.disableFeatures(
                     nodeId = nodeId,
-                    features = listOf(beamformingFeature!!)
+                    features = listOf(beamFormingFeature!!)
                 )
                 _beamFormingEnabled.postValue(false)
-                beamformingFeature=null
+                beamFormingFeature=null
             }
         }
     }
@@ -118,7 +117,28 @@ class BlueVoiceViewModel @Inject constructor(
 
     fun getAudioDecodeParams(nodeId: String) = audioService.getDecodeParams(nodeId = nodeId)
 
-    data class Wrapper(val data: ShortArray?, val t: Float = Random.nextFloat())
+    data class Wrapper(val data: ShortArray?, val t: Float = Random.nextFloat()) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Wrapper
+
+            if (data != null) {
+                if (other.data == null) return false
+                if (!data.contentEquals(other.data)) return false
+            } else if (other.data != null) return false
+            if (t != other.t) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = data?.contentHashCode() ?: 0
+            result = 31 * result + t.hashCode()
+            return result
+        }
+    }
 
     val flow = MutableStateFlow(Wrapper(null))
 
@@ -170,7 +190,7 @@ class BlueVoiceViewModel @Inject constructor(
         checked: Boolean,
         useStrongBeamFormingAlgorithm: Boolean = false
     ) {
-        beamformingFeature?.let {
+        beamFormingFeature?.let {
             viewModelScope.launch {
                 val enableBeamFormingCommand =
                     EnableDisableBeamForming(it, checked)
@@ -220,7 +240,7 @@ class BlueVoiceViewModel @Inject constructor(
     }
 
     fun setBeamFormingDirection(nodeId: String, newDirection: BeamDirectionType) {
-        beamformingFeature?.let {
+        beamFormingFeature?.let {
             viewModelScope.launch {
                 val changeDirection =
                     ChangeBeamFormingDirection(

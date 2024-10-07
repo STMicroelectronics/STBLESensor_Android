@@ -37,7 +37,7 @@
         android:fillColor="#FFFFFF"
         android:pathData="M98,78.5L81,78.5"
         android:strokeWidth="3"
-        android:strokeColor="#3CB4E6"
+        android:strokeColor="#2B8EC5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path

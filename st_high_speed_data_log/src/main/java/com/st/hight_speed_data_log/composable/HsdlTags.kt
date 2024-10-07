@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.st.blue_sdk.board_catalog.models.DtmiContent
+import com.st.hight_speed_data_log.ComponentWithInterface
 import com.st.pnpl.composable.Component
 import com.st.ui.composables.CommandRequest
 import com.st.ui.theme.LocalDimensions
@@ -19,7 +20,7 @@ import kotlinx.serialization.json.JsonObject
 fun HsdlTags(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    tags: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
+    tags: List<ComponentWithInterface> = emptyList(),
     status: List<JsonObject>,
     onValueChange: (String, Pair<String, Any>) -> Unit,
     onSendCommand: (String, CommandRequest?) -> Unit
@@ -43,6 +44,8 @@ fun HsdlTags(
                 interfaceModel = componentWithInterface.second,
                 onValueChange = { onValueChange(name, it) },
                 onSendCommand = { onSendCommand(name, it) },
+                onAfterUcf = {},
+                onBeforeUcf = {},
                 onOpenComponent = { /** NOOP **/ }
             )
 

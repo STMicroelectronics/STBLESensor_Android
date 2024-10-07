@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.external.stm32.P2PConfiguration
 import com.st.blue_sdk.features.external.stm32.led_and_reboot.ControlLedAndReboot
 import com.st.blue_sdk.features.external.stm32.led_and_reboot.ControlLedCommand
@@ -21,8 +22,9 @@ import com.st.blue_sdk.models.Node
 import com.st.blue_sdk.models.RssiData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,13 +38,27 @@ class LedControlViewModel
 
     private var features: MutableList<Feature<*>> = mutableListOf()
 
-    private val _switchData = MutableSharedFlow<SwitchInfo>()
-    val switchData: Flow<SwitchInfo>
-        get() = _switchData
+    private val _switchData =
+        MutableStateFlow<Pair<SwitchInfo, Long?>>(
+            Pair(
+                SwitchInfo(
+                    deviceId = FeatureField(
+                        name = "DeviceId",
+                        value = 0,
+                    ), isSwitchPressed = FeatureField(
+                        name = "SwitchPressed",
+                        value = false
+                    )
+                ), null
+            )
+        )
+    val switchData: StateFlow<Pair<SwitchInfo, Long?>>
+        get() = _switchData.asStateFlow()
 
-    private val _rssiData = MutableSharedFlow<RssiData?>()
-    val rssiData: Flow<RssiData?>
-        get() = _rssiData
+    private val _rssiData =
+        MutableStateFlow<RssiData?>(null)
+    val rssiData: StateFlow<RssiData?>
+        get() = _rssiData.asStateFlow()
 
     fun startDemo(nodeId: String) {
         if (features.isEmpty()) {
@@ -56,15 +72,15 @@ class LedControlViewModel
                 blueManager.getFeatureUpdates(nodeId = nodeId, features = features)
                     .collect {
                         val data = it.data
-                        if(data is SwitchInfo) {
-                            _switchData.emit(data)
+                        if (data is SwitchInfo) {
+                            _switchData.emit(Pair(data, it.timeStamp))
                         }
                     }
             }
 
             //Request a new RSSI value every second
             viewModelScope.launch {
-                while(isActive) {
+                while (isActive) {
                     blueManager.getRssi(nodeId)
                     delay(1000)
                 }
@@ -97,7 +113,7 @@ class LedControlViewModel
     ) {
         features.firstOrNull { it.name == ControlLedAndReboot.NAME }?.let {
             viewModelScope.launch {
-                if(currentValue) {
+                if (currentValue) {
                     blueManager.writeFeatureCommand(
                         nodeId = nodeId,
                         featureCommand = ControlLedCommand(

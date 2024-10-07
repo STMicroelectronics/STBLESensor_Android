@@ -17,8 +17,9 @@ import com.st.blue_sdk.features.extended.neai_extrapolation.NeaiExtrapolationInf
 import com.st.blue_sdk.features.extended.neai_extrapolation.request.WriteStartExtrapolationCommand
 import com.st.blue_sdk.features.extended.neai_extrapolation.request.WriteStopExtrapolationCommand
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,9 +32,12 @@ class NeaiExtrapolationViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _extrapolationData = MutableSharedFlow<NeaiExtrapolationInfo>()
-    val extrapolationData: Flow<NeaiExtrapolationInfo>
-        get() = _extrapolationData
+    private val _extrapolationData =
+        MutableStateFlow(
+            NeaiExtrapolationInfo(extrapolation = null)
+        )
+    val extrapolationData: StateFlow<NeaiExtrapolationInfo>
+        get() = _extrapolationData.asStateFlow()
 
 
     fun writeStartCommand(nodeId: String) {

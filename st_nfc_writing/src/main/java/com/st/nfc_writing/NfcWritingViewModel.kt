@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.features.Feature
+import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.extended.json_nfc.JsonNFC
 import com.st.blue_sdk.features.extended.json_nfc.answer.JsonNFCResponse
 import com.st.blue_sdk.features.extended.json_nfc.request.JsonCommand
@@ -18,8 +19,9 @@ import com.st.blue_sdk.features.extended.json_nfc.request.JsonNFCFeatureWriteCom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -35,9 +37,17 @@ class NfcWritingViewModel
 
     private val features = mutableListOf<Feature<*>>()
 
-    private val _supportedModes = MutableSharedFlow<JsonNFCResponse>()
-    val supportedModes: Flow<JsonNFCResponse>
-        get() = _supportedModes
+    private val _supportedModes =
+        MutableStateFlow(
+            JsonNFCResponse(
+                supportedModes = FeatureField(
+                    name = "SupportedModes",
+                    value = null
+                )
+            )
+        )
+    val supportedModes: StateFlow<JsonNFCResponse>
+        get() = _supportedModes.asStateFlow()
 
     fun writeJsonCommand(nodeId: String, command: JsonCommand) {
         blueManager.nodeFeatures(nodeId = nodeId).find {

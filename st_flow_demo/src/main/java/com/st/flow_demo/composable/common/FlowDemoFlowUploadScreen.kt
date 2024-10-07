@@ -174,7 +174,8 @@ fun FlowDemoFlowUploadScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(12.dp)
+                        .height(12.dp),
+                    drawStopIndicator = {}
                     )
             }
 

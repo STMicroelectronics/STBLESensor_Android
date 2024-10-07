@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
@@ -29,11 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
@@ -63,6 +66,9 @@ fun CloudAzureApplicationDetails(
     appId: Int,
     navController: NavHostController
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val selectedApp = viewModel.listCloudApps.collectAsState().value[appId]
 
     var openInfoDialog by remember { mutableStateOf(value = false) }
@@ -203,7 +209,9 @@ fun CloudAzureApplicationDetails(
 
             OutlinedTextField(
                 modifier = Modifier.weight(3f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text).copy(
+                    imeAction = ImeAction.Done
+                ),
                 textStyle =MaterialTheme.typography.bodySmall,
                 value = urlAppName,
                 onValueChange = {
@@ -211,7 +219,12 @@ fun CloudAzureApplicationDetails(
                     if (it.isNotBlank()) {
                         selectedApp.cloudApp.url = "https://${urlAppName}.azureiotcentral.com"
                     }
-                }
+                },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                )
             )
 
             Text(
@@ -242,14 +255,21 @@ fun CloudAzureApplicationDetails(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text).copy(
+                    imeAction = ImeAction.Done
+                ),
                 textStyle =MaterialTheme.typography.bodySmall,
                 singleLine = true,
                 value = authorizationKey,
                 onValueChange = {
                     authorizationKey = it
                     enableTokenRequestButton = true
-                }
+                },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                )
             )
         }
 

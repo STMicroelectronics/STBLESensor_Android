@@ -7,8 +7,6 @@
  */
 package com.st.node_status
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
@@ -18,12 +16,14 @@ import com.st.blue_sdk.features.battery.Battery
 import com.st.blue_sdk.features.battery.BatteryInfo
 import com.st.blue_sdk.features.battery.request.GetBatteryCapacity
 import com.st.blue_sdk.features.battery.response.BatteryCapacityResponse
+import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.models.Node
 import com.st.blue_sdk.models.RssiData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,33 +37,44 @@ class NodeStatusViewModel
 
     private var feature: Feature<*>? = null
 
-    private val _batteryData = MutableSharedFlow<BatteryInfo>()
-    val batteryData: Flow<BatteryInfo>
-        get() = _batteryData
+    private val _batteryData =
+        MutableStateFlow<BatteryInfo?>(null)
+    val batteryData: StateFlow<BatteryInfo?>
+        get() = _batteryData.asStateFlow()
 
-    private val _rssiData = MutableSharedFlow<RssiData?>()
-    val rssiData: Flow<RssiData?>
-        get() = _rssiData
+    private val _rssiData =
+        MutableStateFlow<RssiData?>(null)
+    val rssiData: StateFlow<RssiData?>
+        get() = _rssiData.asStateFlow()
 
-    private val _hasFeatureFlag = MutableLiveData(false)
-    val hasFeatureFlag: LiveData<Boolean>
-        get() = _hasFeatureFlag
-
-    private val _batteryCapacity = MutableSharedFlow<Int>()
-    val batteryCapacity: Flow<Int>
+    private val _batteryCapacity = MutableStateFlow(0)
+    val batteryCapacity: StateFlow<Int>
         get() = _batteryCapacity
 
 //    private val _batteryCurrent = MutableSharedFlow<Float>()
 //    val batteryCurrent: Flow<Float>
 //        get() = _batteryCurrent
 
+    var nodeName: String = "BoardName"
+    var nodeAddress: String = "BoardMacAddress"
+    var boardType:  String = Boards.Model.GENERIC.name
+
     fun startDemo(nodeId: String) {
+
+        val node = getNode(nodeId)
+
+        node?.let{
+            nodeName  = node.advertiseInfo?.getName() ?: node.friendlyName
+            nodeAddress = node.advertiseInfo?.getAddress() ?: ""
+            boardType = node.boardType.name
+        }
+
         if (feature == null) {
             blueManager.nodeFeatures(nodeId).find {
                 Battery.NAME == it.name
             }?.let { f ->
                 feature = f
-                _hasFeatureFlag.value=true
+                readBatteryCapacity(nodeId)
             }
         }
 
@@ -80,7 +91,7 @@ class NodeStatusViewModel
 
         //Request a new RSSI value every second
         viewModelScope.launch {
-            while(isActive) {
+            while (isActive) {
                 blueManager.getRssi(nodeId)
                 delay(1000)
             }

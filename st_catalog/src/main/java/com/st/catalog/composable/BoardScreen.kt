@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardDescription
@@ -53,21 +52,26 @@ fun BoardScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     boardId: String,
-    viewModel: CatalogViewModel = hiltViewModel()
+    boardPart: String,
+    viewModel: CatalogViewModel
 ) {
-    LaunchedEffect(key1 = boardId) {
+    LaunchedEffect(key1 = boardId, key2 = boardPart) {
         viewModel.getBoard(boardId)
+        viewModel.getFirmwareListForBoardPart(boardPart)
     }
+
     val context = LocalContext.current
     val boardOrNull by viewModel.board.collectAsStateWithLifecycle()
-    val boards by viewModel.boards.collectAsStateWithLifecycle()
     val boardDescOrNull by viewModel.boardDescription.collectAsStateWithLifecycle()
 
+    val firmwareList by viewModel.firmwareList.collectAsStateWithLifecycle()
+
     if (boardOrNull != null) {
-        val allDemo by remember {
+        val allDemo by remember(key1 = firmwareList) {
             derivedStateOf {
                 val demosSet = mutableSetOf<Demo>()
-                boards.filter { it.bleDevId == boardOrNull!!.bleDevId }.forEach {
+                val firmwareListWithoutDuplicate =  firmwareList.groupBy { it.fwName }.map { list -> list.value.distinctBy { it.fwVersion } }.flatten()
+                firmwareListWithoutDuplicate.forEach {
                     demosSet.addAll(it.availableDemos())
                 }
                 demosSet
@@ -81,7 +85,7 @@ fun BoardScreen(
             demos = allDemo.toList(),
             goToFw = {
                 navController.navigate(
-                    "detail/$boardId/firmwares"
+                    "detail/$boardPart/firmwares"
                 )
             },
             onBack = {
@@ -226,14 +230,6 @@ fun BoardScreen(
             boardDescOrNull?.let {
 
                 if (boardDescOrNull.videoURL != null) {
-                    item {
-                        Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            text = stringResource(id = R.string.st_catalog_board_videoLabel)
-                        )
-                    }
-
                     item {
                         // BoardVideoPlayer()
                         BoardYouTubePlayer(videoId = boardDescOrNull.videoURL!!.removePrefix("https://www.youtube.com/watch?v="))

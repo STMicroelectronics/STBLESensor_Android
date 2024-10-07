@@ -15,8 +15,9 @@ import com.st.blue_sdk.features.extended.gnss.GNSS
 import com.st.blue_sdk.features.extended.gnss.GNSSInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialName
 import javax.inject.Inject
@@ -28,15 +29,15 @@ class GnssViewModel
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
-    var mLocationData = LocationData(0.0f, 0.0f)
-
-    var mPositionOnMap = false
-
     private var feature: Feature<*>? = null
 
-    private val _gnssData = MutableSharedFlow<GNSSInfo>()
-    val gnssData: Flow<GNSSInfo>
-        get() = _gnssData
+    private val _gnssData =
+        MutableStateFlow<GNSSInfo?>(
+           null
+        )
+    val gnssData: StateFlow<GNSSInfo?>
+        get() = _gnssData.asStateFlow()
+
 
     fun startDemo(nodeId: String) {
         if (feature == null) {

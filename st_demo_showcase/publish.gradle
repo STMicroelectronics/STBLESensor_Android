@@ -8,7 +8,7 @@
 
 apply plugin: 'maven-publish'
 
-def LIB_VERSION = '1.0.0'
+def LIB_VERSION = '1.2.0'
 def LIB_GROUP_ID = 'com.st.demo_showcase'
 def LIB_ARTIFACT_ID = 'st-demo_showcase'
 

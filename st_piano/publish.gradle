@@ -8,7 +8,7 @@
 
 apply plugin: 'maven-publish'
 
-def LIB_VERSION = '1.0.0'
+def LIB_VERSION = '1.1.0'
 def LIB_GROUP_ID = 'com.st.piano'
 def LIB_ARTIFACT_ID = 'st-piano'
 

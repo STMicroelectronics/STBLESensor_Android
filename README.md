@@ -1,43 +1,12 @@
 # Android_App_STBLESensors
 
-Application ST BLE Sensors
+Signed APK for Application ST BLE Sensors
 
 
-# Compilation
+# Description
 
-Code compiled using gradle 8.9
+This branch contains the signed apks for all the ST BLE Sensor versions
 
-set on Gradle properties the Github Login name and SSO authentication
-Example:
-
-GPR_USER=PezzoniL  
-GPR_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXX
-
-For using this application is necessary to downlaod the Android BlueST-SDK from:
-https://github.com/STMicroelectronics/BlueSTSDK_Android
-
-tag BlueST-SDK_V1.2.8
-
-and follow the instruction for compiling and publish on local maven repository the 2 libraries necessary for this application:
-* st-blue-sdk
-* st-opus
-
-
-
-brew install gnu-sed 
-
-Set the PATH (first on Intel, second on Apple Silicon)
-    PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"  
-
-    PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"  
-
-cd extra 
-
-Run the command (first on Intel, second on Apple Silicon)
-
-    /usr/local/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
-
-    /opt/homebrew/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
 
 ## License
 

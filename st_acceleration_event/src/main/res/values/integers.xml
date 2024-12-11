@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="accEvent_grid_columns">2</integer>
-    <integer name="accEvent_grid_rows">3</integer>
-</resources>

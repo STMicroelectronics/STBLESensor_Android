@@ -167,7 +167,7 @@ fun CustomCommandInput(
                 onChangeValue(if (initialValue) 1 else 0, true)
             }
 
-            BooleanProperty(value = initialValue, onValueChange = {
+            BooleanProperty(value = Pair(initialValue,System.currentTimeMillis()), onValueChange = {
                 onChangeValue(if (it) 1 else 0, true)
             })
         }

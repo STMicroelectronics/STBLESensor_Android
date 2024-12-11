@@ -66,6 +66,12 @@
             android:id="@+id/action_demoList_to_highSpeedDataLogFragment"
             app:destination="@id/highSpeedDataLogFragment" />
         <action
+            android:id="@+id/action_demoList_to_simpleHighSpeedDataLogFragment"
+            app:destination="@id/simpleHighSpeedDataLogFragment" />
+        <action
+            android:id="@+id/action_demoList_to_aIoTCraftHighSpeedDataLogFragment"
+            app:destination="@id/aIoTCraftHighSpeedDataLogFragment" />
+        <action
             android:id="@+id/action_demoList_to_blueVoiceFragment"
             app:destination="@id/blueVoiceFragment" />
         <action
@@ -300,8 +306,24 @@
 
     <fragment
         android:id="@+id/highSpeedDataLogFragment"
-        android:name="com.st.hight_speed_data_log.HighSpeedDataLogFragment"
+        android:name="com.st.high_speed_data_log.HighSpeedDataLogFragment"
         android:label="HighSpeedDataLogFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/simpleHighSpeedDataLogFragment"
+        android:name="com.st.high_speed_data_log.SimpleHighSpeedDataLogFragment"
+        android:label="SimpleHighSpeedDataLogFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/aIoTCraftHighSpeedDataLogFragment"
+        android:name="com.st.high_speed_data_log.AIoTCraftHighSpeedDataLogFragment"
+        android:label="AIoTCraftHighSpeedDataLogFragment">
         <argument
             android:name="nodeId"
             app:argType="string" />

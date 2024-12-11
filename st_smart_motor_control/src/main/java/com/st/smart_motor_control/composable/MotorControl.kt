@@ -5,10 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
@@ -97,15 +101,21 @@ fun MotorControl(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal)
+            .padding(
+                start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal
+            )
             .verticalScroll(
                 rememberScrollState()
-            ),
-        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingSmall)
+            )
+        //verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingSmall)
     ) {
 
         Surface(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(bottom = LocalDimensions.current.paddingNormal),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal
         ) {
@@ -119,7 +129,7 @@ fun MotorControl(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                    ) {
+                ) {
                     Column {
                         Icon(
                             modifier = Modifier
@@ -149,7 +159,8 @@ fun MotorControl(
                     Column(
                         modifier = Modifier.padding(end = LocalDimensions.current.paddingNormal),
                         verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         if (!isRunning) {
                             BlueMsButton(
                                 text = "START",
@@ -460,7 +471,9 @@ fun MotorControl(
         }
 
         Surface(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(bottom = LocalDimensions.current.paddingNormal),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal
         ) {
@@ -606,6 +619,12 @@ fun MotorControl(
                 }
             }
         }
+
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars
+            )
+        )
     }
 
     if (openSettingMotorSpeedDialog) {
@@ -639,7 +658,7 @@ fun SettingMotorSpeedDialog(
                     text = "Set Motor Speed",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
-                    )
+                )
 
                 HorizontalDivider()
 
@@ -771,7 +790,7 @@ fun SlowTelemetry(@DrawableRes id: Int, label: String, value: Float) {
                             all = LocalDimensions.current.paddingNormal
                         ),
                     textAlign = TextAlign.Center,
-                    text = String.format(locale = Locale.getDefault(),"%.2f",  value)
+                    text = String.format(locale = Locale.getDefault(), "%.2f", value)
                 )
             }
             Text(

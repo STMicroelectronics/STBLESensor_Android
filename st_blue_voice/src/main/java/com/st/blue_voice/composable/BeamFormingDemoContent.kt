@@ -6,7 +6,10 @@ import android.media.AudioTrack
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -15,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
@@ -25,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.Lifecycle
 import com.st.blue_sdk.features.beam_forming.BeamDirectionType
@@ -140,10 +145,22 @@ fun BeamFormingDemoContent(
         }
     }
 
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(top = LocalDimensions.current.paddingNormal,
+                start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingLarge)
     ) {
@@ -151,7 +168,7 @@ fun BeamFormingDemoContent(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(2f),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal
         ) {
@@ -172,7 +189,7 @@ fun BeamFormingDemoContent(
                 //Put the BoardImage in the center
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge),
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge),
                     painter = painterResource(
                         findBoardImage(viewModel.getBoardType(nodeId))
                     ),

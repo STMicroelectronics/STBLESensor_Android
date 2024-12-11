@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -94,6 +95,15 @@ fun ActivityRecognitionMotionARContent(
         label = "color"
     )
 
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -109,7 +119,7 @@ fun ActivityRecognitionMotionARContent(
         ) {
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (stationaryImage) {
                             1f
@@ -132,7 +142,7 @@ fun ActivityRecognitionMotionARContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (fastWalkingImage) {
                             1f
@@ -159,7 +169,7 @@ fun ActivityRecognitionMotionARContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (bikingImage) {
                             1f
@@ -189,7 +199,7 @@ fun ActivityRecognitionMotionARContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (walkingImage) {
                             1f
@@ -212,7 +222,7 @@ fun ActivityRecognitionMotionARContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (joggingImage) {
                             1f
@@ -235,7 +245,7 @@ fun ActivityRecognitionMotionARContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (drivingImage) {
                             1f

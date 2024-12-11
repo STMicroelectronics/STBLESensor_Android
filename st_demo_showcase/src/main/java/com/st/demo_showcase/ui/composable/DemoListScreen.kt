@@ -148,6 +148,14 @@ fun DemoListScreen(
                 )
             }
         }
+
+        item {
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets.systemBars
+                )
+            )
+        }
     }
 
     if (openDeniedLoginDemoDialog) {

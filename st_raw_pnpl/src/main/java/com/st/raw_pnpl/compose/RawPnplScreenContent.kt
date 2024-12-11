@@ -3,9 +3,12 @@ package com.st.raw_pnpl.compose
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
@@ -90,20 +93,30 @@ fun RawPnplScreenContent(
                 }
             }
 
-            item {
-                Surface(
-                    modifier = modifier.fillMaxWidth(),
-                    shape = Shapes.small,
-                    shadowElevation = LocalDimensions.current.elevationNormal
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(all = LocalDimensions.current.paddingNormal),
-                        style = MaterialTheme.typography.bodyMedium,
-                        text = dataFeature.value
-                    )
+            if(dataFeature.value.isNotEmpty()) {
+                item {
+                    Surface(
+                        modifier = modifier.fillMaxWidth(),
+                        shape = Shapes.small,
+                        shadowElevation = LocalDimensions.current.elevationNormal
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = LocalDimensions.current.paddingNormal),
+                            style = MaterialTheme.typography.bodyMedium,
+                            text = dataFeature.value
+                        )
+                    }
                 }
+            }
+
+            item {
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(
+                        WindowInsets.systemBars
+                    )
+                )
             }
         }
     }

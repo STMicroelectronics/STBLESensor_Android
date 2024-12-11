@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +39,16 @@ fun MemsGestureDemoContent(
     viewModel: MemsGestureViewModel
 ) {
     val gestureData by viewModel.gestureData.collectAsStateWithLifecycle()
+
+
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -81,7 +92,7 @@ fun MemsGestureDemoContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (glanceImage) {
                             1f
@@ -104,7 +115,7 @@ fun MemsGestureDemoContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (pickUpImage) {
                             1f
@@ -127,7 +138,7 @@ fun MemsGestureDemoContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (wakeUpImage) {
                             1f

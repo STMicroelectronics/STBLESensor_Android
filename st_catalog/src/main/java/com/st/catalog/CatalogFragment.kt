@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +62,7 @@ class CatalogFragment : Fragment() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CatalogScreen(
     nodeId: String? = null,
@@ -69,54 +72,63 @@ fun CatalogScreen(
     var jumpDirectFirstTime by remember { mutableStateOf(true) }
 
     val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = "list"
-    ) {
-        composable(route = "list") {
-            if (jumpDirectFirstTime) {
-                jumpDirectFirstTime = false
-                CatalogList(
-                    nodeId = nodeId,
-                    navController = navController,
-                    viewModel = viewModel,
-                    onBack = onCloseCatalog
-                )
-            } else {
-                CatalogList(
-                    navController = navController,
-                    viewModel = viewModel,
-                    onBack = onCloseCatalog
-                )
+    SharedTransitionLayout {
+        NavHost(
+            navController = navController,
+            startDestination = "list"
+        ) {
+            composable(route = "list") {
+                if (jumpDirectFirstTime) {
+                    jumpDirectFirstTime = false
+                    CatalogList(
+                        nodeId = nodeId,
+                        navController = navController,
+                        viewModel = viewModel,
+                        onBack = onCloseCatalog,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedContentScope = this@composable
+                    )
+                } else {
+                    CatalogList(
+                        navController = navController,
+                        viewModel = viewModel,
+                        onBack = onCloseCatalog,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedContentScope = this@composable
+                    )
+                }
             }
-        }
 
-        composable(
-            route = "detail/{boardPart}",
-            arguments = listOf(navArgument(name = "boardPart") { type = NavType.StringType })
-        ) { backStackEntry ->
-            backStackEntry.arguments?.getString("boardPart")?.let { boardPart ->
-                val boardId = viewModel.boardsDescription.value.first { it.boardPart == boardPart }.bleDevId
-                BoardScreen(
-                    boardId = boardId,
-                    boardPart = boardPart,
-                    navController = navController,
-                    viewModel = viewModel
-                )
+            composable(
+                route = "detail/{boardPart}",
+                arguments = listOf(navArgument(name = "boardPart") { type = NavType.StringType })
+            ) { backStackEntry ->
+                backStackEntry.arguments?.getString("boardPart")?.let { boardPart ->
+                    val boardId =
+                        viewModel.boardsDescription.value.first { it.boardPart == boardPart }.bleDevId
+                    BoardScreen(
+                        boardId = boardId,
+                        boardPart = boardPart,
+                        navController = navController,
+                        viewModel = viewModel,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedContentScope = this@composable
+                    )
+                }
             }
-        }
 
-        composable(
-            route = "detail/{boardPart}/firmwares",
-            arguments = listOf(navArgument(name = "boardPart") { type = NavType.StringType })
-        ) { backStackEntry ->
-            backStackEntry.arguments?.getString("boardPart")?.let { boardPart ->
+            composable(
+                route = "detail/{boardPart}/firmwares",
+                arguments = listOf(navArgument(name = "boardPart") { type = NavType.StringType })
+            ) { backStackEntry ->
+                backStackEntry.arguments?.getString("boardPart")?.let { boardPart ->
 
-                FirmwareList(
-                    boardPart = boardPart,
-                    navController = navController,
-                    viewModel = viewModel
-                )
+                    FirmwareList(
+                        boardPart = boardPart,
+                        navController = navController,
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }

@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -161,15 +164,17 @@ fun BlueVoiceDemoContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingLarge)
     ) {
         //Controls
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.25f),
+                .fillMaxWidth(),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal
         ) {
@@ -340,7 +345,7 @@ fun BlueVoiceDemoContent(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.5f),
+                .weight(2f),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal
         ) {

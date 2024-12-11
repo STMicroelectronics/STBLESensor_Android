@@ -1,7 +1,6 @@
-package com.st.hight_speed_data_log.composable
+package com.st.high_speed_data_log.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -32,9 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.high_speed_data_log.R
-import com.st.hight_speed_data_log.ComponentWithInterface
-import com.st.hight_speed_data_log.model.ChartType
-import com.st.hight_speed_data_log.model.StreamData
+import com.st.high_speed_data_log.ComponentWithInterface
+import com.st.high_speed_data_log.model.ChartType
+import com.st.high_speed_data_log.model.StreamData
 import com.st.ui.composables.ENABLE_PROPERTY_NAME
 import com.st.ui.composables.EnumProperty
 import com.st.ui.theme.Grey0
@@ -101,7 +100,11 @@ fun VespucciCharts(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(all = LocalDimensions.current.paddingNormal)
+            .padding(
+                start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal
+            )
     ) {
         Column(
             modifier = Modifier
@@ -118,14 +121,14 @@ fun VespucciCharts(
                 Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
             }
 
-            if(showTagsEnabled) {
+            if (showTagsEnabled) {
 
                 Text(
                     fontSize = 12.sp,
                     lineHeight = 17.37.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
-                    text = "Current tag enabled"
+                    text = "Current Label"
                 )
 
                 Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
@@ -141,11 +144,6 @@ fun VespucciCharts(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        color = MaterialTheme.colorScheme.primary,
-                        text = "Value: "
-                    )
-
-                    Text(
                         color = PrimaryPink,
                         fontWeight = FontWeight.Bold,
                         text = vespucciTags.filter { it.value }.map { it.key }.joinToString(", ")
@@ -158,7 +156,9 @@ fun VespucciCharts(
             EnumProperty(
                 modifier = Modifier.background(color = Color.Transparent),
                 dropDownColor = Color.White,
-                label = "Sensor stream enabled",
+                label = "Current Sensor",
+                selectedTextColor = PrimaryPink,
+                selectedTextFontWeight = FontWeight.Bold,
                 data = null,
                 initialValue = currentSensorEnabled,
                 values = sensorsEnabled.map { it.first.name to it.first.name },
@@ -211,7 +211,8 @@ fun VespucciCharts(
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         letterSpacing = 0.25.sp,
-                        text = stringResource(id = R.string.st_hsdl_datalog_chartToggleSum))
+                        text = stringResource(id = R.string.st_hsdl_datalog_chartToggleSum)
+                    )
                 }
 
                 streamName.getChannelsName().getOrNull(ChartType.CHANNEL_1.channelIndex)
@@ -304,7 +305,7 @@ fun VespucciCharts(
                 name = streamData.name,
                 data = streamData.data,
                 chartType = chartType,
-                label = "[${streamData.shortUom}]"
+                label = streamData.uom
             )
         }
     }

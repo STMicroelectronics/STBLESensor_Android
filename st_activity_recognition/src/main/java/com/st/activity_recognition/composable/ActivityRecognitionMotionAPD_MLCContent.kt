@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.st.activity_recognition.R
@@ -52,6 +53,15 @@ fun ActivityRecognitionMotionAPD_MLCContent(
         label = "color"
     )
 
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -62,7 +72,7 @@ fun ActivityRecognitionMotionAPD_MLCContent(
 
         Icon(
             modifier = Modifier
-                .size(size = LocalDimensions.current.imageExtraLarge)
+                .size(size = if (smallScreen) LocalDimensions.current.imageLarge else LocalDimensions.current.imageExtraLarge)
                 .graphicsLayer(
                     alpha = if (adultNotInCarImage) {
                         1f
@@ -85,7 +95,7 @@ fun ActivityRecognitionMotionAPD_MLCContent(
 
         Icon(
             modifier = Modifier
-                .size(size = LocalDimensions.current.imageExtraLarge)
+                .size(size = if (smallScreen) LocalDimensions.current.imageLarge else LocalDimensions.current.imageExtraLarge)
                 .graphicsLayer(
                     alpha = if (adultInCarImage) {
                         1f

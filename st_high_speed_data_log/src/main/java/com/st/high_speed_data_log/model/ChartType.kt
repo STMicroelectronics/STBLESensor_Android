@@ -1,4 +1,4 @@
-package com.st.hight_speed_data_log.model
+package com.st.high_speed_data_log.model
 
 enum class ChartType(val channelIndex: Int) {
     ALL(channelIndex = -1),

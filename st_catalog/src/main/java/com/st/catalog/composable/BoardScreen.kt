@@ -9,14 +9,20 @@ package com.st.catalog.composable
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardDescription
@@ -45,15 +50,17 @@ import com.st.demo_showcase.ui.composable.DemoListItem
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.StTopBar
 import com.st.ui.theme.LocalDimensions
-import com.st.ui.theme.PreviewBlueMSTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BoardScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     boardId: String,
     boardPart: String,
-    viewModel: CatalogViewModel
+    viewModel: CatalogViewModel,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     LaunchedEffect(key1 = boardId, key2 = boardPart) {
         viewModel.getBoard(boardId)
@@ -115,7 +122,9 @@ fun BoardScreen(
                     intent.data = Uri.parse(uri)
                     context.startActivity(intent)
                 }
-            }
+            },
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = animatedContentScope
         )
     } else {
         boardDescOrNull?.let { boardDesc ->
@@ -164,12 +173,15 @@ fun BoardScreen(
                         intent.data = Uri.parse(uri)
                         context.startActivity(intent)
                     }
-                }
+                },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope
             )
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BoardScreen(
     modifier: Modifier = Modifier,
@@ -180,9 +192,12 @@ fun BoardScreen(
     onBack: () -> Unit = { /** NOOP **/ },
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ },
-    onReadMoreClick: () -> Unit = { /** NOOP **/ }
+    onReadMoreClick: () -> Unit = { /** NOOP **/ },
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     Column(modifier = modifier.fillMaxSize()) {
+
         StTopBar(
             title = stringResource(id = R.string.st_catalog_board_title),
             onBack = onBack
@@ -203,7 +218,9 @@ fun BoardScreen(
                     boardDescOrNull = boardDescOrNull,
                     showGoToFw = showGoToFw,
                     goToFw = goToFw,
-                    goToDs = goToDs
+                    goToDs = goToDs,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedContentScope = animatedContentScope
                 )
             }
 
@@ -228,7 +245,6 @@ fun BoardScreen(
             }
 
             boardDescOrNull?.let {
-
                 if (boardDescOrNull.videoURL != null) {
                     item {
                         // BoardVideoPlayer()
@@ -250,18 +266,24 @@ fun BoardScreen(
                 )
             }
         }
+
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.systemBars
+            )
+        )
     }
 }
 
 /** ----------------------- PREVIEW --------------------------------------- **/
 
-@Preview(showBackground = true)
-@Composable
-private fun BoardScreenPreview() {
-    PreviewBlueMSTheme {
-        BoardScreen(
-            board = BoardFirmware.mock(),
-            demos = Demo.values().toList()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun BoardScreenPreview() {
+//    PreviewBlueMSTheme {
+//        BoardScreen(
+//            board = BoardFirmware.mock(),
+//            demos = Demo.values().toList()
+//        )
+//    }
+//}

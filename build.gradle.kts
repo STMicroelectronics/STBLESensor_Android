@@ -11,8 +11,8 @@ buildscript {
     extra.apply {
         // Define versions in a single place
         set("stMinSdk", 26)
-        set("stCompileSdk", 34)
-        set("stTargetSdk", 34)
+        set("stCompileSdk", 35)
+        set("stTargetSdk", 35)
     }
 
     repositories {

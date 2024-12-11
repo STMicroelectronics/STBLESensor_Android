@@ -172,6 +172,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun readBetaCatalog() {
+//        viewModelScope.launch {
+//            val url: String = BuildConfig.BLUESTSDK_DB_BASE_BETA_URL
+//            blueManager.reset(url)
+//            _boardsDescription.value = blueManager.getBoardsDescription()
+//            //Log.i("DB","readBetaCatalog checkBoardsCatalogPresence = ${ _boardsDescription.value.size}")
+//
+//        }
         //checkBoardsCatalogPresence()
     }
 

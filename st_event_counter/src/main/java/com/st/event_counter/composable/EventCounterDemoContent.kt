@@ -32,7 +32,9 @@ fun EventCounterDemoContent(
     val counter by viewModel.eventCounterData.collectAsStateWithLifecycle()
 
     Column(
-        modifier = modifier.fillMaxWidth().padding(LocalDimensions.current.paddingNormal),
+        modifier = modifier.fillMaxWidth().padding(start =LocalDimensions.current.paddingNormal,
+            end = LocalDimensions.current.paddingNormal,
+            top = LocalDimensions.current.paddingNormal),
         verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

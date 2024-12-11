@@ -4,33 +4,38 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -44,12 +49,14 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.st.blue_sdk.board_catalog.models.DtmiContent
 import com.st.pnpl.composable.PnPLInfoWarningSpontaneousMessage
@@ -57,14 +64,13 @@ import com.st.smart_motor_control.MotorControlConfig
 import com.st.smart_motor_control.R
 import com.st.smart_motor_control.SmartMotorControlViewModel
 import com.st.smart_motor_control.model.MotorControlFault
+import com.st.ui.composables.BlueMSPullToRefreshBox
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.ErrorText
-import com.st.ui.theme.Grey0
-import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
-import com.st.ui.theme.PrimaryBlue2
+import com.st.ui.theme.PrimaryBlue
 import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Shapes
 import kotlinx.serialization.json.JsonObject
@@ -123,6 +129,7 @@ fun MotorControlMainScreen(
         isSDCardInserted = isSDCardInserted,
         isLogging = isLogging,
         isLoading = isLoading,
+        isBetaApplication = viewModel.isBeta,
         vespucciTags = vespucciTags,
         acquisitionName = acquisitionName,
         onTagChangeState = { tag, newState ->
@@ -185,10 +192,12 @@ fun MotorControlMainScreen(
     )
 
     statusMessage?.let {
-        PnPLInfoWarningSpontaneousMessage(messageType = statusMessage!!, onDismissRequest = { viewModel.cleanStatusMessage() })
+        PnPLInfoWarningSpontaneousMessage(
+            messageType = statusMessage!!,
+            onDismissRequest = { viewModel.cleanStatusMessage() })
     }
 
-    if(isConnectionLost) {
+    if (isConnectionLost) {
         BasicAlertDialog(onDismissRequest = { viewModel.resetConnectionLost() })
         {
             Surface(
@@ -216,10 +225,17 @@ fun MotorControlMainScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    Row(Modifier.fillMaxWidth()
-                        .padding(start = LocalDimensions.current.paddingSmall, end = LocalDimensions.current.paddingSmall, top= LocalDimensions.current.paddingNormal),
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = LocalDimensions.current.paddingSmall,
+                                end = LocalDimensions.current.paddingSmall,
+                                top = LocalDimensions.current.paddingNormal
+                            ),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
                         BlueMsButton(
                             modifier = Modifier.padding(end = LocalDimensions.current.paddingSmall),
@@ -244,7 +260,7 @@ fun MotorControlMainScreen(
 }
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun SmartMotorControlScreen(
     modifier: Modifier,
     sensorsActuators: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> = emptyList(),
@@ -254,6 +270,7 @@ fun SmartMotorControlScreen(
     isLogging: Boolean,
     isSDCardInserted: Boolean = false,
     isLoading: Boolean = false,
+    isBetaApplication : Boolean,
     acquisitionName: String = "",
     onValueChange: (String, Pair<String, Any>) -> Unit,
     onSendCommand: (String, CommandRequest?) -> Unit,
@@ -281,192 +298,147 @@ fun SmartMotorControlScreen(
     var currentTitle by remember { mutableStateOf(sensorsActuatorsTitle) }
     var openStopDialog by remember { mutableStateOf(value = false) }
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = isLoading,
-        onRefresh = onRefresh
-    )
+    val pullRefreshState = rememberPullToRefreshState()
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    val selectedIndex by remember(key1 = currentRoute) {
+        derivedStateOf {
+            if (currentRoute == "Tags") 1 else 0
+        }
     }
 
     val haptic = LocalHapticFeedback.current
 
     val context = LocalContext.current
+
+
+    val lazyState = rememberLazyListState()
+
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
-            MotorControlConfig.motorControlTabBar?.invoke(currentTitle, isLoading)
-        },
-//        floatingActionButtonPosition = FabPosition.End,
-//        floatingActionButton = {
-//            FloatingActionButton(
-//                containerColor = SecondaryBlue,
-//                shape = CircleShape,
-//                onClick = {
-//                    if (isSDCardInserted) {
-//                        if (isLogging) {
-//                            onStartStopLog(false)
-//                            openStopDialog = MotorControlConfig.showStopDialog
-//                        } else {
-//                            onStartStopLog(true)
-//                        }
-//                    } else {
-//                        Toast.makeText(
-//                            context,
-//                            context.getString(R.string.st_motor_control_missingSdCard),
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            ) {
-//                Icon(
-//                    tint = MaterialTheme.colorScheme.primary,
-//                    imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
-//                    contentDescription = null
-//                )
-//            }
-//        },
-        bottomBar = {
-            NavigationBar(
-                modifier = Modifier.fillMaxWidth(),
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Grey0
-            ) {
-                NavigationBarItem(
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Grey0,
-                        selectedTextColor = Grey0,
-                        unselectedIconColor = Grey6,
-                        unselectedTextColor = Grey6,
-                        indicatorColor = PrimaryBlue2
-                    ),
-                    selected = 0 == selectedIndex,
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        selectedIndex = 0
-                        currentTitle = sensorsActuatorsTitle
-                        navController.navigate("MotorControl") {
-                            navController.graph.startDestinationRoute?.let { screenRoute ->
-                                popUpTo(screenRoute) {
-                                    saveState = true
+            if(MotorControlConfig.motorControlTabBar!=null) {
+                MotorControlConfig.motorControlTabBar?.invoke(currentTitle, isLoading)
+            } else {
+                PrimaryTabRow(modifier = Modifier
+                    .fillMaxWidth(),
+                    selectedTabIndex = selectedIndex,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    indicator = {
+                        TabRowDefaults.PrimaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(
+                                selectedTabIndex = selectedIndex,
+                                matchContentSize = false
+                            ),
+                            width = 60.dp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            height = 4.dp,
+                            shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
+                        )
+                    }) {
+                    Tab(
+                        selected = 0 == selectedIndex,
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            currentTitle = sensorsActuatorsTitle
+                            navController.navigate("MotorControl") {
+                                navController.graph.startDestinationRoute?.let { screenRoute ->
+                                    popUpTo(screenRoute) {
+                                        saveState = true
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_motor_control),
+                                    contentDescription = stringResource(id = R.string.st_motor_control)
+                                )
+                        },
+                        text = { Text(text = stringResource(id = R.string.st_motor_control)) },
+                        enabled = !isLoading
+                    )
+
+                    Tab(
+                        selected = 1 == selectedIndex,
+                        onClick = {
+                            if (!isLoading) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                currentTitle = tagsTitle
+                                navController.navigate("Tags") {
+                                    navController.graph.startDestinationRoute?.let { screenRoute ->
+                                        popUpTo(screenRoute) {
+                                            saveState = true
+                                        }
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_motor_control),
-                            contentDescription = stringResource(id = R.string.st_motor_control)
-                        )
-                    },
-                    label = { Text(text = stringResource(id = R.string.st_motor_control)) },
-                    enabled = !isLoading
-                )
-
-
-                FloatingActionButton(
-                    containerColor = SecondaryBlue,
-                    onClick = {
-                        if (isSDCardInserted) {
-                            if (isLogging) {
-                                onStartStopLog(false)
-                                openStopDialog = MotorControlConfig.showStopDialog
-                            } else {
-                                onStartStopLog(true)
-                            }
+                        },
+                        icon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_tags),
+                                    contentDescription = stringResource(id = R.string.st_motor_control_tags)
+                                )
+                        },
+                        text = { Text(text = stringResource(id = R.string.st_motor_control_tags)) },
+                        enabled = !isLoading
+                    )
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                modifier = Modifier.padding(
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                ),
+                containerColor = SecondaryBlue,
+                expanded = !lazyState.isScrollInProgress,
+                onClick = {
+                    if (isSDCardInserted) {
+                        if (isLogging) {
+                            onStartStopLog(false)
+                            openStopDialog = MotorControlConfig.showStopDialog
                         } else {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.st_motor_control_missingSdCard),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            onStartStopLog(true)
                         }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.st_motor_control_missingSdCard),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                ) {
+                },
+                icon = {
                     Icon(
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = PrimaryBlue,
                         imageVector = if (isLogging) Icons.Default.Stop else Icons.Default.PlayArrow,
                         contentDescription = null
                     )
-                }
-
-                if (isLogging) {
-                    NavigationBarItem(
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Grey0,
-                            selectedTextColor = Grey0,
-                            unselectedIconColor = Grey6,
-                            unselectedTextColor = Grey6,
-                            indicatorColor = PrimaryBlue2
-                        ),
-                        selected = 1 == selectedIndex,
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            selectedIndex = 1
-                            currentTitle = tagsTitle
-                            navController.navigate("Tags") {
-                                navController.graph.startDestinationRoute?.let { screenRoute ->
-                                    popUpTo(screenRoute) {
-                                        saveState = true
-                                    }
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_tags),
-                                contentDescription = stringResource(id = R.string.st_motor_control_tags)
-                            )
-                        },
-                        label = { Text(text = stringResource(id = R.string.st_motor_control_tags)) },
-                        enabled = !isLoading
-                    )
-                } else {
-                    NavigationBarItem(
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Grey0,
-                            selectedTextColor = Grey0,
-                            unselectedIconColor = Grey6,
-                            unselectedTextColor = Grey6,
-                            indicatorColor = PrimaryBlue2
-                        ),
-                        selected = 1 == selectedIndex,
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            selectedIndex = 1
-                            currentTitle = sensorsActuatorsTitle
-                            navController.navigate("Sensors") {
-                                navController.graph.startDestinationRoute?.let { screenRoute ->
-                                    popUpTo(screenRoute) {
-                                        saveState = true
-                                    }
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_settings),
-                                contentDescription = stringResource(id = R.string.st_motor_control_configuration)
-                            )
-                        },
-                        label = { Text(text = stringResource(id = R.string.st_motor_control_configuration)) },
-                        enabled = !isLoading
-                    )
-                }
-
-            }
+                },
+                text = { Text(text = if (isLogging) "Stop" else "Start") },
+            )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
+        BlueMSPullToRefreshBox(
+            modifier = modifier.consumeWindowInsets(paddingValues),
+            state = pullRefreshState,
+            isRefreshing = isLoading,
+            isBetaRelease = isBetaApplication,
+            indicatorAlignment = Alignment.Center,
+            onRefresh = onRefresh
+        ) {
             NavHost(
-                modifier = modifier.padding(paddingValues),
+                modifier = Modifier.padding(paddingValues),
                 navController = navController,
                 startDestination = "MotorControl"
             ) {
@@ -524,6 +496,7 @@ fun SmartMotorControlScreen(
                 ) {
                     if (isLogging.not()) {
                         MotorControlSensors(
+                            lazyState = lazyState,
                             sensorsActuators = sensorsActuators,
                             status = status,
                             isLoading = isLoading,
@@ -559,6 +532,7 @@ fun SmartMotorControlScreen(
                 ) {
                     if (MotorControlConfig.tags.isEmpty()) {
                         MotorControlTags(
+                            lazyState = lazyState,
                             tags = tags,
                             status = status,
                             isLoading = isLoading,
@@ -576,13 +550,6 @@ fun SmartMotorControlScreen(
                     }
                 }
             }
-
-            PullRefreshIndicator(
-                refreshing = isLoading,
-                state = pullRefreshState,
-                modifier = Modifier.align(alignment = Alignment.TopCenter),
-                scale = true
-            )
         }
     }
 

@@ -5,7 +5,7 @@
  * the root directory of this software component.
  * If no LICENSE file comes with this software, it is provided AS-IS.
  */
-package com.st.hight_speed_data_log
+package com.st.high_speed_data_log
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

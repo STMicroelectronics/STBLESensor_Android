@@ -36,8 +36,8 @@ android {
         applicationId = "com.st.bluems"
         minSdk = stMinSdk
         targetSdk = stTargetSdk
-        versionCode = 222
-        versionName = "5.2.5"
+        versionCode = 303
+        versionName = "5.2.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -68,8 +68,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {

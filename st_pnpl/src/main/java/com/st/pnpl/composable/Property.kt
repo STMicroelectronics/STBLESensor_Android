@@ -81,7 +81,7 @@ fun Property(
                         color = color,
                         trueLabel = content.trueName.localizedDisplayName,
                         falseLabel = content.falseName.localizedDisplayName,
-                        value = booleanData,
+                        value = Pair(booleanData,System.currentTimeMillis()),
                         unit = unit,
                         enabled = propEnabled,
                         onValueChange = { value -> onValueChange(content.name to value) }

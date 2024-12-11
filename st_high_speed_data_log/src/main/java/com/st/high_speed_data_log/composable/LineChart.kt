@@ -1,10 +1,16 @@
-package com.st.hight_speed_data_log.composable
+package com.st.high_speed_data_log.composable
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,8 +32,9 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.st.high_speed_data_log.R
-import com.st.hight_speed_data_log.model.ChartType
-import com.st.hight_speed_data_log.model.StreamDataChannel
+import com.st.high_speed_data_log.model.ChartType
+import com.st.high_speed_data_log.model.StreamDataChannel
+import com.st.ui.theme.LocalDimensions
 import java.util.LinkedList
 import kotlin.math.sqrt
 
@@ -63,7 +70,13 @@ fun LineChart(
     var prevChartType by remember { mutableStateOf(value = chartType) }
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+//                start = LocalDimensions.current.paddingNormal,
+//                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal
+            )
     ) {
         Row(
             modifier = Modifier
@@ -74,7 +87,7 @@ fun LineChart(
                 modifier = Modifier
                     .vertical()
                     .rotate(-90f),
-                text = label
+                text = "[${label}]"
             )
 
             AndroidView(
@@ -277,6 +290,12 @@ fun LineChart(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.End,
             text = "[s]"
+        )
+
+        Spacer(
+            modifier = Modifier.height(
+                WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            )
         )
     }
 }

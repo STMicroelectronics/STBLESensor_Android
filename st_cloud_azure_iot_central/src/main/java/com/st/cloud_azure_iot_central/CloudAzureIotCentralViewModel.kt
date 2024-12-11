@@ -140,6 +140,12 @@ class CloudAzureIotCentralViewModel
     //Job for controlling the features
     private var observeFeatureJob: Job? = null
 
+    var isBeta = false
+
+    init {
+        isBeta = stPreferences.isBetaApplication()
+    }
+
     fun startDemo(nodeId: String) {
         this.nodeId = nodeId
         //Retrieve the node with Catalog FW info

@@ -3,8 +3,11 @@ package com.st.color_ambient_light.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +29,10 @@ fun ColorAmbientLightDemoContent(
 
     if (colorData != null) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(LocalDimensions.current.paddingNormal),
+            modifier = modifier.fillMaxWidth().padding(start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
             verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingLarge)
         ) {
 

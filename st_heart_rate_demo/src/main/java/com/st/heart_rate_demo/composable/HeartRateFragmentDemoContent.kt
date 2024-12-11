@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -80,7 +83,10 @@ fun HeartRateFragmentDemoContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingLarge)
     ) {
@@ -118,7 +124,7 @@ fun HeartRateFragmentDemoContent(
                         style = MaterialTheme.typography.titleSmall
                     )
 
-                    heartData?.let { data ->
+                    heartData.first?.let { data ->
                         Row(
                             modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
                             horizontalArrangement = Arrangement.Start,
@@ -175,7 +181,7 @@ fun HeartRateFragmentDemoContent(
                         style = MaterialTheme.typography.titleSmall
                     )
 
-                    heartData?.let { data ->
+                    heartData.first?.let { data ->
                         Row(
                             modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
                             horizontalArrangement = Arrangement.Start,
@@ -224,7 +230,7 @@ fun HeartRateFragmentDemoContent(
         }
 
         //Heart Rate Plot
-        heartData?.let { data ->
+        heartData.first?.let { data ->
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -242,9 +248,10 @@ fun HeartRateFragmentDemoContent(
                     )
                 ) {
                     AnimatedContent(
-                        targetState = data.heartRate.value,
+                        targetState = heartData.second,
                         label = "heart rate Animation"
-                    ) { value ->
+                    ) { _ ->
+                        val value = data.heartRate.value
                         Column(
                             modifier = Modifier.width(LocalDimensions.current.imageNormal),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -325,100 +332,102 @@ fun HeartRateFragmentDemoContent(
 
 
             //Energy Plot
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(2f),
-                shape = Shapes.small,
-                shadowElevation = LocalDimensions.current.elevationNormal
-            ) {
-                Row(
+            if(data.energyExpended.value!=-1) {
+                Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(LocalDimensions.current.paddingNormal),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(
-                        LocalDimensions.current.paddingNormal
-                    )
+                        .weight(2f),
+                    shape = Shapes.small,
+                    shadowElevation = LocalDimensions.current.elevationNormal
                 ) {
-                    AnimatedContent(
-                        targetState = data.energyExpended.value,
-                        label = "Energy Animation"
-                    ) { value ->
-                        Column(
-                            modifier = Modifier.width(LocalDimensions.current.imageNormal),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(LocalDimensions.current.imageNormal),
-                                painter = painterResource(id = R.drawable.ic_calories),
-                                tint = if (value < 0) {
-                                    Grey5
-                                } else {
-                                    InfoText
-                                },
-                                contentDescription = "Energy"
-                            )
-                            Text(
-                                text = if (value < 0) {
-                                    ""
-                                } else {
-                                    String.format(
-                                        Locale.getDefault(),
-                                        "%d %s",
-                                        value,
-                                        data.energyExpended.unit
-                                    )
-                                },
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                    Box(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(2f)
+                            .padding(LocalDimensions.current.paddingNormal),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(
+                            LocalDimensions.current.paddingNormal
+                        )
                     ) {
-                        AndroidView(factory = { ctx ->
-                            LineChart(ctx).also { chart ->
-                                chart.layoutParams = ViewGroup.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT
+                        AnimatedContent(
+                            targetState = data.energyExpended.value,
+                            label = "Energy Animation"
+                        ) { value ->
+                            Column(
+                                modifier = Modifier.width(LocalDimensions.current.imageNormal),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(LocalDimensions.current.imageNormal),
+                                    painter = painterResource(id = R.drawable.ic_calories),
+                                    tint = if (value < 0) {
+                                        Grey5
+                                    } else {
+                                        InfoText
+                                    },
+                                    contentDescription = "Energy"
                                 )
-                                energyPlot = chart
-                                energyLineData = initializePlot(
-                                    chart = chart,
-                                    context = context,
-                                    name = "kJ",
-                                    color = ContextCompat.getColor(
-                                        context,
-                                        com.st.ui.R.color.InfoText
-                                    )
-                                )
-                                mFirstNotificationTimeStamp = System.currentTimeMillis()
-                            }
-                        }, update = {
-                            if(data.energyExpended.value>0) {
-                                energyPlot?.let { plot ->
-                                    energyLineData?.let { lineData ->
-                                        val actualTimeStamp = System.currentTimeMillis()
-                                        val yData = data.energyExpended.value.toFloat()
-                                        lineData.addEntry(
-                                            Entry(
-                                                (actualTimeStamp - mFirstNotificationTimeStamp).toFloat(),
-                                                yData
-                                            ), 0
+                                Text(
+                                    text = if (value < 0) {
+                                        ""
+                                    } else {
+                                        String.format(
+                                            Locale.getDefault(),
+                                            "%d %s",
+                                            value,
+                                            data.energyExpended.unit
                                         )
-                                        lineData.removeEntryOlderThan(SECONDS_TO_PLOT_DEFAULT)
+                                    },
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(2f)
+                        ) {
+                            AndroidView(factory = { ctx ->
+                                LineChart(ctx).also { chart ->
+                                    chart.layoutParams = ViewGroup.LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.MATCH_PARENT
+                                    )
+                                    energyPlot = chart
+                                    energyLineData = initializePlot(
+                                        chart = chart,
+                                        context = context,
+                                        name = "kJ",
+                                        color = ContextCompat.getColor(
+                                            context,
+                                            com.st.ui.R.color.InfoText
+                                        )
+                                    )
+                                    mFirstNotificationTimeStamp = System.currentTimeMillis()
+                                }
+                            }, update = {
+                                if (data.energyExpended.value > 0) {
+                                    energyPlot?.let { plot ->
+                                        energyLineData?.let { lineData ->
+                                            val actualTimeStamp = System.currentTimeMillis()
+                                            val yData = data.energyExpended.value.toFloat()
+                                            lineData.addEntry(
+                                                Entry(
+                                                    (actualTimeStamp - mFirstNotificationTimeStamp).toFloat(),
+                                                    yData
+                                                ), 0
+                                            )
+                                            lineData.removeEntryOlderThan(SECONDS_TO_PLOT_DEFAULT)
 
-                                        lineData.notifyDataChanged()
-                                        plot.notifyDataSetChanged()
-                                        plot.invalidate()
+                                            lineData.notifyDataChanged()
+                                            plot.notifyDataSetChanged()
+                                            plot.invalidate()
+                                        }
                                     }
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
                 }
             }

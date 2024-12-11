@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -83,7 +82,7 @@ fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
 
                     cameraProviderFuture.addListener({
                         preview = Preview.Builder().build().also {
-                            it.setSurfaceProvider(previewView.surfaceProvider)
+                            it.surfaceProvider = previewView.surfaceProvider
                         }
                         val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
                         val barcodeAnalyser = BarCodeAnalyser { barcodes ->

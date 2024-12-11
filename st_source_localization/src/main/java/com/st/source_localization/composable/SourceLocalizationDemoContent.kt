@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -49,7 +52,10 @@ fun SourceLocalizationDemoContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(LocalDimensions.current.paddingNormal),
+            .padding(top = LocalDimensions.current.paddingNormal,
+                start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingLarge)
     ) {

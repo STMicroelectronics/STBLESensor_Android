@@ -35,7 +35,7 @@ class DebugConsoleViewModel @Inject constructor(private val blueManager: BlueMan
 
     fun sendDebugMessage(nodeId: String, msg: String) {
         viewModelScope.launch {
-            _debugMessages.value = _debugMessages.value + DebugConsoleMsg.DebugConsoleCommand(
+            _debugMessages.value += DebugConsoleMsg.DebugConsoleCommand(
                 command = msg, time = LocalDateTime.now().format(dateTimeFormatter)
             )
 
@@ -52,11 +52,13 @@ class DebugConsoleViewModel @Inject constructor(private val blueManager: BlueMan
                 val currentTime = System.currentTimeMillis()
 
                 if((currentTime-lastReceivedData)> PAUSE_DETECTION_TIME_MS) {
-                    _debugMessages.value = _debugMessages.value + DebugConsoleMsg.DebugConsoleResponse(
-                        response = it, time = LocalDateTime.now().format(dateTimeFormatter))
+                    _debugMessages.value += DebugConsoleMsg.DebugConsoleResponse(
+                        response = it, time = LocalDateTime.now().format(dateTimeFormatter)
+                    )
                 } else  {
-                    _debugMessages.value = _debugMessages.value + DebugConsoleMsg.DebugConsoleResponse(
-                        response = it, time = null)
+                    _debugMessages.value += DebugConsoleMsg.DebugConsoleResponse(
+                        response = it, time = null
+                    )
                 }
                 lastReceivedData = currentTime
             }

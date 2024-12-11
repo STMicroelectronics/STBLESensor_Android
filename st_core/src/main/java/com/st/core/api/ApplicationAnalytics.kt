@@ -16,7 +16,9 @@ interface ApplicationAnalyticsService {
         STBLESensorRel,
         STAssetTrackingDev,
         STAssetTrackingRel,
-        STVespucciDev
+        STVespucciDev,
+        STVespucciQa,
+        STVespucciRel
     }
 
     fun reportApplicationAnalytics(context: Context)
@@ -29,6 +31,8 @@ interface ApplicationAnalyticsService {
     )
 
     fun reportProfile(profile: String)
+
+    fun trackEvent(eventName: String, context: Map<String, String>)
 
     fun reportLevel(level: String)
 

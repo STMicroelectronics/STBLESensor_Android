@@ -3,8 +3,12 @@ package com.st.medical_signal.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -34,16 +38,16 @@ fun MedicalSignalDemoContent(
     nodeId: String
 ) {
 
-    val dataFeature16 by viewModel.dataFeature16.collectAsStateWithLifecycle()
+    val dataFeature16Time by viewModel.dataFeature16Time.collectAsStateWithLifecycle()
 
-    val dataFeature24 by viewModel.dataFeature24.collectAsStateWithLifecycle()
+    val dataFeature24Time by viewModel.dataFeature24Time.collectAsStateWithLifecycle()
 
-    val feature16Visible by remember(key1 = dataFeature16) {
-        derivedStateOf { dataFeature16 != null }
+    val feature16Visible by remember(key1 = dataFeature16Time) {
+        derivedStateOf { dataFeature16Time != 0 }
     }
 
-    val feature24Visible by remember(key1 = dataFeature24) {
-        derivedStateOf { dataFeature24 != null }
+    val feature24Visible by remember(key1 = dataFeature24Time) {
+        derivedStateOf { dataFeature24Time != 0 }
     }
 
     val isMed16Streaming by viewModel.isMed16Streaming.collectAsStateWithLifecycle()
@@ -63,12 +67,18 @@ fun MedicalSignalDemoContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(LocalDimensions.current.paddingNormal)
+            .padding(
+                start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars
+                    .asPaddingValues()
+                    .calculateBottomPadding()
+            )
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -128,7 +138,8 @@ fun MedicalSignalDemoContent(
             MedicalSignalPlotView(
                 modifier = Modifier.weight(2f),
                 type = "Med16",
-                featureUpdate = dataFeature16,
+                featureUpdate = viewModel.dataFeature16,
+                featureTime = dataFeature16Time,
                 resetZoomTime = resetZoomTime16
             )
         }
@@ -137,12 +148,13 @@ fun MedicalSignalDemoContent(
             MedicalSignalPlotView(
                 modifier = Modifier.weight(2f),
                 type = "Med24",
-                featureUpdate = dataFeature24,
+                featureUpdate = viewModel.dataFeature24,
+                featureTime = dataFeature24Time,
                 resetZoomTime = resetZoomTime24
             )
         }
 
-        syntheticData?.let { data ->
+        if (syntheticData != null) {
             Surface(
                 modifier = modifier
                     .fillMaxWidth()
@@ -152,10 +164,12 @@ fun MedicalSignalDemoContent(
             ) {
                 Text(
                     modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
-                    text = data,
+                    text = syntheticData!!,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+        } else {
+            Spacer(modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal))
         }
     }
 }

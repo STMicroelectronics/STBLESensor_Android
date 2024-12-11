@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -77,7 +80,7 @@ fun FlowDemoFlowCategoryExampleScreen(
                             DestinationFlowDemoFlowDetailScreen.route
                         )
                     }, onPlayFlow = {
-                        if((flow.expression!=null) && (flow.statements.isNotEmpty())){
+                        if ((flow.expression != null) && (flow.statements.isNotEmpty())) {
                             viewModel.flowSelected = flow.statements[0]
                             viewModel.flowSelected!!.ex_app = flow.ex_app
                             viewModel.expressionSelected = flow.expression!!.flows[0]
@@ -116,5 +119,11 @@ fun FlowDemoFlowCategoryExampleScreen(
                 }
             }
         }
+
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars
+            )
+        )
     }
 }

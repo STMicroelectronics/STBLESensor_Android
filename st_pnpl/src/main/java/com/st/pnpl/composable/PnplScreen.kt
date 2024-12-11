@@ -8,31 +8,30 @@
 package com.st.pnpl.composable
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.st.pnpl.PnplViewModel
+import com.st.ui.composables.BlueMSPullToRefreshBox
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.LocalDimensions
@@ -60,7 +59,7 @@ fun StPnplScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PnplScreen(
     modifier: Modifier = Modifier,
@@ -75,19 +74,21 @@ fun PnplScreen(
     val enableCollapse by viewModel.enableCollapse.collectAsStateWithLifecycle()
     val statusMessage by viewModel.statusMessage.collectAsStateWithLifecycle()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = isLoading,
-        onRefresh = {
-            viewModel.getModel(nodeId = nodeId, demoName = demoName)
-        }
-    )
+    val  pullRefreshState = rememberPullToRefreshState()
+
     var isOpen by rememberSaveable(contents) { mutableStateOf(value = "") }
 
     Column(modifier = modifier.fillMaxWidth()) {
         CompositionLocalProvider(
             LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
         ) {
-            Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
+            BlueMSPullToRefreshBox(
+                state = pullRefreshState,
+                isRefreshing = isLoading,
+                isBetaRelease = viewModel.isBeta,
+                onRefresh = {
+                    viewModel.getModel(nodeId = nodeId, demoName = demoName)
+                }) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -129,14 +130,15 @@ fun PnplScreen(
                             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
                         }
                     }
-                }
 
-                PullRefreshIndicator(
-                    refreshing = isLoading,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(alignment = Alignment.TopCenter),
-                    scale = true
-                )
+                    item {
+                        Spacer(
+                            Modifier.windowInsetsBottomHeight(
+                                WindowInsets.systemBars
+                            )
+                        )
+                    }
+                }
             }
         }
     }

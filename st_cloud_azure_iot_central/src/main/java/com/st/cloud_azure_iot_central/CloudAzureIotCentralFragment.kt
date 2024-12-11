@@ -44,7 +44,7 @@ class CloudAzureIotCentralFragment : Fragment() {
                 BlueMSTheme {
                     CloudAzureIotCentralScreen(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize().padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
                         viewModel = viewModel,
                         nodeId = nodeId
                     )

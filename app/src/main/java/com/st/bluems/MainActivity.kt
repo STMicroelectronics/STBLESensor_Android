@@ -7,9 +7,11 @@
  */
 package com.st.bluems
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-//import android.util.Log
-//import android.widget.Toast
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -17,14 +19,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
-//import com.google.firebase.Firebase
-//import com.google.firebase.remoteconfig.ConfigUpdate
-//import com.google.firebase.remoteconfig.ConfigUpdateListener
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
-//import com.google.firebase.remoteconfig.get
-//import com.google.firebase.remoteconfig.remoteConfig
-//import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.st.bluems.ui.home.HomeFragmentDirections
 import com.st.core.GlobalConfig
 import com.st.core.api.ApplicationAnalyticsService.ApplicationNameEtna
@@ -48,6 +42,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()
+
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT), navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT,Color.TRANSPARENT))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
+
         super.onCreate(savedInstanceState)
 
         if(BuildConfig.DEBUG) {
@@ -132,7 +135,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.reportApplicationAnalytics(applicationContext)
 
-        installSplashScreen()
         setContentView(R.layout.activity_main)
 
         navController = findNavController(R.id.nav_host_fragment_content_main)

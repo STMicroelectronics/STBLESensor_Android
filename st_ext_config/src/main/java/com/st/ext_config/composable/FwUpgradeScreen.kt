@@ -134,6 +134,7 @@ fun FwUpgradeScreen(
         //Boards.Model.WBA_BOARD,
         Boards.Model.WBA5X_NUCLEO_BOARD,
         Boards.Model.WBA_DISCOVERY_BOARD,
+        Boards.Model.WBA6_NUCLEO_BOARD,
 
         Boards.Model.WB0X_NUCLEO_BOARD)
 
@@ -156,6 +157,8 @@ fun FwUpgradeScreen(
             boardModel
         } else {
             when(selectedBoardIndex) {
+                //3 -> Boards.Model.WBA6_BOARD
+                3 -> Boards.Model.WBA6_NUCLEO_BOARD
                 //2 -> Boards.Model.WBA_BOARD
                 2 -> Boards.Model.WBA_DISCOVERY_BOARD
                 //else -> Boards.Model.WB_BOARD
@@ -178,6 +181,7 @@ fun FwUpgradeScreen(
 
             Boards.Model.WBA5X_NUCLEO_BOARD,
             Boards.Model.WBA_DISCOVERY_BOARD,-> if(radioSelection == 0) "0x080000" else "0x0F6000"
+            Boards.Model.WBA6_NUCLEO_BOARD,-> if(radioSelection == 0) "0x100000" else "0x1EC000"
             Boards.Model.WB0X_NUCLEO_BOARD -> if(radioSelection == 0) "0x3F800" else "0x07E000"
             else -> "" //shouldn't happen
         }
@@ -211,14 +215,15 @@ fun FwUpgradeScreen(
             when(selectedBoardIndex) {
                 0 -> WbOTAUtils.WBBoardType.WB5xOrWB3x
                 1 -> WbOTAUtils.WBBoardType.WB1x
-                else -> WbOTAUtils.WBBoardType.WBA
+                2 -> WbOTAUtils.WBBoardType.WBA
+                else -> WbOTAUtils.WBBoardType.WBA6
             }
         } else {
             when(boardModel) {
                 //Boards.Model.WBA_BOARD -> WbOTAUtils.WBBoardType.WBA
                 Boards.Model.WBA5X_NUCLEO_BOARD,
                 Boards.Model.WBA_DISCOVERY_BOARD -> WbOTAUtils.WBBoardType.WBA
-
+                Boards.Model.WBA6_NUCLEO_BOARD -> WbOTAUtils.WBBoardType.WBA6
                 Boards.Model.WB0X_NUCLEO_BOARD -> WbOTAUtils.WBBoardType.WB09
                 else -> WbOTAUtils.WBBoardType.WBA
             }
@@ -294,7 +299,8 @@ fun FwUpgradeScreen(
                                 (boardModel == Boards.Model.WB1M_DISCOVERY_BOARD)
 
                         val isWBA = (boardModel == Boards.Model.WBA5X_NUCLEO_BOARD) ||
-                                (boardModel == Boards.Model.WBA_DISCOVERY_BOARD)
+                                (boardModel == Boards.Model.WBA_DISCOVERY_BOARD) ||
+                                (boardModel == Boards.Model.WBA6_NUCLEO_BOARD)
 
                         if(isNotSupportedBoard || isWb) {
                             BoardDropdown(selectedIndex = selectedBoardIndex, wbOnly = isWb,boardModel = boardModel) { boardIndex ->
@@ -304,7 +310,7 @@ fun FwUpgradeScreen(
                         }
                         val radioOptions = mutableListOf(
                             stringResource(id = R.string.st_extConfig_fwUpgrade_otaOpt1),
-                            stringResource(id = if(selectedBoardIndex == 2 || isWBA || boardModel == Boards.Model.WB0X_NUCLEO_BOARD) R.string.st_extConfig_fwUpgrade_otaOpt2bis else R.string.st_extConfig_fwUpgrade_otaOpt2)
+                            stringResource(id = if(selectedBoardIndex == 2 || selectedBoardIndex == 3 || isWBA || boardModel == Boards.Model.WB0X_NUCLEO_BOARD) R.string.st_extConfig_fwUpgrade_otaOpt2bis else R.string.st_extConfig_fwUpgrade_otaOpt2)
                         )
 
                         radioOptions.forEachIndexed { index, text ->

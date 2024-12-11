@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -68,7 +71,11 @@ fun FlowDemoSensorsScreen(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+            contentPadding = PaddingValues(
+                start = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal
+            ),
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
         ) {
             if (sensorsList.isNotEmpty()) {
@@ -114,6 +121,14 @@ fun FlowDemoSensorsScreen(
                         }
                     )
                 }
+            }
+
+            item {
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(
+                        WindowInsets.navigationBars
+                    )
+                )
             }
         }
     }

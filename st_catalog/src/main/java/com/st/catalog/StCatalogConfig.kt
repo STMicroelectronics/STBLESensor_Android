@@ -9,4 +9,6 @@ object StCatalogConfig {
     var boardModelFilter: List<Boards.Model> = emptyList()
 
     var firmwareFamilyFilter: String? = null
+
+    var firmwareFamilyVersionFilter: List<String> = emptyList()
 }

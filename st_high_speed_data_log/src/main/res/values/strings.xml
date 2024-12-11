@@ -6,15 +6,23 @@
     <string name="st_hsdl_logging_vespucci">Device is logging\nSelect a sensor to view its stream in real time</string>
     <string name="st_hsdl_waiting_vespucci">Waiting…</string>
     <string name="st_hsdl_buffering_vespucci">Buffering…</string>
-    <string name="st_hsdl_missingSdCard">Missing SD Card</string>
+    <string name="st_hsdl_missingSdCard">Please insert a microSD card into the board to proceed.</string>
     <string name="st_hsdl_missingSensors">Enable at least one sensor</string>
+    <string name="st_hsdl_waitingMinDatalog">Data collection or tagging should be at least 5 seconds long.</string>
+    <string name="st_hsdl_sdExtraMessage">It seems the issue may be related to your SD card. Please ensure it is properly inserted and compatible with the FP-SNS-DATALOG2. Please remember to click the RESTART button on your board to restore it. For a list of recommended and compatible SD cards, click on \'Read More\' button.</string>
+    <string name="st_hsdl_sdExtraUrl">https://github.com/STMicroelectronics/fp-sns-datalog2?tab=readme-ov-file#known-limitations</string>
     <string name="st_hsdl_tags_description1">To begin</string>
     <string name="st_hsdl_tags_description2">labelling the data</string>
     <string name="st_hsdl_tags_description3">you must first start the acquistion by pressing the Play button.</string>
+    <string name="st_hsdl_tags_description4">Data collection or tagging should be at least</string>
+    <string name="st_hsdl_tags_description5">5 seconds</string>
+    <string name="st_hsdl_tags_description6">long.</string>
     <string name="st_hsdl_tags_acquisitionTitle">Acquisition Information</string>
     <string name="st_hsdl_tags_tagsTitle">Tags Information</string>
     <string name="st_hsdl_datalog_stopDialogTitle">Data Logging completed</string>
     <string name="st_hsdl_datalog_stopDialogMessage">You can start another acquisition using the Play button or upload the collected data to your dataset by using the Storage button.</string>
+    <string name="st_hsdl_datalog_resetDialogMessage">To access the logs on the board, press the RESET button. This will restart the board. Would you like to proceed?</string>
+    <string name="st_hsdl_datalog_resetBtn">Restart</string>
     <string name="st_hsdl_datalog_stopDialogClose">Close</string>
     <string name="st_hsdl_datalog_chartToggleAll">All</string>
     <string name="st_hsdl_datalog_chartToggleSum">Mod</string>

@@ -173,6 +173,12 @@ class SmartMotorControlViewModel
 
     private var nodeIdLocal: String? = null
 
+    var isBeta = false
+
+    init {
+        isBeta = stPreferences.isBetaApplication()
+    }
+
     var temperatureUnit: String = "°C"
     var speedRefUnit: String = "rpm"
     var speedMeasUnit: String = "rpm"
@@ -371,7 +377,7 @@ class SmartMotorControlViewModel
         _isLoading.value = true
 
         val componentWithInterface =
-            blueManager.getDtmiModel(nodeId = nodeId, isBeta = stPreferences.isBetaApplication())
+            blueManager.getDtmiModel(nodeId = nodeId, isBeta = isBeta)
                 ?.extractComponents(demoName = null)
                 ?: emptyList()
 
@@ -752,7 +758,7 @@ class SmartMotorControlViewModel
         runBlocking {
             val tags = blueManager.getDtmiModel(
                 nodeId = nodeId,
-                isBeta = stPreferences.isBetaApplication()
+                isBeta = isBeta
             )?.extractComponent(compName = TAGS_INFO_JSON_KEY)?.firstOrNull()
 
             tags?.let {

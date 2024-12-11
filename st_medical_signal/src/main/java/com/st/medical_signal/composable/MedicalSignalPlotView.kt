@@ -60,17 +60,22 @@ private val mLineColors: IntArray = intArrayOf(
 @Composable
 fun MedicalSignalPlotView(
     modifier: Modifier = Modifier,
-    featureUpdate: MedicalInfo?,
+    featureUpdate: MutableList<MedicalInfo>,
+    featureTime: Int,
     resetZoomTime: Long,
     type: String
 ) {
 
-    val featureDescription by remember(key1 = featureUpdate) {
+    val localFeatureUpdate by remember(key1 = featureTime) {
+        derivedStateOf { featureUpdate }
+    }
+
+    val featureDescription by remember(key1 = featureTime) {
         derivedStateOf {
-            if (featureUpdate != null) {
-                var string = featureUpdate.sigType.value.description
-                if (featureUpdate.sigType.value.yMeasurementUnit != null) {
-                    string += " [" + featureUpdate.sigType.value.yMeasurementUnit + "]"
+            if (localFeatureUpdate.isNotEmpty()) {
+                var string = localFeatureUpdate.first().sigType.value.description
+                if (localFeatureUpdate.first().sigType.value.yMeasurementUnit != null) {
+                    string += " [" + localFeatureUpdate.first().sigType.value.yMeasurementUnit + "]"
                 }
                 string
             } else {
@@ -122,7 +127,11 @@ fun MedicalSignalPlotView(
                         chart.clear()
                     }
                 }, update = {
-                    featureUpdate?.let { update ->
+                    //localFeatureUpdate.forEach { update ->
+                    val iterator = localFeatureUpdate.iterator()
+                    while (iterator.hasNext()) {
+                        val update = iterator.next()
+
                         mPlot?.let { plot ->
                             val yAxis = plot.axisLeft
                             if (update.sigType.value.nLabels != 0) {
@@ -189,8 +198,8 @@ fun MedicalSignalPlotView(
                             } else {
                                 //Compute the delta Time respect the previous Sample
                                 val timeDiff =
-                                    update.internalTimeStamp.value - prevMedInfo!!.internalTimeStamp.value
-                                if (timeDiff != 0) { ///????/////
+                                    (update.internalTimeStamp.value - prevMedInfo!!.internalTimeStamp.value).toFloat()
+                                if (timeDiff != 0.0f) { ///????/////
                                     //This is the delta time between Samples
                                     val deltaBetweenSample =
                                         timeDiff * prevMedInfo!!.sigType.value.numberOfSignals / prevMedInfo!!.values.value.size
@@ -203,7 +212,7 @@ fun MedicalSignalPlotView(
                                             dataSet.forEachIndexed { index, data ->
                                                 mMedLineData!!.addEntry(
                                                     Entry(
-                                                        (prevMedInfo!!.internalTimeStamp.value + deltaBetweenSample * indexSet - firstInternalTimeStamp!!).toFloat(),
+                                                        (prevMedInfo!!.internalTimeStamp.value + deltaBetweenSample * indexSet - firstInternalTimeStamp!!),
                                                         data.toFloat()
                                                     ), index
                                                 )
@@ -213,7 +222,7 @@ fun MedicalSignalPlotView(
                                         prevMedInfo!!.values.value.forEachIndexed { index, data ->
                                             mMedLineData!!.addEntry(
                                                 Entry(
-                                                    (prevMedInfo!!.internalTimeStamp.value + deltaBetweenSample * index - firstInternalTimeStamp!!).toFloat(),
+                                                    (prevMedInfo!!.internalTimeStamp.value + deltaBetweenSample * index - firstInternalTimeStamp!!),
                                                     data.toFloat()
                                                 ), 0
                                             )
@@ -230,7 +239,9 @@ fun MedicalSignalPlotView(
                                 }
                             }
                         }
+                        iterator.remove()
                     }
+                    //featureUpdate.clear()
                 })
 
                 LaunchedEffect(key1 = resetZoomTime) {

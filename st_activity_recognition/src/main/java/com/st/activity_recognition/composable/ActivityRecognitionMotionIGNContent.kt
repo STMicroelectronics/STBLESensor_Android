@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.st.activity_recognition.R
@@ -70,6 +71,15 @@ fun ActivityRecognitionMotionIGNContent(
         label = "color"
     )
 
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -84,7 +94,7 @@ fun ActivityRecognitionMotionIGNContent(
         ) {
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (stationaryImage) {
                             1f
@@ -107,7 +117,7 @@ fun ActivityRecognitionMotionIGNContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (joggingImage) {
                             1f
@@ -140,7 +150,7 @@ fun ActivityRecognitionMotionIGNContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (walkingImage) {
                             1f
@@ -164,7 +174,7 @@ fun ActivityRecognitionMotionIGNContent(
 
             Icon(
                 modifier = Modifier
-                    .size(size = LocalDimensions.current.imageLarge)
+                    .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                     .graphicsLayer(
                         alpha = if (stairsImage) {
                             1f

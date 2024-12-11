@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -86,7 +89,7 @@ fun FlowDemoFlowDetailScreen(
                 Text(
                     fontSize = 12.sp,
                     text = stringResource(id = R.string.no_description)
-                    )
+                )
             }
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingMedium))
@@ -297,7 +300,12 @@ fun FlowDemoFlowDetailScreen(
                     Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
                 }
             }
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+            //Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets.navigationBars
+                )
+            )
         }
     }
 }

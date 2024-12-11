@@ -2,14 +2,20 @@ package com.st.flow_demo.composable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +27,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -59,11 +66,9 @@ import com.st.flow_demo.composable.more_info.FlowDemoMoreInfoScreen
 import com.st.flow_demo.composable.example_flow.FlowDemoPnPLControlScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorsScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorDetailScreen
-import com.st.ui.theme.Grey0
-import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
-import com.st.ui.theme.PrimaryBlue2
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlowDemoContent(
     modifier: Modifier,
@@ -76,61 +81,35 @@ fun FlowDemoContent(
 
     val haptic = LocalHapticFeedback.current
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
-            FlowConfig.FlowTabBar?.invoke("Flow creation")
-        },
-        bottomBar = {
-            NavigationBar(
-                modifier = Modifier.fillMaxWidth(),
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Grey0
-            ) {
-                NavigationBarItem(
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Grey0,
-                        selectedTextColor = Grey0,
-                        unselectedIconColor = Grey6,
-                        unselectedTextColor = Grey6,
-                        indicatorColor = PrimaryBlue2
-                    ),
-                    selected = 0 == selectedIndex,
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        selectedIndex = 0
-                        navController.navigate(DestinationFlowDemoFlowCategoriesExampleScreen.route) {
-                            navController.graph.startDestinationRoute?.let { screenRoute ->
-                                popUpTo(screenRoute) {
-                                    saveState = false
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_flows),
-                            contentDescription = stringResource(id = R.string.navigation_tab_flows)
+            if(FlowConfig.FlowTabBar!=null) {
+                FlowConfig.FlowTabBar?.invoke("Flow creation")
+            } else {
+                PrimaryTabRow(modifier = Modifier
+                    .fillMaxWidth(),
+                    selectedTabIndex = selectedIndex,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    indicator = {
+                        TabRowDefaults.PrimaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(
+                                selectedTabIndex = selectedIndex,
+                                matchContentSize = false
+                            ),
+                            width = 60.dp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            height = 4.dp,
+                            shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
                         )
-                    },
-                    label = { Text(text = stringResource(id = R.string.navigation_tab_flows)) })
-
-                if (viewModel.isPnPLExported()) {
-                    NavigationBarItem(
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Grey0,
-                            selectedTextColor = Grey0,
-                            unselectedIconColor = Grey6,
-                            unselectedTextColor = Grey6,
-                            indicatorColor = PrimaryBlue2
-                        ),
-                        selected = 1 == selectedIndex,
+                    }) {
+                    Tab(
+                        selected = 0 == selectedIndex,
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            selectedIndex = 1
-                            navController.navigate(DestinationFlowDemoPnPLControlScreen.route) {
+                            selectedIndex = 0
+                            navController.navigate(DestinationFlowDemoFlowCategoriesExampleScreen.route) {
                                 navController.graph.startDestinationRoute?.let { screenRoute ->
                                     popUpTo(screenRoute) {
                                         saveState = false
@@ -139,93 +118,106 @@ fun FlowDemoContent(
                                 launchSingleTop = true
                                 restoreState = false
                             }
-
                         },
                         icon = {
                             Icon(
-                                painter = painterResource(id = R.drawable.pnpl_icon),
-                                contentDescription = "Control"
+                                painter = painterResource(id = R.drawable.ic_flows),
+                                contentDescription = stringResource(id = R.string.navigation_tab_flows)
                             )
                         },
-                        label = {
-                            Text(
-                                text = viewModel.getRunningFlowFromOptionBytes()
-                                    ?: stringResource(id = R.string.navigation_tab_control)
+                        text = { Text(text = stringResource(id = R.string.navigation_tab_flows)) },
+                    )
+
+                    if (viewModel.isPnPLExported()) {
+                        Tab(
+                            selected = 1 == selectedIndex,
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                selectedIndex = 1
+                                navController.navigate(DestinationFlowDemoPnPLControlScreen.route) {
+                                    navController.graph.startDestinationRoute?.let { screenRoute ->
+                                        popUpTo(screenRoute) {
+                                            saveState = false
+                                        }
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = false
+                                }
+                            },
+                            icon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.pnpl_icon),
+                                        contentDescription = "Control"
+                                    )
+                            },
+                            text = { Text(text = viewModel.getRunningFlowFromOptionBytes()
+                                ?: stringResource(id = R.string.navigation_tab_control)) },
+                        )
+                    }
+
+
+                    Tab(
+                        selected = if(viewModel.isPnPLExported()) {
+                            2 == selectedIndex } else {1 == selectedIndex},
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedIndex = if(viewModel.isPnPLExported())
+                                2
+                            else
+                                1
+                            navController.navigate(DestinationFlowDemoSensorsScree.route) {
+                                navController.graph.startDestinationRoute?.let { screenRoute ->
+                                    popUpTo(screenRoute) {
+                                        saveState = false
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = false
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_sensor),
+                                contentDescription = stringResource(id = R.string.navigation_tab_sensors)
                             )
-                        })
+                        },
+                        text = { Text(text = stringResource(id = R.string.navigation_tab_sensors)) },
+                    )
+
+                    Tab(
+                        selected =  if(viewModel.isPnPLExported()) {
+                            3 == selectedIndex } else {2 == selectedIndex},
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedIndex = if(viewModel.isPnPLExported())
+                                3
+                            else
+                                2
+                            navController.navigate(DestinationFlowDemoMoreInfoScreen.route) {
+                                navController.graph.startDestinationRoute?.let { screenRoute ->
+                                    popUpTo(screenRoute) {
+                                        saveState = false
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = false
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_more),
+                                contentDescription = stringResource(id = R.string.navigation_tab_more)
+                            )
+                        },
+                        text = { Text(text =  stringResource(id = R.string.navigation_tab_more)) },
+                    )
                 }
-
-
-                NavigationBarItem(
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Grey0,
-                        selectedTextColor = Grey0,
-                        unselectedIconColor = Grey6,
-                        unselectedTextColor = Grey6,
-                        indicatorColor = PrimaryBlue2
-                    ),
-                    selected = 2 == selectedIndex,
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        selectedIndex = 2
-                        navController.navigate(DestinationFlowDemoSensorsScree.route) {
-                            navController.graph.startDestinationRoute?.let { screenRoute ->
-                                popUpTo(screenRoute) {
-                                    saveState = false
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_sensor),
-                            contentDescription = stringResource(id = R.string.navigation_tab_sensors)
-                        )
-                    },
-                    label = { Text(text = stringResource(id = R.string.navigation_tab_sensors)) })
-
-
-                NavigationBarItem(
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Grey0,
-                        selectedTextColor = Grey0,
-                        unselectedIconColor = Grey6,
-                        unselectedTextColor = Grey6,
-                        indicatorColor = PrimaryBlue2
-                    ),
-                    selected = 3 == selectedIndex,
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        selectedIndex = 3
-                        navController.navigate(DestinationFlowDemoMoreInfoScreen.route) {
-                            navController.graph.startDestinationRoute?.let { screenRoute ->
-                                popUpTo(screenRoute) {
-                                    saveState = false
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_more),
-                            contentDescription = stringResource(id = R.string.navigation_tab_more)
-                        )
-                    },
-                    label = { Text(text = stringResource(id = R.string.navigation_tab_more)) })
-
-
             }
         }
     ) { paddingValues ->
         Box {
             NavHost(
-                modifier = Modifier.padding(paddingValues),
+                modifier = Modifier.consumeWindowInsets(paddingValues).padding(paddingValues),
                 navController = navController,
                 startDestination = DestinationFlowDemoFlowCategoriesExampleScreen.route
             ) {
@@ -235,7 +227,7 @@ fun FlowDemoContent(
                     FlowDemoSensorsScreen(
                         viewModel = viewModel,
                         navController = navController,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal)
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal)
                     )
                 }
 
@@ -245,7 +237,7 @@ fun FlowDemoContent(
                     FlowDemoPnPLControlScreen(
                         viewModel = viewModel,
                         navController = navController,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal)
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal)
                     )
                 }
 
@@ -255,7 +247,7 @@ fun FlowDemoContent(
                     FlowDemoFlowCategoriesExampleScreen(
                         viewModel = viewModel,
                         navController = navController,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal)
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal)
                     )
                 }
 
@@ -264,7 +256,7 @@ fun FlowDemoContent(
                 ) {
                     FlowDemoFlowsExpertScreen(
                         viewModel = viewModel,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         navController = navController
                     )
                 }
@@ -274,7 +266,7 @@ fun FlowDemoContent(
                 ) {
                     FlowDemoMoreInfoScreen(
                         viewModel = viewModel,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal)
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal)
                     )
                 }
 
@@ -294,7 +286,7 @@ fun FlowDemoContent(
                     FlowDemoFlowExpertEditingScreen(
                         viewModel = viewModel,
                         navController = navController,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal)
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal)
                     )
                 }
 
@@ -303,7 +295,7 @@ fun FlowDemoContent(
                 ) {
                     FlowDemoFlowDetailScreen(
                         viewModel = viewModel,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         navController = navController
                     )
                 }
@@ -313,7 +305,7 @@ fun FlowDemoContent(
                 ) {
                     FlowDemoFlowIfApplicationCreationScreen(
                         viewModel = viewModel,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         navController = navController
                     )
                 }
@@ -323,7 +315,7 @@ fun FlowDemoContent(
                 ) {
                     FlowDemoFlowSaveScreen(
                         viewModel = viewModel,
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         navController = navController
                     )
                 }
@@ -332,7 +324,7 @@ fun FlowDemoContent(
                     route = DestinationFlowDemoSensorConfigurationScreen.route
                 ) {
                     FlowDemoSensorConfigurationScreen(
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         viewModel = viewModel,
                         navController = navController
                     )
@@ -342,7 +334,7 @@ fun FlowDemoContent(
                     route = DestinationFlowDemoFunctionConfigurationScreen.route
                 ) {
                     FlowDemoFunctionConfigurationScreen(
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         viewModel = viewModel,
                         navController = navController
                     )
@@ -352,7 +344,7 @@ fun FlowDemoContent(
                     route = DestinationFlowDemoOutputConfigurationScreen.route
                 ) {
                     FlowDemoOutputConfigurationScreen(
-                        paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                        paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                         viewModel = viewModel,
                         navController = navController
                     )
@@ -366,7 +358,7 @@ fun FlowDemoContent(
                         FlowDemoSensorDetailScreen(
                             viewModel = viewModel,
                             sensorId = sensorId,
-                            paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                            paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                             navController = navController
                         )
                     }
@@ -382,7 +374,7 @@ fun FlowDemoContent(
                         FlowDemoFlowCategoryExampleScreen(
                             viewModel = viewModel,
                             category = categoryType,
-                            paddingValues = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                            paddingValues = PaddingValues(start = LocalDimensions.current.paddingNormal, end = LocalDimensions.current.paddingNormal, top = LocalDimensions.current.paddingNormal),
                             navController = navController
                         )
                     }

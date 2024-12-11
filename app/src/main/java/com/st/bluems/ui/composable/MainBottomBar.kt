@@ -45,7 +45,6 @@ fun MainBottomBar(
             label = stringResource(id = R.string.st_home_bottomBar_catalog),
             onClick = openCatalog
         )
-        //Spacer(modifier = Modifier.size(LocalDimensions.current.paddingNormal))
         Spacer(modifier = Modifier.weight(weight = 0.20f))
 
         floatingActionButton()

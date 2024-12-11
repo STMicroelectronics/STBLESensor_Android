@@ -131,15 +131,14 @@ fun BooleanProperty(
     trueLabel: String = "",
     falseLabel: String = "",
     unit: String = "",
-    value: Boolean = false,
+    //value: Boolean = false,
+    value: Pair<Boolean,Long> = Pair(false,0L),
     enabled: Boolean = true,
     onValueChange: (Boolean) -> Unit
 ) {
-    val lastStatusUpdatedAt = LocalLastStatusUpdatedAt.current
-    var internalState by rememberSaveable(
-        value,
-        lastStatusUpdatedAt
-    ) { mutableStateOf(value = value) }
+    var internalState by remember(
+        key1 = value.second
+    ) { mutableStateOf(value = value.first) }
 
     Row(
         modifier = modifier,
@@ -565,6 +564,8 @@ fun <T : Any> EnumProperty(
     unit: String = "",
     enabled: Boolean = true,
     dropDownColor: Color = Color.Unspecified,
+    selectedTextColor: Color = MaterialTheme.colorScheme.primary,
+    selectedTextFontWeight: FontWeight = FontWeight.Normal,
     color: String = "",
     description: String = "",
     comment: String = "",
@@ -622,7 +623,8 @@ fun <T : Any> EnumProperty(
             Text(
                 fontSize = 15.sp,
                 lineHeight = 24.sp,
-                color = MaterialTheme.colorScheme.primary,
+                color = selectedTextColor,
+                fontWeight = selectedTextFontWeight,
                 text = text
             )
 
@@ -677,7 +679,8 @@ const val ENABLE_PROPERTY_NAME = "enable"
 fun HeaderEnabledProperty(
     modifier: Modifier = Modifier,
     name: String,
-    value: Boolean = false,
+    //value: Boolean = false,
+    value: Pair<Boolean,Long> = Pair(false,0L),
     enabled: Boolean = true,
     onValueChange: (Pair<String, Boolean>) -> Unit
 ) {

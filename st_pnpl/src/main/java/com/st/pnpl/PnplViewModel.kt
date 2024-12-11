@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
@@ -82,6 +83,12 @@ class PnplViewModel @Inject constructor(
         get() = _lastStatusUpdatedAt.asStateFlow()
 
 
+    var isBeta = false
+
+    init {
+        isBeta = stPreferences.isBetaApplication()
+    }
+
     private suspend fun addCommandToQueueAndCheckSend(
         nodeId: String,
         newCommand: SetCommandPnPLRequest
@@ -131,7 +138,7 @@ class PnplViewModel @Inject constructor(
             _modelUpdates.value =
                 blueManager.getDtmiModel(
                     nodeId = nodeId,
-                    isBeta = stPreferences.isBetaApplication()
+                    isBeta =isBeta
                 )?.extractComponents(demoName = demoName)
                     ?: emptyList()
 
@@ -140,7 +147,7 @@ class PnplViewModel @Inject constructor(
 
             _enableCollapse.value = true
 
-            _isLoading.value = false
+            //_isLoading.value = false
 
             sendGetAllCommand(nodeId = nodeId)
         }
@@ -279,7 +286,7 @@ class PnplViewModel @Inject constructor(
                             if (maxWriteLength!! > (node.maxPayloadSize)) {
                                 maxWriteLength = (node.maxPayloadSize)
                             }
-                            (feature as PnPL).setMaxPayLoadSize(maxWriteLength!!)
+                            feature.setMaxPayLoadSize(maxWriteLength!!)
                         }
                     }
 
@@ -291,12 +298,23 @@ class PnplViewModel @Inject constructor(
                 if (data is PnPLConfig) {
 
                     data.deviceStatus.value?.components?.let { json ->
-                        _lastStatusUpdatedAt.value = System.currentTimeMillis()
-                        _componentStatusUpdates.value = json
+                        //Fix 26/11/24PL
+                        //_lastStatusUpdatedAt.value = System.currentTimeMillis()
+                        //Fix 26/11/24PL
+                        //_componentStatusUpdates.value = json
 
                         //Check if the BLE Responses are == true
-                        data.deviceStatus.value?.pnplBleResponses?.let { value ->
-                            pnplBleResponses = value
+                        if(data.deviceStatus.value?.pnplBleResponses!=null) {
+                            pnplBleResponses = data.deviceStatus.value!!.pnplBleResponses!!
+                        }
+
+                        //Fix 26/11/24PL
+                        if (json.size == 1) {
+                            _componentStatusUpdates.update {
+                                it.filter { jo -> jo.keys != json.first().keys } + json
+                            }
+                        } else {
+                            _componentStatusUpdates.update { json }
                         }
 
                         //Search the Spontaneous messages
@@ -306,7 +324,7 @@ class PnplViewModel @Inject constructor(
                             if (pnplBleResponses) {
                                 if (message == PnPLSpontaneousMessageType.ERROR) {
                                     //Remove the command from the list and send Next One
-                                    commandQueue.removeFirst()
+                                    commandQueue.removeAt(0)
                                     if (commandQueue.isNotEmpty()) {
                                         blueManager.writeFeatureCommand(
                                             responseTimeout = 0,
@@ -336,7 +354,7 @@ class PnplViewModel @Inject constructor(
                                     val firstOne = commandQueue.first()
 
                                     //Remove the command from the list and send Next One
-                                    commandQueue.removeFirst()
+                                    commandQueue.removeAt(0)
                                     if (commandQueue.isNotEmpty()) {
                                         blueManager.writeFeatureCommand(
                                             responseTimeout = 0,
@@ -371,7 +389,7 @@ class PnplViewModel @Inject constructor(
                                             _statusMessage.emit(messageStatus)
                                         } else {
 
-                                            commandQueue.removeFirst()
+                                            commandQueue.removeAt(0)
                                             if (commandQueue.isNotEmpty()) {
                                                 blueManager.writeFeatureCommand(
                                                     responseTimeout = 0,
@@ -385,7 +403,13 @@ class PnplViewModel @Inject constructor(
                                     }
 
                                 }
+                            } else {
+                                //Fix 26/11/24PL
+                                _lastStatusUpdatedAt.value = System.currentTimeMillis()
                             }
+                        } else {
+                            //Fix 26/11/24PL
+                            _lastStatusUpdatedAt.value = System.currentTimeMillis()
                         }
 
                         _isLoading.value = false

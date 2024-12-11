@@ -152,7 +152,7 @@ class LogSettingsViewModel @Inject constructor(
                 packageManager.getPackageInfo(packageName, 0)
             }
             val strAppName =
-                packageManager.getApplicationLabel(pInfo.applicationInfo).toString()
+                pInfo.applicationInfo?.let { it1 -> packageManager.getApplicationLabel(it1).toString() } ?: "STMicroelectronics Application"
             val strAppPackage = pInfo.packageName
             val emailTitle =
                 resources.getString(R.string.st_demoShowcase_logSettings_shareEmailTitle)

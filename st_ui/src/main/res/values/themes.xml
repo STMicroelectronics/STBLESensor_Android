@@ -9,20 +9,20 @@
 
     <style name="Theme.BlueMS.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/backgroundMainApp</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_2024</item>
         <item name="windowSplashScreenAnimationDuration">0</item>
         <item name="postSplashScreenTheme">@style/Theme.BlueMS</item>
     </style>
 
-    <style name="Theme.BlueMS" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.BlueMS" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimary</item>
 
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/colorOnAccent</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@color/colorOnAccent</item>
     </style>
 

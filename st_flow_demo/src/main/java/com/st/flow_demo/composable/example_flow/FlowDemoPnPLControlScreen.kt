@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -32,7 +35,8 @@ fun FlowDemoPnPLControlScreen(
 ) {
 
     val nodeId = viewModel.getNodeId()
-    val pnplComponentName = (viewModel.getRunningFlowFromOptionBytes() ?: "control").lowercase().replace(' ','_')
+    val pnplComponentName =
+        (viewModel.getRunningFlowFromOptionBytes() ?: "control").lowercase().replace(' ', '_')
     ComposableLifecycle { _, event ->
         when (event) {
             Lifecycle.Event.ON_START -> {
@@ -40,6 +44,7 @@ fun FlowDemoPnPLControlScreen(
                     viewModel.getModel(nodeId = nodeId, compName = pnplComponentName)
                 }
             }
+
             else -> Unit
         }
     }
@@ -56,16 +61,21 @@ fun FlowDemoPnPLControlScreen(
         CompositionLocalProvider(
             LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
         ) {
-            Box( modifier = Modifier.padding(paddingValues)){
+            Box(modifier = Modifier.padding(paddingValues)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+                    contentPadding = PaddingValues(
+                        top = LocalDimensions.current.paddingNormal,
+                        start = LocalDimensions.current.paddingNormal,
+                        end = LocalDimensions.current.paddingNormal
+                    ),
                     verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
                 ) {
-                    itemsIndexed(contents) { index, componentWithInterface ->
+                    itemsIndexed(contents) { _, componentWithInterface ->
                         val name = componentWithInterface.first.name
                         val data = (status.find { it.containsKey(name) })?.get(name)
                         Component(
+                            modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
                             name = name,
                             data = data,
                             enabled = isLoading.not(),
@@ -93,10 +103,14 @@ fun FlowDemoPnPLControlScreen(
                                 isOpen = if (it == isOpen) "" else it
                             }
                         )
+                    }
 
-                        if (contents.lastIndex != index) {
-                            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-                        }
+                    item {
+                        Spacer(
+                            Modifier.windowInsetsBottomHeight(
+                                WindowInsets.navigationBars
+                            )
+                        )
                     }
                 }
             }

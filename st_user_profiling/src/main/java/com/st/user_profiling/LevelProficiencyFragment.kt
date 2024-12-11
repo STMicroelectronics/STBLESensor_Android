@@ -11,6 +11,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -36,10 +39,12 @@ class LevelProficiencyFragment : Fragment() {
 
             setContent {
                 BlueMSTheme {
-                    LevelProficiencyScreen(
-                        viewModel = viewModel,
-                        navController = findNavController()
-                    )
+                    Box(Modifier.safeDrawingPadding()) {
+                        LevelProficiencyScreen(
+                            viewModel = viewModel,
+                            navController = findNavController()
+                        )
+                    }
                 }
             }
         }

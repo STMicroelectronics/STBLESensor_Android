@@ -93,6 +93,7 @@ fun Demo.isBetaRequired(): Boolean = when (this) {
 
 fun Demo.isLastFwVersionMandatory(): Boolean = when (this) {
     Demo.Flow -> true
+    Demo.HighSpeedDataLog2 -> true
     else -> false
 }
 
@@ -105,6 +106,8 @@ fun Demo.getDescription(context: Context): String =
         Demo.FitnessActivity -> "Display recognized fitness activity and counter reps"
         Demo.Compass -> "Display a magnetic compass direction"
         Demo.HighSpeedDataLog2 -> "High speed sensors data log configuration, control and tagging"
+        Demo.SimpleHighSpeedDataLog2 ->  "High speed sensors data log configuration and control"
+        Demo.AIoTCraftHighSpeedDataLog2 -> "High speed sensors data log configuration, control and tagging"
         Demo.BlueVoiceADPCM -> "\"Bluevoice\" ADPCM audio bluetooth streaming"
         Demo.BlueVoiceOpus -> "\"Bluevoice\" audio bluetooth streaming using advanced OPUS compression algorithm"
         Demo.BlueVoiceFullDuplex -> "\"BlueVoice\" audio bluetooth streaming in a full-duplex configuration"

@@ -46,11 +46,12 @@ fun BoardDropdown(
                 mutableListOf(
                     stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard1),
                     stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard2)
-                    )
+                )
             }
         }
     if (!wbOnly) {
         items.add(stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard3))
+        items.add(stringResource(id = R.string.st_extConfig_fwUpgrade_otaBoard4))
     }
     // remember the selected item
     var selectedItem by remember {
@@ -84,7 +85,7 @@ fun BoardDropdown(
                 .height(height = 60.dp)
                 .wrapContentHeight()
                 .menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
-            colors =  OutlinedTextFieldDefaults.colors()
+            colors = OutlinedTextFieldDefaults.colors()
         )
         // menu
         ExposedDropdownMenu(

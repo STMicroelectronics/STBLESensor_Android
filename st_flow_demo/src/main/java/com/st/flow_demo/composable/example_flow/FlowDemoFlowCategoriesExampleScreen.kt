@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -61,14 +64,18 @@ fun FlowDemoFlowCategoriesExampleScreen(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+            contentPadding = PaddingValues(
+                top = LocalDimensions.current.paddingNormal,
+                start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal
+            ),
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
         ) {
             if (flowsExampleList.isNotEmpty()) {
                 items(categoriesList.toList()) { category ->
                     FlowDemoCategoryListItem(category = category, onCategorySelected = {
                         navController.navigate(
-                                    DestinationFlowDemoFlowCategoryExampleScreen.route+category
+                            DestinationFlowDemoFlowCategoryExampleScreen.route + category
                         )
                     })
                 }
@@ -94,6 +101,14 @@ fun FlowDemoFlowCategoriesExampleScreen(
                         }
                     )
                 }
+            }
+
+            item {
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(
+                        WindowInsets.navigationBars
+                    )
+                )
             }
         }
     }

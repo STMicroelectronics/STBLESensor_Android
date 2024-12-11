@@ -90,6 +90,9 @@ class DemoShowCaseViewModel @Inject constructor(
     private val _fwUpdateAvailable = MutableStateFlow(false)
     val fwUpdateAvailable = _fwUpdateAvailable.asStateFlow()
 
+    private val _hasDebugFeature = MutableStateFlow(false)
+    val hasDebugFeature = _hasDebugFeature.asStateFlow()
+
 
     private var familyType: Boards.Family = Boards.Family.OTHER_FAMILY
     private var boardType: Boards.Model = Boards.Model.GENERIC
@@ -146,6 +149,8 @@ class DemoShowCaseViewModel @Inject constructor(
     fun setNodeId(nodeId: String) {
         viewModelScope.launch {
             _nodeId.value = nodeId
+
+            _hasDebugFeature.emit(blueManager.hasBleDebugService(nodeId = nodeId))
 
             var firmwareInfo: Node? = null
             try {
@@ -355,6 +360,13 @@ class DemoShowCaseViewModel @Inject constructor(
                     it == Demo.Pnpl
                 }?.displayName = _device.value!!.catalogInfo!!.fwName
             }
+        }
+
+        //We need to search if there are demos that must be filtered by board type
+        val boardsDependentDemos =buildDemoList.filter { it.isBoardTypeDependent }
+        if(boardsDependentDemos.isNotEmpty()) {
+            val demosToRemove = boardsDependentDemos.filter { it.boardTypesAllowed.contains(boardType).not()}
+            buildDemoList.removeAll(demosToRemove)
         }
 
         if (_device.value != null) {

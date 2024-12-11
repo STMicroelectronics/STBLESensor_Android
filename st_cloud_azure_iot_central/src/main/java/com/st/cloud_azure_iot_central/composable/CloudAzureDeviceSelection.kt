@@ -1,7 +1,6 @@
 package com.st.cloud_azure_iot_central.composable
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,18 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -43,6 +39,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.st.cloud_azure_iot_central.CloudAzureIotCentralViewModel
+import com.st.ui.composables.BlueMSPullToRefreshBox
 import com.st.ui.composables.BlueMSSnackBarMaterial3
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.Grey6
@@ -52,7 +49,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CloudAzureDeviceSelection(
     modifier: Modifier = Modifier,
@@ -91,14 +88,7 @@ fun CloudAzureDeviceSelection(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = isLoading,
-        onRefresh = {
-            CoroutineScope(Dispatchers.IO).launch {
-                viewModel.readDevicesFromCloud()
-            }
-        }
-    )
+    val pullRefreshState = rememberPullToRefreshState()
 
     var oneDeviceSelected by rememberSaveable { mutableStateOf(false) }
 
@@ -164,8 +154,15 @@ fun CloudAzureDeviceSelection(
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
 
-
-            Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
+            BlueMSPullToRefreshBox(
+                state = pullRefreshState,
+                isRefreshing = isLoading,
+                isBetaRelease = viewModel.isBeta,
+                onRefresh = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel.readDevicesFromCloud()
+                    }
+                }) {
                 LazyColumn(
                     modifier = Modifier.fillMaxHeight(),
                     contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -207,13 +204,6 @@ fun CloudAzureDeviceSelection(
                         }
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = isLoading,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(alignment = Alignment.TopCenter),
-                    scale = true
-                )
             }
         }
     }

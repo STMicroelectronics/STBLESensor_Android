@@ -1,14 +1,18 @@
-package com.st.hight_speed_data_log.composable
+package com.st.high_speed_data_log.composable
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,13 +51,20 @@ fun VespucciHsdlTags(
     acquisitionInfo: String,
     isLoading: Boolean,
     isLogging: Boolean,
+    vespucciTagsActivation: List<String> = emptyList(),
     vespucciTags: Map<String, Boolean>,
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ }
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(all = LocalDimensions.current.paddingNormal)
+            .padding(
+                PaddingValues(
+                    start = LocalDimensions.current.paddingNormal,
+                    end = LocalDimensions.current.paddingNormal,
+                    top = LocalDimensions.current.paddingNormal
+                )
+            )
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
@@ -69,8 +80,15 @@ fun VespucciHsdlTags(
         TagsInfo(
             isLoading = isLoading,
             isLogging = isLogging,
+            vespucciTagsActivation = vespucciTagsActivation,
             vespucciTags = vespucciTags,
             onTagChangeState = onTagChangeState
+        )
+
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars
+            )
         )
     }
 }
@@ -101,6 +119,17 @@ fun Description(
         }
         withStyle(style = style) {
             append(stringResource(id = R.string.st_hsdl_tags_description3))
+            append("\n")
+            append("\n")
+            append(stringResource(id = R.string.st_hsdl_tags_description4))
+            append(" ")
+        }
+        withStyle(style = emphasisStyle) {
+            append(stringResource(id = R.string.st_hsdl_tags_description5))
+            append(" ")
+        }
+        withStyle(style = style) {
+            append(stringResource(id = R.string.st_hsdl_tags_description6))
         }
     }
 
@@ -172,6 +201,7 @@ fun TagsInfo(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     isLogging: Boolean,
+    vespucciTagsActivation: List<String>,
     vespucciTags: Map<String, Boolean> = emptyMap(),
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ }
 ) {
@@ -225,7 +255,8 @@ fun TagsInfo(
             vespucciTags.forEach { tag ->
                 TagListItem(
                     tag = tag.key,
-                    isEnabled = isLogging && isLoading.not(),
+                    isEnabled = isLogging && isLoading.not()
+                            && vespucciTagsActivation.contains(tag.key).not(),
                     isChecked = tag.value,
                     onCheckChange = { checked ->
                         onTagChangeState(tag.key, checked)

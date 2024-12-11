@@ -1,16 +1,17 @@
-package com.st.hight_speed_data_log.composable
+package com.st.high_speed_data_log.composable
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,26 +22,30 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.st.high_speed_data_log.R
 import com.st.ui.composables.BlueMsButton
+import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 
 @Composable
-fun StopLoggingDialog(
+fun ResetBoardDialog(
     modifier: Modifier = Modifier,
+    onRestartRequest: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
-        StopLoggingDialogContent(
+        ResetBoardDialogContent(
             modifier = modifier,
+            onRestartRequest = onRestartRequest,
             onDismissRequest = onDismissRequest
         )
     }
 }
 
 @Composable
-fun StopLoggingDialogContent(
+fun ResetBoardDialogContent(
     modifier: Modifier = Modifier,
+    onRestartRequest: () -> Unit = { /** NOOP **/ },
     onDismissRequest: () -> Unit = { /** NOOP **/ }
 ) {
     Surface(
@@ -75,16 +80,26 @@ fun StopLoggingDialogContent(
                 lineHeight = 24.sp,
                 letterSpacing = 0.15.sp,
                 color = Grey6,
-                text = stringResource(id = R.string.st_hsdl_datalog_stopDialogMessage)
+                text = stringResource(id = R.string.st_hsdl_datalog_resetDialogMessage)
             )
 
             Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
 
-            BlueMsButton(
-                modifier = Modifier.align(Alignment.End),
-                text = stringResource(id = R.string.st_hsdl_datalog_stopDialogClose),
-                onClick = onDismissRequest
-            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                BlueMsButtonOutlined(
+                    modifier = Modifier.weight(weight = 0.5f),
+                    text = stringResource(id = android.R.string.cancel),
+                    onClick = onDismissRequest
+                )
+
+                Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingNormal))
+
+                BlueMsButton(
+                    modifier = Modifier.weight(weight = 0.5f),
+                    text = stringResource(id = R.string.st_hsdl_datalog_resetBtn),
+                    onClick = onRestartRequest
+                )
+            }
         }
     }
 }
@@ -93,8 +108,8 @@ fun StopLoggingDialogContent(
 
 @Preview(showBackground = true)
 @Composable
-private fun StopLoggingDialogContentPreview() {
+private fun ResetBoardDialogContentPreview() {
     PreviewBlueMSTheme {
-        StopLoggingDialogContent()
+        ResetBoardDialogContent()
     }
 }

@@ -38,10 +38,10 @@ class HeartRateDemoViewModel
     private var features: MutableList<Feature<*>> = mutableListOf()
 
     private val _heartData =
-        MutableStateFlow<HeartRateInfo?>(
-            null
+        MutableStateFlow<Pair<HeartRateInfo?, Long>>(
+            Pair(null,0)
         )
-    val heartData: StateFlow<HeartRateInfo?>
+    val heartData: StateFlow<Pair<HeartRateInfo?, Long>>
         get() = _heartData.asStateFlow()
 
     private val _locationData =
@@ -76,7 +76,7 @@ class HeartRateDemoViewModel
                 ).collect {
                     val data = it.data
                     if (data is HeartRateInfo) {
-                        _heartData.emit(data)
+                        _heartData.emit(Pair(data,it.timeStamp))
                     } else if (data is BodySensorLocationInfo) {
                         _locationData.emit(data)
                     }
@@ -115,7 +115,7 @@ class HeartRateDemoViewModel
                 data.forEach { featureUpdate ->
                     val dataFeature = featureUpdate.data
                     if (dataFeature is HeartRateInfo) {
-                        _heartData.emit(dataFeature)
+                        _heartData.emit(Pair(dataFeature,featureUpdate.timeStamp))
                     }
                 }
             }

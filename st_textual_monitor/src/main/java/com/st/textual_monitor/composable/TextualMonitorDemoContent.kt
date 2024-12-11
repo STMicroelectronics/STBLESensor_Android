@@ -48,11 +48,11 @@ fun TextualMonitorDemoContent(
 
     var isPlaying by remember { mutableStateOf(false) }
 
-    val dataFeature by viewModel.featureTime.collectAsStateWithLifecycle()
+    val featureTime by viewModel.featureTime.collectAsStateWithLifecycle()
 
-    val dataValues by remember(key1 = dataFeature) {
+    val dataValues by remember(key1 = featureTime) {
         derivedStateOf {
-            if (dataFeature != null) {
+            if (featureTime != null) {
                 viewModel.dataValues.joinToString("\n")
             } else {
                 "Waiting samples"
@@ -169,9 +169,7 @@ fun TextualMonitorDemoContent(
                 .weight(2f)
                 .padding(
                     start = LocalDimensions.current.paddingNormal,
-                    end = LocalDimensions.current.paddingNormal,
-                    bottom = LocalDimensions.current.paddingLarge
-                ),
+                    end = LocalDimensions.current.paddingNormal),
             content = {
                 Text(
                     style = MaterialTheme.typography.bodySmall,

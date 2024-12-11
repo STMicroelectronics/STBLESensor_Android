@@ -127,6 +127,7 @@ class DemoShowCase : Fragment() {
                     val hasPnplSettings by viewModel.hasPnplSettings.collectAsStateWithLifecycle()
                     val isExpert by viewModel.isExpert.collectAsStateWithLifecycle()
                     val device by viewModel.device.collectAsStateWithLifecycle()
+                    val hasDebugFeature by viewModel.hasDebugFeature.collectAsStateWithLifecycle()
                     val openFwDBModelDialog = remember { mutableStateOf(false) }
 
                     val demoActions = currentDemoSelected?.settings.toActions(
@@ -201,16 +202,19 @@ class DemoShowCase : Fragment() {
                                             pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE))
                                         })
                                 )
-                                currentAction.add(
-                                    ActionItem(
-                                        label = context.getString(R.string.st_demoShowcase_menuAction_debug),
-                                        action = {
-                                            navController?.navigate(
-                                                DemoShowcaseNavGraphDirections.globalActionToDebugConsole()
-                                            )
-                                        })
-                                )
 
+
+                                if(hasDebugFeature) {
+                                    currentAction.add(
+                                        ActionItem(
+                                            label = context.getString(R.string.st_demoShowcase_menuAction_debug),
+                                            action = {
+                                                navController?.navigate(
+                                                    DemoShowcaseNavGraphDirections.globalActionToDebugConsole()
+                                                )
+                                            })
+                                    )
+                                }
 
                                 if((device?.familyType != Boards.Family.WB_FAMILY) && (device?.familyType != Boards.Family.WBA_FAMILY) && (device?.boardType != Boards.Model.WB0X_NUCLEO_BOARD)) {
                                     currentAction.add(

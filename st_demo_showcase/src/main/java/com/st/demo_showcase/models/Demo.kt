@@ -62,6 +62,7 @@ import com.st.blue_sdk.features.sensor_fusion.MemsSensorFusion
 import com.st.blue_sdk.features.sensor_fusion.MemsSensorFusionCompat
 import com.st.blue_sdk.features.switchfeature.SwitchFeature
 import com.st.blue_sdk.features.temperature.Temperature
+import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.services.audio.AudioService
 import com.st.demo_showcase.DemoShowcaseNavGraphDirections
 import com.st.demo_showcase.R
@@ -93,6 +94,8 @@ enum class Demo(
     val requireAllFeatures: Boolean = false,
     val requireServer: Boolean = false,
     val couldBeEnabledOutside: Boolean = false,
+    val isBoardTypeDependent: Boolean = false,
+    val boardTypesAllowed: List<Boards.Model> = listOf(),
     val settings: List<String> = DEFAULT_MENU_ACTIONS
 ) {
     Environmental(
@@ -147,7 +150,29 @@ enum class Demo(
         icon = com.st.high_speed_data_log.R.drawable.high_speed_data_log_icon,
         requireAllFeatures = true,
         features = listOf(HSDataLogConfig.NAME, PnPL.NAME),
-        settings = listOf()
+        settings = listOf(),
+        isBoardTypeDependent = true,
+        boardTypesAllowed = Boards.Model.entries.filter { it != Boards.Model.PROTEUS }
+    ),
+    SimpleHighSpeedDataLog2(
+        displayName = "HighSpeed DataLog2",
+        group = listOf(DemoGroup.AI, DemoGroup.DataLog),
+        icon = com.st.high_speed_data_log.R.drawable.high_speed_data_log_icon,
+        requireAllFeatures = true,
+        features = listOf(HSDataLogConfig.NAME, PnPL.NAME),
+        settings = listOf(),
+        isBoardTypeDependent = true,
+        boardTypesAllowed = listOf(Boards.Model.PROTEUS)
+    ),
+    AIoTCraftHighSpeedDataLog2(
+        displayName = "HighSpeed DataLog2",
+        group = listOf(DemoGroup.AI, DemoGroup.DataLog),
+        icon = com.st.high_speed_data_log.R.drawable.high_speed_data_log_icon,
+        requireAllFeatures = true,
+        features = listOf(HSDataLogConfig.NAME, PnPL.NAME),
+        settings = listOf(),
+        isBoardTypeDependent = true,
+        boardTypesAllowed = listOf() //In this way it will be not visible per any board
     ),
     HighSpeedDataLog1(
         displayName = "HighSpeed DataLog",
@@ -548,6 +573,13 @@ enum class Demo(
 
             Compass -> DemoListFragmentDirections.actionDemoListToCompassDemoGraph(nodeId)
             HighSpeedDataLog2 -> DemoListFragmentDirections.actionDemoListToHighSpeedDataLogFragment(
+                nodeId
+            )
+
+            SimpleHighSpeedDataLog2 -> DemoListFragmentDirections.actionDemoListToSimpleHighSpeedDataLogFragment(
+                nodeId
+            )
+            AIoTCraftHighSpeedDataLog2 -> DemoListFragmentDirections.actionDemoListToAIoTCraftHighSpeedDataLogFragment(
                 nodeId
             )
 

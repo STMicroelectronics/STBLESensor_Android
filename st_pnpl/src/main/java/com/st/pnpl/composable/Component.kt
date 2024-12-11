@@ -141,7 +141,7 @@ fun Component(
                                 }
 
                                 HeaderEnabledProperty(
-                                    value = booleanData,
+                                    value = Pair(booleanData, System.currentTimeMillis()),
                                     name = enableProperty.name,
                                     enabled = enableProperty.writable && enabled && isMounted,
                                     onValueChange = onValueChange

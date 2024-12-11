@@ -52,13 +52,27 @@ class CatalogViewModel
     private val _boardDescription: MutableStateFlow<BoardDescription?> = MutableStateFlow(null)
     val boardDescription = _boardDescription.asStateFlow()
 
-    var isBeta = false;
+    var isBeta = false
 
     fun getBoard(boardId: String) {
         viewModelScope.launch {
-            _board.value = blueManager.getBoardCatalog().findLast { it.bleDevId == boardId }
+            _board.value = null
+            _boardDescription.value = null
+
+            _board.value = blueManager.getBoardCatalog().filter {
+                if (StCatalogConfig.boardModelFilter.isNotEmpty())
+                    StCatalogConfig.boardModelFilter.contains(it.boardModel())
+                else
+                    true
+            }.findLast { it.bleDevId == boardId }
+
             _boardDescription.value =
-                blueManager.getBoardsDescription().findLast { it.bleDevId == boardId }
+                blueManager.getBoardsDescription().filter {
+                    if (StCatalogConfig.boardModelFilter.isNotEmpty())
+                        StCatalogConfig.boardModelFilter.contains(it.boardModel())
+                    else
+                        true
+                }.findLast { it.bleDevId == boardId }
         }
     }
 
@@ -75,10 +89,21 @@ class CatalogViewModel
 
     fun getFirmwareListForBoardPart(boardPart: String) {
         viewModelScope.launch {
-            val boards = _boardsDescription.value.filter { it.boardPart == boardPart}
+        val boards = _boardsDescription.value.filter { it.boardPart == boardPart}
             val firmwareList = mutableListOf<BoardFirmware>()
             boards.forEach { board ->
-                firmwareList.addAll(blueManager.getBoardCatalog().filter { it.bleDevId == board.bleDevId })
+                val firmwareFamilyFilter = StCatalogConfig.firmwareFamilyFilter
+                val firmwareFamilyVersionFilter = StCatalogConfig.firmwareFamilyVersionFilter
+                firmwareList.addAll(blueManager.getBoardCatalog().filter {
+                    if (StCatalogConfig.boardModelFilter.isNotEmpty())
+                        StCatalogConfig.boardModelFilter.contains(it.boardModel())
+                    else
+                        true
+                }.filter {
+                    it.bleDevId == board.bleDevId &&
+                            (firmwareFamilyFilter.isNullOrEmpty() || it.fwName.startsWith(firmwareFamilyFilter)) &&
+                            (firmwareFamilyVersionFilter.isEmpty() ||  firmwareFamilyVersionFilter.contains(it.fwVersion))
+                })
             }
             _firmwareList.value = firmwareList.toList()
         }

@@ -1,12 +1,6 @@
-/*
- * Copyright (c) 2022(-0001) STMicroelectronics.
- * All rights reserved.
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- */
-package com.st.hight_speed_data_log
+package com.st.high_speed_data_log
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,15 +13,14 @@ import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
 import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
-import com.st.blue_sdk.features.extended.raw_controlled.RawControlled.Companion.STREAM_ID_NOT_FOUND
 import com.st.blue_sdk.features.extended.raw_controlled.RawControlledInfo
 import com.st.blue_sdk.features.extended.raw_controlled.decodeRawData
 import com.st.blue_sdk.features.extended.raw_controlled.model.RawStreamIdEntry
 import com.st.blue_sdk.features.extended.raw_controlled.readRawPnPLFormat
 import com.st.blue_sdk.models.NodeState
 import com.st.core.GlobalConfig
-import com.st.hight_speed_data_log.model.StreamData
-import com.st.hight_speed_data_log.model.StreamDataChannel
+import com.st.high_speed_data_log.model.StreamData
+import com.st.high_speed_data_log.model.StreamDataChannel
 import com.st.pnpl.composable.PnPLSpontaneousMessageType
 import com.st.pnpl.composable.searchInfoWarningError
 import com.st.pnpl.util.PnPLTypeOfCommand
@@ -35,7 +28,9 @@ import com.st.pnpl.util.SetCommandPnPLRequest
 import com.st.preferences.StPreferences
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ENABLE_PROPERTY_NAME
+import com.st.ui.utils.localizedDisplayName
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -61,15 +56,17 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
-
-typealias ComponentWithInterface = Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>
+import kotlin.math.roundToInt
 
 @HiltViewModel
-class HighSpeedDataLogViewModel @Inject constructor(
+class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val blueManager: BlueManager,
     private val stPreferences: StPreferences
 ) : ViewModel() {
 
+    private var firstStopLogDone = HsdlConfig.isVespucci.not()
+    private var firstGetStatusAllDone = false
     private var enableStopDemo = true
     private var observeFeatureJob: Job? = null
     private var observeNodeStatusJob: Job? = null
@@ -79,14 +76,18 @@ class HighSpeedDataLogViewModel @Inject constructor(
     private var shouldInitDemo: Boolean = true
     private var setShouldInitDemoAtResponse: Boolean = false
     private var shouldRenameTags: Boolean = true
-    private var pnplBleResponses: Boolean = false
+    private var pnplBleResponses: Boolean = HsdlConfig.isVespucci
     private var streamDataBuffer = mutableListOf<StreamDataChannel>()
     private var commandQueue: MutableList<SetCommandPnPLRequest> = mutableListOf()
     private val rawPnPLFormat: MutableList<RawStreamIdEntry> = mutableListOf()
     private val tagNames: MutableList<String> = mutableListOf()
+    private var sensorsActive = listOf<String>()
+    private var componentWithInterface: List<ComponentWithInterface> = listOf()
 
+    private val _uomKeys = MutableStateFlow<Map<String, String>>(value = emptyMap())
     private val _tags = MutableStateFlow<List<ComponentWithInterface>>(value = emptyList())
     private val _currentSensorEnabled: MutableStateFlow<String> = MutableStateFlow(value = "")
+    private val _vespucciTagsActivation = MutableStateFlow<List<String>>(value = emptyList())
     private val _vespucciTags = MutableStateFlow<Map<String, Boolean>>(value = mutableMapOf())
     private val _acquisitionName = MutableStateFlow(value = "")
     private val _modelUpdates =
@@ -112,6 +113,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     val sensors: StateFlow<List<ComponentWithInterface>> = _sensors.asStateFlow()
     val streamSensors: StateFlow<List<ComponentWithInterface>> = _streamSensors.asStateFlow()
     val componentStatusUpdates: StateFlow<List<JsonObject>> = _componentStatusUpdates.asStateFlow()
+    val vespucciTagsActivation: StateFlow<List<String>> = _vespucciTagsActivation.asStateFlow()
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     val isLogging = _isLogging.asStateFlow()
     val isSDCardInserted = _isSDCardInserted.asStateFlow()
@@ -119,9 +121,15 @@ class HighSpeedDataLogViewModel @Inject constructor(
     val isConnectionLost: StateFlow<Boolean> = _isConnectionLost.asStateFlow()
     val enableLog: StateFlow<Boolean> = _enableLog.asStateFlow()
 
-    private var sensorsActive = listOf<String>()
 
-    private var componentWithInterface: List<ComponentWithInterface> = listOf()
+    private val _numActiveSensors = MutableStateFlow(value = 0)
+    val numActiveSensors = _numActiveSensors.asStateFlow()
+
+    var isBeta = false
+
+    init {
+        isBeta = stPreferences.isBetaApplication()
+    }
 
     private fun <T> MutableList<T>.removeFirstElements(count: Int): List<T> {
         val subList = this.subList(0, minOf(count, this.size)).toList()
@@ -139,7 +147,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
         viewModelScope.launch {
             while (true) {
                 val odr = _streamData.value?.odr ?: 1
-                val plotSize = if (odr < 10) 1 else (odr / 10)
+                val plotSize =  Math.ceil(odr / 10.toDouble()).roundToInt()
                 val bufferSize = streamDataBuffer.size
 
                 if (plotSize in 1..<bufferSize) {
@@ -232,6 +240,8 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 .collect { sensorsEnabled ->
                     Log.d(TAG, "sensorsEnabled = ${sensorsEnabled.joinToString(", ")}")
 
+                    _numActiveSensors.emit(sensorsEnabled.size)
+
                     _enableLog.update { sensorsEnabled.isNotEmpty() }
                 }
         }
@@ -265,7 +275,6 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 name == "sw_motion_threshold" ||
                 name == "adc_conversion_time"
 
-
     private fun tagsNamePredicate(name: String): Boolean =
         name == TAGS_INFO_JSON_KEY || name == ACQUISITION_INFO_JSON_KEY
 
@@ -291,11 +300,39 @@ class HighSpeedDataLogViewModel @Inject constructor(
 
     private fun List<ComponentWithInterface>.streamSensorsFilter() = filter {
         it.first.contentType == DtmiContent.DtmiComponentContent.ContentType.SENSOR &&
-                it.second.contents.find { it.name == "st_ble_stream" } != null
+                it.second.contents.find { it.name == "st_ble_stream" } != null &&
+                it.first.name.startsWith(prefix = "iis3dwb", ignoreCase = true)
+                    .not() // FIXME: With 2.3.0 not necessary
     }.map {
         Pair(
             it.first, it.second.copy(contents = it.second.contents.hsdl2SensorPropertyFilter())
         )
+    }
+
+    private fun List<ComponentWithInterface>.uom() = filter {
+        it.first.contentType == DtmiContent.DtmiComponentContent.ContentType.SENSOR
+    }.associate {
+        val fsProp = it.second.contents.filterIsInstance<DtmiContent.DtmiPropertyContent>()
+            .find { prop -> prop.name == "fs" }
+
+        val localizedDisplayName = fsProp?.displayUnit?.localizedDisplayName
+
+        val uom = if (localizedDisplayName.isNullOrEmpty().not()) {
+            localizedDisplayName
+        } else fsProp?.unit
+
+        it.first.name to (uom ?: "") //.toShortUom()
+    }
+
+    private fun String?.toShortUom() = when (this) {
+        "gForce" -> "g"
+        "hertz" -> "Hz"
+        "gauss" -> "G"
+        "degreeCelsius" -> "°C"
+        "degreePerSecond" -> "dps"
+        "Waveform" -> "dBSPL"
+        null -> ""
+        else -> this
     }
 
     private fun List<DtmiContent>.hideDisabledTagWhenLoggingFilter() =
@@ -320,7 +357,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
 
     private fun List<DtmiContent>.hideDisabledTagWhenConfigHasTag() =
         filter { content -> //  tag not enabled when HsdlConfig has tag label override is hide
-            if (HsdlConfig.tags.isNotEmpty()) {
+            if (HsdlConfig.isVespucci) {
                 val tagsInfoJson = _componentStatusUpdates.value.find {
                     it.containsKey(TAGS_INFO_JSON_KEY)
                 }?.get(TAGS_INFO_JSON_KEY)?.jsonObject
@@ -362,7 +399,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 if (content.schema is DtmiContent.DtmiObjectContent) {
                     val schema = content.schema as DtmiContent.DtmiObjectContent
                     return@map content.copy(schema = schema.copy(fields = schema.fields.filter {
-                        if (HsdlConfig.tags.isNotEmpty()) {
+                        if (HsdlConfig.isVespucci) {
                             it.name != ENABLED_JSON_KEY
                         } else {
                             true
@@ -417,6 +454,10 @@ class HighSpeedDataLogViewModel @Inject constructor(
 
         _tags.update { componentWithInterface.hsdl2TagsFilter() }
 
+        _uomKeys.update {
+            componentWithInterface.uom()
+        }
+
         _isLoading.update { false }
     }
 
@@ -470,9 +511,11 @@ class HighSpeedDataLogViewModel @Inject constructor(
             }
 
             if (askTheStatus) {
-                cmd.component?.let { compName ->
-                    sendGetStatusComponentInfoCommand(name = compName, nodeId = nodeId)
-                }
+                //Fix 26/11/24PL
+                //cmd.component?.let { compName ->
+                //    sendGetStatusComponentInfoCommand(name = compName, nodeId = nodeId)
+                //}
+                sendGetStatusComponentInfoCommand(name = cmd.command, nodeId = nodeId)
             }
         }
     }
@@ -507,27 +550,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     private suspend fun sendGetStatusComponentInfoCommand(name: String, nodeId: String) {
         val sensorName = name.substringBefore("_")
 
-//        if (name == "tags_info") {
-//            sendCommand(
-//                nodeId = nodeId,
-//                typeOfCmd = PnPLTypeOfCommand.Status,
-//                cmd = PnPLCmd.TAGS_INFO,
-//                askTheStatus = false
-//            )
-//        } else {
-//            sensorsActive.filter {
-//                it.startsWith(sensorName)
-//            }.forEach {
-//                sendCommand(
-//                    nodeId = nodeId,
-//                    typeOfCmd = PnPLTypeOfCommand.Status,
-//                    cmd = PnPLCmd(command = "get_status", request = it),
-//                    askTheStatus = false
-//                )
-//            }
-//        }
-
-        if(sensorsActive.none { it.startsWith(sensorName) }) {
+        if (sensorsActive.none { it.startsWith(sensorName) }) {
             //In this way... we are here for any component that it's not a sensor
             sendCommand(
                 nodeId = nodeId,
@@ -582,18 +605,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
             cmd = PnPLCmd(
                 component = "",
                 command = ACQUISITION_INFO_JSON_KEY,
-                fields = mapOf(NAME_JSON_KEY to datetime)
-            ),
-            askTheStatus = false
-        )
-
-        sendCommand(
-            nodeId = nodeId,
-            typeOfCmd = PnPLTypeOfCommand.Set,
-            cmd = PnPLCmd(
-                component = "",
-                command = ACQUISITION_INFO_JSON_KEY,
-                fields = mapOf(DESC_JSON_KEY to "Empty")
+                fields = mapOf(NAME_JSON_KEY to datetime, DESC_JSON_KEY to "Empty")
             ),
             askTheStatus = false
         )
@@ -615,12 +627,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
             if (_sensors.value.isEmpty() || _tags.value.isEmpty()) {
                 getModel(nodeId = nodeId)
 
-                // Now can sand GetAllCommand at **
-                // sendGetLogControllerCommand(nodeId = nodeId)
-
-                if (HsdlConfig.tags.isNotEmpty()) {
-                    sendDisableAllSensorCommand(nodeId = nodeId)
-                }
+                sendGetLogControllerCommand(nodeId = nodeId)
             }
 
             _modelUpdates.update {
@@ -629,17 +636,13 @@ class HighSpeedDataLogViewModel @Inject constructor(
                     isBeta = stPreferences.isBetaApplication()
                 )?.filterComponentsByProperty(propName = STREAM_JSON_KEY) ?: emptyList()
             }
-
-            // **
-            sendGetAllCommand(nodeId = nodeId)
-            // **
         }
     }
 
     private fun handleRawControlledUpdate(data: RawControlledInfo) {
         val streamId = decodeRawData(data = data.data, rawFormat = rawPnPLFormat)
 
-        if (streamId != STREAM_ID_NOT_FOUND) {
+        if (streamId != RawControlled.STREAM_ID_NOT_FOUND) {
             rawPnPLFormat.firstOrNull { it.streamId == streamId }?.let { foundStream ->
                 if (_currentSensorEnabled.value.isEmpty()) {
                     _currentSensorEnabled.update {
@@ -656,7 +659,8 @@ class HighSpeedDataLogViewModel @Inject constructor(
                             } else {
                                 rawEntry.name
                             },
-                            uom = rawEntry.format.unit ?: "",
+                            uom = _uomKeys.value[_currentSensorEnabled.value]
+                                ?: rawEntry.format.unit ?: "",
                             max = rawEntry.format.max,
                             min = rawEntry.format.min,
                             data = when {
@@ -761,18 +765,36 @@ class HighSpeedDataLogViewModel @Inject constructor(
         )
     }
 
+    private fun PnPLSpontaneousMessageType?.addExtra(): PnPLSpontaneousMessageType? {
+        if (HsdlConfig.isVespucci && this != null) {
+            val shouldAddExtra = listOf("sd", "log").any { key ->
+                this.message.contains(other = key, ignoreCase = true)
+            }
+
+            if (shouldAddExtra) {
+                this.extraUrl = context.getString(R.string.st_hsdl_sdExtraUrl)
+                this.extraMessage = context.getString(R.string.st_hsdl_sdExtraMessage)
+            }
+        }
+
+        return this
+    }
+
     private suspend fun handlePnplResponses(nodeId: String, data: PnPLConfig) {
         data.deviceStatus.value?.components?.let { json ->
             //Search the Spontaneous messages
             val message = searchInfoWarningError(json)
 
             message?.let {
-                _statusMessage.update { message }
+                _statusMessage.update {
+                    message.addExtra()
+                }
+
                 if (pnplBleResponses) {
                     if (message == PnPLSpontaneousMessageType.ERROR) {
                         //Remove the command from the list and send Next One
                         if (commandQueue.isNotEmpty()) {
-                            commandQueue.removeFirst()
+                            commandQueue.removeAt(0)
                             if (commandQueue.isNotEmpty()) {
                                 pnplFeature?.let {
                                     blueManager.writeFeatureCommand(
@@ -805,6 +827,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                     commandQueue.firstOrNull()?.let { firstOneCmd ->
 
                         //Remove the command from the list and send Next One
+                        Log.e(TAG, "handlePnplResponses")
                         if (commandQueue.isNotEmpty()) {
                             commandQueue.removeAt(index = 0)
                         }
@@ -882,38 +905,73 @@ class HighSpeedDataLogViewModel @Inject constructor(
         }
     }
 
-    private suspend fun initDemo(nodeId: String, data: PnPLConfig) {
-        data.deviceStatus.value?.components?.let { json ->
-            readRawPnPLFormat(
-                rawPnPLFormat = rawPnPLFormat,
-                json = json,
-                modelUpdates = _modelUpdates.value
-            )
+    private fun initRawPnPLFormat(data: PnPLConfig) {
+        data.deviceStatus.value?.let { status ->
+            status.components.let { json ->
+                if (json.find { it.containsKey(PNPL_RESPONSE_JSON_KEY) } == null) {
+                    val hasSensorEnabled = _currentSensorEnabled.value.isEmpty().not()
+                    val hasStatusForSensorEnabled =
+                        json.find { it.containsKey(_currentSensorEnabled.value) } != null
+                    if (hasSensorEnabled && hasStatusForSensorEnabled) {
+                        readRawPnPLFormat(
+                            rawPnPLFormat = rawPnPLFormat,
+                            json = json,
+                            modelUpdates = _modelUpdates.value
+                        )
+                    }
+                }
+            }
+        }
+    }
 
-            if (shouldInitDemo) {
-                shouldInitDemo = false
-                if (_isLogging.value) {
-                    sendGetTagsInfoCommand(nodeId)
-                } else {
-                    sendSetNameCommand(nodeId = nodeId)
+    private fun initPnPLBleResponse(data: PnPLConfig) {
+        data.deviceStatus.value?.let { status ->
+            status.pnplBleResponses?.let { value ->
+                Log.d(TAG, "pnplBleResponses $value")
 
-                    if (shouldRenameTags) {
-                        shouldRenameTags = false
-                        for (index in 0..<tagNames.size) {
-                            if (index in 0..HsdlConfig.tags.lastIndex) {
-                                sendRenameTagCommand(nodeId = nodeId, index = index)
-                                sendEnableTagCommand(
-                                    nodeId = nodeId,
-                                    index = index,
-                                    index == HsdlConfig.tags.lastIndex
-                                )
-                            } else {
-                                sendDisableTagCommand(nodeId = nodeId, index = index)
-                            }
+                pnplBleResponses = value
+            }
+        }
+    }
+
+    private suspend fun initDemo(nodeId: String) {
+        if (shouldInitDemo) {
+            shouldInitDemo = false
+            if (_isLogging.value) {
+                sendGetTagsInfoCommand(nodeId)
+            } else {
+                sendSetNameCommand(nodeId = nodeId)
+
+                if (HsdlConfig.isVespucci) {
+                    sendDisableAllSensorCommand(nodeId = nodeId)
+                }
+
+                if (shouldRenameTags) {
+                    shouldRenameTags = false
+                    for (index in 0..<tagNames.size) {
+                        if (index in 0..HsdlConfig.tags.lastIndex) {
+                            sendRenameTagCommand(nodeId = nodeId, index = index)
+                            sendEnableTagCommand(nodeId = nodeId, index = index)
+                        } else {
+                            sendDisableTagCommand(nodeId = nodeId, index = index)
                         }
                     }
-                    sendGetAllCommand(nodeId)
                 }
+            }
+        }
+
+        if (_isLogging.value) {
+            if (firstStopLogDone.not()) {
+                firstStopLogDone = true
+
+                stopLog(nodeId = nodeId)
+            }
+        } else {
+            firstStopLogDone = true
+            if (firstGetStatusAllDone.not()) {
+                firstGetStatusAllDone = true
+
+                sendGetAllCommand(nodeId = nodeId)
             }
         }
     }
@@ -932,16 +990,8 @@ class HighSpeedDataLogViewModel @Inject constructor(
         }
     }
 
-    private fun handleHsdlFeatureUpdate(data: PnPLConfig) {
+    private fun handleStatusUpdate(data: PnPLConfig) {
         data.deviceStatus.value?.components?.let { json ->
-            if (json.size != 1) { // TODO: ask if is correct
-                readRawPnPLFormat(
-                    rawPnPLFormat = rawPnPLFormat,
-                    json = json,
-                    modelUpdates = _modelUpdates.value
-                )
-            }
-
             json.find { it.containsKey(LOG_CONTROLLER_JSON_KEY) }
                 ?.get(LOG_CONTROLLER_JSON_KEY)?.jsonObject?.let { logControllerJson ->
                     _isSDCardInserted.update {
@@ -961,7 +1011,11 @@ class HighSpeedDataLogViewModel @Inject constructor(
                     Log.d(TAG, "isLogging ${_isLogging.value}")
                     Log.d(TAG, "isSDCardInserted ${_isSDCardInserted.value}")
                 }
+        }
+    }
 
+    private fun handleTagsUpdate(data: PnPLConfig) {
+        data.deviceStatus.value?.components?.let { json ->
             json.find { it.containsKey(TAGS_INFO_JSON_KEY) }
                 ?.get(TAGS_INFO_JSON_KEY)?.jsonObject?.let { tags ->
 
@@ -989,6 +1043,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                         }
                     }
                     _vespucciTags.update { vespucciTagsMap }
+                    Log.d(TAG, "tags updateds ${_vespucciTags.value.size}")
                 }
         }
     }
@@ -1061,7 +1116,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 } else {
                     viewModelScope.launch {
                         _sendCommand(nodeId = nodeId, name = name, value = commandRequest)
-                        sendGetAllCommand(nodeId = nodeId)
+                        sendGetStatusComponentInfoCommand(name = name, nodeId = nodeId)
                     }
                 }
             }
@@ -1122,7 +1177,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
     }
 
     fun stopLog(nodeId: String) {
-        viewModelScope.launch {
+        runBlocking {
             sendCommand(
                 nodeId = nodeId,
                 typeOfCmd = PnPLTypeOfCommand.Log,
@@ -1186,7 +1241,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
                     .filterIsInstance<PnPL>().firstOrNull()
 
-            if (HsdlConfig.tags.isNotEmpty()) {
+            if (HsdlConfig.isVespucci) {
                 rawFeature =
                     blueManager.nodeFeatures(nodeId = nodeId)
                         .filter { it.name == RawControlled.NAME }
@@ -1201,22 +1256,23 @@ class HighSpeedDataLogViewModel @Inject constructor(
                 onFeaturesEnabled = { onFeaturesEnabled(nodeId = nodeId) })
                 .flowOn(context = Dispatchers.IO).map { it.data }.onEach { data ->
                     if (data is PnPLConfig) {
-                        initDemo(nodeId = nodeId, data = data)
+                        initRawPnPLFormat(data = data)
+
+                        initPnPLBleResponse(data = data)
+
+                        handleStatusUpdate(data = data)
+
+                        initDemo(nodeId = nodeId)
+
+                        updateUIStatus(data = data)
+
+                        handleTagsUpdate(data = data)
 
                         getModel(nodeId = nodeId)
-
-                        //Check if the BLE Responses are == true
-                        data.deviceStatus.value?.pnplBleResponses?.let { value ->
-                            pnplBleResponses = value
-                        }
 
                         if (pnplBleResponses) {
                             handlePnplResponses(nodeId = nodeId, data = data)
                         }
-
-                        handleHsdlFeatureUpdate(data = data)
-
-                        updateUIStatus(data = data)
                     }
 
                     if (data is RawControlledInfo) {
@@ -1278,6 +1334,14 @@ class HighSpeedDataLogViewModel @Inject constructor(
             oldTagsStatus[tag] = newState
 
             _vespucciTags.update { oldTagsStatus }
+
+            if (newState) {
+                _vespucciTagsActivation.update { it + tag }
+
+                delay(timeMillis = 5000L)
+
+                _vespucciTagsActivation.update { it - tag }
+            }
         }
     }
 
@@ -1306,20 +1370,22 @@ class HighSpeedDataLogViewModel @Inject constructor(
     }
 
     companion object {
-        private const val LOG_STATUS_JSON_KEY = "log_status"
-        private const val SD_JSON_KEY = "sd_mounted"
-        private const val LOG_CONTROLLER_JSON_KEY = "log_controller"
+        const val STREAM_JSON_KEY = "st_ble_stream"
+        const val LOG_STATUS_JSON_KEY = "log_status"
+        const val SD_JSON_KEY = "sd_mounted"
+        const val LOG_CONTROLLER_JSON_KEY = "log_controller"
+        const val PNPL_RESPONSE_JSON_KEY = "PnPL_Response"
+        const val ENABLE_JSON_KEY = "enable"
+        const val ENABLE_ALL_JSON_KEY = "enable_all"
+        const val STATUS_JSON_KEY = "status"
+
         private const val TAGS_INFO_JSON_KEY = "tags_info"
-        private const val PNPL_RESPONSE_JSON_KEY = "PnPL_Response"
         private const val ACQUISITION_INFO_JSON_KEY = "acquisition_info"
         private const val LABEL_JSON_KEY = "label"
         private const val ENABLED_JSON_KEY = "enabled"
-        private const val ENABLE_JSON_KEY = "enable"
-        private const val ENABLE_ALL_JSON_KEY = "enable_all"
-        private const val STREAM_JSON_KEY = "st_ble_stream"
         private const val DESC_JSON_KEY = "description"
         private const val NAME_JSON_KEY = "name"
-        private const val STATUS_JSON_KEY = "status"
-        private const val TAG = "HsdlViewModel"
+
+        private const val TAG = "AIoTCraftHighSpeedDataLogViewModel"
     }
 }

@@ -67,16 +67,30 @@ class MedicalSignalViewModel
     val isMed24Streaming: StateFlow<Boolean>
         get() = _isMed24Streaming.asStateFlow()
 
-    private val _dataFeature16 =
-        MutableStateFlow<MedicalInfo?>(null)
-    val dataFeature16: StateFlow<MedicalInfo?>
-        get() = _dataFeature16.asStateFlow()
 
-    private val _dataFeature24 =
-        MutableStateFlow<MedicalInfo?>(null)
-    val dataFeature24: StateFlow<MedicalInfo?>
-        get() = _dataFeature24.asStateFlow()
+    val dataFeature16 = mutableListOf<MedicalInfo>()
+    val dataFeature24 = mutableListOf<MedicalInfo>()
 
+
+    private val _dataFeature16Time =
+        MutableStateFlow<Int>(0)
+    val dataFeature16Time: StateFlow<Int>
+        get() = _dataFeature16Time.asStateFlow()
+
+    private val _dataFeature24Time =
+        MutableStateFlow<Int>(0)
+    val dataFeature24Time: StateFlow<Int>
+        get() = _dataFeature24Time.asStateFlow()
+
+//    private val _dataFeature16 =
+//        MutableStateFlow<Pair<Int,MedicalInfo?>>(Pair(0,null))
+//    val dataFeature16: StateFlow<Pair<Int,MedicalInfo?>>
+//        get() = _dataFeature16.asStateFlow()
+//
+//    private val _dataFeature24 =
+//        MutableStateFlow<Pair<Int,MedicalInfo?>>(Pair(0,null))
+//    val dataFeature24: StateFlow<Pair<Int,MedicalInfo?>>
+//        get() = _dataFeature24.asStateFlow()
 
     private var modelUpdates: List<Pair<DtmiContent.DtmiComponentContent, DtmiContent.DtmiInterfaceContent>> =
         emptyList()
@@ -105,7 +119,8 @@ class MedicalSignalViewModel
                     if ((dataFeature.sigType.value.precision == MedicalPrecision.BIT16) ||
                         (dataFeature.sigType.value.precision == MedicalPrecision.UBIT16)
                     ) {
-                        _dataFeature16.emit(dataFeature)
+                        dataFeature16.add(dataFeature)
+                        _dataFeature16Time.emit(dataFeature.internalTimeStamp.value)
                     }
                 }
             }.launchIn(viewModelScope)
@@ -141,7 +156,8 @@ class MedicalSignalViewModel
                     if ((dataFeature.sigType.value.precision == MedicalPrecision.BIT24) ||
                         (dataFeature.sigType.value.precision == MedicalPrecision.UBIT24)
                     ) {
-                        _dataFeature24.emit(dataFeature)
+                        dataFeature24.add(dataFeature)
+                        _dataFeature24Time.emit(dataFeature.internalTimeStamp.value)
                     }
                 }
             }.launchIn(viewModelScope)

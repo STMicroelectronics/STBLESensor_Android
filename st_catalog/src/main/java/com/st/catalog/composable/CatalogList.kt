@@ -7,10 +7,21 @@
  */
 package com.st.catalog.composable
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -42,13 +53,16 @@ import com.st.ui.composables.StTopBar
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.SecondaryBlue
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CatalogList(
     modifier: Modifier = Modifier,
     nodeId: String? = null,
     navController: NavController,
     onBack: () -> Unit = { /** NOOP **/ },
-    viewModel: CatalogViewModel
+    viewModel: CatalogViewModel,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     if (nodeId != null) {
         //remove the catalog list fragment before to navigate to board details
@@ -72,12 +86,15 @@ fun CatalogList(
                     navController.navigate(
                         "detail/${boardPart}"
                     )
-                }
+                },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope
             )
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CatalogList(
     modifier: Modifier = Modifier,
@@ -86,7 +103,9 @@ fun CatalogList(
     boardsDescription: List<BoardDescription>,
     isBeta: Boolean = false,
     onBack: () -> Unit = { /** NOOP **/ },
-    onBoardSelected: (String) -> Unit = { /** NOOP **/ }
+    onBoardSelected: (String) -> Unit = { /** NOOP **/ },
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
 ) {
     var openFilter by remember { mutableStateOf(value = false) }
     var boardOrder by remember { mutableStateOf(value = BoardOrder.NONE) }
@@ -124,9 +143,12 @@ fun CatalogList(
                 }
 
             when (boardOrder) {
-                BoardOrder.NONE -> filteredBoards.distinctBy{ it.boardPart}
-                BoardOrder.ALPHABETICAL -> filteredBoards.distinctBy{ it.boardPart}.sortedBy { it.boardName }
-                BoardOrder.RELEASE_DATE -> filteredBoards.distinctBy{ it.boardPart}.sortedByDescending { it.releaseDate }
+                BoardOrder.NONE -> filteredBoards.distinctBy { it.boardPart }
+                BoardOrder.ALPHABETICAL -> filteredBoards.distinctBy { it.boardPart }
+                    .sortedBy { it.boardName }
+
+                BoardOrder.RELEASE_DATE -> filteredBoards.distinctBy { it.boardPart }
+                    .sortedByDescending { it.releaseDate }
             }
         }
     }
@@ -134,9 +156,13 @@ fun CatalogList(
     val releaseDatesPresent = boardsDescription.firstOrNull { it.releaseDate != null } != null
 
     Scaffold(modifier = modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.statusBars,
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(
+                modifier = Modifier.padding(
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                ),
                 containerColor = SecondaryBlue,
                 onClick = { openFilter = true }) {
                 Icon(
@@ -151,28 +177,13 @@ fun CatalogList(
                 title = stringResource(id = R.string.st_catalog_boardList_title),
                 onBack = onBack
             )
-        },
-//        bottomBar = {
-//            BottomAppBar(
-//                modifier = Modifier.fillMaxWidth(),
-//                containerColor = PrimaryBlue,
-//                contentColor = Grey0,
-//                contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
-//            ) { BottomAppBarItem(
-//                modifier = Modifier.weight(weight = 0.25f),
-//                icon = Icons.Default.Close,
-//                label = "Back",
-//                onClick = onBack
-//            )
-//                Spacer(modifier = Modifier.weight(weight = 0.75f))
-//
-//            }
-//        }
+        }
     ) { paddingValues ->
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
-                .fillMaxSize()
+                //.fillMaxSize()
+                .consumeWindowInsets(paddingValues = paddingValues)
                 .padding(paddingValues = paddingValues),
             contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal),
@@ -192,7 +203,17 @@ fun CatalogList(
                     },
                     onClickItem = {
                         onBoardSelected(it.boardPart)
-                    }
+                    },
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedContentScope = animatedContentScope
+                )
+            }
+
+            item {
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(
+                        WindowInsets.systemBars
+                    )
                 )
             }
         }

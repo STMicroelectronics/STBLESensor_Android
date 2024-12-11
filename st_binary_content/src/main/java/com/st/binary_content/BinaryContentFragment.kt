@@ -11,7 +11,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -47,7 +50,10 @@ class BinaryContentFragment : Fragment() {
                     StBinaryContentScreen(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(all = LocalDimensions.current.paddingNormal),
+                            .padding(top = LocalDimensions.current.paddingNormal,
+                                start = LocalDimensions.current.paddingNormal,
+                                end = LocalDimensions.current.paddingNormal,
+                                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
                         viewModel = viewModel,
                         nodeId = nodeId
                     )

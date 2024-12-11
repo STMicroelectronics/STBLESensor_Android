@@ -1,4 +1,4 @@
-package com.st.hight_speed_data_log.model
+package com.st.high_speed_data_log.model
 
 data class StreamData(
     val streamId: Int,
@@ -8,13 +8,7 @@ data class StreamData(
     val max:Double?= null,
     val min: Double?=null,
     val data: List<StreamDataChannel> = emptyList()
-){
-    val shortUom = when(uom.lowercase()){
-        "celsius" -> "°C"
-        "gauss" -> "G"
-        else -> uom
-    }
-}
+)
 
 data class StreamDataChannel(
     val data: List<Float> = emptyList()

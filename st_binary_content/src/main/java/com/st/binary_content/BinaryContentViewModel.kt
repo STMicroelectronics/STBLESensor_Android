@@ -115,6 +115,12 @@ class BinaryContentViewModel @Inject constructor(
     val chunkProgress: State<ChunkProgress?>
         get() = _chunkProgress
 
+    var isBeta: Boolean = false
+
+    init {
+        isBeta = stPreferences.isBetaApplication()
+    }
+
     private fun sendGetAllCommand(nodeId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -160,7 +166,7 @@ class BinaryContentViewModel @Inject constructor(
             _modelUpdates.value =
                 blueManager.getDtmiModel(
                     nodeId = nodeId,
-                    isBeta = stPreferences.isBetaApplication()
+                    isBeta = isBeta
                 )?.extractComponent(compName = compName)
                     ?: emptyList()
 

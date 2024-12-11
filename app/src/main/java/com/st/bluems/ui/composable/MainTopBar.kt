@@ -14,7 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ManageAccounts
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
@@ -50,6 +51,7 @@ fun MainTopBar(
     enableDisableHiddenDemos: () -> Unit = { /** NOOP **/ },
     login: () -> Unit = { /** NOOP **/ },
     logout: () -> Unit = { /** NOOP **/ },
+    goToCatalog: () -> Unit = { /** NOOP **/ },
     onAddCatalogEntryFromFile: () -> Unit = { /** NOOP **/ }
 ) {
     val actions by rememberActions(
@@ -78,9 +80,15 @@ fun MainTopBar(
             Text(text = stringResource(id = R.string.st_home_deviceList_screenTitle))
         },
         actions = {
+            IconButton(onClick = goToCatalog) {
+                Icon(
+                    Icons.Default.ContentCopy,
+                    contentDescription = "Go To Catalog",
+                )
+            }
             BlueMsMenuActions(
                 actions = actions,
-                menuIcon = Icons.Default.ManageAccounts
+                menuIcon = Icons.Default.MoreVert
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),

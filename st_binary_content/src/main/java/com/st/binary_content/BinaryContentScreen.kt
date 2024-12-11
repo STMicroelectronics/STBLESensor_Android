@@ -15,7 +15,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,16 +27,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -53,13 +50,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.st.pnpl.composable.Component
 import com.st.ui.composables.BlueMSDialogCircularProgressIndicator
+import com.st.ui.composables.BlueMSPullToRefreshBox
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
 import com.st.ui.theme.toInt
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BinaryScreenScreen(
     modifier: Modifier,
@@ -81,12 +79,8 @@ fun BinaryScreenScreen(
     val numberPackets = viewModel.numberPackets.value
     val maxBinaryContentWriteSize = viewModel.maxBinaryContentWriteSize.value
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = isLoading,
-        onRefresh = {
-            viewModel.getModel(nodeId = nodeId, compName = "control")
-        }
-    )
+    val pullRefreshState = rememberPullToRefreshState()
+
     var isOpen by rememberSaveable(contents) { mutableStateOf(value = "") }
 
     Column(
@@ -117,8 +111,8 @@ fun BinaryScreenScreen(
 
         Surface(
             modifier = Modifier
-                .padding(all = LocalDimensions.current.paddingNormal)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(all = LocalDimensions.current.paddingNormal),
             shape = Shapes.small,
             shadowElevation = LocalDimensions.current.elevationNormal
         ) {
@@ -237,7 +231,11 @@ fun BinaryScreenScreen(
         CompositionLocalProvider(
             LocalLastStatusUpdatedAt provides lastStatusUpdatedAt
         ) {
-            Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
+            BlueMSPullToRefreshBox(
+                state = pullRefreshState,
+                isRefreshing = isLoading,
+                isBetaRelease = viewModel.isBeta,
+                onRefresh = { viewModel.getModel(nodeId = nodeId, compName = "control") }) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -280,13 +278,6 @@ fun BinaryScreenScreen(
                         }
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = isLoading,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(alignment = Alignment.TopCenter),
-                    scale = true
-                )
             }
         }
     }

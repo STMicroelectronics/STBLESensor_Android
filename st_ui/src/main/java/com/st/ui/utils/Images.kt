@@ -43,6 +43,7 @@ private val BLUE_ST_SDK_V2_BOARD_TYPE_IMAGES = mapOf(
     "WB1M_DISCOVERY_BOARD" to R.drawable.board_generic,
     "WBA5X_NUCLEO_BOARD" to R.drawable.board_generic,
     "WBA_DISCOVERY_BOARD" to R.drawable.board_generic,
+    "WBA6_NUCLEO_BOARD" to R.drawable.board_generic,
     "GENERIC" to R.drawable.board_generic,
     "WB0X_NUCLEO_BOARD" to R.drawable.board_generic
 )
@@ -71,6 +72,7 @@ private val BLUE_ST_SDK_V2_BOARD_IMAGES = mapOf(
     "WB1M_DISCOVERY_BOARD" to R.drawable.real_board_discovery_kit_wb1m,
     "WBA5X_NUCLEO_BOARD" to R.drawable.real_board_nucleo_wba5x,
     "WBA_DISCOVERY_BOARD" to R.drawable.real_board_discovery_kit_wba,
+    "WBA6_NUCLEO_BOARD" to R.drawable.real_board_nucleo_wba6,
     "PROTEUS" to R.drawable.real_board_proteus,
     "ASTRA1" to R.drawable.real_board_astra,
     "STDES_CBMLORABLE" to R.drawable.real_board_stysys_sbu06,

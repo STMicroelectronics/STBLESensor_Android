@@ -84,6 +84,7 @@
     <string name="st_extConfig_fwUpgrade_cbmlorable">STDES-CBMLoRaBLE</string>
     <string name="st_extConfig_fwUpgrade_otaBoard2">STM32WB1x</string>
     <string name="st_extConfig_fwUpgrade_otaBoard3">STM32WBA</string>
+    <string name="st_extConfig_fwUpgrade_otaBoard4">STM32WBA6</string>
     <string name="st_extConfig_fwUpgrade_selectFile">Select a file to calculate</string>
     <string name="st_extConfig_fwUpgrade_address">Address</string>
     <string name="st_extConfig_fwUpgrade_nbSectors">Number of sectors to erase</string>

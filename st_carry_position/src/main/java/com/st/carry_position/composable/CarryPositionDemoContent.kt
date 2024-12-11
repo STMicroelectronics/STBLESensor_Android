@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -123,6 +124,15 @@ fun CarryPositionDemoContent(
         Toast.makeText(context, "Carry position Unknown", Toast.LENGTH_SHORT).show()
     }
 
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -143,7 +153,7 @@ fun CarryPositionDemoContent(
 
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge)
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                         .graphicsLayer(
                             alpha = if (inHandImage) {
                                 1f
@@ -166,7 +176,7 @@ fun CarryPositionDemoContent(
 
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge)
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                         .graphicsLayer(
                             alpha = if (shirtPocketImage) {
                                 1f
@@ -189,7 +199,7 @@ fun CarryPositionDemoContent(
 
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge)
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                         .graphicsLayer(
                             alpha = if (onDeskImage) {
                                 1f
@@ -219,7 +229,7 @@ fun CarryPositionDemoContent(
 
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge)
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                         .graphicsLayer(
                             alpha = if (nearHeadImage) {
                                 1f
@@ -242,7 +252,7 @@ fun CarryPositionDemoContent(
 
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge)
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                         .graphicsLayer(
                             alpha = if (trousersPocketImage) {
                                 1f
@@ -265,7 +275,7 @@ fun CarryPositionDemoContent(
 
                 Icon(
                     modifier = Modifier
-                        .size(size = LocalDimensions.current.imageLarge)
+                        .size(size = if (smallScreen) LocalDimensions.current.imageMedium else LocalDimensions.current.imageLarge)
                         .graphicsLayer(
                             alpha = if (armSwingImage) {
                                 1f

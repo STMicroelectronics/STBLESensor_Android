@@ -3,8 +3,12 @@ package com.st.nfc_writing.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +41,9 @@ fun NfcWritingDemoContent(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(all = LocalDimensions.current.paddingNormal)
+                .padding(start = LocalDimensions.current.paddingNormal,
+                    end = LocalDimensions.current.paddingNormal,
+                    top = LocalDimensions.current.paddingNormal)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingMedium)
@@ -69,6 +75,8 @@ fun NfcWritingDemoContent(
                 NfcVCardView(viewModel = viewModel, nodeId = nodeId, expanded = numberOfRecords < 2)
                 //numberOfRecords += 1
             }
+
+            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
 
         }
     } else {

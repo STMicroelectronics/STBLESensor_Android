@@ -10,18 +10,24 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,10 +48,22 @@ fun FitnessActivityDemoContent(
     val currentActivity by viewModel.currentActivity.collectAsStateWithLifecycle()
     val currentCounter by viewModel.currentCounter.collectAsStateWithLifecycle()
 
+    val configuration = LocalConfiguration.current
+
+    val smallScreen by remember(key1 = configuration) {
+        derivedStateOf {
+            val screenHeight = configuration.screenHeightDp
+            screenHeight < 800
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(all = LocalDimensions.current.paddingNormal),
+            .padding(start = LocalDimensions.current.paddingNormal,
+                end = LocalDimensions.current.paddingNormal,
+                top = LocalDimensions.current.paddingNormal,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingLarge)
     ) {
@@ -60,7 +78,7 @@ fun FitnessActivityDemoContent(
 
         AnimatedContent(targetState = currentActivity, label = "") { activity ->
             Icon(
-                modifier = Modifier.size(size = LocalDimensions.current.imageExtraLarge),
+                modifier = Modifier.size(size = if(smallScreen) LocalDimensions.current.imageLarge else LocalDimensions.current.imageExtraLarge),
                 painter = painterResource(
                     getActivityIconResource(activity = activity)
                 ),

@@ -17,11 +17,11 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -49,9 +49,12 @@ import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Grey6
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
+import com.st.ui.composables.BlueMSPullToRefreshBox
+import com.st.ui.theme.PrimaryBlue
 import com.st.ui.theme.SecondaryBlue
 
 @Composable
@@ -122,13 +125,18 @@ fun DeviceListScreen(
 
                 val navOptions: NavOptions = navOptions {
                     anim {
-                        enter = com.st.ui.R.anim.slide_in_from_left
+                        //enter = com.st.ui.R.anim.slide_in_from_left
+                        enter = com.st.ui.R.anim.fade_in
                         exit = com.st.ui.R.anim.fade_out
                         popEnter = com.st.ui.R.anim.fade_in
-                        popExit = com.st.ui.R.anim.slide_out_to_left
+                        //popExit = com.st.ui.R.anim.slide_out_to_left
+                        popExit = com.st.ui.R.anim.fade_out
                     }
                 }
-                navController.navigate(directions = HomeFragmentDirections.actionHomeFragmentToCatalog(), navOptions = navOptions)
+                navController.navigate(
+                    directions = HomeFragmentDirections.actionHomeFragmentToCatalog(),
+                    navOptions = navOptions
+                )
 
 //                navController.navigate(
 //                    HomeFragmentDirections.actionHomeFragmentToCatalog()
@@ -502,24 +510,21 @@ fun DeviceList(
 
     Scaffold(
         modifier = modifier,
-//        floatingActionButtonPosition = FabPosition.End,
-//        floatingActionButton = {
-//            DeviceScanFAB(
-//                isLoading = isLoading,
-//                onStartScan = onStartScan
-//            )
-//        },
-        bottomBar = {
-            MainBottomBar(
+        contentWindowInsets = WindowInsets.statusBars,
+        floatingActionButtonPosition = FabPosition.End,
                 floatingActionButton = {
-                    DeviceScanFAB(
-                        isLoading = isLoading,
-                        onStartScan = onStartScan
-                    )
-                },
-                openCatalog = goToCatalog,
-                openFilter = { openFilterDialog = true }
-            )
+            FloatingActionButton(
+                modifier = Modifier.padding(
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                ),
+                containerColor = SecondaryBlue,
+                onClick = { openFilterDialog = true }) {
+                Icon(
+                    tint = PrimaryBlue,
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = null
+                )
+            }
         },
         topBar = {
             MainTopBar(
@@ -538,7 +543,8 @@ fun DeviceList(
                 readBetaCatalog = readBetaCatalog,
                 readReleaseCatalog = readReleaseCatalog,
                 switchVersionBetaRelease = switchVersionBetaRelease,
-                switchServerForced = switchServerForced
+                switchServerForced = switchServerForced,
+                goToCatalog = goToCatalog
             ) {
                 pickFileLauncher.launch(
                     arrayOf(
@@ -551,11 +557,15 @@ fun DeviceList(
         DeviceList(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues = paddingValues),
+                .consumeWindowInsets(paddingValues).padding(paddingValues),
+                //.padding(paddingValues = paddingValues),
             filteredDevices = filteredDevices,
             pinnedDevices = pinnedDevices,
             onPinChange = onPinChange,
             goToCatalog = goToCatalog,
+            isLoading = isLoading,
+            isBetaRelease = isBetaRelease,
+            onStartScan = onStartScan,
             onNodeSelected = onNodeSelected
         )
     }
@@ -570,7 +580,7 @@ fun DeviceList(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceList(
     modifier: Modifier = Modifier,
@@ -578,12 +588,24 @@ fun DeviceList(
     pinnedDevices: List<String>,
     onPinChange: (String, Boolean) -> Unit,
     goToCatalog: () -> Unit = { /** NOOP**/ },
+    isLoading: Boolean = false,
+    isBetaRelease: Boolean = false,
+    onStartScan: () -> Unit = { /** NOOP**/ },
     onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
 ) {
+
+
+    val pullRefreshState = rememberPullToRefreshState()
+
     Column(
         modifier = modifier
     ) {
-        Box(modifier = Modifier) {
+        BlueMSPullToRefreshBox(
+            state = pullRefreshState,
+            isRefreshing = isLoading,
+            onRefresh = onStartScan,
+            isBetaRelease = isBetaRelease
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
@@ -633,10 +655,18 @@ fun DeviceList(
                         )
                     }
                 }
+
+                item {
+                    Spacer(
+                        Modifier.windowInsetsBottomHeight(
+                            WindowInsets.systemBars
+                        )
+                        )
+                    }
+                }
             }
         }
     }
-}
 
 private const val DEGREES = 360f
 private const val DURATION_MILLIS = 1500
@@ -646,7 +676,7 @@ fun DeviceScanFAB(
     isLoading: Boolean,
     onStartScan: () -> Unit
 ) {
-    var currentRotation by remember { mutableStateOf(value = 0f) }
+    var currentRotation by remember { mutableFloatStateOf(value = 0f) }
     val rotation = remember { Animatable(currentRotation) }
 
     LaunchedEffect(key1 = isLoading) {

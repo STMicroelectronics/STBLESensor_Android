@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -51,8 +54,8 @@ fun FlowDemoFlowIfApplicationCreationScreen(
 
     val context = LocalContext.current
     var openConfirmationDialog by remember { mutableStateOf(value = false) }
-    var openAddSavedExprDialog  by remember { mutableStateOf(value = false) }
-    var openAddApplicationDialog  by remember { mutableStateOf(value = false) }
+    var openAddSavedExprDialog by remember { mutableStateOf(value = false) }
+    var openAddApplicationDialog by remember { mutableStateOf(value = false) }
 
     //var selectedExpression by remember { mutableStateOf( viewModel.expressionSelected)}
 
@@ -79,7 +82,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
             text = "IF condition"
         )
 
-        if(filteredAvailableCustomExprFlowList.isEmpty()) {
+        if (filteredAvailableCustomExprFlowList.isEmpty()) {
             Text(
                 modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
                 fontSize = 18.sp,
@@ -107,7 +110,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                     ),
                     fontSize = 20.sp,
                     text = "Condition"
-                    )
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -131,7 +134,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                     iconId = getOutputIconResourceByName(expressionSelected.outputs[0].icon),
                     label = expressionSelected.description,
                     hasSettings = false
-                    )
+                )
 
                 ClickableTest(
                     text = stringResource(id = R.string.change_expression_new_app),
@@ -156,7 +159,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
                     ),
                     fontSize = 20.sp,
                     text = "Execute"
-                    )
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -171,7 +174,7 @@ fun FlowDemoFlowIfApplicationCreationScreen(
             }
         }
 
-        if(flowSelected==null) {
+        if (flowSelected == null) {
             ClickableTest(
                 text = stringResource(id = R.string.choose_app_to_upload_new_app),
                 onClick = { openAddApplicationDialog = true })
@@ -210,8 +213,8 @@ fun FlowDemoFlowIfApplicationCreationScreen(
 
             BlueMsButton(
                 text = stringResource(id = R.string.play_flow),
-                iconPainter = painterResource(id =R.drawable.ic_upload),
-                enabled = (viewModel.expressionSelected!=null) &&  (viewModel.flowSelected!=null),
+                iconPainter = painterResource(id = R.drawable.ic_upload),
+                enabled = (viewModel.expressionSelected != null) && (viewModel.flowSelected != null),
                 onClick = {
                     navController.navigate(
                         DestinationFlowDemoFlowUploadScreen.route
@@ -220,6 +223,11 @@ fun FlowDemoFlowIfApplicationCreationScreen(
             )
         }
 
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars
+            )
+        )
     }
 
     if (openConfirmationDialog) {
@@ -230,17 +238,18 @@ fun FlowDemoFlowIfApplicationCreationScreen(
             onConfirmation = {
                 viewModel.expressionSelected = null
                 viewModel.flowSelected = null
-                navController.popBackStack() }
+                navController.popBackStack()
+            }
         )
     }
 
-    if(openAddSavedExprDialog) {
+    if (openAddSavedExprDialog) {
         FlowDemoAddSavedExprDialog(viewModel = viewModel,
-            onDismissRequest = {openAddSavedExprDialog=false})
+            onDismissRequest = { openAddSavedExprDialog = false })
     }
 
-    if(openAddApplicationDialog) {
+    if (openAddApplicationDialog) {
         FlowDemoAddAppExprDialog(viewModel = viewModel,
-            onDismissRequest = {openAddApplicationDialog=false})
+            onDismissRequest = { openAddApplicationDialog = false })
     }
 }

@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.StringBuilder
 import javax.inject.Inject
 
@@ -130,7 +131,7 @@ class MedicalSignalViewModel
     fun stopMed16(nodeId: String) {
         observeFeatureJob16?.cancel()
         medical16Feature?.let { feature ->
-            viewModelScope.launch {
+            coroutineScope.launch {
                 _isMed16Streaming.emit(false)
                 blueManager.disableFeatures(
                     nodeId = nodeId, features = listOf(feature)
@@ -167,7 +168,7 @@ class MedicalSignalViewModel
     fun stopMed24(nodeId: String) {
         observeFeatureJob24?.cancel()
         medical24Feature?.let { feature ->
-            viewModelScope.launch {
+            coroutineScope.launch {
                 _isMed24Streaming.emit(false)
                 blueManager.disableFeatures(
                     nodeId = nodeId, features = listOf(feature)
@@ -367,7 +368,9 @@ class MedicalSignalViewModel
 
     fun stopDemo(nodeId: String) {
         stopMed16(nodeId = nodeId)
+        medical16Feature = null
         stopMed24(nodeId = nodeId)
+        medical24Feature = null
 
         observeFeaturePnPLJob?.let { job ->
             //If we are looking PnPL and the RawControlled Feature

@@ -240,6 +240,16 @@ class StPreferencesImpl @Inject constructor(
         }
     }
 
+    override fun setBoardCatalogStatus(serializedString: String) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs[BOARD_CATALOG_STATUS] = serializedString }
+        }
+    }
+
+    override fun getBoardCatalogStatus(): String? {
+        return runBlocking { dataStore.data.first()[BOARD_CATALOG_STATUS] }
+    }
+
     //Custom Entries
     override fun setCustomStringForKey(key: String, serializedString: String) {
         coroutineScope.launch {
@@ -273,5 +283,6 @@ class StPreferencesImpl @Inject constructor(
         private val DISABLE_HIDDEN_DEMOS_KEY = booleanPreferencesKey("disable_hidden_demos_key")
         private val SERVER_FORCED_KEY = booleanPreferencesKey("server_forced_key")
         private val MQTT_SERVER_KEY = stringPreferencesKey("mqtt_server_key")
+        private val BOARD_CATALOG_STATUS = stringPreferencesKey("boardCatalogStatus")
     }
 }

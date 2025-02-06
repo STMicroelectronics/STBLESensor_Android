@@ -28,8 +28,8 @@
     <string name="st_hsdl_datalog_chartToggleSum">Mod</string>
     <array name="dataSetColor">
         <item>#1B3AA8</item>  <!-- InfoText -->
-        <item>#A8251B</item>  <!-- ErrorText -->
         <item>#1E8537</item>  <!-- SuccessText -->
+        <item>#A8251B</item>  <!-- ErrorText -->
         <item>#000000</item>  <!-- Grey10 -->
         <item>#3CB4E6</item>  <!-- SecondaryBlue -->
         <item>#E6007E</item>  <!-- PrimaryPink -->

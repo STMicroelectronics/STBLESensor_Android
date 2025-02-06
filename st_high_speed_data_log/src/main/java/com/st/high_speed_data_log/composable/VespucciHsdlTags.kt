@@ -58,13 +58,7 @@ fun VespucciHsdlTags(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(
-                PaddingValues(
-                    start = LocalDimensions.current.paddingNormal,
-                    end = LocalDimensions.current.paddingNormal,
-                    top = LocalDimensions.current.paddingNormal
-                )
-            )
+            .padding(all = LocalDimensions.current.paddingNormal)
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
@@ -83,12 +77,6 @@ fun VespucciHsdlTags(
             vespucciTagsActivation = vespucciTagsActivation,
             vespucciTags = vespucciTags,
             onTagChangeState = onTagChangeState
-        )
-
-        Spacer(
-            Modifier.windowInsetsBottomHeight(
-                WindowInsets.navigationBars
-            )
         )
     }
 }

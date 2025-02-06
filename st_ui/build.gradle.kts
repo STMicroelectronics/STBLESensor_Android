@@ -34,6 +34,7 @@ android {
         vectorDrawables { useSupportLibrary = true }
     }
 
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -74,6 +75,9 @@ Loco {
 }
 
 dependencies {
+
+    // - Core
+    implementation(project(":st_core"))
 
     // Compose
     api(platform(libs.androidx.compose.bom))
@@ -130,6 +134,9 @@ dependencies {
     androidTestApi(platform(libs.androidx.compose.bom))
     androidTestApi(libs.bundles.composeTest)
     androidTestApi(libs.bundles.test)
+
+    // Blue ST SDK
+    implementation(libs.st.sdk)
 
     // Test
     testApi(libs.junit.core)

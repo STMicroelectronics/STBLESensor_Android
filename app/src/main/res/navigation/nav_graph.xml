@@ -20,6 +20,9 @@
         android:name="com.st.bluems.ui.home.HomeFragment"
         android:label="Home">
         <action
+            android:id="@+id/action_homeFragment_to_licensesFragment"
+            app:destination="@id/licenseFragment" />
+        <action
             android:id="@+id/action_homeFragment_to_profileNavGraph"
             app:destination="@id/user_profiling_nav_graph" />
         <action
@@ -49,6 +52,12 @@
             app:destination="@id/user_profiling_nav_graph"
             app:popUpTo="@id/welcomeFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/licenseFragment"
+        android:name="com.st.licenses.LicensesFragment"
+        android:label="Licenses">
     </fragment>
 
     <fragment

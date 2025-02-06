@@ -20,6 +20,7 @@ import com.st.blue_sdk.utils.getGPFeature
 import com.st.blue_sdk.utils.isExtendedOrExternalFeatureCharacteristics
 import com.st.blue_sdk.utils.isGeneralPurposeFeatureCharacteristics
 import com.st.blue_sdk.utils.isStandardFeatureCharacteristics
+import com.st.core.api.ApplicationAnalyticsService
 import com.st.demo_showcase.models.Demo
 import com.st.preferences.StPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +35,8 @@ import javax.inject.Inject
 class CatalogViewModel
 @Inject internal constructor(
     private val blueManager: BlueManager,
-    stPreferences: StPreferences
+    stPreferences: StPreferences,
+    private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : ViewModel() {
 
     private val _boards = MutableStateFlow(emptyList<BoardFirmware>())
@@ -109,6 +111,11 @@ class CatalogViewModel
         }
     }
 
+    fun sendCatalogAnalytics(friendlyName: String){
+        appAnalyticsService.forEach { service ->
+            service.trackCatalogFlow(friendlyName)
+        }
+    }
 
     init {
         viewModelScope.launch {

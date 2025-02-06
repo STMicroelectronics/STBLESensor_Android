@@ -125,6 +125,7 @@ fun Component(
                     icon = icon,
                     title = title,
                     isMounted = isMounted,
+                    dataReceived = data!=null,
                     subtitle = subtitle
                 ) {
                     if (isOpen.not()) {
@@ -174,6 +175,7 @@ fun Component(
                                 onValueChange = onValueChange,
                                 onBeforeUcf = onBeforeUcf,
                                 onAfterUcf = onAfterUcf,
+                                componentName = subtitle?: "NoSensorName",
                                 onSendCommand = onSendCommand
                             )
 

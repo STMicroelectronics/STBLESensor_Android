@@ -180,8 +180,8 @@ fun FwUpgradeScreen(
             Boards.Model.WB1M_DISCOVERY_BOARD -> "0x007000"
 
             Boards.Model.WBA5X_NUCLEO_BOARD,
-            Boards.Model.WBA_DISCOVERY_BOARD,-> if(radioSelection == 0) "0x080000" else "0x0F6000"
-            Boards.Model.WBA6_NUCLEO_BOARD,-> if(radioSelection == 0) "0x100000" else "0x1EC000"
+            Boards.Model.WBA_DISCOVERY_BOARD,-> if(radioSelection == 0) "0x080000" else "0x0FA000"
+            Boards.Model.WBA6_NUCLEO_BOARD,-> if(radioSelection == 0) "0x100000" else "0x1F4000"
             Boards.Model.WB0X_NUCLEO_BOARD -> if(radioSelection == 0) "0x3F800" else "0x07E000"
             else -> "" //shouldn't happen
         }

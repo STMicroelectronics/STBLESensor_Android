@@ -76,4 +76,24 @@ class ApplicationAnalyticsDefaultImpl @Inject constructor() : ApplicationAnalyti
     override fun flowExpertAppOutputAnalytics(id: String, desc: String) {
         Log.d(TAG, "Default Impl for flowExpertAppOutputAnalytics")
     }
+
+    override fun trackQRCodeScanFlow(projectName: String, projectType: Int) {
+        Log.d(TAG, "Default Impl for trackQRCodeScanFlow")
+    }
+
+    override fun trackProjectsFlows(projectType: Int, useCase: Int, projectName: String, firmwareName: String, boardType: String) {
+        Log.d(TAG, "Default Impl for trackProjectsFlows")
+    }
+
+    override fun trackDatasetFlows(useCase: Int, datasetName: String, firmwareName: String?, boardType: String?) {
+        Log.d(TAG, "Default Impl for trackDatasetFlows")
+    }
+
+    override fun trackCatalogFlow(boardName: String) {
+        Log.d(TAG, "Default Impl for trackCatalogFlow")
+    }
+
+    override fun trackDocumentationFlow() {
+        Log.d(TAG, "Default Impl for trackDocumentationFlow")
+    }
 }

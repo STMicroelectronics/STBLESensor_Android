@@ -87,7 +87,7 @@ fun Demo.isPnPLMandatory(): Boolean = when (this) {
 }
 
 fun Demo.isBetaRequired(): Boolean = when (this) {
-    Demo.MedicalSignal -> true
+    //Demo.MedicalSignal -> true
     else -> false
 }
 

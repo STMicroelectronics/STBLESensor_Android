@@ -42,7 +42,8 @@ fun STGaugeMeter(
     listOfColor: List<Color>,
     gaugeSize: STGaugeMeterSize,
     name: String = "",
-    displayNeedle: Boolean = false
+    displayNeedle: Boolean = false,
+    showSmallNeedle: Boolean = false
 ) {
 
     val ratio = (inputValue - minValue).toFloat() / (maxValue - minValue).toFloat()
@@ -92,7 +93,9 @@ fun STGaugeMeter(
             if(displayNeedle) {
                 val centerOffset = Offset(width / 2f, height / 2f)
 
-                drawCircle(Grey7, 20f*scalingFactor, centerOffset)
+                if(showSmallNeedle.not()) {
+                    drawCircle(Grey7, 20f * scalingFactor, centerOffset)
+                }
 
                 // Calculate needle angle based on inputValue
                 val needleAngle = inputValueAngle + startAngle
@@ -108,19 +111,34 @@ fun STGaugeMeter(
                         Math.toRadians(needleAngle.toDouble()).toFloat()
                     )
 
+                    val baseOffsetX: Float
+                    val baseOffsetY: Float
+                    if(showSmallNeedle) {
+                        baseOffsetX = 50f*scalingFactor * cos(
+                            Math.toRadians(needleAngle.toDouble()).toFloat()
+                        )
+
+                        baseOffsetY = 50f*scalingFactor * sin(
+                            Math.toRadians(needleAngle.toDouble()).toFloat()
+                        )
+                    } else {
+                        baseOffsetX = 0f
+                        baseOffsetY = 0f
+                    }
+
                     // Calculate the base points of the needle
                     val baseLeftX = centerOffset.x + needleBaseWidth * cos(
                         Math.toRadians((needleAngle - 90).toDouble()).toFloat()
-                    )
+                    ) + baseOffsetX
                     val baseLeftY = centerOffset.y + needleBaseWidth * sin(
                         Math.toRadians((needleAngle - 90).toDouble()).toFloat()
-                    )
+                    ) + baseOffsetY
                     val baseRightX = centerOffset.x + needleBaseWidth * cos(
                         Math.toRadians((needleAngle + 90).toDouble()).toFloat()
-                    )
+                    ) + baseOffsetX
                     val baseRightY = centerOffset.y + needleBaseWidth * sin(
                         Math.toRadians((needleAngle + 90).toDouble()).toFloat()
-                    )
+                    )+ baseOffsetY
 
                     moveTo(topX, topY)
                     lineTo(baseLeftX, baseLeftY)
@@ -133,22 +151,24 @@ fun STGaugeMeter(
                     path = needlePath
                 )
 
-                drawContext.canvas.nativeCanvas.apply {
-                    drawText(
-                        "$inputValue",
-                        centerOffset.x,
-                        centerOffset.y+5f*scalingFactor,
-                        Paint().apply {
-                            textSize =20f*scalingFactor
-                            textAlign = Paint.Align.CENTER
-                            color = ContextCompat.getColor(context, com.st.ui.R.color.Grey0)
-                        }
-                    )
+                if(!showSmallNeedle) {
+                    drawContext.canvas.nativeCanvas.apply {
+                        drawText(
+                            "$inputValue",
+                            centerOffset.x,
+                            centerOffset.y + 5f * scalingFactor,
+                            Paint().apply {
+                                textSize = 20f * scalingFactor
+                                textAlign = Paint.Align.CENTER
+                                color = ContextCompat.getColor(context, com.st.ui.R.color.Grey0)
+                            }
+                        )
+                    }
                 }
             }
         }
 
-        if(!displayNeedle) {
+        if((!displayNeedle || showSmallNeedle)) {
             Text(
                 modifier = Modifier
                     .align(Alignment.Center),
@@ -196,25 +216,28 @@ enum class STGaugeMeterSize {
 
 @Preview(showBackground = true)
 @Composable
-private fun STGaitMeter90Preview() {
+private fun STGaitMeter2Preview() {
     STGaugeMeter(
-        inputValue = 6, listOfColor = listOf(
+        inputValue = 90, listOfColor = listOf(
             SuccessText,
             PrimaryYellow,
             ErrorText
-        ), minValue = 1, maxValue = 11, gaugeSize = STGaugeMeterSize.SMALL,
+        ), minValue = 0, maxValue = 100, gaugeSize = STGaugeMeterSize.SMALL,
+        displayNeedle = true,
+        showSmallNeedle = true
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun STGaitMeter10Preview() {
+private fun STGaitMeter1Preview() {
     STGaugeMeter(
         inputValue = 10, listOfColor = listOf(
             ErrorText,
             PrimaryYellow,
             SuccessText
         ), minValue = 0, maxValue = 100,gaugeSize = STGaugeMeterSize.MEDIUM, displayNeedle = true,
+        showSmallNeedle = true,
         name = "Test Numb2"
     )
 }

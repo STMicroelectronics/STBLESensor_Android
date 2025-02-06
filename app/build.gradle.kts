@@ -22,6 +22,7 @@ plugins {
     alias(libs.plugins.jlleitschuhKtlint)
     alias(libs.plugins.appswithloveLoco)
     alias(libs.plugins.androidxSafeargs)
+    alias(libs.plugins.jaredsburrowsLicense)
 }
 
 apply {
@@ -36,8 +37,8 @@ android {
         applicationId = "com.st.bluems"
         minSdk = stMinSdk
         targetSdk = stTargetSdk
-        versionCode = 303
-        versionName = "5.2.6"
+        versionCode = 313
+        versionName = "5.2.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -90,6 +91,27 @@ android {
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
+licenseReport {
+    // Generate reports
+    generateCsvReport = false
+    generateHtmlReport = true
+    generateJsonReport = false
+    generateTextReport = false
+
+    // Copy reports - These options are ignored for Java projects
+    copyCsvReportToAssets = false
+    copyHtmlReportToAssets = true
+    copyJsonReportToAssets = false
+    copyTextReportToAssets = false
+    useVariantSpecificAssetDirs = false
+
+    // Ignore licenses for certain artifact patterns
+    //ignoredPatterns = []
+
+    // Show versions in the report - default is false
+    showVersions = true
+}
+
 detekt {
     config.setFrom("../detekt-config-compose.yml")
 }
@@ -124,6 +146,8 @@ dependencies {
     implementation(project(":st_user_profiling"))
     // - Welcome
     implementation(project(":st_welcome"))
+    // - Licenses
+    implementation(project(":st_licenses"))
     // - Terms
     implementation(project(":st_terms"))
     // - Demos

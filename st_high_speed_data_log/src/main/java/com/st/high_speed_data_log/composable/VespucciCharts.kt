@@ -100,11 +100,7 @@ fun VespucciCharts(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(
-                start = LocalDimensions.current.paddingNormal,
-                end = LocalDimensions.current.paddingNormal,
-                top = LocalDimensions.current.paddingNormal
-            )
+            .padding(all = LocalDimensions.current.paddingNormal)
     ) {
         Column(
             modifier = Modifier

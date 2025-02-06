@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022(-0001) STMicroelectronics.
+ * All rights reserved.
+ * This software is licensed under terms that can be found in the LICENSE file in
+ * the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ */
 package com.st.high_speed_data_log
 
 import android.content.Context
@@ -13,6 +20,7 @@ import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
 import com.st.blue_sdk.features.extended.raw_controlled.RawControlled
+import com.st.blue_sdk.features.extended.raw_controlled.RawControlled.Companion.STREAM_ID_NOT_FOUND
 import com.st.blue_sdk.features.extended.raw_controlled.RawControlledInfo
 import com.st.blue_sdk.features.extended.raw_controlled.decodeRawData
 import com.st.blue_sdk.features.extended.raw_controlled.model.RawStreamIdEntry
@@ -66,6 +74,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var firstStopLogDone = HsdlConfig.isVespucci.not()
+    private var firstDisableAllDone = false
     private var firstGetStatusAllDone = false
     private var enableStopDemo = true
     private var observeFeatureJob: Job? = null
@@ -122,14 +131,14 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     val enableLog: StateFlow<Boolean> = _enableLog.asStateFlow()
 
 
-    private val _numActiveSensors = MutableStateFlow(value = 0)
-    val numActiveSensors = _numActiveSensors.asStateFlow()
+//    private val _numActiveSensors = MutableStateFlow(value = 0)
+//    val numActiveSensors = _numActiveSensors.asStateFlow()
 
-    var isBeta = false
-
-    init {
-        isBeta = stPreferences.isBetaApplication()
-    }
+//    var isBeta = false
+//
+//    init {
+//        isBeta = stPreferences.isBetaApplication()
+//    }
 
     private fun <T> MutableList<T>.removeFirstElements(count: Int): List<T> {
         val subList = this.subList(0, minOf(count, this.size)).toList()
@@ -147,7 +156,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
         viewModelScope.launch {
             while (true) {
                 val odr = _streamData.value?.odr ?: 1
-                val plotSize =  Math.ceil(odr / 10.toDouble()).roundToInt()
+                val plotSize = Math.ceil(odr / 10.toDouble()).roundToInt()
                 val bufferSize = streamDataBuffer.size
 
                 if (plotSize in 1..<bufferSize) {
@@ -192,7 +201,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
                         val interfaceModel = sensor.second
                         val data = (status.find { it.containsKey(name) })?.get(name)
 
-                        val isMounted = interfaceModel.contents
+                        var isMounted = interfaceModel.contents
                             .filterIsInstance<DtmiContent.DtmiPropertyContent.DtmiBooleanPropertyContent>()
                             .find { it.name == "mounted" }
                             ?.let { enableProperty ->
@@ -208,6 +217,10 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
                                 }
                                 booleanData
                             } ?: true
+
+                        if(data==null) {
+                            isMounted = false
+                        }
 
                         if (isMounted) {
                             sensorsActiveLocal.add(name)
@@ -240,7 +253,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
                 .collect { sensorsEnabled ->
                     Log.d(TAG, "sensorsEnabled = ${sensorsEnabled.joinToString(", ")}")
 
-                    _numActiveSensors.emit(sensorsEnabled.size)
+//                    _numActiveSensors.emit(sensorsEnabled.size)
 
                     _enableLog.update { sensorsEnabled.isNotEmpty() }
                 }
@@ -321,7 +334,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
             localizedDisplayName
         } else fsProp?.unit
 
-        it.first.name to (uom ?: "") //.toShortUom()
+        it.first.name to uom.toShortUom()
     }
 
     private fun String?.toShortUom() = when (this) {
@@ -511,11 +524,9 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
             }
 
             if (askTheStatus) {
-                //Fix 26/11/24PL
-                //cmd.component?.let { compName ->
-                //    sendGetStatusComponentInfoCommand(name = compName, nodeId = nodeId)
-                //}
-                sendGetStatusComponentInfoCommand(name = cmd.command, nodeId = nodeId)
+                cmd.component?.let { compName ->
+                    sendGetStatusComponentInfoCommand(name = compName, nodeId = nodeId)
+                }
             }
         }
     }
@@ -549,6 +560,26 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
 
     private suspend fun sendGetStatusComponentInfoCommand(name: String, nodeId: String) {
         val sensorName = name.substringBefore("_")
+
+//        if (name == "tags_info") {
+//            sendCommand(
+//                nodeId = nodeId,
+//                typeOfCmd = PnPLTypeOfCommand.Status,
+//                cmd = PnPLCmd.TAGS_INFO,
+//                askTheStatus = false
+//            )
+//        } else {
+//            sensorsActive.filter {
+//                it.startsWith(sensorName)
+//            }.forEach {
+//                sendCommand(
+//                    nodeId = nodeId,
+//                    typeOfCmd = PnPLTypeOfCommand.Status,
+//                    cmd = PnPLCmd(command = "get_status", request = it),
+//                    askTheStatus = false
+//                )
+//            }
+//        }
 
         if (sensorsActive.none { it.startsWith(sensorName) }) {
             //In this way... we are here for any component that it's not a sensor
@@ -642,7 +673,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     private fun handleRawControlledUpdate(data: RawControlledInfo) {
         val streamId = decodeRawData(data = data.data, rawFormat = rawPnPLFormat)
 
-        if (streamId != RawControlled.STREAM_ID_NOT_FOUND) {
+        if (streamId != STREAM_ID_NOT_FOUND) {
             rawPnPLFormat.firstOrNull { it.streamId == streamId }?.let { foundStream ->
                 if (_currentSensorEnabled.value.isEmpty()) {
                     _currentSensorEnabled.update {
@@ -942,12 +973,9 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
             } else {
                 sendSetNameCommand(nodeId = nodeId)
 
-                if (HsdlConfig.isVespucci) {
-                    sendDisableAllSensorCommand(nodeId = nodeId)
-                }
-
                 if (shouldRenameTags) {
                     shouldRenameTags = false
+                    HsdlConfig.tags = HsdlConfig.tags.filter { it != "unlabeled" }
                     for (index in 0..<tagNames.size) {
                         if (index in 0..HsdlConfig.tags.lastIndex) {
                             sendRenameTagCommand(nodeId = nodeId, index = index)
@@ -968,10 +996,16 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
             }
         } else {
             firstStopLogDone = true
-            if (firstGetStatusAllDone.not()) {
-                firstGetStatusAllDone = true
 
-                sendGetAllCommand(nodeId = nodeId)
+            if (HsdlConfig.isVespucci && firstDisableAllDone.not()) {
+                firstDisableAllDone = true
+                sendDisableAllSensorCommand(nodeId = nodeId)
+            } else {
+                if (firstGetStatusAllDone.not()) {
+                    firstGetStatusAllDone = true
+
+                    sendGetAllCommand(nodeId = nodeId)
+                }
             }
         }
     }
@@ -1209,81 +1243,88 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     }
 
     fun startDemo(nodeId: String) {
-        observeFeatureJob?.cancel()
-        observeNodeStatusJob?.cancel()
-        tagNames.clear()
+        if(enableStopDemo) {
+            observeFeatureJob?.cancel()
+            observeNodeStatusJob?.cancel()
+            tagNames.clear()
 
-        runBlocking {
-            val tags = blueManager.getDtmiModel(
-                nodeId = nodeId, isBeta = stPreferences.isBetaApplication()
-            )?.extractComponent(compName = TAGS_INFO_JSON_KEY)?.firstOrNull()
+            runBlocking {
+                val tags = blueManager.getDtmiModel(
+                    nodeId = nodeId, isBeta = stPreferences.isBetaApplication()
+                )?.extractComponent(compName = TAGS_INFO_JSON_KEY)?.firstOrNull()
 
-            tags?.let {
-                tagNames.addAll(tags.second.contents
-                    .filter { tagsPropNamePredicate(it.name) }
-                    .map { it.name })
-            }
-        }
-
-        observeNodeStatusJob = viewModelScope.launch {
-            blueManager.getNodeStatus(nodeId = nodeId)
-                .collect {
-                    if (it.connectionStatus.prev == NodeState.Ready &&
-                        it.connectionStatus.current == NodeState.Disconnected
-                    ) {
-                        _isConnectionLost.update { true }
-                    }
+                tags?.let {
+                    tagNames.addAll(tags.second.contents
+                        .filter { tagsPropNamePredicate(it.name) }
+                        .map { it.name })
                 }
-        }
-
-        if (pnplFeature == null) {
-            pnplFeature =
-                blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
-                    .filterIsInstance<PnPL>().firstOrNull()
-
-            if (HsdlConfig.isVespucci) {
-                rawFeature =
-                    blueManager.nodeFeatures(nodeId = nodeId)
-                        .filter { it.name == RawControlled.NAME }
-                        .filterIsInstance<RawControlled>().firstOrNull()
             }
 
-            features = if (pnplFeature == null) emptyList() else listOf(pnplFeature!!) +
-                    if (rawFeature == null) emptyList<Feature<*>>() else listOf(rawFeature!!)
-
-            observeFeatureJob = blueManager.getFeatureUpdates(nodeId = nodeId,
-                features = features,
-                onFeaturesEnabled = { onFeaturesEnabled(nodeId = nodeId) })
-                .flowOn(context = Dispatchers.IO).map { it.data }.onEach { data ->
-                    if (data is PnPLConfig) {
-                        initRawPnPLFormat(data = data)
-
-                        initPnPLBleResponse(data = data)
-
-                        handleStatusUpdate(data = data)
-
-                        initDemo(nodeId = nodeId)
-
-                        updateUIStatus(data = data)
-
-                        handleTagsUpdate(data = data)
-
-                        getModel(nodeId = nodeId)
-
-                        if (pnplBleResponses) {
-                            handlePnplResponses(nodeId = nodeId, data = data)
+            observeNodeStatusJob = viewModelScope.launch {
+                blueManager.getNodeStatus(nodeId = nodeId)
+                    .collect {
+                        if (it.connectionStatus.prev == NodeState.Ready &&
+                            it.connectionStatus.current == NodeState.Disconnected
+                        ) {
+                            _isConnectionLost.update { true }
                         }
                     }
+            }
 
-                    if (data is RawControlledInfo) {
-                        handleRawControlledUpdate(data = data)
-                    }
-                }.launchIn(scope = viewModelScope)
+            if (pnplFeature == null) {
+                pnplFeature =
+                    blueManager.nodeFeatures(nodeId = nodeId).filter { it.name == PnPL.NAME }
+                        .filterIsInstance<PnPL>().firstOrNull()
+
+                if (HsdlConfig.isVespucci) {
+                    rawFeature =
+                        blueManager.nodeFeatures(nodeId = nodeId)
+                            .filter { it.name == RawControlled.NAME }
+                            .filterIsInstance<RawControlled>().firstOrNull()
+                }
+
+                features = if (pnplFeature == null) emptyList() else listOf(pnplFeature!!) +
+                        if (rawFeature == null) emptyList<Feature<*>>() else listOf(rawFeature!!)
+
+                observeFeatureJob = blueManager.getFeatureUpdates(nodeId = nodeId,
+                    features = features,
+                    onFeaturesEnabled = { onFeaturesEnabled(nodeId = nodeId) })
+                    .flowOn(context = Dispatchers.IO).map { it.data }.onEach { data ->
+                        if (data is PnPLConfig) {
+                            initRawPnPLFormat(data = data)
+
+                            initPnPLBleResponse(data = data)
+
+                            handleStatusUpdate(data = data)
+
+                            initDemo(nodeId = nodeId)
+
+                            updateUIStatus(data = data)
+
+                            handleTagsUpdate(data = data)
+
+                            getModel(nodeId = nodeId)
+
+                            if (pnplBleResponses) {
+                                handlePnplResponses(nodeId = nodeId, data = data)
+                            }
+                        }
+
+                        if (data is RawControlledInfo) {
+                            handleRawControlledUpdate(data = data)
+                        }
+                    }.launchIn(scope = viewModelScope)
+            }
+        } else {
+            enableStopDemo = true
         }
     }
 
     fun stopDemo(nodeId: String) {
         if (enableStopDemo) {
+
+           firstGetStatusAllDone = false
+
             observeFeatureJob?.cancel()
             observeNodeStatusJob?.cancel()
 
@@ -1338,7 +1379,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
             if (newState) {
                 _vespucciTagsActivation.update { it + tag }
 
-                delay(timeMillis = 5000L)
+                delay(timeMillis = 7000L)
 
                 _vespucciTagsActivation.update { it - tag }
             }

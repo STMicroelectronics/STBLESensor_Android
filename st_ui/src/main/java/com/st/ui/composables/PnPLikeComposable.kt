@@ -37,6 +37,7 @@
 package com.st.ui.composables
 
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -100,6 +101,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.st.blue_sdk.models.JsonMLCFormat
 import com.st.ui.R
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey0
@@ -118,6 +120,7 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlinx.serialization.json.Json
 
 val LocalLastStatusUpdatedAt = compositionLocalOf { 0L }
 
@@ -735,6 +738,7 @@ const val LOAD_FILE_RESPONSE_PROPERTY_NAME = "ucf_status"
 const val BIN_FILE_TYPE = "application/octet-stream"
 const val JSON_FILE_TYPE = "application/json"
 const val FILE_UCF = "ucf"
+const val FILE_JSON = "json"
 const val FILE_DATA = "data"
 const val FILE_SIZE = "size"
 const val FILE_REQUEST = "ucf_data"
@@ -751,6 +755,7 @@ fun UCF(
     label: String,
     commandType: String,
     commandName: String,
+    componentName: String,
     onBeforeUcf:() -> Unit,
     onAfterUcf:() -> Unit,
     onSendCommand: (CommandRequest?) -> Unit
@@ -775,23 +780,43 @@ fun UCF(
 
                     //val fileExt = fileContent.split('.').last()
 
-                    var postProcFile = fileContent
+                    var postProcFile: String? = fileContent
                     if (fileExt == FILE_UCF) {
                         postProcFile = compressUCFString(fileContent)
+                    } else if (fileExt == FILE_JSON) {
+                        val jsonDec = Json {
+                            encodeDefaults = true
+                            ignoreUnknownKeys = true
+                        }
+                        val jsonMLCFormat =
+                            try {
+                                jsonDec.decodeFromString<JsonMLCFormat>(fileContent)
+                            } catch (e: Exception) {
+                                Log.d("JsonMLCFormat", e.stackTraceToString())
+                                null
+                            }
+                        postProcFile = if(jsonMLCFormat!=null) {
+                            jsonMLCFormat.toPnPLOutputString(sensorName = componentName)
+                        } else {
+                            null
+                        }
+
                     }
                     onAfterUcf()
-                    onSendCommand(
-                        CommandRequest(
-                            commandType = commandType,
-                            commandName = commandName,
-                            request = mapOf(
-                                FILE_REQUEST to mapOf(
-                                    FILE_SIZE to postProcFile.length,
-                                    FILE_DATA to postProcFile
+                    postProcFile?.let { ucfCompressed ->
+                        onSendCommand(
+                            CommandRequest(
+                                commandType = commandType,
+                                commandName = commandName,
+                                request = mapOf(
+                                    FILE_REQUEST to mapOf(
+                                        FILE_SIZE to ucfCompressed.length,
+                                        FILE_DATA to ucfCompressed
+                                    )
                                 )
                             )
                         )
-                    )
+                    }
                 }
             } else {
                 onAfterUcf()
@@ -807,7 +832,7 @@ fun UCF(
             modifier = Modifier.align(alignment = Alignment.End),
             onClick = {
                 onBeforeUcf()
-                pickFileLauncher.launch(arrayOf(BIN_FILE_TYPE))
+                pickFileLauncher.launch(arrayOf(BIN_FILE_TYPE,JSON_FILE_TYPE))
             },
             text = stringResource(id = R.string.command_uploadBtn)
         )

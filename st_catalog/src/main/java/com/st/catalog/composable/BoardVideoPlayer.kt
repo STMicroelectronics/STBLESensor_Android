@@ -94,7 +94,7 @@ fun BoardYouTubePlayer(
         AndroidView(
             modifier = modifier
                 .fillMaxWidth(),
-                //.aspectRatio(ratio = 1f),
+            //.aspectRatio(ratio = 1f),
             factory = { context ->
                 YouTubePlayerView(context).also { view ->
                     localYouTubePlayerView = view

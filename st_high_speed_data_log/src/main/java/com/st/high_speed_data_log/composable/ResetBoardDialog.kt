@@ -26,6 +26,7 @@ import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
+import java.util.Locale
 
 @Composable
 fun ResetBoardDialog(
@@ -88,7 +89,7 @@ fun ResetBoardDialogContent(
             Row(modifier = Modifier.fillMaxWidth()) {
                 BlueMsButtonOutlined(
                     modifier = Modifier.weight(weight = 0.5f),
-                    text = stringResource(id = android.R.string.cancel),
+                    text = "CANCEL",
                     onClick = onDismissRequest
                 )
 

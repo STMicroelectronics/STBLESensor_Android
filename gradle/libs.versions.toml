@@ -8,14 +8,15 @@
 [versions]
 # @pin https://github.com/google/accompanist#compose-versions
 accompanist = "0.36.0"
-androidGradlePlugin = "8.7.3"
-androidxActivity = "1.9.3"
+accompanistPermission = "0.37.0"
+androidGradlePlugin = "8.8.0"
+androidxActivity = "1.10.0"
 androidxCompat = "1.7.0"
 # @pin https://developer.android.com/jetpack/androidx/releases/compose#versions
-androidxComposeBom = "2024.11.00"
+androidxComposeBom = "2025.01.00"
 androidxConstraintlayout = "2.2.0"
 androidxCore = "1.15.0"
-androidxDatastore = "1.1.1"
+androidxDatastore = "1.1.2"
 androidxEspresso = "3.6.1"
 androidxFragment = "1.8.5"
 androidxGridLayout = "1.0.0"
@@ -26,7 +27,7 @@ androidxLegacy = "1.0.0"
 androidxLifecycle = "2.8.7"
 androidxLifecycleViewmodel = "2.8.7"
 androidxMaterial = "1.12.0"
-androidxSafeargs = "2.8.4"
+androidxSafeargs = "2.8.5"
 androidxPreference = "1.2.1"
 androidxRoom = "2.6.1"
 androidxSplash = "1.1.0-rc01"
@@ -34,18 +35,19 @@ androidxTestCore = "1.6.1"
 androidxTestExt = "1.2.1"
 androidxTestRules = "1.6.1"
 apacheCommons = "3.11.1"
-appCenterSdkVersion = "5.0.5"
+appCenterSdkVersion = "5.0.6"
 appauth = "0.11.1"
 benManes = "0.51.0"
-androidxCamera = "1.4.0"
+androidxCamera = "1.4.1"
 coil = "2.7.0"
-desugar_jdk_libs_nio = "2.1.3"
+desugar_jdk_libs_nio = "2.1.4"
+firebaseCrashlytics = "3.0.2"
 glide = "5.0.0-rc01"
 googleCodeScanner = "16.1.0"
-googleFirebaseBom = "33.6.0"
+googleFirebaseBom = "33.7.0"
 arturboschDetekt = "1.23.6"
 googleGms = "4.4.2"
-googleHilt = "2.53"
+googleHilt = "2.55"
 hiltNavigationFragment = "1.2.0"
 iotDeviceClient = "2.5.0"
 jacksonAnnotations = "2.18.2"
@@ -54,14 +56,14 @@ junit4 = "4.13.2"
 jwt = "2.0.2"
 # @pin https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 kotlin = "2.0.20"
-kotlinxCoroutines = "1.9.0"
-kotlinxSerializationJson = "1.7.3"
+kotlinxCoroutines = "1.10.1"
+kotlinxSerializationJson = "1.8.0"
 # @pin
 devtoolsKsp = "2.0.20-1.0.25"
 jlleitschuhKtlint = "12.1.1"
 littlerobotsVersionCatalogUpdate = "0.8.4"
 appswithloveLoco = "0.3.1"
-media3Version = "1.5.0"
+media3Version = "1.5.1"
 mlkitBarcode = "17.3.0"
 mpChart = "3.1.0"
 okhttp = "4.12.0"
@@ -70,14 +72,17 @@ provisioningDeviceClient = "2.1.3"
 reorderable = "0.9.6"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
-stSdk = "1.2.8"
+stSdk = "1.2.9"
 stOpus= "1.0.0"
 ytPlayer = "12.1.1"
-runtimeLivedata = "1.7.5"
+runtimeLivedata = "1.7.6"
+jaredsburrowsLicense = "0.9.8"
+firebaseConfigKtx = "22.0.1"
+dynatrace = "8.305.1.1005"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermission" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidxActivity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxCompat" }
@@ -267,3 +272,4 @@ jlleitschuhKtlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "jllei
 littlerobotsVersionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "littlerobotsVersionCatalogUpdate" }
 appswithloveLoco = { id = "com.appswithlove.loco", version.ref = "appswithloveLoco" }
 androidxSafeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidxSafeargs" }
+jaredsburrowsLicense =  { id = "com.jaredsburrows.license", version.ref = "jaredsburrowsLicense" }

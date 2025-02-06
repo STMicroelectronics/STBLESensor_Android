@@ -50,4 +50,13 @@ interface ApplicationAnalyticsService {
 
     fun flowExpertAppOutputAnalytics(id: String, desc: String)
 
+    fun trackQRCodeScanFlow(projectName: String, projectType: Int)
+
+    fun trackProjectsFlows(projectType: Int, useCase: Int, projectName: String, firmwareName: String, boardType: String)
+
+    fun trackDatasetFlows(useCase: Int, datasetName: String, firmwareName: String?, boardType: String?)
+
+    fun trackCatalogFlow(boardName: String)
+
+    fun trackDocumentationFlow()
 }

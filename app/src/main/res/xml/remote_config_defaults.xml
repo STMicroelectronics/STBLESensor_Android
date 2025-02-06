@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <defaults>
   <entry>
-    <key>D183G</key>
-    <value>1111</value>
-  </entry>
-  <entry>
-    <key>LastCatalogVersion</key>
-    <value>{   "checksum": "5599e0f8a8f5a7ade763a023baa8d2d1",   "date": "2024-01-09T09:00:07.495702S",   "version": "0.5.13" }</value>
+    <key>bluems_5_2_8</key>
+    <value>{"deprecationDate": "2028-12-31","dismissionDate":"2029-12-31"}</value>
   </entry>
 </defaults>

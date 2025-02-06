@@ -118,7 +118,7 @@ class HighSpeedDataLogViewModel @Inject constructor(
                         val interfaceModel = sensor.second
                         val data = (status.find { it.containsKey(name) })?.get(name)
 
-                        val isMounted = interfaceModel.contents
+                        var isMounted = interfaceModel.contents
                             .filterIsInstance<DtmiContent.DtmiPropertyContent.DtmiBooleanPropertyContent>()
                             .find { it.name == "mounted" }
                             ?.let { enableProperty ->
@@ -134,6 +134,10 @@ class HighSpeedDataLogViewModel @Inject constructor(
                                 }
                                 booleanData
                             } ?: true
+
+                        if(data==null) {
+                            isMounted = false
+                        }
 
                         if (isMounted) {
                             sensorsActiveLocal.add(name)

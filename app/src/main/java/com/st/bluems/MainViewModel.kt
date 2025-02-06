@@ -48,6 +48,10 @@ class MainViewModel @Inject constructor(
         preferences.setTermsFlag(accepted = accepted)
     }
 
+    fun updateBoardCatalogStatus(boardCatalogStatus: String) {
+        preferences.setBoardCatalogStatus(boardCatalogStatus)
+    }
+
     fun welcomeShow() {
         preferences.setWelcomeFlag(completed = true)
     }

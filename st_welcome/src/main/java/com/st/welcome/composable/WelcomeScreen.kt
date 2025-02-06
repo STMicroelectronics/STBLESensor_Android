@@ -7,7 +7,6 @@
  */
 package com.st.welcome.composable
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +40,6 @@ import com.st.welcome.R
 import com.st.welcome.StWelcomeConfig
 import com.st.welcome.model.WelcomePage
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,

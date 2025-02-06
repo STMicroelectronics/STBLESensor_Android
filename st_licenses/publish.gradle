@@ -8,9 +8,9 @@
 
 apply plugin: 'maven-publish'
 
-def LIB_VERSION = '1.1.0'
-def LIB_GROUP_ID = 'com.st.terms'
-def LIB_ARTIFACT_ID = 'st-terms'
+def LIB_VERSION = '1.0.0'
+def LIB_GROUP_ID = 'com.st.licenses'
+def LIB_ARTIFACT_ID = 'st-licenses'
 
 tasks.register('sourceJar', Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -38,7 +38,7 @@ afterEvaluate {
                 groupId LIB_GROUP_ID
                 artifactId LIB_ARTIFACT_ID
                 version LIB_VERSION
-                artifact("$buildDir/outputs/aar/st_terms-release.aar")
+                artifact("$buildDir/outputs/aar/st_licenses-release.aar")
                 artifact(sourceJar)
 
                 pom.withXml {

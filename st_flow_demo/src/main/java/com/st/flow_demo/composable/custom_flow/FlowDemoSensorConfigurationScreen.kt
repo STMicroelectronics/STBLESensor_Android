@@ -214,7 +214,7 @@ fun FlowDemoSensorConfigurationScreen(
                             ) {
                                 BlueMsButton(
                                     modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
-                                    text = ".ucf file",
+                                    text = ".ucf/.json",
                                     iconPainter = painterResource(id = R.drawable.ic_file_open),
                                     onClick = {
                                         isMLC = true
@@ -513,7 +513,7 @@ fun FlowDemoSensorConfigurationScreen(
                             ) {
                                 BlueMsButton(
                                     modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
-                                    text = ".ucf file",
+                                    text = ".ucf/.json",
                                     iconPainter = painterResource(id = R.drawable.ic_file_open),
                                     onClick = {
                                         isMLC = false

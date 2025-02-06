@@ -11,7 +11,9 @@ import com.st.flow_demo.models.MlcFsmLabelEntry
 import com.st.blue_sdk.board_catalog.models.PowerMode
 import com.st.blue_sdk.board_catalog.models.Sensor
 import com.st.blue_sdk.board_catalog.models.SensorConfiguration
+import com.st.blue_sdk.models.JsonMLCFormat
 import com.st.flow_demo.models.SensorFilter
+import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -292,100 +294,150 @@ fun parseUcfFile(
     //Start Resetting the regConfig field
     sensorConfiguration.regConfig = ""
 
-    //open the ucf file
-    var inputStream: InputStream? = null
-    try {
-        inputStream = context.contentResolver.openInputStream(uri)
-    } catch (e: FileNotFoundException) {
-        e.printStackTrace()
-    }
+    val ucfFilename = context.contentResolver.query(uri, null, null, null, null)
+        ?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.moveToFirst()
 
-    inputStream?.let {
-        val myReader = BufferedReader(InputStreamReader(inputStream))
-        var myDataRow: String?
+            cursor.getString(nameIndex)
+        } ?: ""
 
+    val fileExt = ucfFilename.split('.').last()
+
+    if (fileExt == "ucf") {
+        var inputStream: InputStream? = null
         try {
-            while (myReader.readLine().also { myDataRow = it } != null) {
+            inputStream = context.contentResolver.openInputStream(uri)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
 
-                // Check if it's the program for the right sensor
-                if (myDataRow!!.contains(sensorModel)) {
-                    sensor_supported = true
-                }
+        inputStream?.let { inStream ->
+            val myReader = BufferedReader(InputStreamReader(inStream))
+            var myDataRow: String?
 
-                if (sensor_supported) {
-                    // MLC labels in ucf header
-                    if (myDataRow!!.contains("<MLC") && myDataRow!!.contains("_SRC>")) {
-                        myDataRow = myDataRow!!.substring(3)
-                        labels += myDataRow
-                        labels = "$labels;"
-                    }
-                    // FSM labels in ucf header
-                    if (myDataRow!!.contains("<FSM_OUTS") && myDataRow!!.contains(">")) {
-                        myDataRow = myDataRow!!.substring(3)
-                        labels += myDataRow
-                        labels = "$labels;"
+            try {
+                while (myReader.readLine().also { myDataRow = it } != null) {
+
+                    // Check if it's the program for the right sensor
+                    if (myDataRow!!.contains(sensorModel)) {
+                        sensor_supported = true
                     }
 
-                    // Valid ucf file row
-                    if (myDataRow!!.contains("Ac")) {
-                        val separated =
-                            myDataRow!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-                                .toTypedArray()
-                        val regAddress = separated[1]
-                        val regValue = separated[2]
-                        regConfig += regAddress
-                        regConfig += regValue
-                        if (regAddress == "01" && regValue == "80") {
-                            stmc_page = true
-                        } else if (myDataRow!!.contains("01 00")) {
-                            stmc_page = false
+                    if (sensor_supported) {
+                        // MLC labels in ucf header
+                        if (myDataRow!!.contains("<MLC") && myDataRow!!.contains("_SRC>")) {
+                            myDataRow = myDataRow!!.substring(3)
+                            labels += myDataRow
+                            labels = "$labels;"
                         }
-                        if (stmc_page) {
-                            if (regAddress == "05") {
+                        // FSM labels in ucf header
+                        if (myDataRow!!.contains("<FSM_OUTS") && myDataRow!!.contains(">")) {
+                            myDataRow = myDataRow!!.substring(3)
+                            labels += myDataRow
+                            labels = "$labels;"
+                        }
+
+                        // Valid ucf file row
+                        if (myDataRow!!.contains("Ac")) {
+                            val separated =
+                                myDataRow!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()
+                            val regAddress = separated[1]
+                            val regValue = separated[2]
+                            regConfig += regAddress
+                            regConfig += regValue
+                            if (regAddress == "01" && regValue == "80") {
+                                stmc_page = true
+                            } else if (myDataRow!!.contains("01 00")) {
+                                stmc_page = false
+                            }
+                            if (stmc_page) {
+                                if (regAddress == "05") {
 //                                var reg = regValue.toByte(16)
 //                                reg = (reg.toInt() and 0x01).toByte()
 //                                fsm_enabled = reg > 0
-                                var reg = regValue.toInt(16)
-                                reg = (reg and 0x01)
-                                fsm_enabled = reg != 0
-                            }
-                            if (regAddress == "05") {
+                                    var reg = regValue.toInt(16)
+                                    reg = (reg and 0x01)
+                                    fsm_enabled = reg != 0
+                                }
+                                if (regAddress == "05") {
 //                                var reg = regValue.toByte(16)
 //                                reg = (reg.toInt() and 0x10).toByte()
 //                                mlc_enabled = reg > 0
-                                var reg = regValue.toInt(16)
-                                reg = (reg and 0x10)
-                                mlc_enabled = reg != 0
+                                    var reg = regValue.toInt(16)
+                                    reg = (reg and 0x10)
+                                    mlc_enabled = reg != 0
+                                }
                             }
                         }
                     }
                 }
+
+                myReader.close()
+            } catch (e: Exception) {
+                sensor_supported = false
             }
 
-            myReader.close()
-        } catch (e: Exception) {
-            sensor_supported = false
+            //Close the Input Stream
+            inStream.close()
+        }
+    } else if (fileExt == "json") {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
         }
 
-        //Close the Input Stream
-        inputStream.close()
+        inputStream?.let { inStream ->
+
+            //Try before to decode like Json format
+            val fileContent = inStream.readBytes().toString(Charsets.UTF_8)
+
+            val jsonDec = Json {
+                encodeDefaults = true
+                ignoreUnknownKeys = true
+            }
+            val jsonMLCFormat =
+                try {
+                    jsonDec.decodeFromString<JsonMLCFormat>(fileContent)
+                } catch (e: Exception) {
+                    Log.d("JsonMLCFormat", e.stackTraceToString())
+                    null
+                }
+
+            if (jsonMLCFormat != null) {
+                val mlcParsed =
+                    jsonMLCFormat.toFlowSensorConfiguration(sensorName = sensorModel, isMLC = isMLC)
+                if (mlcParsed != null) {
+                    regConfig = mlcParsed.regConfig
+                    labels = mlcParsed.labels
+                    mlc_enabled = mlcParsed.mlcEnabled
+                    fsm_enabled = mlcParsed.fsmEnabled
+                    sensor_supported = true
+                }
+            }
+            inStream.close()
+        }
     }
 
-    if (sensor_supported) {
-        val ucfFilename = context.contentResolver.query(uri, null, null, null, null)
-            ?.use { cursor ->
-                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                cursor.moveToFirst()
 
-                cursor.getString(nameIndex)
-            } ?: ""
+    if (sensor_supported) {
+//        val ucfFilename = context.contentResolver.query(uri, null, null, null, null)
+//            ?.use { cursor ->
+//                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+//                cursor.moveToFirst()
+//
+//                cursor.getString(nameIndex)
+//            } ?: ""
 
         if (isMLC) {
             if (mlc_enabled) {
                 sensorConfiguration.regConfig = regConfig
                 sensorConfiguration.mlcLabels = labels
                 sensorConfiguration.ucfFilename = ucfFilename
-                Log.i("FSMMLC","MLC=$labels")
+                Log.i("FSMMLC", "MLC=$labels")
             } else {
                 errorTest = context.getString(R.string.ucf_file_mlc_disabled)
                 sensorConfiguration.mlcLabels = ""
@@ -395,7 +447,7 @@ fun parseUcfFile(
                 sensorConfiguration.regConfig = regConfig
                 sensorConfiguration.fsmLabels = labels
                 sensorConfiguration.ucfFilename = ucfFilename
-                Log.i("FSMMLC","FMS=$labels")
+                Log.i("FSMMLC", "FMS=$labels")
             } else {
                 errorTest = context.getString(R.string.ucf_file_fsm_disabled)
                 sensorConfiguration.fsmLabels = ""

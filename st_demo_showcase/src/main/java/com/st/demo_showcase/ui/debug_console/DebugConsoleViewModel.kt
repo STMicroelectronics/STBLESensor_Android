@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.demo_showcase.ui.DebugConsoleMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +34,8 @@ class DebugConsoleViewModel @Inject constructor(private val blueManager: BlueMan
 
     }
 
+    var job: Job?=null
+
     fun sendDebugMessage(nodeId: String, msg: String) {
         viewModelScope.launch {
             _debugMessages.value += DebugConsoleMsg.DebugConsoleCommand(
@@ -46,7 +49,7 @@ class DebugConsoleViewModel @Inject constructor(private val blueManager: BlueMan
     }
 
     fun receiveDebugMessage(nodeId: String) {
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             var lastReceivedData =  System.currentTimeMillis()
             blueManager.getDebugMessages(nodeId = nodeId)?.collect {
                 val currentTime = System.currentTimeMillis()
@@ -63,6 +66,10 @@ class DebugConsoleViewModel @Inject constructor(private val blueManager: BlueMan
                 lastReceivedData = currentTime
             }
         }
+    }
+
+    fun stopReceivesMessage() {
+        job?.cancel()
     }
 
     fun clearConsole() {

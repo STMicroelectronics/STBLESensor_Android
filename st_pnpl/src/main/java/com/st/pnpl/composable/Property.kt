@@ -52,11 +52,11 @@ fun Property(
         )
     } else {
         val label = content.displayName.localizedDisplayName
-        val displayUnit = content.displayUnit.localizedDisplayName
+        val displayUnit = content.displayUnit.localizedDisplayName.toShortUom()
         val description = content.description.localizedDisplayName
         val comment = content.comment
         val color = content.color
-        val unit = displayUnit.ifEmpty { content.unit }
+        val unit = displayUnit.toShortUom() .ifEmpty { content.unit.toShortUom() }
         val propEnabled = content.writable && enabled
 
         when (content) {
@@ -445,4 +445,15 @@ fun Property(
             }
         }
     }
+}
+
+private fun String?.toShortUom() = when (this) {
+    "gForce" -> "g"
+    "hertz" -> "Hz"
+    "gauss" -> "G"
+    "degreeCelsius" -> "°C"
+    "degreePerSecond" -> "dps"
+    "Waveform" -> "dBSPL"
+    null -> ""
+    else -> this
 }

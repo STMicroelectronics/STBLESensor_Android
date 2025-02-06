@@ -37,6 +37,7 @@ fun Command(
     content: DtmiContent.DtmiCommandContent,
     onBeforeUcf:() -> Unit,
     onAfterUcf:() -> Unit,
+    componentName: String,
     onSendCommand: (CommandRequest?) -> Unit
 ) {
     if (content.name == LOAD_FILE_COMMAND_NAME) {
@@ -47,6 +48,7 @@ fun Command(
             commandName = content.name,
             onBeforeUcf = onBeforeUcf,
             onAfterUcf = onAfterUcf,
+            componentName = componentName,
             onSendCommand = onSendCommand
         )
     } else {

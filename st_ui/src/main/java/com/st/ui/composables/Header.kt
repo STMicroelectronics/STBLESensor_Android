@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.st.ui.R
 import com.st.ui.theme.BlueMSTheme
+import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.WarningText
@@ -39,6 +40,7 @@ fun Header(
     showArrows: Boolean = true,
     isOpen: Boolean = false,
     isMounted: Boolean = true,
+    dataReceived: Boolean = true,
     content: @Composable () -> Unit = { /** NOOP **/ }
 ) {
     Header(
@@ -49,6 +51,7 @@ fun Header(
         isOpen = isOpen,
         content = content,
         isMounted = isMounted,
+        dataReceived = dataReceived,
         icon = {
             Icon(
                 modifier = Modifier.size(size = LocalDimensions.current.iconNormal),
@@ -97,6 +100,7 @@ private fun Header(
     showArrows: Boolean,
     isOpen: Boolean,
     isMounted: Boolean = true,
+    dataReceived: Boolean = true,
     content: @Composable () -> Unit = { /** NOOP **/ }
 ) {
     Column(
@@ -115,6 +119,7 @@ private fun Header(
 
             //Spacer(modifier = Modifier.weight(weight = 1f))
 
+
             if (!isMounted) {
                 Text(
                     modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall),
@@ -122,7 +127,20 @@ private fun Header(
                     fontSize = 16.sp,
                     lineHeight = 22.68.sp,
                     letterSpacing = 0.14.sp
+                )
+            } else {
+                if (!dataReceived) {
+                    Text(
+                        modifier = Modifier.padding(top = LocalDimensions.current.paddingSmall),
+                        text = "Status Not Received",
+                        color = ErrorText,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        lineHeight = 22.68.sp,
+                        letterSpacing = 0.14.sp
                     )
+                }
+
             }
             //Spacer(modifier = Modifier.weight(weight = 1f))
 

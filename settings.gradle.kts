@@ -39,6 +39,7 @@ dependencyResolutionManagement {
 rootProject.name = "BlueMS"
 include(":app")
 include(":st_compass")
+include(":st_licenses")
 include(":st_ui")
 include(":st_welcome")
 include(":st_user_profiling")

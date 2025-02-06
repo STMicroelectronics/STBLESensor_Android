@@ -18,9 +18,11 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.st.demo_showcase.ui.DemoShowCaseViewModel
 import com.st.demo_showcase.ui.composable.DebugConsoleScreen
+import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.BlueMSTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,10 +42,23 @@ class DebugConsoleFragment : Fragment() {
                     val nodeId by demoViewModel.nodeId.collectAsStateWithLifecycle()
                     val debugMessages by viewModel.debugMessages.collectAsStateWithLifecycle()
 
-                    LaunchedEffect(key1 = Unit) {
-                        demoViewModel.setCurrentDemo(null)
-                        viewModel.receiveDebugMessage(nodeId = nodeId)
+
+                    ComposableLifecycle { _, event ->
+                        when (event) {
+                            Lifecycle.Event.ON_START -> {
+                                demoViewModel.setCurrentDemo(null)
+                                viewModel.receiveDebugMessage(nodeId = nodeId)
+                            }
+
+                            Lifecycle.Event.ON_STOP -> viewModel.stopReceivesMessage()
+                            else -> Unit
+                        }
                     }
+
+//                    LaunchedEffect(key1 = Unit) {
+//                        demoViewModel.setCurrentDemo(null)
+//                        viewModel.receiveDebugMessage(nodeId = nodeId)
+//                    }
 
                     DebugConsoleScreen(
                         debugMessages = debugMessages,

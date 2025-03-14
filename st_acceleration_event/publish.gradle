@@ -8,7 +8,6 @@
 
 apply plugin: 'maven-publish'
 
-def LIB_VERSION = '1.1.0'
 def LIB_GROUP_ID = 'com.st.acceleration_event'
 def LIB_ARTIFACT_ID = 'st-acceleration_event'
 
@@ -35,9 +34,10 @@ afterEvaluate {
         }
         publications {
             blueStSdk(MavenPublication) {
+
                 groupId LIB_GROUP_ID
                 artifactId LIB_ARTIFACT_ID
-                version LIB_VERSION
+                version = project.properties['stExportedLibVersion']
                 artifact("$buildDir/outputs/aar/st_acceleration_event-release.aar")
                 artifact(sourceJar)
 

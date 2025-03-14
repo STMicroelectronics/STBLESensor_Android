@@ -40,6 +40,7 @@ import com.st.flow_demo.helpers.findFlowById
 import com.st.flow_demo.helpers.findSensorById
 import com.st.flow_demo.helpers.isAlsoExp
 import com.st.flow_demo.helpers.multipleAccelerometerAreSelected
+import com.st.flow_demo.helpers.multipleDIL24AreSelected
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.ErrorText
@@ -68,7 +69,11 @@ fun FlowDemoAddInputDialog(
     val availableCustomInput by viewModel.flowsCustomList.collectAsStateWithLifecycle()
 
     val availableExpansionSensor  by viewModel.expansionSensorsList.collectAsStateWithLifecycle()
-    val availableExpansionSensorFilter = availableExpansionSensor.filter { it.model== viewModel.getMountedDil24FromOptionBytes()}
+    //val availableExpansionSensorFilter = availableExpansionSensor.filter { it.model== viewModel.getMountedDil24FromOptionBytes()}
+
+    val possibleMountedDil24s = viewModel.getPossibleMountedDil24sFromOptionBytes()
+
+    val availableExpansionSensorFilter = availableExpansionSensor.filter { possibleMountedDil24s.contains(it.model)}
 
 
     var errorText by remember { mutableStateOf<String?>(value = null) }
@@ -162,18 +167,18 @@ fun FlowDemoAddInputDialog(
                                 })
                         }
 
-                        if (availableExpansionSensorFilter.isNotEmpty()) {
+                        possibleMountedDil24s.forEach {  dil24Model ->
                             item {
                                 Text(
                                     modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary,
                                     fontSize = 16.sp,
-                                    text = "Expansion DIL24"
+                                    text = "$dil24Model Expansion DIL24"
                                 )
                             }
 
-                            items(availableExpansionSensorFilter) {
+                            items(availableExpansionSensorFilter.filter { it.model == dil24Model }) {
                                 val currentSensorFlow =
                                     findSensorById(flowOnCreation.sensors, it.id)
                                 var booleanData = currentSensorFlow != null
@@ -195,6 +200,8 @@ fun FlowDemoAddInputDialog(
 
                                         errorText = if (multipleAccelerometerAreSelected(tmpList)) {
                                             "Multiple Accelerometers are Selected"
+                                        } else if (multipleDIL24AreSelected(tmpList)) {
+                                            "Multiple DIL24 are Selected"
                                         } else if (bothMLCAndFSMArePresent(tmpList)) {
                                             "MLC Virtual Sensor and FSM Virtual Sensor cannot be selected together"
                                         } else {

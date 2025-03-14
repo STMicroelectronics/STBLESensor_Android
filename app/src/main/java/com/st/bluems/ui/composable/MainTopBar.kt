@@ -39,6 +39,7 @@ fun MainTopBar(
     goToSourceCode: () -> Unit = { /** NOOP **/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
     goToPrivacyPolicy: () -> Unit = { /** NOOP **/ },
+    goToThirdPartiesLicenses: () -> Unit = { /** NOOP **/ },
     readBetaCatalog: () -> Unit = { /** NOOP **/ },
     readReleaseCatalog: () -> Unit = { /** NOOP **/ },
     switchVersionBetaRelease: () -> Unit = { /** NOOP **/ },
@@ -63,6 +64,7 @@ fun MainTopBar(
         goToProfile = goToProfile,
         goToAboutST = goToAboutST,
         goToPrivacyPolicy = goToPrivacyPolicy,
+        goToThirdPartiesLicenses = goToThirdPartiesLicenses,
         goToSourceCode = goToSourceCode,
         onAddCatalogEntryFromFile = onAddCatalogEntryFromFile,
         switchServerForced = switchServerForced
@@ -151,6 +153,7 @@ fun rememberActions(
     goToSourceCode: () -> Unit = { /** NOOP **/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
     goToPrivacyPolicy: () -> Unit = { /** NOOP **/ },
+    goToThirdPartiesLicenses: () -> Unit = { /** NOOP **/ },
     logout: () -> Unit = { /** NOOP **/ },
     onAddCatalogEntryFromFile: () -> Unit = { /** NOOP **/ },
     switchServerForced: () -> Unit = { /** NOOP **/ }
@@ -172,6 +175,10 @@ fun rememberActions(
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_privacy),
                         action = goToPrivacyPolicy
+                    ),
+                    ActionItem(
+                        label = context.getString(R.string.st_home_menuActions_third_parties_licenses),
+                        action = goToThirdPartiesLicenses
                     ),
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_appSourceCode),
@@ -210,6 +217,10 @@ fun rememberActions(
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_privacy),
                         action = goToPrivacyPolicy
+                    ),
+                    ActionItem(
+                        label = context.getString(R.string.st_home_menuActions_third_parties_licenses),
+                        action = goToThirdPartiesLicenses
                     ),
                     ActionItem(
                         label = context.getString(R.string.st_home_menuActions_appSourceCode),

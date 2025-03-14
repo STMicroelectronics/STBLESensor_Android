@@ -275,7 +275,7 @@ fun AIoTCraftHighSpeedDataLog(
     val tagsTitle = stringResource(id = R.string.st_hsdl_tags)
     var currentTitle by remember { mutableStateOf(sensorsTitle) }
     var openStopDialog by remember { mutableStateOf(value = false) }
-    var openResetDialog by remember { mutableStateOf(value = false) }
+//    var openResetDialog by remember { mutableStateOf(value = false) }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
@@ -359,7 +359,7 @@ fun AIoTCraftHighSpeedDataLog(
                                     if (vespucciTagsActivation.isEmpty()) {
                                         onStartStopLog(false)
                                         openStopDialog = HsdlConfig.showStopDialog
-                                        openResetDialog = HsdlConfig.showResetDialog
+//                                        openResetDialog = HsdlConfig.showResetDialog
                                     } else {
                                         Toast.makeText(
                                             context,
@@ -370,7 +370,7 @@ fun AIoTCraftHighSpeedDataLog(
                                 } else {
                                     onStartStopLog(false)
                                     openStopDialog = HsdlConfig.showStopDialog
-                                    openResetDialog = HsdlConfig.showResetDialog
+//                                    openResetDialog = HsdlConfig.showResetDialog
                                 }
                             } else {
                                 if (enableLog) {
@@ -517,18 +517,18 @@ fun AIoTCraftHighSpeedDataLog(
         )
     }
 
-    if (openResetDialog) {
-        ResetBoardDialog(
-            onDismissRequest = {
-                openResetDialog = false
-            },
-            onRestartRequest = {
-                openResetDialog = false
-
-                GlobalConfig.navigateBack?.invoke(nodeId)
-            }
-        )
-    }
+//    if (openResetDialog) {
+//        ResetBoardDialog(
+//            onDismissRequest = {
+//                openResetDialog = false
+//            },
+//            onRestartRequest = {
+//                openResetDialog = false
+//
+//                GlobalConfig.navigateBack?.invoke(nodeId)
+//            }
+//        )
+//    }
 }
 
 

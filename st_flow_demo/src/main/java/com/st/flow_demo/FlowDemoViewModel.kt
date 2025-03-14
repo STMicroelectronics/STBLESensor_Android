@@ -43,7 +43,11 @@ import com.st.blue_sdk.features.extended.pnpl.PnPL
 import com.st.blue_sdk.features.extended.pnpl.PnPLConfig
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCmd
 import com.st.blue_sdk.features.extended.pnpl.request.PnPLCommand
+import com.st.blue_sdk.services.ota.FwFileDescriptor
+import com.st.blue_sdk.services.ota.FwUploadError
 import com.st.core.api.ApplicationAnalyticsService
+import com.st.ext_config.download.DownloadAPI
+import com.st.ext_config.ui.fw_upgrade.FwUpgradeViewModel.Companion.TAG
 import com.st.ext_config.util.dateToString
 import com.st.ext_config.util.timeToString
 import com.st.flow_demo.helpers.parseFlowFile
@@ -72,6 +76,7 @@ class FlowDemoViewModel
     private val blueManager: BlueManager,
     private val coroutineScope: CoroutineScope,
     private val stPreferences: StPreferences,
+    private val downloadAPI: DownloadAPI,
     private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : ViewModel() {
 
@@ -178,6 +183,12 @@ class FlowDemoViewModel
     private var featurePnPL: Feature<*>? = null
     private var observeFeaturePnPLJob: Job? = null
 
+    private var isBeta = false
+
+    init {
+        isBeta = stPreferences.isBetaApplication()
+    }
+
     fun startDemo(nodeId: String, context: Context) {
         //node = blueManager.getNode(nodeId)
 
@@ -194,6 +205,64 @@ class FlowDemoViewModel
 
                 //Read the Example Flows
                 _flowsExampleList.value = loadExampleFlows(context, node!!.boardType)
+
+                //Retrieve extra Example Flows
+                node!!.catalogInfo?.extraExamplesFlow?.let { extraFlows ->
+                    //Search before Extra Flow that are always Available:
+
+                    val possibleMountedSensors = getPossibleMountedDil24sFromOptionBytes()
+                    viewModelScope.launch {
+                        extraFlows.forEach { sectionExtraFlow ->
+                            if (sectionExtraFlow.model == null) {
+                                //Log.i("FlowDemoViewModel", "sectionExtraFlow Always: $sectionExtraFlow")
+                                sectionExtraFlow.examplesFlow.forEach { extraFlowUrl ->
+                                    try {
+                                        val responseBody =  if (isBeta) {
+                                            downloadAPI.downloadFile(extraFlowUrl.replace("STMicroelectronics", "SW-Platforms")).body()
+                                        } else {
+                                            downloadAPI.downloadFile(extraFlowUrl).body()
+                                        }
+
+                                        responseBody?.let { body ->
+                                            val byteStream = body.byteStream()
+
+                                            val flow = parseFlowFile(byteStream)
+                                            flow?.let {
+                                                _flowsExampleList.value += it
+                                            }
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, e.toString())
+                                    }
+                                }
+                            } else if (possibleMountedSensors.isNotEmpty()) {
+                                if (possibleMountedSensors.contains(sectionExtraFlow.model)) {
+                                    //Log.i("FlowDemoViewModel", "sectionExtraFlow Mounted: $sectionExtraFlow")
+                                    sectionExtraFlow.examplesFlow.forEach { extraFlowUrl ->
+                                        try {
+                                            val responseBody =  if (isBeta) {
+                                                downloadAPI.downloadFile(extraFlowUrl.replace("STMicroelectronics", "SW-Platforms")).body()
+                                            } else {
+                                                downloadAPI.downloadFile(extraFlowUrl).body()
+                                            }
+
+                                            responseBody?.let { body ->
+                                                val byteStream = body.byteStream()
+
+                                                val flow = parseFlowFile(byteStream)
+                                                flow?.let {
+                                                    _flowsExampleList.value += it
+                                                }
+                                            }
+                                        } catch (e: Exception) {
+                                            Log.e(TAG, e.toString())
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 //Read all the Resources needed for Expert View
                 readAvailableResourcesForExpertView(context)
@@ -594,6 +663,31 @@ class FlowDemoViewModel
             }
         }
         return null
+    }
+
+    fun getPossibleMountedDil24sFromOptionBytes(): List<String> {
+        if (node != null) {
+            if ((node!!.advertiseInfo != null) && (node!!.catalogInfo != null)) {
+                if(node!!.catalogInfo!!.optionBytes.isNotEmpty()) {
+                    val optionByte = node!!.catalogInfo!!.optionBytes[0]
+                    if (OptionByte.OptionByteValueType.fromFormat(optionByte.format) == OptionByte.OptionByteValueType.ENUM_STRING) {
+                        val optionByteValue =
+                            node!!.advertiseInfo!!.getOptBytes()[0 + 1 + node!!.advertiseInfo!!.getOptBytesOffset()]
+
+                        if (optionByteValue != optionByte.escapeValue) {
+                            val retValue: MutableList<String> = mutableListOf()
+                            optionByte.stringValues!!.find { it.value == optionByteValue }?.let { value ->
+                                value.displayName?.split("/")?.forEach {
+                                    retValue.add(it)
+                                }
+                            }
+                            return retValue
+                        }
+                    }
+                }
+            }
+        }
+        return listOf()
     }
 
     fun getRunningFlowFromOptionBytes(): String? {

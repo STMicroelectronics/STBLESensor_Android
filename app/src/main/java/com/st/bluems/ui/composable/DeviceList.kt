@@ -152,6 +152,11 @@ fun DeviceListScreen(
         goToPrivacyPolicy = {
             viewModel.openPrivacyPolicyPage()
         },
+        goToThirdPartiesLicenses = {
+            navController.navigate(
+                HomeFragmentDirections.actionHomeFragmentToLicensesFragment()
+            )
+        },
         switchVersionBetaRelease = {
             viewModel.switchVersionBetaRelease()
         },
@@ -239,6 +244,7 @@ fun DeviceListWithPermissionsCheck(
     goToCatalog: () -> Unit,
     goToSourceCode: () -> Unit,
     goToPrivacyPolicy: () -> Unit,
+    goToThirdPartiesLicenses: () -> Unit,
     goToAboutST: () -> Unit,
     goToProfile: () -> Unit,
     readBetaCatalog: () -> Unit,
@@ -302,6 +308,7 @@ fun DeviceListWithPermissionsCheck(
                     goToCatalog = goToCatalog,
                     goToSourceCode = goToSourceCode,
                     goToPrivacyPolicy = goToPrivacyPolicy,
+                    goToThirdPartiesLicenses = goToThirdPartiesLicenses,
                     goToAboutST = goToAboutST,
                     readBetaCatalog = readBetaCatalog,
                     readReleaseCatalog = readReleaseCatalog,
@@ -474,6 +481,7 @@ fun DeviceList(
     goToCatalog: () -> Unit = { /** NOOP**/ },
     goToProfile: () -> Unit = { /** NOOP**/ },
     goToPrivacyPolicy: () -> Unit = { /** NOOP**/ },
+    goToThirdPartiesLicenses: () -> Unit = { /** NOOP**/ },
     goToSourceCode: () -> Unit = { /** NOOP**/ },
     goToAboutST: () -> Unit = { /** NOOP **/ },
     readBetaCatalog: () -> Unit = { /** NOOP **/ },
@@ -540,6 +548,7 @@ fun DeviceList(
                 goToSourceCode = goToSourceCode,
                 goToAboutST = goToAboutST,
                 goToPrivacyPolicy = goToPrivacyPolicy,
+                goToThirdPartiesLicenses = goToThirdPartiesLicenses,
                 readBetaCatalog = readBetaCatalog,
                 readReleaseCatalog = readReleaseCatalog,
                 switchVersionBetaRelease = switchVersionBetaRelease,
@@ -557,7 +566,8 @@ fun DeviceList(
         DeviceList(
             modifier = Modifier
                 .fillMaxSize()
-                .consumeWindowInsets(paddingValues).padding(paddingValues),
+                .consumeWindowInsets(paddingValues)
+                .padding(paddingValues),
                 //.padding(paddingValues = paddingValues),
             filteredDevices = filteredDevices,
             pinnedDevices = pinnedDevices,

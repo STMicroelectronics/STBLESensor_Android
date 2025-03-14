@@ -84,7 +84,11 @@ interface StPreferences {
 
     fun getCustomStringFromKey(key: String) : String?
 
+    fun deleteCustomStringFromKey(key: String)
+
     fun setCustomBooleanForKey(key: String, value: Boolean)
 
     fun getCustomBooleanFromKey(key: String) : Boolean
+
+    fun deleteCustomBooleanFromKey(key: String)
 }

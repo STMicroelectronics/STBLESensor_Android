@@ -111,6 +111,12 @@ fun multipleAccelerometerAreSelected(sensorsSelected: List<Sensor>): Boolean {
     return nSelected > 1
 }
 
+fun multipleDIL24AreSelected(sensorsSelected: List<Sensor>): Boolean {
+    val possibleMountedDil = sensorsSelected.filter { it.id[0] == 'D' }
+    val nModels = possibleMountedDil.map {it.model}.toSet()
+    return nModels.size>1
+}
+
 fun getSensorFiltersBySensorId(
     context: Context,
     sensorId: String,

@@ -261,6 +261,12 @@ class StPreferencesImpl @Inject constructor(
         return runBlocking { dataStore.data.first()[stringPreferencesKey(key)] }
     }
 
+    override fun deleteCustomStringFromKey(key: String) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs.remove(stringPreferencesKey(key)) }
+        }
+    }
+
     override fun setCustomBooleanForKey(key: String, value: Boolean) {
         coroutineScope.launch {
             dataStore.edit { prefs -> prefs[booleanPreferencesKey(key)] = value }
@@ -271,6 +277,11 @@ class StPreferencesImpl @Inject constructor(
         return runBlocking { dataStore.data.first()[booleanPreferencesKey(key)] ?: false }
     }
 
+    override fun deleteCustomBooleanFromKey(key: String) {
+        coroutineScope.launch {
+            dataStore.edit { prefs -> prefs.remove(booleanPreferencesKey(key)) }
+        }
+    }
     companion object {
         private const val FORMATTER_KEY = "propose_fw_update_for%s_%s"
         private val TERMS_KEY = booleanPreferencesKey("terms_key")

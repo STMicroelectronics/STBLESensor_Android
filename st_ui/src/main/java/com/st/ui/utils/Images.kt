@@ -45,7 +45,8 @@ private val BLUE_ST_SDK_V2_BOARD_TYPE_IMAGES = mapOf(
     "WBA_DISCOVERY_BOARD" to R.drawable.board_generic,
     "WBA6_NUCLEO_BOARD" to R.drawable.board_generic,
     "GENERIC" to R.drawable.board_generic,
-    "WB0X_NUCLEO_BOARD" to R.drawable.board_generic
+    "WB0X_NUCLEO_BOARD" to R.drawable.board_generic,
+    "WB05_NUCLEO_BOARD" to R.drawable.board_generic
 )
 
 private val BLUE_ST_SDK_V2_BOARD_IMAGES = mapOf(
@@ -83,5 +84,6 @@ private val BLUE_ST_SDK_V2_BOARD_IMAGES = mapOf(
     "GENERIC" to R.drawable.real_board_generic,
     "B_L475E_IOT01A" to R.drawable.real_board_generic,
     "B_U585I_IOT02A" to R.drawable.real_board_generic,
-    "WB0X_NUCLEO_BOARD" to R.drawable.real_board_nucleo_wb0x
+    "WB0X_NUCLEO_BOARD" to R.drawable.real_board_nucleo_wb0x,
+    "WB05_NUCLEO_BOARD" to R.drawable.real_board_wb05kn1
 )

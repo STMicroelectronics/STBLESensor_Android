@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -383,7 +384,7 @@ fun CloudAzureApplicationDetails(
             }
 
             BlueMsButton(
-                color = if (isTokenExpired) WarningText else null,
+                color = if (isTokenExpired) WarningText else Color.Unspecified,
                 enabled = isValidToken,
                 text = stringResource(id = android.R.string.ok),
                 onClick = {

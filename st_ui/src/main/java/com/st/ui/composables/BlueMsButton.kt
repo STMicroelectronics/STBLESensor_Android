@@ -33,18 +33,17 @@ import com.st.ui.theme.Shapes
 fun BlueMsButton(
     modifier: Modifier = Modifier,
     text: String,
-    color: Color?=null,
+    color: Color = Color.Unspecified,
+    textColor: Color = Grey0,
     enabled: Boolean = true,
     iconPainter: Painter? = null,
     onClick: () -> Unit = { /** NOOP **/ }
 ) {
     val buttonColors =
-        if(color!=null) {
-            ButtonDefaults.buttonColors(containerColor = color,
-                contentColor = Grey0)
-        } else {
-            ButtonDefaults.buttonColors()
-        }
+        ButtonDefaults.buttonColors(
+            containerColor = color,
+            contentColor = textColor
+        )
 
     Button(
         shape = Shapes.small,
@@ -77,15 +76,17 @@ fun BlueMsButton(
 fun BlueMsButton(
     modifier: Modifier = Modifier,
     text: String,
-    color: Color?=null,
+    color: Color? = null,
     enabled: Boolean = true,
-    imageVector:  ImageVector,
+    imageVector: ImageVector,
     onClick: () -> Unit = { /** NOOP **/ }
 ) {
     val buttonColors =
-        if(color!=null) {
-            ButtonDefaults.buttonColors(containerColor = color,
-                contentColor = Grey0)
+        if (color != null) {
+            ButtonDefaults.buttonColors(
+                containerColor = color,
+                contentColor = Grey0
+            )
         } else {
             ButtonDefaults.buttonColors()
         }

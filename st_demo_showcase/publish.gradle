@@ -8,7 +8,6 @@
 
 apply plugin: 'maven-publish'
 
-def LIB_VERSION = '1.2.0'
 def LIB_GROUP_ID = 'com.st.demo_showcase'
 def LIB_ARTIFACT_ID = 'st-demo_showcase'
 
@@ -37,7 +36,7 @@ afterEvaluate {
             blueStSdk(MavenPublication) {
                 groupId LIB_GROUP_ID
                 artifactId LIB_ARTIFACT_ID
-                version LIB_VERSION
+                version = project.properties['stExportedLibVersion']
                 artifact("$buildDir/outputs/aar/st_demo_showcase-release.aar")
                 artifact(sourceJar)
 

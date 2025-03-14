@@ -45,10 +45,14 @@ fun FlowDemoSensorsScreen(
 
     val expansionSensorsList by viewModel.expansionSensorsList.collectAsStateWithLifecycle()
 
-    val mountedModel = viewModel.getMountedDil24FromOptionBytes()
+    //val mountedModel = viewModel.getMountedDil24FromOptionBytes()
+    val mountedModels = viewModel.getPossibleMountedDil24sFromOptionBytes()
+
+//    val sensorListOrdered =
+//        expansionSensorsList.sortedBy { it.model != mountedModel }.sortedBy { it.model }
 
     val sensorListOrdered =
-        expansionSensorsList.sortedBy { it.model != mountedModel }.sortedBy { it.model }
+        expansionSensorsList.sortedBy { it.model }.sortedBy { !mountedModels.contains(it.model) }
 
     Column(
         modifier = Modifier.padding(paddingValues)
@@ -112,7 +116,8 @@ fun FlowDemoSensorsScreen(
 
                 items(sensorListOrdered) { sensor ->
                     FlowDemoSensorListItem(
-                        mounted = sensor.model == mountedModel,
+                        //mounted = sensor.model == mountedModel,
+                        mounted = mountedModels.contains(sensor.model),
                         sensor = sensor,
                         onSensorSelected = {
                             navController.navigate(

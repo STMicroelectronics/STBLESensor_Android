@@ -8,7 +8,6 @@
 
 apply plugin: 'maven-publish'
 
-def LIB_VERSION = '1.0.0'
 def LIB_GROUP_ID = 'com.st.cloud_azure_iot_central'
 def LIB_ARTIFACT_ID = 'st-cloud_azure_iot_central'
 
@@ -37,7 +36,7 @@ afterEvaluate {
             blueStSdk(MavenPublication) {
                 groupId LIB_GROUP_ID
                 artifactId LIB_ARTIFACT_ID
-                version LIB_VERSION
+                version = project.properties['stExportedLibVersion']
                 artifact("$buildDir/outputs/aar/st_cloud_azure_iot_central-release.aar")
                 artifact(sourceJar)
 

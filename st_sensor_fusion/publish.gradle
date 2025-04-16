@@ -21,7 +21,8 @@ afterEvaluate {
         repositories {
             maven {
                 name = "GithubPackages"
-                url = uri("https://maven.pkg.github.com/SW-Platforms/BlueSTSDK_Android")
+                //url = uri("https://maven.pkg.github.com/SW-Platforms/BlueSTSDK_Android")
+                url = uri("https://maven.pkg.github.com/Leimen/BlueSTSDK_Android")
                 credentials {
                     username = System.getenv('GPR_USER') ?: project.properties['GPR_USER']
                     password = System.getenv('GPR_API_KEY') ?: project.properties['GPR_API_KEY']

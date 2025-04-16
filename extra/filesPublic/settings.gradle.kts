@@ -27,7 +27,8 @@ dependencyResolutionManagement {
 
         maven {
             name = "github"
-            url = uri("https://maven.pkg.github.com/SW-Platforms/BlueSTSDK_Android")
+            //url = uri("https://maven.pkg.github.com/SW-Platforms/BlueSTSDK_Android")
+            url = uri("https://maven.pkg.github.com/Leimen/STBLESensor_Android")
             credentials {
                 username = System.getenv("GPR_USER") ?: GPR_USER
                 password = System.getenv("GPR_API_KEY") ?: GPR_API_KEY

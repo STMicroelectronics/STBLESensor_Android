@@ -272,7 +272,7 @@ fun CloudMqttDeviceConnection(
                                     Text(
                                         modifier = Modifier.padding(LocalDimensions.current.paddingSmall),
                                         style = MaterialTheme.typography.bodyMedium,
-                                        text = "[mSec]"
+                                        text = "[ms]"
                                     )
                                 }
                             }
@@ -417,7 +417,7 @@ private fun UpdateIntervalSelectionDialog(
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
-                    text = "Update Interval [mSec]"
+                    text = "Update Interval [ms]"
                 )
 
                 ExposedDropdownMenuBox(

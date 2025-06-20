@@ -4,7 +4,8 @@
   "ex_app" : 9,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",
-    "SENSOR_TILE_BOX_PROB"
+    "SENSOR_TILE_BOX_PROB",
+    "SENSOR_TILE_BOX_PROC"
   ],
   "flows": [
   ],
@@ -58,7 +59,8 @@
       "model": "LSM6DSV16X",
       "board_compatibility": [
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "um": "mg",
       "fullScaleUm": "g",
@@ -128,7 +130,8 @@
       "model": "LSM6DSV16X",
       "board_compatibility": [
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "um": "mdps",
       "fullScaleUm": "dps",

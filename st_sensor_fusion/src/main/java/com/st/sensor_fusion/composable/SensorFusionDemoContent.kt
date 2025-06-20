@@ -6,7 +6,6 @@ import android.content.ContextWrapper
 import android.opengl.GLSurfaceView
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +25,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,8 +51,12 @@ import com.st.sensor_fusion.R
 import com.st.sensor_fusion.SensorFusionViewModel
 import com.st.sensor_fusion.utility.GLCubeRender
 import com.st.ui.composables.BlueMsButton
+import com.st.ui.theme.Grey0
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.Shapes
+import com.st.ui.theme.SuccessText
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.min
@@ -214,13 +218,16 @@ fun SensorFusionDemoContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                modifier = Modifier.clickable {
-                    shaderRenderer.resetCube()
-                    showResetDialog = true
-                },
-                text = "Reset"
-            )
+            BlueMsButton(text = "Reset", onClick = { showResetDialog = true})
+//            Text(
+//                modifier = Modifier.clickable {
+//                    shaderRenderer.resetCube()
+//                    showResetDialog = true
+//                },
+//                color = PrimaryBlue,
+//                style = MaterialTheme.typography.titleLarge,
+//                text = "Reset"
+//            )
 
             if (viewModel.nodeHaveProximityFeature()) {
                 Column(
@@ -257,35 +264,41 @@ fun SensorFusionDemoContent(
                 }
             }
 
-            Image(
+            Surface(
+                modifier = Modifier.padding(all = LocalDimensions.current.paddingSmall),
+                shape = Shapes.small,
+                color = if (calibrationStatus) {
+                    SuccessText
+                } else {
+                    PrimaryBlue
+                }
+            ) {
+                Icon(
                 modifier = Modifier
                     .width(100.dp)
-                    .height(42.dp)
-                    .clickable {
+                        .height(42.dp).clickable {
                         viewModel.resetCubeCalibration(nodeId)
                         showCalibrationDialog = true
                     },
-                painter = painterResource(
-                    if (calibrationStatus)
-                        R.drawable.compass_calibration_calibrated
-                    else
-                        R.drawable.compass_calibration_uncalibrated
-                ),
+                    painter = painterResource(R.drawable.calibration),
+                    tint =  Grey0,
                 contentDescription = null
             )
         }
     }
+    }
 
     if (showResetDialog) {
         AlertDialog(
-            modifier = Modifier.alpha(0.9f),
+            modifier = Modifier.alpha(0.95f),
             onDismissRequest = { showResetDialog = false },
             confirmButton = {
                 BlueMsButton(
                     onClick = {
                         showResetDialog = false
+                        shaderRenderer.resetCube()
                     },
-                    text = "OK"
+                    text = "Reset"
                 )
             },
             title = {
@@ -325,7 +338,7 @@ fun SensorFusionDemoContent(
 
     if (showCalibrationDialog && !calibrationStatus) {
         AlertDialog(
-            modifier = Modifier.alpha(0.9f),
+            modifier = Modifier.alpha(0.90f),
             onDismissRequest = { showCalibrationDialog = false },
             confirmButton = {
                 BlueMsButton(
@@ -350,15 +363,15 @@ fun SensorFusionDemoContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
                 ) {
+
+
                     Icon(
                         modifier = Modifier
-                            //.size(size = LocalDimensions.current.imageLarge),
-                            .width(250.dp)
-                            .height(105.dp),
+                            .size(LocalDimensions.current.imageLarge),
                         painter = painterResource(
-                            R.drawable.compass_calibration_uncalibrated
+                            R.drawable.calibration
                         ),
-                        tint = Color.Unspecified,
+                        tint = PrimaryBlue,
                         contentDescription = null
                     )
 
@@ -392,6 +405,7 @@ private fun findBoardImage(model: Boards.Model): Int {
         Boards.Model.SENSOR_TILE_BOX -> R.drawable.ic_sensortile_box
         Boards.Model.SENSOR_TILE_BOX_PRO -> R.drawable.box_pro_case_top
         Boards.Model.SENSOR_TILE_BOX_PROB -> R.drawable.box_pro_case_top
+        Boards.Model.SENSOR_TILE_BOX_PROC -> R.drawable.box_pro_case_top
         Boards.Model.NUCLEO -> R.drawable.ic_board_nucleo_bg
         Boards.Model.NUCLEO_U575ZIQ -> R.drawable.ic_board_nucleo_bg
         Boards.Model.NUCLEO_U5A5ZJQ -> R.drawable.ic_board_nucleo_bg

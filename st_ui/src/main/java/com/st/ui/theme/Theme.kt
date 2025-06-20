@@ -26,7 +26,13 @@ private val LightColorScheme = lightColorScheme(
 
     inversePrimary = PrimaryYellow,
     inverseSurface = Grey10,
-    inverseOnSurface = Grey0
+    inverseOnSurface = Grey0,
+
+//    surfaceContainer = Grey0,
+//    surfaceContainerHigh = Grey0,
+//    surfaceContainerHighest = Grey0,
+//    surfaceContainerLow = Grey0,
+//    surfaceContainerLowest = Grey0
 )
 
 @Composable

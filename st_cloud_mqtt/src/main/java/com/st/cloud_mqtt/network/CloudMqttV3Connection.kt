@@ -72,7 +72,18 @@ class CloudMqttV3Connection {
             Log.i(TAG,"brokerUrl =[$brokerUrl]")
 
             val persistence  = MemoryPersistence()
-            mqttClient = MqttClient(brokerUrl,  viewModel.cloudMqttServerConfig.value!!.deviceId,persistence)
+            try {
+                mqttClient = MqttClient(
+                    brokerUrl,
+                    viewModel.cloudMqttServerConfig.value!!.deviceId,
+                    persistence
+                )
+            } catch (e: MqttException) {
+                e.printStackTrace()
+                Log.d(TAG, "Connection failure: $e")
+                viewModel.setIsLoading(false)
+                return "Connection failure: $e"
+            }
             if (mqttClient != null) {
                 val connOpts = MqttConnectOptions()
                 connOpts.isCleanSession = true

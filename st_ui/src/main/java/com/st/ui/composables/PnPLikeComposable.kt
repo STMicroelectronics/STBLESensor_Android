@@ -227,6 +227,7 @@ fun StringProperty(
                 imeAction = ImeAction.Send
             ),
             supportingText = {
+                if (isValid.not()) {
                 if ((maxLength != null) || (minLength != null)) {
                     val maxText = maxLength?.let { max -> " ≤$max" } ?: ""
                     val minText = minLength?.let { min -> "$min≤ " } ?: ""
@@ -236,6 +237,7 @@ fun StringProperty(
                         textAlign = TextAlign.End,
                         color = if (isValid.not()) ErrorText else Color.Unspecified
                     )
+                }
                 }
             },
             trailingIcon = {

@@ -77,7 +77,8 @@
     "sensorId": "S3",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "values": [
       {
@@ -447,7 +448,8 @@
     "sensorId": "S4",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "values": [
       {
@@ -747,7 +749,8 @@
     "sensorId": "S5",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "values": [
       {
@@ -1710,6 +1713,47 @@
               {
                 "label": "440",
                 "value": 2
+              }
+            ],
+            "highPass": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sensorId": "D22",
+    "board_compatibility": [
+      "SENSOR_TILE_BOX_PRO",
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
+    ],
+    "values": [
+      {
+        "id": 1,
+        "powerModes": [
+          "LOW_POWER"
+        ],
+        "filters": [
+          {
+            "odrs": [
+              1,
+              4,
+              10,
+              25,
+              50,
+              75,
+              100,
+              200
+            ],
+            "lowPass": [
+              {
+                "label": "ODR/4",
+                "value": 1
+              },
+              {
+                "label": "ODR/9",
+                "value": 3
               }
             ],
             "highPass": []

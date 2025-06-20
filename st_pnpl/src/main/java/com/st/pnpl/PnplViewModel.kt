@@ -281,12 +281,12 @@ class PnplViewModel @Inject constructor(
                     viewModelScope.launch {
                         val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
                         var maxWriteLength =
-                            node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
-                        maxWriteLength?.let {
-                            if (maxWriteLength!! > (node.maxPayloadSize)) {
+                            node?.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength ?:20
+                            node?.let {
+                            if (maxWriteLength > (node.maxPayloadSize)) {
                                 maxWriteLength = (node.maxPayloadSize)
                             }
-                            feature.setMaxPayLoadSize(maxWriteLength!!)
+                            feature.setMaxPayLoadSize(maxWriteLength)
                         }
                     }
 
@@ -351,6 +351,7 @@ class PnplViewModel @Inject constructor(
                                         _statusMessage.emit(messageStatus)
                                     }
 
+                                    try {
                                     val firstOne = commandQueue.first()
 
                                     //Remove the command from the list and send Next One
@@ -377,6 +378,9 @@ class PnplViewModel @Inject constructor(
 //                                            )
                                             sendGetAllCommand(nodeId = nodeId)
                                         }
+                                    }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
                                     }
 
                                 } else {

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -28,6 +27,7 @@ import com.st.blue_sdk.features.activity.ActivityInfo
 import com.st.blue_sdk.features.activity.ActivityType
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryYellow
+import com.st.ui.theme.Shapes
 
 @Composable
 fun ActivityRecognitionMotionIGNContent(
@@ -104,10 +104,10 @@ fun ActivityRecognitionMotionIGNContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorStationaryImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.activity_stationary
                 ),
@@ -127,10 +127,10 @@ fun ActivityRecognitionMotionIGNContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorJoggingImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.activity_jogging
                 ),
@@ -160,10 +160,10 @@ fun ActivityRecognitionMotionIGNContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorWalkingImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.activity_walking
                 ),
@@ -184,10 +184,10 @@ fun ActivityRecognitionMotionIGNContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorStairsImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.activity_stairs
                 ),

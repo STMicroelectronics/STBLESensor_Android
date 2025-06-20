@@ -4,7 +4,8 @@
   "ex_app" : 11,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",
-    "SENSOR_TILE_BOX_PROB"
+    "SENSOR_TILE_BOX_PROB",
+    "SENSOR_TILE_BOX_PROC"
   ],
   "flows": [],
   "functions": [],
@@ -38,7 +39,8 @@
       "model": "LSM6DSV16X",
       "board_compatibility": [
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
       "um": ""
@@ -60,7 +62,8 @@
       "model": "LSM6DSV16X",
       "board_compatibility": [
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
       "um": ""

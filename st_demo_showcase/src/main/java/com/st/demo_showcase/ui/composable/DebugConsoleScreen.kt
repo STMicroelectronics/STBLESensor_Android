@@ -24,7 +24,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.FileDownloadOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -125,7 +126,7 @@ fun DebugConsoleScreen(
             IconButton(onClick = { autoScroll = autoScroll.not() }) {
                 Icon(
                     tint = if (autoScroll) SuccessText else ErrorText,
-                    imageVector = Icons.Default.SwapVert,
+                    imageVector = if (autoScroll)  Icons.Default.Download else Icons.Default.FileDownloadOff,
                     contentDescription = null
                 )
             }

@@ -28,6 +28,7 @@ import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.Grey0
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
+import com.st.ui.theme.WaveShapes
 
 @Composable
 fun BlueMsButton(
@@ -35,6 +36,7 @@ fun BlueMsButton(
     text: String,
     color: Color = Color.Unspecified,
     textColor: Color = Grey0,
+    waveStyle: Boolean = false,
     enabled: Boolean = true,
     iconPainter: Painter? = null,
     onClick: () -> Unit = { /** NOOP **/ }
@@ -46,7 +48,7 @@ fun BlueMsButton(
         )
 
     Button(
-        shape = Shapes.small,
+        shape = if(waveStyle) WaveShapes.small else Shapes.small,
         modifier = modifier
             .defaultMinSize(
                 minWidth = LocalDimensions.current.btnMinWidth,
@@ -78,6 +80,7 @@ fun BlueMsButton(
     text: String,
     color: Color? = null,
     enabled: Boolean = true,
+    waveStyle: Boolean = false,
     imageVector: ImageVector,
     onClick: () -> Unit = { /** NOOP **/ }
 ) {
@@ -92,7 +95,7 @@ fun BlueMsButton(
         }
 
     Button(
-        shape = Shapes.small,
+        shape = if(waveStyle) WaveShapes.small else Shapes.small,
         modifier = modifier
             .defaultMinSize(
                 minWidth = LocalDimensions.current.btnMinWidth,

@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,7 +45,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
@@ -52,6 +55,7 @@ import com.st.catalog.CatalogViewModel
 import com.st.catalog.R
 import com.st.catalog.availableDemos
 import com.st.ui.composables.StTopBar
+import com.st.ui.theme.Grey5
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
@@ -72,6 +76,7 @@ fun FirmwareList(
     val firmwareList by viewModel.firmwareList.collectAsStateWithLifecycle()
     FirmwareList(
         modifier = modifier,
+        currentDemoName = viewModel.selectedDemoName,
         firmwareList = firmwareList,
         onBack = {
             navController.popBackStack()
@@ -82,20 +87,37 @@ fun FirmwareList(
 @Composable
 fun FirmwareList(
     modifier: Modifier = Modifier,
+    currentDemoName: String? = null,
     onBack: () -> Unit = { /** NOOP **/ },
     firmwareList: List<BoardFirmware>
 ) {
 
     var onlyLatest by remember { mutableStateOf(value = true) }
 
-    val firmwareListDisplayed by remember(key1 = onlyLatest, key2 = firmwareList) {
+    val firmwareListDisplayed by remember(
+        key1 = onlyLatest,
+        key2 = firmwareList,
+        key3 = currentDemoName
+    ) {
         derivedStateOf {
             //Remove duplicated firmwares
-            val firmwareListWithoutDuplicate =  firmwareList.groupBy { it.fwName }.map { list -> list.value.distinctBy { it.fwVersion } }.flatten()
+            var firmwareListWithoutDuplicate = firmwareList.groupBy { it.fwName }
+                .map { list -> list.value.distinctBy { it.fwVersion } }.flatten()
 
             if (onlyLatest) {
-                firmwareListWithoutDuplicate.groupBy { it.fwName }
+                firmwareListWithoutDuplicate = firmwareListWithoutDuplicate.groupBy { it.fwName }
                     .map { list -> list.value.maxByOrNull { it.fwVersion }!! }
+//            } else {
+//                firmwareListWithoutDuplicate
+            }
+
+            if (currentDemoName != null) {
+                firmwareListWithoutDuplicate.filter {
+                    it.availableDemos(
+                        demoDecorator = it.demoDecorator,
+                        addFlowForBoardType = false
+                    ).map { it2 -> it2.displayName }.contains(currentDemoName)
+                }
             } else {
                 firmwareListWithoutDuplicate
             }
@@ -120,6 +142,43 @@ fun FirmwareList(
         )
 
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingSmall))
+
+        if (currentDemoName != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = LocalDimensions.current.paddingNormal),
+                //verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "${firmwareListDisplayed.size} ${if (firmwareListDisplayed.size > 1) "Firmwares contain" else "Firmware contains"} Demo",
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Text(
+                    //modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
+                    modifier = Modifier.fillMaxWidth(),
+                    text = currentDemoName,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            HorizontalDivider(
+                modifier = Modifier.padding(
+                    start = LocalDimensions.current.paddingNormal,
+                    end = LocalDimensions.current.paddingNormal,
+                    bottom = LocalDimensions.current.paddingNormal
+                ),
+                thickness = 2.dp
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -158,6 +217,35 @@ fun FirmwareList(
                 contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
                 verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
             ) {
+//                if (currentDemoName != null) {
+//                    item {
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(all = LocalDimensions.current.paddingNormal),
+//                            //verticalAlignment = Alignment.CenterVertically,
+//                        ) {
+//                            Text(
+//                                modifier = Modifier.fillMaxWidth(),
+//                                text = "${firmwareListDisplayed.size} ${if (firmwareListDisplayed.size > 1) "Firmwares" else "Firmware"} implementing Demo",
+//                                textAlign = TextAlign.Center,
+//                                maxLines = 1,
+//                                style = MaterialTheme.typography.bodyMedium,
+//                                color = MaterialTheme.colorScheme.primary
+//                            )
+//
+//                            Text(
+//                                //modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
+//                                modifier = Modifier.fillMaxWidth(),
+//                                text = currentDemoName,
+//                                textAlign = TextAlign.Center,
+//                                maxLines = 1,
+//                                style = MaterialTheme.typography.titleMedium,
+//                                color = MaterialTheme.colorScheme.primary
+//                            )
+//                        }
+//                    }
+//                }
                 items(firmwareListDisplayed) { it ->
                     FirmwareListItem(
                         name = it.fwName,
@@ -165,7 +253,10 @@ fun FirmwareList(
                         boardName = it.brdName,
                         description = it.fwDesc,
                         fwMaturity = it.maturity,
-                        listOfDemos = it.availableDemos().map { it2 -> it2.displayName }.toSet().toString()
+                        listOfDemos = it.availableDemos(
+                            demoDecorator = it.demoDecorator,
+                            addFlowForBoardType = false
+                        ).map { it2 -> it2.displayName }.toSet().toString()
                             .removePrefix("[").removeSuffix("]")
                     )
                 }

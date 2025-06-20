@@ -108,11 +108,12 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     private val _streamData = MutableStateFlow<StreamData?>(value = null)
     private val _isLogging = MutableStateFlow(value = false)
     private val _isSDCardInserted = MutableStateFlow(value = false)
-    private val _isLoading = MutableStateFlow(value = false)
+    private val _isLoading = MutableStateFlow(value = true)
     private val _isConnectionLost = MutableStateFlow(value = false)
     private val _enableLog = MutableStateFlow(value = false)
     private val _statusMessage: MutableStateFlow<PnPLSpontaneousMessageType?> =
         MutableStateFlow(value = null)
+    private val _snackbarMessage: MutableStateFlow<String?>  = MutableStateFlow(value = null)
 
     val tags: StateFlow<List<ComponentWithInterface>> = _tags.asStateFlow()
     val currentSensorEnabled = _currentSensorEnabled.asStateFlow()
@@ -129,6 +130,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     val statusMessage: StateFlow<PnPLSpontaneousMessageType?> = _statusMessage.asStateFlow()
     val isConnectionLost: StateFlow<Boolean> = _isConnectionLost.asStateFlow()
     val enableLog: StateFlow<Boolean> = _enableLog.asStateFlow()
+    val snackbarMessage = _snackbarMessage.asStateFlow()
 
 
 //    private val _numActiveSensors = MutableStateFlow(value = 0)
@@ -265,6 +267,10 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
                 updateTags()
             }
         }
+    }
+
+    fun cleanMessage() {
+        _snackbarMessage.value = null
     }
 
     private fun sensorPropNamePredicate(name: String): Boolean =
@@ -647,13 +653,13 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
             val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
 
             var maxWriteLength =
-                node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
-            maxWriteLength?.let {
-                if (maxWriteLength!! > (node.maxPayloadSize)) {
+                node?.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength ?:20
+            node?.let {
+                if (maxWriteLength > (node.maxPayloadSize)) {
                     maxWriteLength = (node.maxPayloadSize)
                 }
-                pnplFeature?.setMaxPayLoadSize(maxWriteLength!!)
             }
+            pnplFeature?.setMaxPayLoadSize(maxWriteLength)
 
             if (_sensors.value.isEmpty() || _tags.value.isEmpty()) {
                 getModel(nodeId = nodeId)
@@ -1032,8 +1038,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
                         logControllerJson[SD_JSON_KEY]?.jsonPrimitive?.booleanOrNull ?: false
                     }
                     _isLogging.update {
-                        logControllerJson[LOG_STATUS_JSON_KEY]?.jsonPrimitive?.booleanOrNull
-                            ?: false
+                        logControllerJson[LOG_STATUS_JSON_KEY]?.jsonPrimitive?.booleanOrNull == true
                     }
 
                     if (!_isLogging.value && setShouldInitDemoAtResponse) {
@@ -1359,13 +1364,21 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     }
 
     fun onTagChangeState(nodeId: String, tag: String, newState: Boolean) {
+        var currentTagSelected: String? = null
+        try {
+            currentTagSelected = tagNames[HsdlConfig.tags.indexOf(tag)]
+        } catch (e: Exception) {
+            _snackbarMessage.value = "The selected \"$tag\" tag is invalid due to an issue with its name length. The maximum length allowed is 24 characters. Please update the tag on the WebPortal!"
+            Log.d("onTagChangeStateException", e.message.toString())
+        }
+        if (currentTagSelected != null) {
         viewModelScope.launch {
             sendCommand(
                 nodeId = nodeId,
                 typeOfCmd = PnPLTypeOfCommand.Set,
                 cmd = PnPLCmd(
                     command = TAGS_INFO_JSON_KEY,
-                    request = tagNames[HsdlConfig.tags.indexOf(tag)],
+                        request = currentTagSelected,
                     fields = mapOf(STATUS_JSON_KEY to newState)
                 ),
                 askTheStatus = false
@@ -1384,6 +1397,7 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
                 _vespucciTagsActivation.update { it - tag }
             }
         }
+    }
     }
 
     fun enableStreamSensor(nodeId: String, sensor: String) {

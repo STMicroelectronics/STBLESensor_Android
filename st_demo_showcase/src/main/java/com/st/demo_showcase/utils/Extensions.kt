@@ -163,4 +163,5 @@ fun Demo.getDescription(context: Context): String =
         Demo.CloudAzureIotCentral -> "Connect the board to one Azure IoT Central Dashboard"
         Demo.CloudMqtt -> "Connect the board to one MQTT Server"
         Demo.MedicalSignal -> "Display Medical Signals"
+        Demo.AssetTrackingEventDemo -> "Show asset tracking detected events, such as Fall or Shock Events"
     }

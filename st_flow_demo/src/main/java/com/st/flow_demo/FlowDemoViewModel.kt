@@ -9,6 +9,7 @@ package com.st.flow_demo
 
 import android.content.Context
 import android.net.Uri
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableLongStateOf
@@ -60,6 +61,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,6 +88,8 @@ class FlowDemoViewModel
     var expressionSelected: Flow? = null
 
     var flowOnCreation: Flow? = null
+
+    private var timerSendingFlow: CountDownTimer? = null
 
     var sensorOnConfig: Sensor? = null
     var functionOnConfig: Function? = null
@@ -218,7 +222,12 @@ class FlowDemoViewModel
                                 sectionExtraFlow.examplesFlow.forEach { extraFlowUrl ->
                                     try {
                                         val responseBody =  if (isBeta) {
-                                            downloadAPI.downloadFile(extraFlowUrl.replace("STMicroelectronics", "SW-Platforms")).body()
+                                            downloadAPI.downloadFile(
+                                                extraFlowUrl.replace(
+                                                    "STMicroelectronics",
+                                                    "SW-Platforms"
+                                                )
+                                            ).body()
                                         } else {
                                             downloadAPI.downloadFile(extraFlowUrl).body()
                                         }
@@ -241,7 +250,12 @@ class FlowDemoViewModel
                                     sectionExtraFlow.examplesFlow.forEach { extraFlowUrl ->
                                         try {
                                             val responseBody =  if (isBeta) {
-                                                downloadAPI.downloadFile(extraFlowUrl.replace("STMicroelectronics", "SW-Platforms")).body()
+                                                downloadAPI.downloadFile(
+                                                    extraFlowUrl.replace(
+                                                        "STMicroelectronics",
+                                                        "SW-Platforms"
+                                                    )
+                                                ).body()
                                             } else {
                                                 downloadAPI.downloadFile(extraFlowUrl).body()
                                             }
@@ -487,10 +501,13 @@ class FlowDemoViewModel
             //Each message from .box/.box-Pro are 20 bytes
             connectionJob?.cancel()
             connectionJob = coroutineScope.launch {
+                var isError = false
                 //val buffer = StringBuffer()
                 blueManager.getDebugMessages(nodeId = it.device.address)?.collect {
                     //buffer.append(it.payload)
                     //buffer.delete(0, buffer.length)
+
+                    stopSendingFlowTimer()
 
                     Log.i("FlowTmp", " [${it.payload.length}] <${it.payload}>")
                     val escapedMessage = it.payload.apply {
@@ -512,6 +529,7 @@ class FlowDemoViewModel
 
                         escapedMessage.startsWith(FlowUploaderHelper.FLOW_PARSED_MESSAGE_OK) -> {
                             //Flow Fully Received and parsed
+                            Log.i("FlowTmp", " FLOW_PARSED_MESSAGE_OK")
                             _flowMessageReceived.value =
                                 Pair(
                                     CommunicationError.FLOW_RECEIVED_AND_PARSED,
@@ -531,6 +549,7 @@ class FlowDemoViewModel
                         escapedMessage.startsWith(FlowUploaderHelper.FLOW_ERROR_MESSAGE) -> {
                             //Error....
                             var errorCode = CommunicationError.GENERIC_ERROR.code
+                            isError = true
                             try {
                                 val parsedError = it.payload.removeTerminatorCharacters()
                                     .substring(it.payload.indexOf(":") + 1)
@@ -542,21 +561,25 @@ class FlowDemoViewModel
                             } finally {
                                 val code = CommunicationError.getCommunicationError(errorCode)
                                 _flowMessageReceived.value = Pair(code, code.name)
+                                connectionJob?.cancel()
                             }
                             return@collect
                         }
 
                         else -> {
                             //Send Next Package
-                            val nextMessage = prepareNextMessage(flowCompressed, it.payload.length)
+                            if (!isError) {
+                                val nextMessage =
+                                    prepareNextMessage(flowCompressed, it.payload.length)
                             nextMessage?.let {
                                 sendMessage(nextMessage)
-                            }
                             //_flowBytesSent.value += it.payload.length
                             _flowMessageReceived.value =
                                 Pair(CommunicationError.FLOW_NO_ERROR, "Sending...")
                         }
                     }
+                }
+            }
                 }
             }
             //First Message with the Dimension of the Compressed Flow
@@ -565,6 +588,34 @@ class FlowDemoViewModel
             sendMessage(message)
         }
     }
+
+
+    private fun createAndStartSendingFlowTimer() {
+        stopSendingFlowTimer()
+        timerSendingFlow = object : CountDownTimer(
+            5*1000,5*1000
+        ) {
+            override fun onTick(millisUntilFinished: Long) {
+                //Do Nothing
+            }
+
+            override fun onFinish() {
+                val code = CommunicationError.TIMEOUT_ERROR
+                _flowMessageReceived.value =
+                    Pair(code, code.name)
+                connectionJob?.cancel()
+            }
+        }
+        (timerSendingFlow as CountDownTimer).start()
+    }
+
+    private fun stopSendingFlowTimer() {
+        timerSendingFlow?.let {
+            (timerSendingFlow as CountDownTimer).cancel()
+            timerSendingFlow = null
+        }
+    }
+
 
     private fun prepareNextMessage(flowCompressed: ByteArray, length: Int): ByteArray? {
         _flowBytesSent.value += length
@@ -578,12 +629,23 @@ class FlowDemoViewModel
         val lenDataToSend = lastChar - _flowBytesSent.value
         val dataToSend = ByteArray(lenDataToSend)
         flowCompressed.copyInto(dataToSend, 0, _flowBytesSent.value, lastChar)
+        Log.i("FlowTmp", "prepareNextMessage ${dataToSend.size}")
+        if(dataToSend.isEmpty()) {
+            return null
+        }
         return dataToSend
     }
 
     private fun sendMessage(message: ByteArray) {
         node?.let {
             viewModelScope.launch {
+                createAndStartSendingFlowTimer()
+            }
+            viewModelScope.launch {
+                if(node!!.boardType==Boards.Model.SENSOR_TILE_BOX) {
+                    //Add a Delay for each packet...
+                    delay(100)
+                }
                 blueManager.writeDebugMessage(
                     //nodeId = it.device.address, msg = message.toString()
                     nodeId = it.device.address, msg = String(message, StandardCharsets.ISO_8859_1)
@@ -676,7 +738,8 @@ class FlowDemoViewModel
 
                         if (optionByteValue != optionByte.escapeValue) {
                             val retValue: MutableList<String> = mutableListOf()
-                            optionByte.stringValues!!.find { it.value == optionByteValue }?.let { value ->
+                            optionByte.stringValues!!.find { it.value == optionByteValue }
+                                ?.let { value ->
                                 value.displayName?.split("/")?.forEach {
                                     retValue.add(it)
                                 }

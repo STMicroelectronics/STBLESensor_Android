@@ -14,6 +14,7 @@
 
     <color name="SecondaryBlue">#3CB4E6</color>
     <color name="SecondaryBlue2">#2B8EC5</color>
+    <color name="NotActiveColor">#E6EBFE</color>
 
     <color name="Grey0">#FFFFFF</color>
     <color name="Grey1">#F7F8FA</color>

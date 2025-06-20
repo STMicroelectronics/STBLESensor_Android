@@ -11,7 +11,10 @@
     <string name="st_catalog_fwList_title">Firmware</string>
     <string name="st_catalog_board_demoListLabel">Available demos:</string>
     <string name="st_catalog_board_videoLabel">Example video:</string>
-    <string name="st_catalog_board_readMoreBtn">Order &amp; Buy</string>
+    <string name="st_catalog_board_orderBtn">Order &amp; Buy</string>
+    <string name="st_catalog_board_orderShortBtn">Buy</string>
+    <string name="st_catalog_board_wikiBtn">Wiki Documentation</string>
+    <string name="st_catalog_board_wikiShortBtn">Wiki</string>
     <string name="st_catalog_board_fwBtn">Firmware</string>
     <string name="st_catalog_board_dsBtn">Documentation</string>
     <string name="st_catalog_boardList_orderDialog_title">Ordering by</string>

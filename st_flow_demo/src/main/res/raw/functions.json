@@ -87,7 +87,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "FFT (DFT- Discrete Fourier Transform)",
     "inputs": [
@@ -137,7 +138,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Sensor Fusion (Quaternions)",
     "inputs": [
@@ -253,7 +255,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Pedometer",
     "inputs": [
@@ -287,7 +290,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Hard-Iron compensation",
     "inputs": [
@@ -308,7 +312,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "RMS (Root Mean Square)",
     "inputs": [
@@ -339,7 +344,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "MAX",
     "inputs": [
@@ -385,7 +391,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "MIN",
     "inputs": [
@@ -431,7 +438,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "NORM",
     "inputs": [
@@ -456,7 +464,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "AVG",
     "inputs": [
@@ -506,7 +515,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Standard Deviation",
     "inputs": [
@@ -561,7 +571,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Level",
     "inputs": [
@@ -653,7 +664,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Baby Crying",
     "inputs": [
@@ -678,7 +690,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Human Activity recognition",
     "inputs": [
@@ -705,7 +718,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Threshold Comparison",
     "inputs": [
@@ -775,7 +789,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Threshold Comparison",
     "inputs": [
@@ -837,7 +852,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "description": "Battery Low",
     "inputs": [],

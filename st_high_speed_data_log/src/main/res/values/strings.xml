@@ -13,7 +13,7 @@
     <string name="st_hsdl_sdExtraUrl">https://github.com/STMicroelectronics/fp-sns-datalog2?tab=readme-ov-file#known-limitations</string>
     <string name="st_hsdl_tags_description1">To begin</string>
     <string name="st_hsdl_tags_description2">labelling the data</string>
-    <string name="st_hsdl_tags_description3">you must first start the acquistion by pressing the Play button.</string>
+    <string name="st_hsdl_tags_description3">you must first start the acquisition by pressing the Play button.</string>
     <string name="st_hsdl_tags_description4">Data collection or tagging should be at least</string>
     <string name="st_hsdl_tags_description5">5 seconds</string>
     <string name="st_hsdl_tags_description6">long.</string>

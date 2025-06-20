@@ -37,8 +37,8 @@ android {
         applicationId = "com.st.bluems"
         minSdk = stMinSdk
         targetSdk = stTargetSdk
-        versionCode = 316
-        versionName = "5.2.9"
+        versionCode = 334
+        versionName = "5.2.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }

@@ -9,7 +9,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "inputs": [],
         "mandatoryInputs": [],
@@ -25,7 +26,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "notes": "",
     "outputs": [
@@ -34,7 +36,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "description": "Save as Input",
         "icon": "ic_input",
@@ -54,7 +57,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "inputs": [],
         "mandatoryInputs": [],
@@ -70,7 +74,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "notes": "",
     "outputs": [
@@ -79,7 +84,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "description": "Save as Input",
         "icon": "ic_input",
@@ -99,7 +105,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "inputs": [],
         "mandatoryInputs": [],
@@ -115,7 +122,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "notes": "",
     "outputs": [
@@ -124,7 +132,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "description": "Save as Input",
         "icon": "ic_input",
@@ -144,7 +153,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "inputs": [],
         "mandatoryInputs": [],
@@ -160,7 +170,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "notes": "",
     "outputs": [
@@ -169,7 +180,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "description": "Save as Input",
         "icon": "ic_input",
@@ -189,7 +201,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "inputs": [],
         "mandatoryInputs": [],
@@ -212,7 +225,8 @@
         "board_compatibility": [
           "SENSOR_TILE_BOX",
           "SENSOR_TILE_BOX_PRO",
-          "SENSOR_TILE_BOX_PROB"
+          "SENSOR_TILE_BOX_PROB",
+          "SENSOR_TILE_BOX_PROC"
         ],
         "description": "Save as Input",
         "icon": "ic_input",

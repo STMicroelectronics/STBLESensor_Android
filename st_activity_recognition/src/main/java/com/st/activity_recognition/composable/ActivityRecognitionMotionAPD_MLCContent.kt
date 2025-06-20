@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -27,6 +26,7 @@ import com.st.blue_sdk.features.activity.ActivityInfo
 import com.st.blue_sdk.features.activity.ActivityType
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryYellow
+import com.st.ui.theme.Shapes
 
 
 @Composable
@@ -82,10 +82,10 @@ fun ActivityRecognitionMotionAPD_MLCContent(
                 )
                 .border(
                     BorderStroke(4.dp, animatedColorAdultNotInCarImage),
-                    RoundedCornerShape(size = 32.dp)
+                    Shapes.extraLarge
                 )
                 .padding(4.dp)
-                .clip(RoundedCornerShape(size = 32.dp)),
+                .clip(Shapes.extraLarge),
             painter = painterResource(
                 R.drawable.activity_adult_not_in_car
             ),
@@ -105,10 +105,10 @@ fun ActivityRecognitionMotionAPD_MLCContent(
                 )
                 .border(
                     BorderStroke(4.dp, animatedColorAdultInCarImage),
-                    RoundedCornerShape(size = 32.dp)
+                    Shapes.extraLarge
                 )
                 .padding(4.dp)
-                .clip(RoundedCornerShape(size = 32.dp)),
+                .clip(Shapes.extraLarge),
             painter = painterResource(
                 R.drawable.activity_adult_in_car
             ),

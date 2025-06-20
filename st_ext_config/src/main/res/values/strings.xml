@@ -49,12 +49,13 @@
 
     <string name="st_extConfig_fwDownload_currentBankLabel">Current bank [%d]</string>
     <string name="st_extConfig_fwDownload_currentFwLabel">Current Running Firmware:</string>
+    <string name="st_extConfig_fwDownload_selectedFwLabel">Selected Firmware:</string>
     <string name="st_extConfig_fwDownload_otherBankLabel">Other Bank</string>
     <string name="st_extConfig_fwDownload_otherFwLabel">Firmware Present:</string>
     <string name="st_extConfig_fwDownload_noFwLabel">No Firmware Present</string>
-    <string name="st_extConfig_fwDownload_compatibleFwLabel">List of compatible Firmwares</string>
+    <string name="st_extConfig_fwDownload_compatibleFwLabel">Download one Firmware</string>
     <string name="st_extConfig_fwDownload_descriptionLabel">Description:</string>
-    <string name="st_extConfig_fwDownload_installBtn">Install\n%s</string>
+    <string name="st_extConfig_fwDownload_installBtn">Install</string>
     <string name="st_extConfig_fwDownload_swapBtn">Swap to this bank</string>
     <string name="st_extConfig_fwDownload_updateAvailableTitle">Update Available</string>
     <string name="st_extConfig_fwDownload_changeLogTitle">Change Log:</string>

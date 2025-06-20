@@ -33,6 +33,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,15 +60,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.st.core.GlobalConfig
 import com.st.high_speed_data_log.composable.AIoTCraftHsdlSensors
 import com.st.high_speed_data_log.composable.AIoTCraftHsdlTags
-import com.st.high_speed_data_log.composable.ResetBoardDialog
 import com.st.high_speed_data_log.composable.StopLoggingDialog
 import com.st.high_speed_data_log.composable.VespucciCharts
 import com.st.high_speed_data_log.composable.VespucciHsdlTags
 import com.st.high_speed_data_log.model.StreamData
 import com.st.pnpl.composable.PnPLInfoWarningSpontaneousMessage
+import com.st.ui.composables.BlueMSSnackBarMaterial3
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
@@ -76,6 +78,7 @@ import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryBlue2
 import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Shapes
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -117,8 +120,11 @@ fun AIoTCraftHighSpeedDataLog(
     val streamData by viewModel.streamData.collectAsStateWithLifecycle()
     val enableLog by viewModel.enableLog.collectAsStateWithLifecycle()
 
+    val snackbarMessage by viewModel.snackbarMessage.collectAsStateWithLifecycle()
+
     AIoTCraftHighSpeedDataLog(
         modifier = modifier,
+        snackbarMessage = snackbarMessage,
         nodeId = nodeId,
         sensors = sensors,
         streamSensors = streamSensors,
@@ -147,6 +153,7 @@ fun AIoTCraftHighSpeedDataLog(
         },
         onBeforeUcf = { viewModel.setEnableStopDemo(false) },
         onAfterUcf = {},
+        onClearMessage = { viewModel.cleanMessage() },
         onSendCommand = { name, value ->
             if (isLoading.not()) {
                 viewModel.sendCommand(
@@ -248,6 +255,7 @@ fun AIoTCraftHighSpeedDataLog(
 fun AIoTCraftHighSpeedDataLog(
     modifier: Modifier,
     nodeId: String,
+    snackbarMessage: String? = null,
     sensors: List<ComponentWithInterface> = emptyList(),
     streamSensors: List<ComponentWithInterface> = emptyList(),
     tags: List<ComponentWithInterface> = emptyList(),
@@ -264,6 +272,7 @@ fun AIoTCraftHighSpeedDataLog(
     onSensorSelected: (String) -> Unit,
     onValueChange: (String, Pair<String, Any>) -> Unit,
     onBeforeUcf: () -> Unit,
+    onClearMessage: () -> Unit,
     onAfterUcf: () -> Unit,
     onSendCommand: (String, CommandRequest?) -> Unit,
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ },
@@ -290,11 +299,19 @@ fun AIoTCraftHighSpeedDataLog(
         }
     }
 
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+
     val haptic = LocalHapticFeedback.current
 
     val context = LocalContext.current
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            BlueMSSnackBarMaterial3(
+                snackBarHostState = snackBarHostState
+            )
+        },
         topBar = {
             HsdlConfig.hsdlTabBar?.invoke(currentTitle, isLoading, vespucciTagsActivation.isEmpty()) {
                 if (HsdlConfig.isVespucci) {
@@ -507,6 +524,17 @@ fun AIoTCraftHighSpeedDataLog(
                 state = pullRefreshState,
                 modifier = Modifier.align(alignment = Alignment.TopCenter),
                 scale = true
+            )
+        }
+    }
+
+    snackbarMessage?.let { message ->
+        onClearMessage()
+        coroutineScope.launch {
+            snackBarHostState.showSnackbar(
+                message = message,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Indefinite
             )
         }
     }

@@ -220,15 +220,16 @@ class MedicalSignalViewModel
 
                             val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
                             var maxWriteLength =
-                                node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
-                            maxWriteLength?.let {
-                                if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                node?.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
+                                    ?: 20
+
+                            node?.let {
+                                if (maxWriteLength > (node.maxPayloadSize)) {
                                     maxWriteLength = (node.maxPayloadSize)
                                 }
-                                (featurePnPL as PnPL).setMaxPayLoadSize(maxWriteLength!!)
                             }
+                            (featurePnPL as PnPL).setMaxPayLoadSize(maxWriteLength)
 
-                            if (featurePnPL is PnPL) {
                                 blueManager.writeFeatureCommand(
                                     responseTimeout = 0,
                                     nodeId = nodeId,
@@ -239,7 +240,6 @@ class MedicalSignalViewModel
                                 )
                             }
                         }
-                    }
                 ).flowOn(Dispatchers.IO).onEach { featureUpdate ->
 
                     val data = featureUpdate.data

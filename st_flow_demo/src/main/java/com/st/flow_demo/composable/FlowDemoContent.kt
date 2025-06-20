@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -67,6 +66,7 @@ import com.st.flow_demo.composable.example_flow.FlowDemoPnPLControlScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorsScreen
 import com.st.flow_demo.composable.sensor_screen.FlowDemoSensorDetailScreen
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.Shapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +101,7 @@ fun FlowDemoContent(
                             width = 60.dp,
                             color = MaterialTheme.colorScheme.onPrimary,
                             height = 4.dp,
-                            shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
+                            shape = Shapes.medium
                         )
                     }) {
                     Tab(

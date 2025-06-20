@@ -38,6 +38,7 @@ import kotlinx.serialization.json.longOrNull
 @Composable
 fun Property(
     modifier: Modifier = Modifier,
+    isTag: Boolean = false,
     hideProperties: Array<String>?=null,
     data: JsonElement?,
     enabled: Boolean,
@@ -48,7 +49,7 @@ fun Property(
     if (content.name == LOAD_FILE_RESPONSE_PROPERTY_NAME && data is JsonPrimitive?) {
         UploadFileResultProperty(
             modifier = modifier,
-            result = data?.booleanOrNull ?: false
+            result = data?.booleanOrNull == true
         )
     } else {
         val label = content.displayName.localizedDisplayName
@@ -102,8 +103,18 @@ fun Property(
                         stringData = data.contentOrNull ?: defaultData
                     }
 
-                    val minLength = content.minLength
-                    val maxLength = content.maxLength
+                    val minLength: Int?
+                    val maxLength: Int?
+
+                    //Only Label for Tag.. this is a tmp workaround
+                    if(isTag && (label=="Label")) {
+                        minLength = 1
+                        maxLength = 24
+                    } else {
+                        minLength = content.minLength
+                        maxLength = content.maxLength
+                    }
+
                     val trimWhitespace = content.trimWhitespace
 
                     StringProperty(
@@ -119,7 +130,7 @@ fun Property(
                         maxLength = maxLength,
                         trimWhitespace = trimWhitespace,
                         commandBehavior = commandBehavior,
-                        onValueChange = { value, _ -> onValueChange(content.name to value) }
+                        onValueChange = { value, isValid -> if(isValid) {onValueChange(content.name to value)} }
                     )
                 }
             }
@@ -429,6 +440,7 @@ fun Property(
             is DtmiContent.DtmiPropertyContent.DtmiComplexPropertyContent -> {
                 val schema = content.schema
                 ComplexProperty(
+                    isTag = isTag,
                     modifier = modifier,
                     hideProperties = hideProperties,
                     data = data,

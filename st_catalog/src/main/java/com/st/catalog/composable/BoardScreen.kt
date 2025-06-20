@@ -8,13 +8,13 @@
 package com.st.catalog.composable
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,9 +32,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.st.blue_sdk.board_catalog.models.BoardDescription
@@ -48,8 +51,12 @@ import com.st.catalog.availableDemos
 import com.st.demo_showcase.models.Demo
 import com.st.demo_showcase.ui.composable.DemoListItem
 import com.st.ui.composables.BlueMsButton
+import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.composables.StTopBar
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.PrimaryYellow
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -62,6 +69,15 @@ fun BoardScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope
 ) {
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_START -> {
+                viewModel.setSelectedDemo(null)
+            }
+            else -> {}
+        }
+    }
+
     LaunchedEffect(key1 = boardId, key2 = boardPart) {
         viewModel.getBoard(boardId)
         viewModel.getFirmwareListForBoardPart(boardPart)
@@ -76,12 +92,23 @@ fun BoardScreen(
     if (boardOrNull != null) {
         val allDemo by remember(key1 = firmwareList) {
             derivedStateOf {
+                if (StCatalogConfig.showDemoList) {
                 val demosSet = mutableSetOf<Demo>()
-                val firmwareListWithoutDuplicate =  firmwareList.groupBy { it.fwName }.map { list -> list.value.distinctBy { it.fwVersion } }.flatten()
+                    val firmwareListWithoutDuplicate = firmwareList.groupBy { it.fwName }
+                        .map { list -> list.value.distinctBy { it.fwVersion } }.flatten()
                 firmwareListWithoutDuplicate.forEach {
-                    demosSet.addAll(it.availableDemos())
+                        demosSet.addAll(it.availableDemos().filter {
+                            if (it.isBoardTypeDependent) {
+                                it.boardTypesAllowed.contains(boardOrNull!!.boardModel())
+                            } else {
+                                true
+                            }
+                        })
                 }
                 demosSet
+                } else {
+                    mutableSetOf()
+                }
             }
         }
 
@@ -90,6 +117,12 @@ fun BoardScreen(
             board = boardOrNull!!,
             boardDescOrNull = boardDescOrNull,
             demos = allDemo.toList(),
+            onDemoSelected = {demoName ->
+                viewModel.setSelectedDemo(demoName)
+                navController.navigate(
+                    "detail/$boardPart/firmwares"
+                )
+            },
             goToFw = {
                 navController.navigate(
                     "detail/$boardPart/firmwares"
@@ -106,11 +139,11 @@ fun BoardScreen(
                             uri = boardDescOrNull!!.docURL!!
                         }
                     }
-                    intent.data = Uri.parse(uri)
+                    intent.data = uri.toUri()
                     context.startActivity(intent)
                 }
             },
-            onReadMoreClick = {
+            onOrderClick = {
                 Intent(Intent.ACTION_VIEW).also { intent ->
                     var uri = "https://www.st.com/content/st_com/en.html"
                     boardDescOrNull?.let {
@@ -119,7 +152,7 @@ fun BoardScreen(
                         }
                     }
 
-                    intent.data = Uri.parse(uri)
+                    intent.data = uri.toUri()
                     context.startActivity(intent)
                 }
             },
@@ -157,11 +190,11 @@ fun BoardScreen(
                                 uri = boardDescOrNull!!.docURL!!
                             }
                         }
-                        intent.data = Uri.parse(uri)
+                        intent.data = uri.toUri()
                         context.startActivity(intent)
                     }
                 },
-                onReadMoreClick = {
+                onOrderClick = {
                     Intent(Intent.ACTION_VIEW).also { intent ->
                         var uri = "https://www.st.com/content/st_com/en.html"
                         boardDescOrNull?.let {
@@ -170,7 +203,20 @@ fun BoardScreen(
                             }
                         }
 
-                        intent.data = Uri.parse(uri)
+                        intent.data = uri.toUri()
+                        context.startActivity(intent)
+                    }
+                },
+                onWikiClick = {
+                    Intent(Intent.ACTION_VIEW).also { intent ->
+                        var uri = "https://www.st.com/content/st_com/en.html"
+                        boardDescOrNull?.let {
+                            if (boardDescOrNull!!.wikiURL != null) {
+                                uri = boardDescOrNull!!.wikiURL!!
+                            }
+                        }
+
+                        intent.data = uri.toUri()
                         context.startActivity(intent)
                     }
                 },
@@ -192,7 +238,9 @@ fun BoardScreen(
     onBack: () -> Unit = { /** NOOP **/ },
     goToFw: () -> Unit = { /** NOOP **/ },
     goToDs: () -> Unit = { /** NOOP **/ },
-    onReadMoreClick: () -> Unit = { /** NOOP **/ },
+    onDemoSelected: (String) -> Unit = { /** NOOP **/ },
+    onOrderClick: () -> Unit = { /** NOOP **/ },
+    onWikiClick: () -> Unit = { /** NOOP **/ },
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope
 ) {
@@ -238,7 +286,10 @@ fun BoardScreen(
                         DemoListItem(
                             item = demo,
                             even = index % 2 == 0,
-                            isLastOne = index == demos.lastIndex
+                            isLastOne = index == demos.lastIndex,
+                            onDemoSelected = { demo ->
+                                onDemoSelected(demo.displayName)
+                            }
                         )
                     }
                 }
@@ -255,15 +306,56 @@ fun BoardScreen(
         }
 
         boardDescOrNull?.let {
+            if ((boardDescOrNull.orderURL != null) && (boardDescOrNull.wikiURL != null)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BlueMsButton(
+                        modifier = Modifier
+                            .padding(vertical = LocalDimensions.current.paddingNormal),
+                        onClick = onOrderClick,
+                        iconPainter = painterResource(R.drawable.shopping_icon),
+                        text = stringResource(id = R.string.st_catalog_board_orderShortBtn)
+                    )
+
+                    BlueMsButton(
+                        modifier = Modifier
+                            .padding(vertical = LocalDimensions.current.paddingNormal),
+                        color = PrimaryYellow,
+                        textColor = PrimaryBlue,
+                        iconPainter = painterResource(R.drawable.wiki_icon),
+                        onClick = onWikiClick,
+                        text = stringResource(id = R.string.st_catalog_board_wikiShortBtn)
+                    )
+                }
+            } else {
             if (boardDescOrNull.orderURL != null) {
                 BlueMsButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = LocalDimensions.current.paddingLarge)
                         .padding(vertical = LocalDimensions.current.paddingNormal),
-                    onClick = onReadMoreClick,
-                    text = stringResource(id = R.string.st_catalog_board_readMoreBtn)
-                )
+                        onClick = onOrderClick,
+                        iconPainter = painterResource(R.drawable.shopping_icon),
+                        text = stringResource(id = R.string.st_catalog_board_orderBtn)
+                    )
+                }
+
+                if (boardDescOrNull.wikiURL != null) {
+                    BlueMsButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = LocalDimensions.current.paddingLarge)
+                            .padding(vertical = LocalDimensions.current.paddingNormal),
+                        color = PrimaryYellow,
+                        textColor = PrimaryBlue,
+                        iconPainter = painterResource(R.drawable.wiki_icon),
+                        onClick = onWikiClick,
+                        text = stringResource(id = R.string.st_catalog_board_wikiBtn)
+                    )
+                }
             }
         }
 

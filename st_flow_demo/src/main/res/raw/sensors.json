@@ -48,7 +48,8 @@
     "model": "STTS22H",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "output": "Temperature",
     "outputs": [
@@ -181,7 +182,8 @@
     "model": "LPS22DF",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "output": "Pressure",
     "outputs": [
@@ -337,7 +339,8 @@
     "model": "LIS2DU12",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "um": "mg",
     "fullScaleUm": "g",
@@ -540,7 +543,8 @@
     "model": "LSM6DSV16X",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "um": "mg",
     "fullScaleUm": "g",
@@ -678,7 +682,8 @@
     "model": "LSM6DSV16X",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "um": "mdps",
     "fullScaleUm": "dps",
@@ -775,7 +780,8 @@
     "board_compatibility": [
       "SENSOR_TILE_BOX",
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "notes": "OFF_CANC always enabled",
     "um": "mG",
@@ -826,7 +832,7 @@
     ],
     "datasheetLink": "https://www.st.com/resource/en/datasheet/mp23abs1.pdf",
     "dataType": "int16_t vector x n",
-    "notes": "n depends on the sampling freq: we are used to send a data every 1 msec",
+    "notes": "n depends on the sampling freq: we are used to send a data every 1 ms",
     "um": "dBV",
     "powerModes": [
       {
@@ -856,11 +862,12 @@
     "model": "MP23DB01HP",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "datasheetLink": "https://www.st.com/resource/en/datasheet/mp23db01hp.pdf",
     "dataType": "int16_t vector x n",
-    "notes": "n depends on the sampling freq: we are used to send a data every 1 msec",
+    "notes": "n depends on the sampling freq: we are used to send a data every 1 ms",
     "um": "dBV",
     "powerModes": [
       {
@@ -894,7 +901,7 @@
       "O3"
     ],
     "datasheetLink": "https://www.st.com/en/microcontrollers/stm32l4r9zi.html",
-    "um": "msec",
+    "um": "ms",
     "configuration": {
       "acquisitionTime": 0
     }
@@ -908,7 +915,8 @@
     "model": "STM32U585AI",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "outputs": [
       "O1",
@@ -916,7 +924,7 @@
       "O3"
     ],
     "datasheetLink": "https://www.st.com/en/microcontrollers/stm32u5585ai.html",
-    "um": "msec",
+    "um": "ms",
     "configuration": {
       "acquisitionTime": 0
     }
@@ -956,7 +964,8 @@
     "model": "STM32U5858AI",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "datasheetLink": "https://www.st.com/en/microcontrollers/stm32u5858ai.html",
     "um": "utc format",
@@ -1006,7 +1015,8 @@
     "model": "LSM6DSV16X",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
     "um": ""
@@ -1053,7 +1063,8 @@
     "model": "LSM6DSV16X",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
     "um": ""
@@ -1075,7 +1086,8 @@
     "model": "LSM6DSV16X",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "datasheetLink": "https://www.st.com/resource/en/datasheet/lsm6dsv16x.pdf",
     "um": ""
@@ -1093,7 +1105,8 @@
     "model": "ST25DV04K",
     "board_compatibility": [
       "SENSOR_TILE_BOX_PRO",
-      "SENSOR_TILE_BOX_PROB"
+      "SENSOR_TILE_BOX_PROB",
+      "SENSOR_TILE_BOX_PROC"
     ],
     "datasheetLink": "https://www.st.com/resource/en/datasheet/st25dv04k.pdf",
     "um": ""

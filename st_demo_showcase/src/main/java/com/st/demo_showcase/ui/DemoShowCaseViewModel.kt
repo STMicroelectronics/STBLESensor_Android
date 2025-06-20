@@ -139,7 +139,7 @@ class DemoShowCaseViewModel @Inject constructor(
             val currentDemoName = it.displayName.lowercase().replace(" ", "_")
 
             _modelUpdates.value?.extractComponents(demoName = currentDemoName).isNullOrEmpty().not()
-        } ?: false
+        } == true
     }
 
     fun setCurrentDemo(demo: Demo?) {
@@ -412,6 +412,14 @@ class DemoShowCaseViewModel @Inject constructor(
                         }
                     }
                 }
+            }
+        }
+        if (_device.value != null) {
+            //Add Demo Flow if the board is the Old SensorTile.box without a Fw db entry
+            if((boardType== Boards.Model.SENSOR_TILE_BOX) && (_device.value!!.catalogInfo==null)) {
+               if(buildDemoList.contains(Demo.Flow).not()) {
+                   buildDemoList.add(Demo.Flow)
+               }
             }
         }
 

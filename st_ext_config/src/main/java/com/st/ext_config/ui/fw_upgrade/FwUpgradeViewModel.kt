@@ -108,6 +108,9 @@ class FwUpgradeViewModel
                 fwName = cursor.getString(nameIndex),
                 fwSize = cursor.getLong(sizeIndex).toString()
             )
+            //Log.i("fwUpgrade","changeFile ok=${cursor.getString(nameIndex)}")
+
+            //Log.i("fwUpgrade","0 state=${_fwUpdateState.value}")
 
             changeErrorMessageCode(-1)
         }
@@ -151,11 +154,13 @@ class FwUpgradeViewModel
     }
 
     fun clearFwUpdateState() {
+        //Log.i("fwUpgrade","clearFwUpdateState state=${_fwUpdateState.value}")
         _fwUpdateState.value = FwUpdateState()
     }
 
     fun startDemo(nodeId: String, fwUrl: String) {
         viewModelScope.launch {
+            //Log.i("fwUpgrade","A state=${_fwUpdateState.value}")
             if (_fwUpdateState.value.fwUri == null) {
                 if(fwUrl.isNotEmpty()) {
                     _fwUpdateState.value = _fwUpdateState.value.copy(downloadFinished = false)
@@ -190,8 +195,14 @@ class FwUpgradeViewModel
                     } catch (e: Exception) {
                         Log.e(TAG, e.toString())
                     }
+                } else {
+                    _fwUpdateState.value = _fwUpdateState.value.copy(
+                        boardInfo = blueManager.getFwVersion(nodeId = nodeId)
+                    )
                 }
+                //Log.i("fwUpgrade","1 state=${_fwUpdateState.value}")
             }
+            //Log.i("fwUpgrade","2 state=${_fwUpdateState.value}")
         }
     }
 

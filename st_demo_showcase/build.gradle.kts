@@ -141,6 +141,7 @@ dependencies {
     implementation(project(":st_cloud_mqtt"))
     implementation(project(":st_neai_extrapolation"))
     implementation(project(":st_medical_signal"))
+    implementation(project(":st_asset_tracking_event"))
     // NEW_DEMO_ANCHOR
     // !!! Leave a row before this comment to allow the script to add the new demo !!!
 
@@ -148,7 +149,7 @@ dependencies {
     implementation(libs.st.sdk)
 
     // Reorderable
-    implementation(libs.burnoutcrew.reorderable)
+    implementation(libs.reorderable)
 
     // Hilt
     implementation(libs.hilt.android)

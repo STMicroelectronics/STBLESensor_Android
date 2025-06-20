@@ -9,6 +9,8 @@ val PrimaryBlue3 = Color(color = 0xFF021B3B)
 val SecondaryBlue = Color(color = 0xFF3CB4E6)
 val SecondaryBlue2 = Color(color = 0xFF2B8EC5)
 
+val NotActiveColor = Color(color = 0xFFE6EBFE)
+
 val Grey0 = Color(color = 0xFFFFFFFF)
 val Grey1 = Color(color = 0xFFF7F8FA)
 val Grey2 = Color(color = 0xFFEEEFF1)

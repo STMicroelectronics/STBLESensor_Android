@@ -50,7 +50,8 @@ fun FwUpgradeScreen(
 ) {
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId, fwUrl)
+            //Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId, fwUrl)
+            Lifecycle.Event.ON_CREATE -> viewModel.startDemo(nodeId, fwUrl)
             Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
             else -> Unit
         }
@@ -126,15 +127,16 @@ fun FwUpgradeScreen(
         Boards.Model.ASTRA1,
         Boards.Model.PROTEUS,
         Boards.Model.STDES_CBMLORABLE,
-        Boards.Model.WB5M_DISCOVERY_BOARD,
+        Boards.Model.STM32WB5MM_DK,
         Boards.Model.WB55_USB_DONGLE_BOARD,
-        Boards.Model.WB15_NUCLEO_BOARD,
-        Boards.Model.WB1M_DISCOVERY_BOARD,
+        Boards.Model.WB15CC_NUCLEO_BOARD,
+        Boards.Model.B_WB1M_WPAN1,
 
         //Boards.Model.WBA_BOARD,
-        Boards.Model.WBA5X_NUCLEO_BOARD,
-        Boards.Model.WBA_DISCOVERY_BOARD,
-        Boards.Model.WBA6_NUCLEO_BOARD,
+        Boards.Model.WB55CG_NUCLEO_BOARD,
+        Boards.Model.STM32WBA55G_DK1,
+        Boards.Model.WBA65RI_NUCLEO_BOARD,
+        Boards.Model.STM32WBA65I_DK1,
 
         Boards.Model.WB0X_NUCLEO_BOARD)
 
@@ -144,11 +146,10 @@ fun FwUpgradeScreen(
         Boards.Model.ASTRA1,
         Boards.Model.PROTEUS,
         Boards.Model.STDES_CBMLORABLE,
-        Boards.Model.WB5M_DISCOVERY_BOARD,
+        Boards.Model.STM32WB5MM_DK,
         Boards.Model.WB55_USB_DONGLE_BOARD,
-        Boards.Model.WB15_NUCLEO_BOARD,
-        Boards.Model.WB1M_DISCOVERY_BOARD)
-
+        Boards.Model.WB15CC_NUCLEO_BOARD,
+        Boards.Model.B_WB1M_WPAN1)
 
 
 
@@ -158,11 +159,11 @@ fun FwUpgradeScreen(
         } else {
             when(selectedBoardIndex) {
                 //3 -> Boards.Model.WBA6_BOARD
-                3 -> Boards.Model.WBA6_NUCLEO_BOARD
+                3 -> Boards.Model.WBA65RI_NUCLEO_BOARD
                 //2 -> Boards.Model.WBA_BOARD
-                2 -> Boards.Model.WBA_DISCOVERY_BOARD
+                2 -> Boards.Model.STM32WBA55G_DK1
                 //else -> Boards.Model.WB_BOARD
-                1 -> Boards.Model.WB15_NUCLEO_BOARD
+                1 -> Boards.Model.WB15CC_NUCLEO_BOARD
                 else -> Boards.Model.WB55_NUCLEO_BOARD
             }
         }
@@ -173,15 +174,16 @@ fun FwUpgradeScreen(
             Boards.Model.ASTRA1,
             Boards.Model.PROTEUS,
             Boards.Model.STDES_CBMLORABLE,
-            Boards.Model.WB5M_DISCOVERY_BOARD,
+            Boards.Model.STM32WB5MM_DK,
             Boards.Model.WB55_USB_DONGLE_BOARD -> if(radioSelection == 0) "0x007000" else "0x011000"
 
-            Boards.Model.WB15_NUCLEO_BOARD,
-            Boards.Model.WB1M_DISCOVERY_BOARD -> "0x007000"
+            Boards.Model.WB15CC_NUCLEO_BOARD,
+            Boards.Model.B_WB1M_WPAN1 -> "0x007000"
 
-            Boards.Model.WBA5X_NUCLEO_BOARD,
-            Boards.Model.WBA_DISCOVERY_BOARD,-> if(radioSelection == 0) "0x080000" else "0x0FA000"
-            Boards.Model.WBA6_NUCLEO_BOARD,-> if(radioSelection == 0) "0x100000" else "0x1F4000"
+            Boards.Model.WB55CG_NUCLEO_BOARD,
+            Boards.Model.STM32WBA55G_DK1-> if(radioSelection == 0) "0x080000" else "0x0FA000"
+            Boards.Model.WBA65RI_NUCLEO_BOARD,
+            Boards.Model.STM32WBA65I_DK1 -> if(radioSelection == 0) "0x100000" else "0x1F4000"
             Boards.Model.WB0X_NUCLEO_BOARD -> if(radioSelection == 0) "0x3F800" else "0x07E000"
             else -> "" //shouldn't happen
         }
@@ -206,10 +208,10 @@ fun FwUpgradeScreen(
                 (boardModel == Boards.Model.ASTRA1) ||
                 (boardModel == Boards.Model.PROTEUS) ||
                 (boardModel == Boards.Model.STDES_CBMLORABLE) ||
-                (boardModel == Boards.Model.WB5M_DISCOVERY_BOARD) ||
+                (boardModel == Boards.Model.STM32WB5MM_DK) ||
                 (boardModel == Boards.Model.WB55_USB_DONGLE_BOARD) ||
-                (boardModel == Boards.Model.WB15_NUCLEO_BOARD) ||
-                (boardModel == Boards.Model.WB1M_DISCOVERY_BOARD)
+                (boardModel == Boards.Model.WB15CC_NUCLEO_BOARD) ||
+                (boardModel == Boards.Model.B_WB1M_WPAN1)
 
         return if(boardModel == null || !supportedBoardModels.contains(boardModel) || isWB) {
             when(selectedBoardIndex) {
@@ -221,9 +223,10 @@ fun FwUpgradeScreen(
         } else {
             when(boardModel) {
                 //Boards.Model.WBA_BOARD -> WbOTAUtils.WBBoardType.WBA
-                Boards.Model.WBA5X_NUCLEO_BOARD,
-                Boards.Model.WBA_DISCOVERY_BOARD -> WbOTAUtils.WBBoardType.WBA
-                Boards.Model.WBA6_NUCLEO_BOARD -> WbOTAUtils.WBBoardType.WBA6
+                Boards.Model.WB55CG_NUCLEO_BOARD,
+                Boards.Model.STM32WBA55G_DK1 -> WbOTAUtils.WBBoardType.WBA
+                Boards.Model.STM32WBA65I_DK1,
+                Boards.Model.WBA65RI_NUCLEO_BOARD -> WbOTAUtils.WBBoardType.WBA6
                 Boards.Model.WB0X_NUCLEO_BOARD -> WbOTAUtils.WBBoardType.WB09
                 else -> WbOTAUtils.WBBoardType.WBA
             }
@@ -293,14 +296,15 @@ fun FwUpgradeScreen(
                                 (boardModel == Boards.Model.ASTRA1) ||
                                 (boardModel == Boards.Model.PROTEUS) ||
                                 (boardModel == Boards.Model.STDES_CBMLORABLE) ||
-                                (boardModel == Boards.Model.WB5M_DISCOVERY_BOARD) ||
+                                (boardModel == Boards.Model.STM32WB5MM_DK) ||
                                 (boardModel == Boards.Model.WB55_USB_DONGLE_BOARD) ||
-                                (boardModel == Boards.Model.WB15_NUCLEO_BOARD) ||
-                                (boardModel == Boards.Model.WB1M_DISCOVERY_BOARD)
+                                (boardModel == Boards.Model.WB15CC_NUCLEO_BOARD) ||
+                                (boardModel == Boards.Model.B_WB1M_WPAN1)
 
-                        val isWBA = (boardModel == Boards.Model.WBA5X_NUCLEO_BOARD) ||
-                                (boardModel == Boards.Model.WBA_DISCOVERY_BOARD) ||
-                                (boardModel == Boards.Model.WBA6_NUCLEO_BOARD)
+                        val isWBA = (boardModel == Boards.Model.WB55CG_NUCLEO_BOARD) ||
+                                (boardModel == Boards.Model.STM32WBA55G_DK1) ||
+                                (boardModel == Boards.Model.WBA65RI_NUCLEO_BOARD) ||
+                                (boardModel == Boards.Model.STM32WBA65I_DK1)
 
                         if(isNotSupportedBoard || isWb) {
                             BoardDropdown(selectedIndex = selectedBoardIndex, wbOnly = isWb,boardModel = boardModel) { boardIndex ->

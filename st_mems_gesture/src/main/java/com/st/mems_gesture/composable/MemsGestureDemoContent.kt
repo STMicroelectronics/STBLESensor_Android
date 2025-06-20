@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +30,7 @@ import com.st.mems_gesture.MemsGestureViewModel
 import com.st.mems_gesture.R
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryYellow
+import com.st.ui.theme.Shapes
 
 
 @Composable
@@ -102,10 +102,10 @@ fun MemsGestureDemoContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorGlanceImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.mems_gesture_glance
                 ),
@@ -125,10 +125,10 @@ fun MemsGestureDemoContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorPickUpImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.mems_gesture_pick_up
                 ),
@@ -148,10 +148,10 @@ fun MemsGestureDemoContent(
                     )
                     .border(
                         BorderStroke(4.dp, animatedColorWakeUpImage),
-                        RoundedCornerShape(size = 32.dp)
+                        Shapes.extraLarge
                     )
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(size = 32.dp)),
+                    .clip(Shapes.extraLarge),
                 painter = painterResource(
                     R.drawable.mems_gesture_wake_up
                 ),

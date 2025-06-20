@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -28,6 +27,7 @@ import com.st.blue_sdk.features.extended.audio_classification.AudioClassType
 import com.st.blue_sdk.features.extended.audio_classification.AudioClassificationInfo
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryYellow
+import com.st.ui.theme.Shapes
 
 
 @Composable
@@ -74,10 +74,10 @@ fun AudioClassificationBabyCryingContent(
                 )
                 .border(
                     BorderStroke(4.dp, animatedColorBabyIsCryingImage),
-                    RoundedCornerShape(size = 32.dp)
+                    Shapes.extraLarge
                 )
                 .padding(4.dp)
-                .clip(RoundedCornerShape(size = 32.dp)),
+                .clip(Shapes.extraLarge),
             painter = painterResource(
                 R.drawable.audio_scene_babycrying
             ),
@@ -97,10 +97,10 @@ fun AudioClassificationBabyCryingContent(
                 )
                 .border(
                     BorderStroke(4.dp, animatedColorBabyIsNotCryingImage),
-                    RoundedCornerShape(size = 32.dp)
+                    Shapes.extraLarge
                 )
                 .padding(4.dp)
-                .clip(RoundedCornerShape(size = 32.dp)),
+                .clip(Shapes.extraLarge),
             painter = painterResource(
                 R.drawable.audio_scene_babynotcrying
             ),

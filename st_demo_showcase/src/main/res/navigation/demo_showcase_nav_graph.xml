@@ -228,6 +228,9 @@
         <action
             android:id="@+id/action_demoList_to_medicalSignalFragment"
             app:destination="@id/medicalSignalFragment" />
+        <action
+            android:id="@+id/action_demoList_to_assetTrackingEventFragment"
+            app:destination="@id/assetTrackingEventFragment" />
         <!-- *** NEW_DEMO_TEMPLATE ANCHOR3 *** -->
     </fragment>
     <fragment
@@ -704,6 +707,14 @@
         android:id="@+id/medicalSignalFragment"
         android:name="com.st.medical_signal.MedicalSignalFragment"
         android:label="MedicalSignalFragment">
+        <argument
+            android:name="nodeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/assetTrackingEventFragment"
+        android:name="com.st.asset_tracking_event.AssetTrackingEventFragment"
+        android:label="AssetTrackingEventFragment">
         <argument
             android:name="nodeId"
             app:argType="string" />

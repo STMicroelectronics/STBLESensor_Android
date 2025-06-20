@@ -115,7 +115,7 @@ fun FlowDemoAddOutputDialog(
                         )
                     }
                     LazyColumn(
-                        //modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxWidth(),
                         contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
                         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
                     ) {

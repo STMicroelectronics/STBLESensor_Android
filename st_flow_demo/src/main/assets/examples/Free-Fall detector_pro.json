@@ -5,7 +5,8 @@
   "category": "Motion",
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",
-    "SENSOR_TILE_BOX_PROB"
+    "SENSOR_TILE_BOX_PROB",
+    "SENSOR_TILE_BOX_PROC"
   ],
   "notes": "This is an example of application created through the expert mode of the app.\nThe app uses the LSM6DSV16X iNemo 6-axis inertial measurement unit to detect acceleration.\nThis is fed to the Threshold comparison function that checks when the total resulting acceleration of the 3 axis is under 200 mg.\nThe output is saved as an expression value (boolean value) with buzzer and red LED that turns on when the condition is true.\nThis flow is considered an expression checked by the IF structure of the firmware, like a common \"if\" in coding language:\n\nIF(expression)\n{\n\t(statement);\n}\n\nIn this case the statement is sending the event counter to the BLE application, so it can be seen how many times the free-fall is triggered.\n\nTo replicate this function in expert mode you have to first create a flow with \"save as exp\" as output (it can be used after the threshold comparison function) and then, click on the IF in the upper right, choose your expression flow and the counter as output.",
   "expression": {
@@ -76,7 +77,8 @@
             "bleMaxOdr": 60,
             "board_compatibility": [
               "SENSOR_TILE_BOX_PRO",
-              "SENSOR_TILE_BOX_PROB"
+              "SENSOR_TILE_BOX_PROB",
+              "SENSOR_TILE_BOX_PROC"
             ],
             "configuration": {
               "powerMode": "LOW_POWER",
@@ -94,7 +96,8 @@
             "board_compatibility": [
               "SENSOR_TILE_BOX",
               "SENSOR_TILE_BOX_PRO",
-              "SENSOR_TILE_BOX_PROB"
+              "SENSOR_TILE_BOX_PROB",
+              "SENSOR_TILE_BOX_PROC"
             ],
             "inputs": [
               "S1",
@@ -164,7 +167,8 @@
             "id": "O5",
             "board_compatibility": [
               "SENSOR_TILE_BOX_PRO",
-              "SENSOR_TILE_BOX_PROB"
+              "SENSOR_TILE_BOX_PROB",
+              "SENSOR_TILE_BOX_PROC"
             ],
             "icon": "ic_input",
             "description": "Free Fall Detection Output",
@@ -206,7 +210,8 @@
               "board_compatibility": [
                 "SENSOR_TILE_BOX",
                 "SENSOR_TILE_BOX_PRO",
-                "SENSOR_TILE_BOX_PROB"
+                "SENSOR_TILE_BOX_PROB",
+                "SENSOR_TILE_BOX_PROC"
               ],
               "description": "Event Counter",
               "inputs": [],
@@ -224,7 +229,8 @@
               "board_compatibility": [
                 "SENSOR_TILE_BOX",
                 "SENSOR_TILE_BOX_PRO",
-                "SENSOR_TILE_BOX_PROB"
+                "SENSOR_TILE_BOX_PROB",
+                "SENSOR_TILE_BOX_PROC"
               ],
               "description": "Stream to Bluetooth",
               "icon": "ic_bluetooth",
@@ -246,7 +252,8 @@
       "board_compatibility": [
         "SENSOR_TILE_BOX",
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "description": "Event Counter",
       "inputs": [],
@@ -326,7 +333,8 @@
       "bleMaxOdr": 60,
       "board_compatibility": [
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "configuration": {
         "powerMode": "LOW_POWER",

@@ -201,7 +201,7 @@
       "icon": "ic_microphone",
       "id": "S9",
       "model": "MP23ABS1",
-      "notes": "n depends on the sampling freq: we are used to send a data every 1 msec",
+      "notes": "n depends on the sampling freq: we are used to send a data every 1 ms",
       "output": "Sound",
       "outputs": [
         "O1",

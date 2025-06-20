@@ -73,7 +73,7 @@ class PlotViewModel
                     .filter { PLOTTABLE_FEATURE.contains(it.name) }
             )
             _plottableFeatures.emit(privatePlottableFeatures.toList())
-            _selectedFeature.emit(privatePlottableFeatures.first())
+            _selectedFeature.emit(privatePlottableFeatures.firstOrNull())
         }
     }
 

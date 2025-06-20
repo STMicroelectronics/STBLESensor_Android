@@ -4,7 +4,8 @@
   "ex_app" : 4,
   "board_compatibility": [
     "SENSOR_TILE_BOX_PRO",
-    "SENSOR_TILE_BOX_PROB"
+    "SENSOR_TILE_BOX_PROB",
+    "SENSOR_TILE_BOX_PROC"
   ],
   "flows": [],
   "functions": [
@@ -71,7 +72,8 @@
       "model": "LIS2DU12",
       "board_compatibility": [
         "SENSOR_TILE_BOX_PRO",
-        "SENSOR_TILE_BOX_PROB"
+        "SENSOR_TILE_BOX_PROB",
+        "SENSOR_TILE_BOX_PROC"
       ],
       "um": "mg",
       "fullScaleUm": "g",

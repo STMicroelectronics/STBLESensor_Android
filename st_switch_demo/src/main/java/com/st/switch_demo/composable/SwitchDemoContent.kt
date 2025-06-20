@@ -62,7 +62,8 @@ fun SwitchDemoContent(
             style = MaterialTheme.typography.titleMedium,
             text = if (viewModel.boardType == Boards.Model.SENSOR_TILE_BOX ||
                 viewModel.boardType == Boards.Model.SENSOR_TILE_BOX_PRO ||
-                viewModel.boardType == Boards.Model.SENSOR_TILE_BOX_PROB
+                viewModel.boardType == Boards.Model.SENSOR_TILE_BOX_PROB ||
+                viewModel.boardType == Boards.Model.SENSOR_TILE_BOX_PROC
             ) {
                 "The led is switching on when an event is detected"
             } else {

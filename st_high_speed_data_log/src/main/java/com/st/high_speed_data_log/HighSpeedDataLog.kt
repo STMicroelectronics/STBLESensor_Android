@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -316,7 +315,7 @@ fun HighSpeedDataLog(
                         width = 60.dp,
                         color = MaterialTheme.colorScheme.onPrimary,
                         height = 4.dp,
-                        shape = RoundedCornerShape(size = LocalDimensions.current.cornerMedium)
+                        shape = Shapes.medium
                     )
                 }) {
                 Tab(

@@ -23,6 +23,7 @@ import com.st.blue_sdk.features.carry_position.CarryPosition
 import com.st.blue_sdk.features.co_sensor.COSensor
 import com.st.blue_sdk.features.direction_of_arrival.DirectionOfArrival
 import com.st.blue_sdk.features.extended.ai_logging.AiLogging
+import com.st.blue_sdk.features.extended.asset_tracking_event.AssetTrackingEvent
 import com.st.blue_sdk.features.extended.audio.opus.AudioOpusConfFeature
 import com.st.blue_sdk.features.extended.audio.opus.AudioOpusFeature
 import com.st.blue_sdk.features.extended.audio_classification.AudioClassification
@@ -537,6 +538,12 @@ enum class Demo(
         group = listOf(DemoGroup.DataLog, DemoGroup.AI),
         icon = com.st.ui.R.drawable.multiple_log_icon,
         features = listOf(AiLogging.NAME)
+    ),
+    AssetTrackingEventDemo(
+        displayName = "Asset Tracking Event",
+        group = listOf(DemoGroup.InertialSensors),
+        icon = com.st.asset_tracking_event.R.drawable.asset_tracking_event_icon,
+        features = listOf(AssetTrackingEvent.NAME)
     );
 
     fun navigateToPnplSettings(navController: NavController?, nodeId: String) {
@@ -724,6 +731,10 @@ enum class Demo(
             )
 
             AiLoggingDemo -> DemoListFragmentDirections.actionDemoListToLegacyDemoFragment(
+                nodeId
+            )
+
+            AssetTrackingEventDemo -> DemoListFragmentDirections.actionDemoListToAssetTrackingEventFragment(
                 nodeId
             )
 

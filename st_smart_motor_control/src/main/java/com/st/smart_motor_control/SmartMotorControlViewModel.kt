@@ -788,15 +788,15 @@ class SmartMotorControlViewModel
 
                     val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
                     var maxWriteLength =
-                        node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
-                    maxWriteLength?.let {
-                        if (maxWriteLength!! > (node.maxPayloadSize)) {
+                        node?.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength ?:20
+                    node?.let {
+                        if (maxWriteLength > (node.maxPayloadSize)) {
                             maxWriteLength = (node.maxPayloadSize)
                         }
-                        (pnplFeatures.firstOrNull { it.name == PnPL.NAME } as PnPL?)?.setMaxPayLoadSize(
-                            maxWriteLength!!
-                        )
                     }
+                        (pnplFeatures.firstOrNull { it.name == PnPL.NAME } as PnPL?)?.setMaxPayLoadSize(
+                        maxWriteLength
+                        )
 
                     if (_sensorsActuators.value.isEmpty() || _tags.value.isEmpty()) {
                         getModel(nodeId = nodeId)

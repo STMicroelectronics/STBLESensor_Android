@@ -20,6 +20,7 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.roundToInt
 
 class  GLCubeRender : GLSurfaceView.Renderer {
     private val TAG = GLCubeRender::class.java.canonicalName
@@ -433,7 +434,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
             fragmentShaderHandle,
             arrayOf("a_Position", "a_TexCoordinate")
         )
-        mTextureDataHandle = loadTexture(mContext, R.drawable.texture_cube)
+        mTextureDataHandle = loadTexture(mContext, R.drawable.texture_cube_new)
     }
 
     override fun onSurfaceChanged(glUnused: GL10?, width: Int, height: Int) {
@@ -573,7 +574,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
      * @return number of onDrawFrame call per seconds
      */
     fun getRenderingRate(): Int {
-        val rendering_rate = Math.round(rendering_rate_avg / RENDERING_RATE_WINDOW_SIZE)
+        val rendering_rate = (rendering_rate_avg / RENDERING_RATE_WINDOW_SIZE).roundToInt()
         return Math.min(rendering_rate, MAX_HW_RENDERING_RATE_HZ)
     }
 

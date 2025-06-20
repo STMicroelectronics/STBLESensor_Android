@@ -8,16 +8,25 @@
 package com.st.ext_config.composable
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,12 +35,13 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -51,20 +61,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
 import com.st.blue_sdk.features.extended.ext_configuration.BanksStatus
 import com.st.ext_config.R
 import com.st.ext_config.ui.fw_download.FwDownloadFragmentDirections
 import com.st.ext_config.ui.fw_download.FwDownloadUiState
 import com.st.ext_config.ui.fw_download.FwDownloadViewModel
-import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.composables.LocalLastStatusUpdatedAt
+import com.st.ui.theme.DESCRIPTION_MAX_LINES
+import com.st.ui.theme.ErrorText
 import com.st.ui.theme.Grey5
-import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.SecondaryBlue
+import com.st.ui.theme.Shapes
+import com.st.ui.theme.TITLE_MAX_LINES
 
 @Composable
 fun FwDownloadScreen(
@@ -76,7 +89,11 @@ fun FwDownloadScreen(
 ) {
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId = nodeId, banksStatus = banksStatus)
+            Lifecycle.Event.ON_START -> viewModel.startDemo(
+                nodeId = nodeId,
+                banksStatus = banksStatus
+            )
+
             Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
             else -> Unit
         }
@@ -84,6 +101,7 @@ fun FwDownloadScreen(
 
     val state by viewModel.bankStatus.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
     FwDownloadScreen(
         modifier = modifier,
         state = state,
@@ -111,6 +129,7 @@ fun FwDownloadScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FwDownloadScreen(
     modifier: Modifier = Modifier,
@@ -121,93 +140,51 @@ fun FwDownloadScreen(
 ) {
 
     var onlyLatest by rememberSaveable { mutableStateOf(value = true) }
+    var showListOfCompatibleSw by rememberSaveable { mutableStateOf(false) }
 
     val compatibleList by remember(key1 = state, key2 = onlyLatest) {
         derivedStateOf {
             val listFw =
                 state.node?.fwCompatibleList ?: emptyList()
             if (onlyLatest) {
-                listFw.groupBy { it.fwName }.map { list -> list.value.maxByOrNull { it.fwVersion }!! }
+                listFw.groupBy { it.fwName }
+                    .map { list -> list.value.maxByOrNull { it.fwVersion }!! }
             } else {
                 listFw
             }
         }
     }
 
-    var selectedFw: Int by remember(key1 = compatibleList) { mutableIntStateOf(value = 0) }
+    var selectedFw: Int by remember(key1 = compatibleList) { mutableIntStateOf(value = -1) }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(state = rememberScrollState())
-    ) {
-        CurrentBank(
-            modifier = Modifier.fillMaxWidth(),
-            currentBank = state.bankStatus?.currentBank,
-            currentFwDetail = state.currentFwDetail?.friendlyName()
-        )
+    if (showListOfCompatibleSw) {
 
-        Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-        OtherBank(
-            modifier = Modifier.fillMaxWidth(),
-            otherFwDetail = state.otherFwDetail?.friendlyName(),
-            onSwap = onSwap
-        )
-
-        if (state.updateFwDetail != null) {
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium,
-                text = stringResource(id = R.string.st_extConfig_fwDownload_updateAvailableTitle)
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                color = SecondaryBlue,
-                style = MaterialTheme.typography.bodyLarge,
-                text = state.updateFwDetail.friendlyName()
-            )
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium,
-                text = stringResource(id = R.string.st_extConfig_fwDownload_changeLogTitle)
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                color = SecondaryBlue,
-                style = MaterialTheme.typography.bodyLarge,
-                text = state.updateFwDetail.changelog ?: ""
-            )
-
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingLarge))
-            HorizontalDivider()
-
-            LaunchedEffect(key1 = state.updateFwDetail) {
-                selectedFw = compatibleList.indexOfFirst {
-                    it.bleDevId == state.updateFwDetail.bleDevId && it.bleFwId == state.updateFwDetail.bleFwId
-                }
-            }
+        BackHandler {
+            showListOfCompatibleSw = false
         }
 
-        if (compatibleList.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
+        LazyColumn(
+            state = rememberLazyListState(),
+            contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
+            verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingMedium)
+    ) {
+            item {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = LocalDimensions.current.paddingNormal),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
+                        modifier = Modifier.padding(end = LocalDimensions.current.paddingNormal),
                     color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium,
-                    text = stringResource(id = R.string.st_extConfig_fwDownload_compatibleFwLabel)
+                        style = MaterialTheme.typography.titleLarge,
+                        text = "Select one firmware"
                 )
 
-                Row(Modifier.clickable { onlyLatest = !onlyLatest }) {
+                    Row(Modifier.clickable {
+                        onlyLatest = !onlyLatest
+                    }) {
                     Icon(
                         modifier = Modifier
                             .padding(start = 4.dp),
@@ -223,63 +200,200 @@ fun FwDownloadScreen(
                         style = MaterialTheme.typography.titleMedium,
                         text = "latest"
                     )
-                    Text(
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium,
-                        text = ":"
-                    )
+                    }
                 }
+
+                HorizontalDivider()
             }
 
-
-
-            EnumPropertyFw(
-                data = null,
-                modifier = Modifier.fillMaxWidth(),
-                initialValue = selectedFw,
-                values = compatibleList.mapIndexed { index, fw -> fw.friendlyName() to index },
-                onValueChange = {
-                    selectedFw = it
-                }
-            )
-
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-            Text(
-                color = Grey6,
-                style = MaterialTheme.typography.bodyLarge,
-                text = stringResource(id = R.string.st_extConfig_fwDownload_descriptionLabel)
-            )
-            Text(
-                color = Grey6,
-                style = MaterialTheme.typography.bodyLarge,
-                text = compatibleList[selectedFw].fwDesc
-            )
-
-            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                BlueMsButtonOutlined(
-                    modifier = Modifier.weight(weight = 0.5f),
-                    text = stringResource(id = android.R.string.cancel),
-                    onClick = onCancelClick
-                )
-
-                Spacer(modifier = Modifier.width(width = LocalDimensions.current.paddingNormal))
-
-                BlueMsButton(
-                    modifier = Modifier.weight(weight = 0.5f),
-                    text = stringResource(
-                        id = R.string.st_extConfig_fwDownload_installBtn,
-                        compatibleList[selectedFw].friendlyName()
-                    ),
+            itemsIndexed(compatibleList) { index, it ->
+                FirmwareListItem(
+                    name = it.fwName,
+                    version = it.fwVersion,
+                    description = it.fwDesc,
+                    fwMaturity = it.maturity,
                     onClick = {
+                        selectedFw = index
+                        showListOfCompatibleSw = false
+                    }
+                )
+            }
+
+            item {
+                BlueMsButtonOutlined(
+                    text = stringResource(id = android.R.string.cancel),
+                    onClick = {
+                        showListOfCompatibleSw = false
+                        selectedFw = -1
+                    }
+                )
+            }
+
+            item {
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(
+                        WindowInsets.systemBars
+                    )
+                )
+            }
+        }
+    } else {
+        var nextRunningBank by remember { mutableIntStateOf(0) }
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(state = rememberScrollState())
+        ) {
+            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
+            //Memory Bank1
+            MemoryBank(
+                modifier = Modifier.fillMaxWidth(),
+                installedFwDetail = if (state.bankStatus?.currentBank == 1) {
+                    state.currentFwDetail?.friendlyName()
+                } else {
+                    state.otherFwDetail?.friendlyName()
+                },
+                onSwap = {
+                    nextRunningBank = 1
+                    onSwap()
+                },
+                isCompatibleFwListNotEmpty = compatibleList.isNotEmpty(),
+                onDownload = { showListOfCompatibleSw = true },
+                onInstall = {
+                    if (selectedFw != -1) {
                         onInstallClick(
                             compatibleList[selectedFw].fota.fwUrl
                         )
                     }
+                },
+                isRunningBank = state.bankStatus?.currentBank == 1,
+                nextRunningBank = nextRunningBank,
+                bankNum = 1,
+                selectedFwName = if (selectedFw != -1) compatibleList[selectedFw].fwName else null,
+                selectedFwDescription = if (selectedFw != -1) compatibleList[selectedFw].fwDesc else null
+            )
+
+
+            Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
+            //Memory Bank2
+            MemoryBank(
+                modifier = Modifier.fillMaxWidth(),
+                installedFwDetail = if (state.bankStatus?.currentBank == 1) {
+                    state.otherFwDetail?.friendlyName()
+                } else {
+                    state.currentFwDetail?.friendlyName()
+                },
+                onSwap = {
+                    nextRunningBank = 2
+                    onSwap()
+                },
+                isCompatibleFwListNotEmpty = compatibleList.isNotEmpty(),
+                onDownload = { showListOfCompatibleSw = true },
+                onInstall = {
+                    if (selectedFw != -1) {
+                        onInstallClick(
+                            compatibleList[selectedFw].fota.fwUrl
+                        )
+                    }
+                },
+                isRunningBank = state.bankStatus?.currentBank == 2,
+                nextRunningBank = nextRunningBank,
+                bankNum = 2,
+                selectedFwName = if (selectedFw != -1) compatibleList[selectedFw].fwName else null,
+                selectedFwDescription = if (selectedFw != -1) compatibleList[selectedFw].fwDesc else null
+            )
+
+
+            if (compatibleList.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(height = LocalDimensions.current.paddingNormal))
+
+//            EnumPropertyFw(
+//                data = null,
+//                modifier = Modifier.fillMaxWidth(),
+//                initialValue = selectedFw,
+//                values = compatibleList.mapIndexed { index, fw -> fw.friendlyName() to index },
+//                onValueChange = {
+//                    selectedFw = it
+//                }
+//            )
+
+                BlueMsButtonOutlined(
+                    text = stringResource(id = android.R.string.cancel),
+                    onClick = onCancelClick
                 )
+
             }
+
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets.systemBars
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun FirmwareListItem(
+    modifier: Modifier = Modifier,
+    name: String,
+    description: String,
+    version: String,
+    onClick: () -> Unit = { /** NOOP **/ },
+    fwMaturity: FirmwareMaturity = FirmwareMaturity.RELEASE
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = Shapes.small,
+        shadowElevation = LocalDimensions.current.elevationNormal
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = LocalDimensions.current.paddingNormal)
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = LocalDimensions.current.paddingSmall),
+                text = name,
+                maxLines = TITLE_MAX_LINES,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = LocalDimensions.current.paddingSmall),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End,
+                    text = "V$version",
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                if (fwMaturity != FirmwareMaturity.RELEASE) {
+                    Text(
+                        text = "$fwMaturity FW",
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = ErrorText
+                    )
+                }
+            }
+            Text(
+                text = description,
+                maxLines = DESCRIPTION_MAX_LINES,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

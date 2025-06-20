@@ -52,6 +52,7 @@ import kotlinx.serialization.json.intOrNull
 @Composable
 fun ComplexProperty(
     modifier: Modifier = Modifier,
+    isTag: Boolean = false,
     hideProperties: Array<String>?=null,
     schema: DtmiContent,
     data: JsonElement?,
@@ -345,7 +346,11 @@ fun ObjectProperty(
             if (data is JsonObject) {
                 contentData = data[content.name] ?: defaultData
             }
+
+            val isTag = propName.startsWith("SW Tag ")
+
             Property(
+                isTag = isTag,
                 hideProperties = hideProperties,
                 data = contentData,
                 modifier = Modifier

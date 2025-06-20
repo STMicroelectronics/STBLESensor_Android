@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -42,6 +41,7 @@ import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryBlue2
 import com.st.ui.theme.PrimaryPink
 import com.st.ui.theme.SecondaryBlue2
+import com.st.ui.theme.Shapes
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
@@ -107,7 +107,7 @@ fun VespucciCharts(
                 .fillMaxWidth()
                 .background(
                     color = Grey3,
-                    shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal)
+                    shape = Shapes.small
                 )
                 .padding(all = LocalDimensions.current.paddingLarge),
         ) {
@@ -134,7 +134,7 @@ fun VespucciCharts(
                         .fillMaxWidth()
                         .background(
                             color = Color.White,
-                            shape = RoundedCornerShape(size = LocalDimensions.current.cornerNormal)
+                            shape = Shapes.small
                         )
                         .padding(all = LocalDimensions.current.paddingNormal),
                     verticalAlignment = Alignment.CenterVertically

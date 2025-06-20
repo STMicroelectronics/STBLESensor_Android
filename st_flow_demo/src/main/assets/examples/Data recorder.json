@@ -67,7 +67,7 @@
         "O2",
         "O3"
       ],
-      "um": "msec"
+      "um": "ms"
     },
     {
       "acquisitionTime": 0,

@@ -79,6 +79,7 @@ fun getDetectableEvent(nodeType: Boards.Model): Array<DetectableEventType> {
         Boards.Model.STEVAL_STWINKT1B -> stwinSupportedEvents
         Boards.Model.SENSOR_TILE_BOX_PRO -> sensorTileBoxSupportedEvents
         Boards.Model.SENSOR_TILE_BOX_PROB -> sensorTileBoxSupportedEvents
+        Boards.Model.SENSOR_TILE_BOX_PROC -> sensorTileBoxSupportedEvents
         Boards.Model.STWIN_BOX -> stwinSupportedEvents
         Boards.Model.STWIN_BOXB -> stwinSupportedEvents
         Boards.Model.PROTEUS -> proteusSupportedEvents
@@ -108,6 +109,7 @@ fun getDefaultEvent(nodeType: Boards.Model): DetectableEventType {
         Boards.Model.STEVAL_STWINKT1B -> DetectableEventType.Orientation
         Boards.Model.SENSOR_TILE_BOX_PRO -> DetectableEventType.Orientation
         Boards.Model.SENSOR_TILE_BOX_PROB -> DetectableEventType.Orientation
+        Boards.Model.SENSOR_TILE_BOX_PROC -> DetectableEventType.Orientation
         Boards.Model.STWIN_BOX -> DetectableEventType.Orientation
         Boards.Model.STWIN_BOXB -> DetectableEventType.Orientation
         Boards.Model.PROTEUS -> DetectableEventType.WakeUp

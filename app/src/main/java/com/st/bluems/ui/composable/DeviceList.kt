@@ -186,7 +186,7 @@ fun DeviceListScreen(
             val enableServer = if (isServerForced) {
                 true
             } else {
-                !((node.boardType == Boards.Model.SENSOR_TILE_BOX_PRO) || (node.boardType == Boards.Model.SENSOR_TILE_BOX_PROB))
+                !( (node.boardType == Boards.Model.SENSOR_TILE_BOX ) || (node.boardType == Boards.Model.SENSOR_TILE_BOX_PRO) || (node.boardType == Boards.Model.SENSOR_TILE_BOX_PROB) || (node.boardType == Boards.Model.SENSOR_TILE_BOX_PROC))
             }
 
             nfcViewModel.setNFCNodeId(null)

@@ -39,10 +39,9 @@ import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
+import sh.calvin.reorderable.rememberReorderableLazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import sh.calvin.reorderable.ReorderableItem
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -73,18 +72,18 @@ fun DemoListScreen(
     }
 
     val haptic = LocalHapticFeedback.current
-    val state = rememberReorderableLazyListState(onMove = { from, to ->
+    val lazyListState = rememberLazyListState()
+    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         if (from.index > 0 && to.index > 1) {
             onDemoReordered(from.index - 1, to.index - 1)
         }
-    })
+    }
+
 
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
-            .reorderable(state)
-            .detectReorderAfterLongPress(state),
-        state = state.listState,
+            .fillMaxSize(),
+        state = lazyListState,
         contentPadding = PaddingValues(all = LocalDimensions.current.paddingNormal),
         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingNormal)
     ) {
@@ -113,19 +112,20 @@ fun DemoListScreen(
             }
         }
         items(availableDemos, key = { it.name }) { item ->
-            ReorderableItem(state, key = item.name) { isDragging ->
+            ReorderableItem(reorderableLazyListState, key = item.name) { isDragging ->
                 if (isDragging) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                 val scale by animateFloatAsState(
                     if (isDragging) 1.1f else 1.0f,
                     label = "Moving Demo Scale"
                 )
                 val elevation by animateDpAsState(
-                    if (isDragging) LocalDimensions.current.elevationLarge else 0.dp,
+                    if (isDragging) LocalDimensions.current.elevationMedium  else 0.dp,
                     label = "Moving Demo Elevation"
                 )
                 DemoListItem(
                     modifier = Modifier
-                        .detectReorderAfterLongPress(state)
+                        .longPressDraggableHandle()
                         .scale(scale)
                         .shadow(elevation = elevation),
                     item = item,

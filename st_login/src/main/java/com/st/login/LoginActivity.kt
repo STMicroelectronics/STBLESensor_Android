@@ -74,7 +74,8 @@ class LoginActivity : AppCompatActivity() {
 
         /* Init Login Provider Type */
         val loginProviderType = intent.getStringExtra("PROVIDER")
-        initLoginProvider(loginProviderType!!)
+        loginProviderType?.let {
+            initLoginProvider(loginProviderType)
 
         clickLoginButton = intent.getBooleanExtra("automaticClickLogin", false)
 
@@ -118,6 +119,7 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 showSnackbar(strOffline)
             }
+        }
         }
 
         /* Initialize AppAuth */

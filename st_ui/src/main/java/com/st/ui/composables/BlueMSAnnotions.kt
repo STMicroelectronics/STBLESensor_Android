@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(name = "Big fonts",
     group = "Font Size",
-    fontScale = 2.0f)
+    fontScale = 3.0f)
 annotation class FontScalePreviews
 
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +36,7 @@ import com.st.carry_position.R
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PrimaryYellow
+import com.st.ui.theme.Shapes
 
 @Composable
 fun CarryPositionDemoContent(
@@ -163,10 +163,10 @@ fun CarryPositionDemoContent(
                         )
                         .border(
                             BorderStroke(4.dp, animatedColorInHandImage),
-                            RoundedCornerShape(size = 32.dp)
+                            Shapes.extraLarge
                         )
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(size = 32.dp)),
+                        .clip(Shapes.extraLarge),
                     painter = painterResource(
                         R.drawable.carry_hand
                     ),
@@ -186,10 +186,10 @@ fun CarryPositionDemoContent(
                         )
                         .border(
                             BorderStroke(4.dp, animatedColorShirtPocketImage),
-                            RoundedCornerShape(size = 32.dp)
+                            Shapes.extraLarge
                         )
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(size = 32.dp)),
+                        .clip(Shapes.extraLarge),
                     painter = painterResource(
                         R.drawable.carry_shirt
                     ),
@@ -209,10 +209,10 @@ fun CarryPositionDemoContent(
                         )
                         .border(
                             BorderStroke(4.dp, animatedColorOnDeskImage),
-                            RoundedCornerShape(size = 32.dp)
+                            Shapes.extraLarge
                         )
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(size = 32.dp)),
+                        .clip(Shapes.extraLarge),
                     painter = painterResource(
                         R.drawable.carry_desk
                     ),
@@ -239,10 +239,10 @@ fun CarryPositionDemoContent(
                         )
                         .border(
                             BorderStroke(4.dp, animatedColorNearHeadImage),
-                            RoundedCornerShape(size = 32.dp)
+                            Shapes.extraLarge
                         )
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(size = 32.dp)),
+                        .clip(Shapes.extraLarge),
                     painter = painterResource(
                         R.drawable.carry_head
                     ),
@@ -262,10 +262,10 @@ fun CarryPositionDemoContent(
                         )
                         .border(
                             BorderStroke(4.dp, animatedColorTrousersPocketImage),
-                            RoundedCornerShape(size = 32.dp)
+                            Shapes.extraLarge
                         )
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(size = 32.dp)),
+                        .clip(Shapes.extraLarge),
                     painter = painterResource(
                         R.drawable.carry_trousers
                     ),
@@ -285,10 +285,10 @@ fun CarryPositionDemoContent(
                         )
                         .border(
                             BorderStroke(4.dp, animatedColorArmSwingImage),
-                            RoundedCornerShape(size = 32.dp)
+                            Shapes.extraLarge
                         )
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(size = 32.dp)),
+                        .clip(Shapes.extraLarge),
                     painter = painterResource(
                         R.drawable.carry_arm
                     ),

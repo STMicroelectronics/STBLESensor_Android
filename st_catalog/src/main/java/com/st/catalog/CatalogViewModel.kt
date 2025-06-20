@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.st.blue_sdk.BlueManager
 import com.st.blue_sdk.board_catalog.models.BoardDescription
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
+import com.st.blue_sdk.board_catalog.models.DemoDecorator
 import com.st.blue_sdk.features.Feature
 import com.st.blue_sdk.models.Boards
 import com.st.blue_sdk.utils.SHR_MASK
@@ -55,6 +56,12 @@ class CatalogViewModel
     val boardDescription = _boardDescription.asStateFlow()
 
     var isBeta = false
+
+    var selectedDemoName: String?=null
+
+    fun setSelectedDemo(demoName: String?){
+        selectedDemoName = demoName
+    }
 
     fun getBoard(boardId: String) {
         viewModelScope.launch {
@@ -162,7 +169,7 @@ fun UUID.buildFeatures(
     return features
 }
 
-fun BoardFirmware.availableDemos(): List<Demo> {
+fun BoardFirmware.availableDemos(demoDecorator: DemoDecorator?=null, addFlowForBoardType: Boolean = true): List<Demo> {
     val features = mutableListOf<Feature<*>>()
 
     characteristics.map { UUID.fromString(it.uuid) }.forEach { characteristic ->
@@ -179,9 +186,17 @@ fun BoardFirmware.availableDemos(): List<Demo> {
         }
     }
 
+    if (StCatalogConfig.showDemoList) {
     return Demo.entries.filter { demo ->
         when (demo) {
-            Demo.Flow -> boardModel() == Boards.Model.SENSOR_TILE_BOX || boardModel() == Boards.Model.SENSOR_TILE_BOX_PRO || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROB
+                //Demo.Flow -> boardModel() == Boards.Model.SENSOR_TILE_BOX || boardModel() == Boards.Model.SENSOR_TILE_BOX_PRO || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROB || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROC
+                Demo.Flow -> {
+                    if(addFlowForBoardType) {
+                        boardModel() == Boards.Model.SENSOR_TILE_BOX || boardModel() == Boards.Model.SENSOR_TILE_BOX_PRO || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROB || boardModel() == Boards.Model.SENSOR_TILE_BOX_PROC
+                    } else {
+                        demoDecorator?.add?.contains("Flow") == true
+                    }
+                }
             Demo.BlueVoiceFullDuplex -> false
             Demo.BlueVoiceFullBand -> false
             else -> {
@@ -210,5 +225,8 @@ fun BoardFirmware.availableDemos(): List<Demo> {
                 }
             }
         }
+    }
+    } else {
+        return emptyList()
     }
 }

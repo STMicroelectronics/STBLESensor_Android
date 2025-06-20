@@ -384,15 +384,14 @@ class BinaryContentViewModel @Inject constructor(
                             if (featurePnPL is PnPL) {
 
                                 var maxWriteLength =
-                                    node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
+                                    node?.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength ?: 20
 
-                                maxWriteLength?.let {
-
-                                    if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                node?.let {
+                                    if (maxWriteLength > (node.maxPayloadSize)) {
                                         maxWriteLength = (node.maxPayloadSize)
                                     }
-                                    featurePnPL.setMaxPayLoadSize(maxWriteLength!!)
                                 }
+                                featurePnPL.setMaxPayLoadSize(maxWriteLength)
 
                                 blueManager.writeFeatureCommand(
                                     responseTimeout = 0,
@@ -408,16 +407,14 @@ class BinaryContentViewModel @Inject constructor(
                             val binaryFeature = blueManager.nodeFeatures(nodeId = nodeId).find {it.name == BinaryContent.NAME}
                             if (binaryFeature is BinaryContent) {
                                 var maxWriteLength =
-                                    node.catalogInfo?.characteristics?.firstOrNull { it.name == BinaryContent.NAME }?.maxWriteLength
-                                maxWriteLength?.let {
-
-                                    if (maxWriteLength!! > (node.maxPayloadSize)) {
+                                    node?.catalogInfo?.characteristics?.firstOrNull { it.name == BinaryContent.NAME }?.maxWriteLength ?:20
+                                node?.let {
+                                    if (maxWriteLength > (node.maxPayloadSize)) {
                                         maxWriteLength = (node.maxPayloadSize)
                                     }
-
-                                    binaryFeature.setMaxPayLoadSize(maxWriteLength!!)
-                                    _maxBinaryContentWriteSize.intValue = maxWriteLength!!
                                 }
+                                binaryFeature.setMaxPayLoadSize(maxWriteLength)
+                                _maxBinaryContentWriteSize.intValue = maxWriteLength
                             }
                             // //
                         }

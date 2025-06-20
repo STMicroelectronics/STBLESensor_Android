@@ -286,15 +286,15 @@ class TextualMonitorViewModel
 
                             val node = blueManager.getNodeWithFirmwareInfo(nodeId = nodeId)
                             var maxWriteLength =
-                                node.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength
-                            maxWriteLength?.let {
+                                node?.catalogInfo?.characteristics?.firstOrNull { it.name == PnPL.NAME }?.maxWriteLength ?: 20
 
-                                if (maxWriteLength!! > (node.maxPayloadSize)) {
+                            node?.let {
+
+                                if (maxWriteLength > (node.maxPayloadSize)) {
                                     maxWriteLength = (node.maxPayloadSize)
                                 }
-
-                                featurePnPL.setMaxPayLoadSize(maxWriteLength!!)
                             }
+                            featurePnPL.setMaxPayLoadSize(maxWriteLength)
 
                             blueManager.writeFeatureCommand(
                                 responseTimeout = 0,

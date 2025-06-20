@@ -25,17 +25,19 @@ import com.st.ui.theme.BTN_MAX_LINES
 import com.st.ui.theme.BlueMSTheme
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.Shapes
+import com.st.ui.theme.WaveShapes
 
 @Composable
 fun BlueMsButtonOutlined(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
+    waveStyle: Boolean = false,
     iconPainter: Painter? = null,
     onClick: () -> Unit = { /** NOOP **/ }
 ) {
     OutlinedButton(
-        shape = Shapes.small,
+        shape = if(waveStyle) WaveShapes.small else Shapes.small,
         modifier = modifier
             .defaultMinSize(minWidth = 120.dp, minHeight = 40.dp),
         onClick = onClick,

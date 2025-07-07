@@ -23,22 +23,6 @@ and follow the instruction for compiling and publish on local maven repository t
 * st-opus
 
 
-
-brew install gnu-sed 
-
-Set the PATH (first on Intel, second on Apple Silicon)
-    PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"  
-
-    PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"  
-
-cd extra 
-
-Run the command (first on Intel, second on Apple Silicon)
-
-    /usr/local/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
-
-    /opt/homebrew/bin/bash ./createStDemoModule.sh binary_content xml "Binary Content"
-
 ## License
 
 Copyright (c) 2017  STMicroelectronics – All rights reserved

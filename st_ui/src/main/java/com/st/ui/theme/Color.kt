@@ -2,44 +2,53 @@ package com.st.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PrimaryBlue = Color(color = 0xFF03234B)
-val PrimaryBlue2 = Color(color = 0xFF042E62)
-val PrimaryBlue3 = Color(color = 0xFF021B3B)
 
-val SecondaryBlue = Color(color = 0xFF3CB4E6)
-val SecondaryBlue2 = Color(color = 0xFF2B8EC5)
+val PrimaryBlue = Color(0xFFB11226)
+val PrimaryBlue2 = Color(0xFFD32F2F)
+val PrimaryBlue3 = Color(0xFF8E0E1B)
 
-val NotActiveColor = Color(color = 0xFFE6EBFE)
 
-val Grey0 = Color(color = 0xFFFFFFFF)
-val Grey1 = Color(color = 0xFFF7F8FA)
-val Grey2 = Color(color = 0xFFEEEFF1)
-val Grey3 = Color(color = 0xFFDBDEE2)
-val Grey5 = Color(color = 0xFFA6ADB5)
-val Grey6 = Color(color = 0xFF767C84)
-val Grey7 = Color(color = 0xFF525A63)
-val Grey9 = Color(color = 0xFF0F182F)
-val Grey10 = Color(color = 0xFF000000)
+val SecondaryBlue = Color(0xFFE57373)
+val SecondaryBlue2 = Color(0xFFEF5350)
 
-val PrimaryPink = Color(color = 0xFFE6007E)
-val PrimaryYellow = Color(color = 0xFFFFD200)
 
-val ErrorText = Color(color = 0xFFA8251B)
-val ErrorHover = Color(color = 0xFF8F1E17)
-val ErrorPressed = Color(color = 0xFFD54C43)
-val ErrorBackground = Color(color = 0xFFFEE7E6)
+val NotActiveColor = Color(0xFFF2F2F2)
 
-val WarningText = Color(color = 0xFF926C20)
-val WarningHover = Color(color = 0xFF7D5D1C)
-val WarningPressed = Color(color = 0xFFD5A443)
-val WarningBackground = Color(color = 0xFFFEF8EB)
 
-val SuccessText = Color(color = 0xFF1E8537)
-val SuccessHover = Color(color = 0xFF1A7431)
-val SuccessPressed = Color(color = 0xFF43D575)
-val SuccessBackground = Color(color = 0xFFF0FEF4)
+val Grey0 = Color(0xFFFFFFFF)
+val Grey1 = Color(0xFFF9F9F9)
+val Grey2 = Color(0xFFF0F0F0)
+val Grey3 = Color(0xFFE0E0E0)
+val Grey5 = Color(0xFFB0B0B0)
+val Grey6 = Color(0xFF808080)
+val Grey7 = Color(0xFF4D4D4D)
+val Grey9 = Color(0xFF1A1A1A)
+val Grey10 = Color(0xFF000000)
 
-val InfoText = Color(color = 0xFF1B3AA8)
-val InfoHover = Color(color = 0xFF17318F)
-val InfoBorder = Color(color = 0xFF4363D5)
-val InfoBackground = Color(color = 0xFFE6EBFE)
+
+val PrimaryPink = Color(0xFFE53935)
+val PrimaryYellow = Color(0xFFFF5252)
+
+
+val ErrorText = Color(0xFFB71C1C)
+val ErrorHover = Color(0xFF9A0007)
+val ErrorPressed = Color(0xFFD32F2F)
+val ErrorBackground = Color(0xFFFFEBEE)
+
+
+val WarningText = Color(0xFF5D4037)
+val WarningHover = Color(0xFF4E342E)
+val WarningPressed = Color(0xFF8D6E63)
+val WarningBackground = Color(0xFFFBE9E7)
+
+
+val SuccessText = Color(0xFF1B5E20)
+val SuccessHover = Color(0xFF2E7D32)
+val SuccessPressed = Color(0xFF66BB6A)
+val SuccessBackground = Color(0xFFE8F5E9)
+
+
+val InfoText = Color(0xFF212121)
+val InfoHover = Color(0xFF424242)
+val InfoBorder = Color(0xFFB71C1C)
+val InfoBackground = Color(0xFFFFF5F5)

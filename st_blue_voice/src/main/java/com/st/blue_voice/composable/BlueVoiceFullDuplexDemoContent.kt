@@ -1,10 +1,15 @@
 package com.st.blue_voice.composable
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,11 +39,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.st.blue_sdk.services.audio.codec.DecodeParams
 import com.st.blue_sdk.services.audio.toByteArray
 import com.st.blue_voice.BlueVoiceViewModel
 import com.st.blue_voice.R
+import com.st.ui.composables.BlueMsButton
+import com.st.ui.composables.BlueMsButtonOutlined
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.Grey3
 import com.st.ui.theme.Grey6
@@ -51,6 +64,84 @@ import java.util.Locale
 
 private var mAudioTrack: AudioTrack? = null
 private var audioManager: AudioManager? = null
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun BlueVoiceFullDuplexDemoContentWithPermissionCheck(
+    modifier: Modifier = Modifier,
+    viewModel: BlueVoiceViewModel,
+    nodeId: String
+) {
+    val context = LocalContext.current
+    val audioRecordPermissionState = rememberPermissionState(
+        permission = Manifest.permission.RECORD_AUDIO
+    )
+
+    val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
+
+    if (audioRecordPermissionState.status.isGranted) {
+        BlueVoiceFullDuplexDemoContent(
+            modifier = modifier,
+            viewModel = viewModel,
+            nodeId = nodeId
+        )
+    } else {
+        MissingPermissionDialog(
+            doNotShowRationale = audioRecordPermissionState.status.shouldShowRationale,
+            onPermissionRequest = { audioRecordPermissionState.launchPermissionRequest() },
+            onDismissRequest = { dispatcher?.onBackPressed() },
+            goToSettings = {
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also {
+                    val uri = Uri.fromParts("package", context.packageName, null)
+                    it.data = uri
+                    context.startActivity(it)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun MissingPermissionDialog(
+    doNotShowRationale: Boolean,
+    goToSettings: () -> Unit,
+    onPermissionRequest: () -> Unit,
+    onDismissRequest: () -> Unit =  { /** NOOP **/ }
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(text = "Permission required")
+        },
+        text = {
+            if (doNotShowRationale) {
+                Text("Impossible to test audio feature without the record audio permission enabled")
+            } else {
+                Text("For testing audio features the record audio permission is mandatory")
+            }
+        },
+        dismissButton = {
+            BlueMsButtonOutlined(
+                onClick = onDismissRequest,
+                text = stringResource(id = android.R.string.cancel)
+            )
+        },
+        confirmButton = {
+            if (doNotShowRationale) {
+                BlueMsButton(
+                    onClick = goToSettings,
+                    text = "Open Settings"
+                )
+            } else {
+                BlueMsButton(
+                    onClick = onPermissionRequest,
+                    text = stringResource(id = android.R.string.ok)
+                )
+            }
+        }
+    )
+}
 
 @Composable
 fun BlueVoiceFullDuplexDemoContent(

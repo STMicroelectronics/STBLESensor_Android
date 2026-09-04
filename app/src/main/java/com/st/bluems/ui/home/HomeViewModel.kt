@@ -36,7 +36,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import androidx.core.net.toUri
+import com.st.bluems.widget.BlueMSWidgetReceiver
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val BLUEMS_SHOWED_ADD_WIDGET_DECISION =
+    "bluems_showed_add_widget_decision"
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -62,6 +69,8 @@ class HomeViewModel @Inject constructor(
     private val _isBetaRelease = MutableStateFlow(false)
     val isBetaRelease = _isBetaRelease.asStateFlow()
 
+    private val _addWidgetBlueMSDecisionShowedFlag = MutableStateFlow(false)
+    val addWidgetBlueMSDecisionShowedFlag = _addWidgetBlueMSDecisionShowedFlag.asStateFlow()
 
     private val _disableHiddenDemos = MutableStateFlow(false)
     val disableHiddenDemos = _disableHiddenDemos.asStateFlow()
@@ -72,6 +81,8 @@ class HomeViewModel @Inject constructor(
     private val _boardName = MutableStateFlow("")
     val boardName = _boardName.asStateFlow()
     val pinnedDevices = stPreferences.getFavouriteDevices()
+
+    val customNames = stPreferences.getCustomNames()
 
     private val _isPairingRequest = MutableStateFlow(false)
     val isPairingRequest = _isPairingRequest.asStateFlow()
@@ -86,6 +97,17 @@ class HomeViewModel @Inject constructor(
     private var activityResultRegistryOwner: ActivityResultRegistryOwner? = null
 
     var currentNodeId: String? = null
+
+
+    init {
+        _addWidgetBlueMSDecisionShowedFlag.value  = stPreferences.getCustomBooleanFromKey(BLUEMS_SHOWED_ADD_WIDGET_DECISION) ?: false
+    }
+
+    fun setAddWidgetDecisionShowedFlag() {
+        stPreferences.setCustomBooleanForKey(BLUEMS_SHOWED_ADD_WIDGET_DECISION, true)
+        _addWidgetBlueMSDecisionShowedFlag.value = true
+    }
+
 
     fun startScan() {
         viewModelScope.launch {
@@ -157,7 +179,7 @@ class HomeViewModel @Inject constructor(
 
                     if (currentNodeState == NodeState.Ready) {
                         //Adding a Delay for allowing the subscription to exported BLE char for BlueVoice FullDuplex and FullBand
-                        delay(500)
+                        delay(500.milliseconds)
                         callback?.invoke()
                         callback = null
                     }
@@ -219,10 +241,12 @@ class HomeViewModel @Inject constructor(
 
     fun addToPinnedDevices(nodeId: String) {
         stPreferences.setFavouriteDevice(nodeId = nodeId)
+        triggerWidgetReload()
     }
 
     fun removeFromPinnedDevices(nodeId: String) {
         stPreferences.unsetFavouriteDevice(nodeId = nodeId)
+        triggerWidgetReload()
     }
 
     fun openGitHubSourceCode() {
@@ -368,6 +392,43 @@ class HomeViewModel @Inject constructor(
     fun profileShow(level: LevelProficiency, type: ProfileType) {
         stPreferences.setLevelProficiency(level = level.name)
         stPreferences.setProfileType(profile = type.name)
+    }
+
+    fun setCustomNameForBoardId(
+        nodeId: String,
+        customName: String?,
+        boardTypeName: String = ""
+    ) {
+        stPreferences.setBoardSetting(
+            nodeId = nodeId,
+            customName = customName,
+            boardTypeName = boardTypeName
+        )
+        triggerWidgetReload()
+    }
+
+    fun triggerWidgetReload() {
+        viewModelScope.launch {
+            try {
+                val pinnedList = pinnedDevices.first()
+                val boardsSettingList = stPreferences.getBoardsSetting().first().map { it.second }
+
+                val intent = Intent(context, BlueMSWidgetReceiver::class.java).apply {
+                    action = BlueMSWidgetReceiver.ACTION_RELOAD
+                    putExtra(
+                        BlueMSWidgetReceiver.EXTRA_FAVORITE_DEVICES,
+                        pinnedList.joinToString(", ")
+                    )
+                    putExtra(
+                        BlueMSWidgetReceiver.EXTRA_BOARDS_SETTING,
+                        Json.encodeToString(boardsSettingList)
+                    )
+                }
+                context.sendBroadcast(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating widget", e)
+            }
+        }
     }
 
     companion object {

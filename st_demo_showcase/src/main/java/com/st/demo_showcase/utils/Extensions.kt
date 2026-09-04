@@ -155,4 +155,5 @@ fun Demo.getDescription(): String =
         Demo.AssetTrackingEventDemo -> "Show asset tracking detected events, such as Fall or Shock Events"
         Demo.ExternalAppLinkToAIoTCraft -> ExternalAppAIoTCraft.appShortDescription
         Demo.ExternalAppLinkToRobotics -> ExternalAppRobotics.appShortDescription
+        Demo.HeadBoneConduction -> "Head Tracking and Audio Bone Conduction"
     }

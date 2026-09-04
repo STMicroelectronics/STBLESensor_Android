@@ -98,10 +98,10 @@ open class CognitoLoginProvider(
                             exp.toString()
                         )
 
-                        Log.d(TAG, "AUTH N EXPIRATION - " + authN!!.expiration)
+                        Log.d(TAG, "AUTH N EXPIRATION - " + authN.expiration)
                         val authZ = mAuthStateManagerZ.readState()
 
-                        if (authZ != null) {
+                       // if (authZ != null) {
 
                             val timestampToday = getTodayTime()
 
@@ -119,8 +119,8 @@ open class CognitoLoginProvider(
                             } else {
 
                                 val refreshedAuthZToken = refreshAuthZToken(
-                                    authN!!.token,
-                                    authN!!.accessKey
+                                    authN.token,
+                                    authN.accessKey
                                 ) //AuthZ expired - refresh it
                                 if (refreshedAuthZToken != null) {
                                     authZData = AuthData(
@@ -130,12 +130,12 @@ open class CognitoLoginProvider(
                                         refreshedAuthZToken.expiration
                                     )
 
-                                    mAuthProcess.postValue(AuthDataLoading.Loaded(authZData!!))
+                                    mAuthProcess.postValue(AuthDataLoading.Loaded(authZData))
                                 }
                             }
-                        } else {
-                            mAuthProcess.postValue(AuthDataLoading.UnknownError)
-                        }
+//                        } else {
+//                            mAuthProcess.postValue(AuthDataLoading.UnknownError)
+//                        }
                     }
                 }
                 continuation.resume(Unit)
@@ -171,11 +171,11 @@ open class CognitoLoginProvider(
                         exp.toString()
                     )
 
-                    Log.d(TAG, "AUTH N EXPIRATION - " + authN!!.expiration)
+                    Log.d(TAG, "AUTH N EXPIRATION - " + authN.expiration)
                     val authZ = mAuthStateManagerZ.readState()
 
-                    if (authZ != null) {
-
+//                    if (authZ != null) {
+//
                         val timestampToday = getTodayTime()
 
                         if (authZ.expiration!! > timestampToday) {
@@ -191,8 +191,8 @@ open class CognitoLoginProvider(
                         } else {
 
                             val refreshedAuthZToken = refreshAuthZToken(
-                                authN!!.token,
-                                authN!!.accessKey
+                                authN.token,
+                                authN.accessKey
                             ) //AuthZ expired - refresh it
                             if (refreshedAuthZToken != null) {
                                 authZData = AuthData(
@@ -204,9 +204,9 @@ open class CognitoLoginProvider(
                                 callback(authZData)
                             }
                         }
-                    } else {
-                        callback(null)
-                    }
+//                    } else {
+//                        callback(null)
+//                    }
                 }
             }
         }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BorderColor
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.HorizontalDivider
@@ -20,16 +21,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.st.demo_showcase.R
 import com.st.demo_showcase.utils.DTMIModelLoadedStatus
 import com.st.ui.theme.ErrorText
@@ -38,6 +36,7 @@ import com.st.ui.theme.SuccessText
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.Grey6
+import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Shapes
 import com.st.ui.utils.getBlueStBoardImages
 
@@ -46,17 +45,15 @@ fun DeviceHeader(
     modifier: Modifier = Modifier,
     boardTypeName: String,
     isPin: Boolean,
-    name: String?=null,
-    runningFw: String?=null,
+    showEdit: Boolean = false,
+    boardHasCustomName: String? = null,
+    onCustomNameSelected: () -> Unit = { /** NOOP**/ },
+    name: String? = null,
+    runningFw: String? = null,
     statusModelDTMI: DTMIModelLoadedStatus = DTMIModelLoadedStatus.NotNecessary,
     onCustomDTMIClicked: () -> Unit = { /** NOOP **/ },
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ }
 ) {
-    // TODO: Save a starred device list
-    var starred by rememberSaveable {
-        mutableStateOf(value = false)
-    }
-
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = Shapes.small,
@@ -71,15 +68,39 @@ fun DeviceHeader(
                     .padding(all = LocalDimensions.current.paddingNormal),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                name?.let {
-                    Text(
-                        modifier = Modifier
-                            .weight(weight = 1f)
-                            .padding(all = LocalDimensions.current.paddingNormal),
-                        text = name,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+
+                Row(
+                    modifier = Modifier
+                        .weight(weight = 1f)
+                        .padding(all = LocalDimensions.current.paddingNormal),
+                    horizontalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall),
+                    verticalAlignment = Alignment.Top
+                ) {
+
+                    if (boardHasCustomName != null) {
+                        Text(
+                            text = boardHasCustomName,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        Text(
+                            text = name ?: "NoName",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    if (showEdit) {
+                        Icon(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable { onCustomNameSelected() },
+                            tint = SecondaryBlue,
+                            imageVector = Icons.Filled.BorderColor,
+                            contentDescription = null
+                        )
+                    }
                 }
 
                 IconButton(onClick = { onPinChange(isPin.not()) }) {
@@ -221,6 +242,8 @@ private fun DeviceHeaderPreview() {
             isPin = false,
             boardTypeName = "ST Board",
             name = "Astra",
+            showEdit = true,
+            boardHasCustomName = "Luca Test",
             runningFw = "FP-ATR-ASTRA1V2.0.0"
         )
     }

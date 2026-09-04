@@ -16,6 +16,7 @@ import com.st.blue_sdk.features.FeatureField
 import com.st.blue_sdk.features.compass.Compass
 import com.st.blue_sdk.features.compass.CompassInfo
 import com.st.blue_sdk.services.calibration.CalibrationService
+import com.st.blue_sdk.services.calibration.CalibrationServiceImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,6 +89,22 @@ class CompassViewModel
             blueManager.getConfigControlUpdates(nodeId = nodeId).collect {
                 if (it is CalibrationStatus) {
                     _calibrationStatus.emit(it.status)
+                }
+            }
+        }
+
+        //take a look on debug Console for SensorTile.box and SensorTile.box-Pro
+        viewModelScope.launch {
+            blueManager.getDebugMessages(nodeId = nodeId)?.collect {
+                val message = it.payload
+                if (message.isNotEmpty()) {
+                    val matcher = CalibrationServiceImpl.STATUS_PARSER.matcher(message)
+                    if (matcher.matches()) {
+                        val calibStatus = matcher.group(1)?.toByte()
+                        calibStatus?.let { calib ->
+                            _calibrationStatus.emit(calib==100.toByte())
+                        }
+                    }
                 }
             }
         }

@@ -12,7 +12,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BorderColor
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.SignalCellular4Bar
 import androidx.compose.material.icons.outlined.PushPin
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.st.blue_sdk.board_catalog.models.BoardFirmware
 import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
 import com.st.blue_sdk.models.Node
@@ -36,6 +39,9 @@ fun DeviceListItem(
     modifier: Modifier = Modifier,
     item: Node,
     isPin: Boolean = false,
+    showEdit: Boolean = false,
+    boardHasCustomName: String? = null,
+    onCustomNameSelected: () -> Unit = { /** NOOP**/ },
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
     onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
 ) {
@@ -54,6 +60,9 @@ fun DeviceListItem(
         isSleeping = item.isSleeping,
         isCustomFw = item.isCustomFw,
         hasGeneralPurpose = item.hasGeneralPurpose,
+        showEdit = showEdit,
+        boardHasCustomName = boardHasCustomName,
+        onCustomNameSelected = onCustomNameSelected,
         onNodeSelected = { onNodeSelected(item) }
     )
 }
@@ -75,6 +84,9 @@ fun DeviceListItem(
     isSleeping: Boolean,
     hasGeneralPurpose: Boolean,
     onPinChange: (Boolean) -> Unit = { /** NOOP**/ },
+    showEdit: Boolean = false,
+    boardHasCustomName: String? = null,
+    onCustomNameSelected: () -> Unit = { /** NOOP**/ },
     onNodeSelected: () -> Unit = { /** NOOP**/ }
 ) {
     Surface(
@@ -99,18 +111,39 @@ fun DeviceListItem(
                     contentDescription = null
                 )
 
-                Column(modifier = Modifier.weight(weight = 1f)) {
+                Column(
+                    modifier = Modifier
+                        .weight(weight = 1f)
+                        .padding(all = LocalDimensions.current.paddingNormal),
+                    verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
+                ) {
                     name?.let {
-                        Text(
-                            modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
-                            text = name,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text(
+                                text = boardHasCustomName ?: name,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
+                            if (showEdit) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable { onCustomNameSelected() },
+                                    tint = SecondaryBlue,
+                                    imageVector = Icons.Filled.BorderColor,
+                                    contentDescription = null
+                                )
+                            }
+                        }
                     }
                     runningFw?.let {
                         Text(
-                            modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
+                            //modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
                             text = it,
                             color = Grey6,
                             style = MaterialTheme.typography.titleSmall
@@ -141,7 +174,7 @@ fun DeviceListItem(
                     )
                 } else {
                     if (catalogInfo != null) {
-                        if(catalogInfo.maturity!=FirmwareMaturity.RELEASE) {
+                        if (catalogInfo.maturity != FirmwareMaturity.RELEASE) {
                             Text(
                                 modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
                                 color = ErrorText,
@@ -209,12 +242,23 @@ fun DeviceListItem(
                     )
                 }
                 Spacer(modifier = Modifier.weight(weight = 1f))
-                Text(
+                Column(
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier.padding(all = LocalDimensions.current.paddingNormal),
-                    text = address,
-                    color = Grey6,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                ) {
+                    if ((boardHasCustomName != null) && (name != null)) {
+                        Text(
+                            text = "AdvName: $name",
+                            color = Grey6,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Text(
+                        text = address,
+                        color = Grey6,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
         }
     }
@@ -257,6 +301,7 @@ private fun DeviceListItemCustomPreview() {
             icons = listOf(0, 1, 2),
             isCustomFw = true,
             isSleeping = false,
+            showEdit = true,
             hasGeneralPurpose = false
         )
     }
@@ -277,6 +322,8 @@ private fun DeviceListItemSleepingPreview() {
             icons = listOf(0, 1, 2),
             isCustomFw = false,
             isSleeping = true,
+            showEdit = true,
+            boardHasCustomName = "Luca Custom Name",
             hasGeneralPurpose = false
         )
     }
@@ -297,6 +344,7 @@ private fun DeviceListItemGPPreview() {
             icons = listOf(0, 1, 2),
             isCustomFw = false,
             isSleeping = false,
+            boardHasCustomName = "Luca Custom Name",
             hasGeneralPurpose = true
         )
     }

@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.st.external_app.ExternalAppDemoFragmentKt
+-dontwarn com.st.external_app.model.ExternalAppDetailType
+-dontwarn com.st.external_app.model.ExternalAppType
+-dontwarn com.st.plot.utils.ConstKt
+-dontwarn com.st.registers_demo.common.RegistersDemoType

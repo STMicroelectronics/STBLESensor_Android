@@ -77,7 +77,7 @@ fun BlueVoiceDemoContent(
 
     val context = LocalContext.current
 
-    val recorder = remember { AudioFileRecorder(context, "BlueVoice") }
+    val recorder = remember { AudioFileRecorder("BlueVoice") }
 
     var isMute by remember {
         mutableStateOf(false)

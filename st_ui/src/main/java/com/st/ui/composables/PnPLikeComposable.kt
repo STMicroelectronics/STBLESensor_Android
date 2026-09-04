@@ -104,7 +104,7 @@ import androidx.compose.ui.unit.toSize
 import com.st.blue_sdk.models.JsonMLCFormat
 import com.st.ui.R
 import com.st.ui.theme.ErrorText
-import com.st.ui.theme.Grey0
+import com.st.ui.theme.Grey2
 import com.st.ui.theme.Grey3
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
@@ -645,7 +645,7 @@ fun <T : Any> EnumProperty(
 
             DropdownMenu(
                 modifier = Modifier
-                    .background(Grey0)
+                    .background(Grey2)
                     .width(with(LocalDensity.current) { fieldSize.width.toDp() }),
                 expanded = expanded, onDismissRequest = {
                     expanded = false

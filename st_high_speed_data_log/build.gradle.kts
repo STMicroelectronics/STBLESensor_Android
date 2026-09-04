@@ -23,17 +23,17 @@ apply(from = "publish.gradle")
 
 android {
     namespace = "com.st.high_speed_data_log"
-    compileSdk {
-        version = release(stCompileSdk) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = stCompileSdk
 
     defaultConfig {
         minSdk = stMinSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+    }
+
+    configurations.all {
+        exclude(group = "org.bouncycastle", module = "bcprov-jdk18on")
     }
 
     buildTypes {

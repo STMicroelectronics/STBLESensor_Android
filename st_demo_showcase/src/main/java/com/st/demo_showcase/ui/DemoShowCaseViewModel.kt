@@ -9,6 +9,7 @@ package com.st.demo_showcase.ui
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
@@ -40,9 +41,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class DemoShowCaseViewModel @Inject constructor(
@@ -50,11 +54,11 @@ class DemoShowCaseViewModel @Inject constructor(
     private val audioService: AudioService,
     private val stPreferences: StPreferences,
     private val loginManager: StLoginManager,
-    @ApplicationContext applicationContext: Context,
+    @param:ApplicationContext private val context: Context,
     private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : ViewModel() {
 
-    private val contentResolver = applicationContext.contentResolver
+    private val contentResolver = context.contentResolver
     private val _currentDemo: MutableStateFlow<Demo?> = MutableStateFlow(null)
     val currentDemo: StateFlow<Demo?> = _currentDemo.asStateFlow()
     private val _currentFw: MutableStateFlow<String> = MutableStateFlow("")
@@ -82,6 +86,7 @@ class DemoShowCaseViewModel @Inject constructor(
         MutableStateFlow(DTMIModelLoadedStatus.NotNecessary)
     val statusModelDTMI: StateFlow<DTMIModelLoadedStatus> = _statusModelDTMI.asStateFlow()
     val pinnedDevices: Flow<List<String>> = stPreferences.getFavouriteDevices()
+    val customNames = stPreferences.getCustomNames()
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn = _isLoggedIn.asStateFlow()
     private val _isExpert = MutableStateFlow(false)
@@ -165,6 +170,40 @@ class DemoShowCaseViewModel @Inject constructor(
 
     fun setCurrentDemo(demo: Demo?) {
         _currentDemo.value = demo
+    }
+
+    fun setCustomNameForBoardId(
+        nodeId: String,
+        customName: String?,
+        boardTypeName: String = ""
+    ) {
+        stPreferences.setBoardSetting(nodeId = nodeId, customName = customName,boardTypeName=boardTypeName)
+        triggerWidgetReload()
+    }
+
+    fun triggerWidgetReload() {
+        viewModelScope.launch {
+            try {
+                val pinnedList = pinnedDevices.first()
+                val boardsSettingList = stPreferences.getBoardsSetting().first().map { it.second }
+
+                val intent = Intent().apply {
+                    action = "com.st.bluems.widget.ACTION_RELOAD"
+                    setClassName(context.packageName, "com.st.bluems.widget.BlueMSWidgetReceiver")
+                    putExtra(
+                        "com.st.bluems.widget.EXTRA_FAVORITE_DEVICES",
+                        pinnedList.joinToString(", ")
+                    )
+                    putExtra(
+                        "com.st.bluems.widget.EXTRA_BOARDS_SETTING",
+                        Json.encodeToString(boardsSettingList)
+                    )
+                }
+                context.sendBroadcast(intent)
+            } catch (e: Exception) {
+                Log.e("DemoShowCaseViewModel", "Error updating widget", e)
+            }
+        }
     }
 
     fun setNodeId(nodeId: String) {
@@ -314,7 +353,7 @@ class DemoShowCaseViewModel @Inject constructor(
     }
 
     private fun checkFwUpdate() {
-        Log.i("DemoShowCaseViewModel","checkFwUpdate")
+        Log.i("DemoShowCaseViewModel", "checkFwUpdate")
         viewModelScope.launch {
             _device.value?.let { currentFirmwareInfo ->
                 val updateFirmware = currentFirmwareInfo.fwUpdate
@@ -457,6 +496,15 @@ class DemoShowCaseViewModel @Inject constructor(
             }
         }
 
+        if (_device.value != null) {
+            //Add Demo HeadBoneConduction if the board is a MEMSTWS2V0 without a Fw db entry
+            if ((boardType == Boards.Model.MEMSTWS2V0) && (_device.value!!.catalogInfo == null)) {
+                if (buildDemoList.contains(Demo.HeadBoneConduction).not()) {
+                    buildDemoList.add(Demo.HeadBoneConduction)
+                }
+            }
+        }
+
         //Add the FoTA only to WB/WBA boards
         if ((familyType != Boards.Family.WB_FAMILY) && (familyType != Boards.Family.WBA_FAMILY) && (boardType != Boards.Model.WB0X_NUCLEO_BOARD)) {
             buildDemoList.remove(Demo.WbsOtaFUOTA)
@@ -468,6 +516,14 @@ class DemoShowCaseViewModel @Inject constructor(
                 buildDemoList.filter { it.isBetaRequired() }
             buildDemoList.removeAll(match.toSet())
         }
+
+        //HeadBoneConduction TMP
+//        if (buildDemoList.contains(Demo.HeadBoneConduction).not()) {
+//            buildDemoList.add(Demo.HeadBoneConduction)
+//        }
+//        if (buildDemoList.contains(Demo.BlueVoiceOpus).not()) {
+//            buildDemoList.add(Demo.BlueVoiceOpus)
+//        }
 
         //Remove the PnP-L, HighSpeedDataLog and BinaryContent Demo if there is not a valid DTMI
 //        if((_statusModelDTMI.value==DTMIModelLoadedStatus.CustomNotLoaded) || (_statusModelDTMI.value==DTMIModelLoadedStatus.NotNecessary)) {
@@ -498,7 +554,7 @@ class DemoShowCaseViewModel @Inject constructor(
 
         _updateDemoOrder?.cancel()
         _updateDemoOrder = viewModelScope.launch {
-            delay(300)
+            delay(300.milliseconds)
 
             _device.value?.device?.address?.let {
                 stPreferences.setDemoOrder(it, _availableDemo.value.map { it.name })
@@ -508,10 +564,12 @@ class DemoShowCaseViewModel @Inject constructor(
 
     fun addToPinDevices(id: String) {
         stPreferences.setFavouriteDevice(id)
+        triggerWidgetReload()
     }
 
     fun removeFromPinDevices(id: String) {
         stPreferences.unsetFavouriteDevice(id)
+        triggerWidgetReload()
     }
 
     fun initExpert() {

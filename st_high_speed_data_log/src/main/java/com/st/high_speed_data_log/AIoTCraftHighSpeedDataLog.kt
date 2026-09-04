@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -18,19 +19,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.East
+import androidx.compose.material.icons.filled.Memory
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SdCard
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.West
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -39,7 +49,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +65,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -64,6 +82,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.st.high_speed_data_log.composable.StopLoggingDialog
 import com.st.high_speed_data_log.model.StreamData
 import com.st.pnpl.composable.PnPLInfoWarningSpontaneousMessage
+import com.st.ui.composables.BlueMSAnimatedIconsRow
 import com.st.ui.composables.BlueMSPullToRefreshBox
 import com.st.ui.composables.BlueMSSnackBarMaterial3
 import com.st.ui.composables.BlueMsButton
@@ -71,9 +90,11 @@ import com.st.ui.composables.CommandRequest
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.ErrorText
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PreviewBlueMSTheme
 import com.st.ui.theme.PrimaryBlue
 import com.st.ui.theme.SecondaryBlue
 import com.st.ui.theme.Shapes
+import com.st.ui.theme.SuccessText
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
@@ -117,6 +138,23 @@ fun AIoTCraftHighSpeedDataLog(
     val enableLog by viewModel.enableLog.collectAsStateWithLifecycle()
     val snackbarMessage by viewModel.snackbarMessage.collectAsStateWithLifecycle()
     var ucfError: String? by remember { mutableStateOf(value = null) }
+
+    val showedTelemetryPlotExplanation by viewModel.showedTelemetryPlotExplanation.collectAsStateWithLifecycle()
+
+    var showTelemetryPlotExplanation by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = showedTelemetryPlotExplanation) {
+        if (showedTelemetryPlotExplanation.not()) {
+            showTelemetryPlotExplanation = true
+        }
+    }
+
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
 
     AIoTCraftHighSpeedDataLog(
         modifier = modifier,
@@ -180,6 +218,19 @@ fun AIoTCraftHighSpeedDataLog(
             viewModel.enableStreamSensor(nodeId = nodeId, sensor = it)
         }
     )
+
+    if (showTelemetryPlotExplanation && isLogging) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showTelemetryPlotExplanation = false
+            },
+            sheetState = sheetState,
+        ) {
+            TelemetryPlotExplanation(onDismissShowTelemetryPlotExplanation = {
+                showTelemetryPlotExplanation = false
+            }, onDontShowAgain = { viewModel.setShowedTelemetryPlotExplanation(it) })
+        }
+    }
 
     statusMessage?.let {
         PnPLInfoWarningSpontaneousMessage(
@@ -339,7 +390,7 @@ fun AIoTCraftHighSpeedDataLog(
     onSendCommand: (String, CommandRequest?) -> Unit,
     onTagChangeState: (String, Boolean) -> Unit = { _, _ -> /**NOOP**/ },
     onStartStopLog: (Boolean) -> Unit = { /**NOOP **/ },
-    onRefresh: () -> Unit = { /**NOOP **/ },
+    onRefresh: () -> Unit = { /**NOOP **/ }
 ) {
     val sensorsTitle = stringResource(id = R.string.st_hsdl_sensors)
     val tagsTitle = stringResource(id = R.string.st_hsdl_tags)
@@ -461,9 +512,11 @@ fun AIoTCraftHighSpeedDataLog(
             }
         },
         floatingActionButton = {
+//            if (showedTelemetryPlotExplanation || !isLogging) {
             ExtendedFloatingActionButton(
                 modifier = Modifier.padding(
-                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                    bottom = WindowInsets.navigationBars.asPaddingValues()
+                        .calculateBottomPadding()
                 ),
                 containerColor = SecondaryBlue,
                 expanded = !lazyState.isScrollInProgress,
@@ -515,6 +568,7 @@ fun AIoTCraftHighSpeedDataLog(
                 },
                 text = { Text(text = if (isLogging) "Stop" else "Start") },
             )
+            //}
         }
     ) { paddingValues ->
         BlueMSPullToRefreshBox(
@@ -597,6 +651,189 @@ fun AIoTCraftHighSpeedDataLog(
 //    }
 }
 
+@Composable
+fun TelemetryPlotExplanation(
+    modifier: Modifier = Modifier,
+    onDismissShowTelemetryPlotExplanation: () -> Unit = { /**NOOP **/ },
+    onDontShowAgain: (Boolean) -> Unit = { /** NOOP **/ }
+) {
+
+    var checkbox by remember { mutableStateOf(false) }
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(all = LocalDimensions.current.paddingNormal),
+        verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            color = PrimaryBlue,
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            text = "Data Storage & Streaming"
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = LocalDimensions.current.paddingNormal,
+                    start = LocalDimensions.current.paddingNormal,
+                    end = LocalDimensions.current.paddingNormal
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text(
+                color = PrimaryBlue,
+                style = MaterialTheme.typography.titleMedium,
+                text = "Micro-SD Card"
+            )
+
+            Text(
+                color = PrimaryBlue,
+                style = MaterialTheme.typography.titleMedium,
+                text = "Live Chart"
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(LocalDimensions.current.iconNormal),
+                tint = PrimaryBlue,
+                imageVector = Icons.Filled.SdCard,
+                contentDescription = null
+            )
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall)
+            ) {
+                BlueMSAnimatedIconsRow(
+                    tint = SuccessText,
+                    durationMillis = 800,
+                    imageVector = Icons.Filled.SdCard, isToLeft = true
+                )
+
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    tint = SuccessText,
+                    imageVector = Icons.Default.West,
+                    contentDescription = null
+                )
+            }
+
+            Icon(
+                modifier = Modifier.size(LocalDimensions.current.iconNormal),
+                tint = PrimaryBlue,
+                imageVector = Icons.Filled.Memory,
+                contentDescription = null
+            )
+
+            Column(
+                modifier = Modifier.padding(bottom = LocalDimensions.current.paddingNormal),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall)
+            ) {
+                BlueMSAnimatedIconsRow(
+                    tint = SuccessText,
+                    durationMillis = 2000,
+                    imageVector = Icons.Filled.SdCard,
+                    isToLeft = false
+                )
+
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    tint = SuccessText,
+                    imageVector = Icons.Default.East,
+                    contentDescription = null
+                )
+            }
+
+            Icon(
+                modifier = Modifier.size(LocalDimensions.current.iconNormal),
+                tint = PrimaryBlue,
+                imageVector = Icons.Filled.PhoneAndroid,
+                contentDescription = null
+            )
+
+        }
+
+        Text(
+            modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
+            text = "Please understand how we handle sensors data logs when stored on micro-SD or streamed to the phone:",
+            style = MaterialTheme.typography.bodyMedium,
+            fontStyle = FontStyle.Italic
+        )
+
+        Text(
+            modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    append("\u2022 Micro-SD Card:")
+                }
+                append(" all sensor data logs are saved to the microSD card at")
+                append(" the selected Output Data Rate,")
+                append(" without data loss.")
+            },
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Text(
+            modifier = Modifier.padding(LocalDimensions.current.paddingNormal),
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    append("\u2022 Live Chart:")
+                }
+                append(" the graph displayed")
+                append(" in this app represents only a preview.")
+                append(" The displayed data may not include all samples due to Bluetooth bandwidth limits.")
+            },
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Checkbox(
+                checked = checkbox,
+                onCheckedChange = {
+                    checkbox = it
+                    onDontShowAgain(it)
+                }
+            )
+            Text(
+                modifier = Modifier.padding(start = LocalDimensions.current.paddingNormal),
+                text = "Don't show again",
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1
+            )
+        }
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.navigationBars
+            )
+        )
+    }
+}
+
 
 fun String.formatDate(): String {
     val inputSdf = SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.ROOT)
@@ -604,3 +841,14 @@ fun String.formatDate(): String {
     val sdf = SimpleDateFormat("EEE MMM d yyyy HH:mm:ss", Locale.UK)
     return sdf.format(date)
 }
+
+/** ----------------------- PREVIEW --------------------------------------- **/
+
+@Preview(showBackground = true)
+@Composable
+private fun TelemetryPlotExplanationPreview() {
+    PreviewBlueMSTheme {
+        TelemetryPlotExplanation()
+    }
+}
+

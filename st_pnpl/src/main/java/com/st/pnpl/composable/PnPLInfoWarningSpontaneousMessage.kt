@@ -192,9 +192,9 @@ fun searchInfoWarningError(json: List<JsonObject>): PnPLSpontaneousMessageType? 
             val messageString = jsonError[ERROR_MESSAGE_JSON_KEY]?.jsonPrimitive?.content
             message = ERROR
             if (messageString.isNullOrBlank()) {
-                message!!.message = "Generic Error"
+                message.message = "Generic Error"
             } else {
-                message!!.message = messageString
+                message.message = messageString
             }
         } catch (ex: Exception) {
             Log.e(ERROR_MESSAGE_JSON_KEY, ex.message, ex)
@@ -207,7 +207,7 @@ fun searchInfoWarningError(json: List<JsonObject>): PnPLSpontaneousMessageType? 
             message = WARNING
             if (messageString.isNullOrBlank()) {
             } else {
-                message!!.message = messageString
+                message.message = messageString
             }
         } catch (ex: Exception) {
             Log.e(WARNING_MESSAGE_JSON_KEY, ex.message, ex)
@@ -219,9 +219,9 @@ fun searchInfoWarningError(json: List<JsonObject>): PnPLSpontaneousMessageType? 
             val messageString = jsonError[INFO_MESSAGE_JSON_KEY]?.jsonPrimitive?.content
             message = INFO
             if (messageString.isNullOrBlank()) {
-                message!!.message = "Generic Info"
+                message.message = "Generic Info"
             } else {
-                message!!.message = messageString
+                message.message = messageString
             }
         } catch (ex: Exception) {
             Log.e(INFO_MESSAGE_JSON_KEY, ex.message, ex)

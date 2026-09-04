@@ -12,5 +12,6 @@ import androidx.annotation.DrawableRes
 data class WelcomePage(
     val title: String,
     val description: String,
-    @param:DrawableRes val drawableRes: Int
+    @param:DrawableRes val drawableRes: Int?=null,
+    val videoAssetsId: String? = null
 )

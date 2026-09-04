@@ -62,6 +62,7 @@ import com.st.ui.theme.POPUP_OUT_TRANSITION_DURATION
 import com.st.ui.theme.Shapes
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun rememberPaddingHorizontal(
@@ -206,7 +207,7 @@ fun BlueMsContentWithPopup(
         if (expandedStates.currentState || expandedStates.targetState) {
             if (expandedStates.isIdle) {
                 LaunchedEffect(key1 = popupTimeout, key2 = openDialog) {
-                    delay(popupTimeout)
+                    delay(popupTimeout.milliseconds)
                     openDialog.value = false
                 }
             }

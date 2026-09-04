@@ -23,10 +23,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
 @Serializable
-data object AIoTHsdlSensorsNavKey: NavKey
+data object AIoTHsdlSensorsNavKey : NavKey
 
 @Serializable
-data object AIoTHsdlTagsNavKey: NavKey
+data object AIoTHsdlTagsNavKey : NavKey
 
 
 @Composable
@@ -51,7 +51,7 @@ fun EntryProviderScope<NavKey>.AIoTCraftHsdlTagsScreen(
                 status = status,
                 isLoading = isLoading,
                 onValueChange = onValueChange,
-                onSendCommand = onSendCommand
+                onSendCommand = onSendCommand,
             )
         } else {
             VespucciHsdlTags(

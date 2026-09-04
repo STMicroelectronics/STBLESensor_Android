@@ -1,6 +1,8 @@
 package com.st.ui.composables
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,14 +26,11 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelCompone
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.compose.cartesian.data.ColumnCartesianLayerModel
-import com.patrykandpatrick.vico.compose.cartesian.data.columnSeries
 import com.patrykandpatrick.vico.compose.cartesian.layer.ColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
-import com.patrykandpatrick.vico.compose.common.component.LineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.data.ExtraStore
@@ -43,6 +42,7 @@ import com.st.ui.theme.WarningText
 import kotlin.collections.any
 import kotlin.collections.map
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.patrykandpatrick.vico.compose.cartesian.data.columnModel
 import com.patrykandpatrick.vico.compose.common.Fill
 
 private val BottomAxisLabelKey = ExtraStore.Key<List<String>>()
@@ -52,17 +52,6 @@ private val BottomAxisValueFormatter = CartesianValueFormatter { context, x, _ -
 }
 
 private val MarkerValueFormatter = DefaultCartesianMarker.ValueFormatter.default(2, suffix= "%")
-
-private fun getColumnProvider(positive: LineComponent) =
-    object : ColumnCartesianLayer.ColumnProvider {
-        override fun getColumn(
-            entry: ColumnCartesianLayerModel.Entry,
-            seriesIndex: Int,
-            extraStore: ExtraStore,
-        ) = positive
-
-        override fun getWidestSeriesColumn(seriesIndex: Int, extraStore: ExtraStore) = positive
-    }
 
 @Composable
 fun BlueMSPlotBarView(
@@ -85,7 +74,7 @@ fun BlueMSPlotBarView(
 
     LaunchedEffect(key1 = historyValues) {
         modelProducer.runTransaction {
-            columnSeries {
+            columnModel {
                 series(historyValues)
                 extras {
                     it[BottomAxisLabelKey] =
@@ -113,7 +102,7 @@ fun BlueMSPlotBarView(
                             maxY = maxValue.toDouble()
                         ),
                         columnProvider = remember(positiveColumn) {
-                            getColumnProvider(positiveColumn)
+                            ColumnCartesianLayer.ColumnProvider.series(positiveColumn)
                         }
                         //dataLabel =  rememberTextComponent()
                     )
@@ -221,11 +210,11 @@ fun BlueMSSimplePlotBarView(
 
     LaunchedEffect(key1 = historyValues) {
         modelProducer.runTransaction {
-            columnSeries {
-                series(historyValues)
-            }
+            columnModel { series(historyValues) }
         }
     }
+
+    val  animationSpec: AnimationSpec<Float> =  remember {tween(durationMillis = 500)}
 
     CartesianChartHost(
         modifier = modifier.padding(LocalDimensions.current.paddingNormal),
@@ -237,7 +226,7 @@ fun BlueMSSimplePlotBarView(
                         maxY = maxValue.toDouble()
                     ),
                     columnProvider = remember(positiveColumn) {
-                        getColumnProvider(positiveColumn)
+                        ColumnCartesianLayer.ColumnProvider.series(positiveColumn)
                     }
                     //dataLabel =  rememberTextComponent()
                 )
@@ -260,6 +249,7 @@ fun BlueMSSimplePlotBarView(
         ),
         modelProducer = modelProducer,
         scrollState = rememberVicoScrollState(scrollEnabled = false),
-        animateIn = animateIn
+        animationSpec = animationSpec,
+        initialAnimationSpec = if (animateIn) animationSpec else null,
     )
 }

@@ -21,6 +21,7 @@ fun BlueMSSnackBarMaterial3(
     contentColor: Color = SnackbarDefaults.contentColor,
     actionColor: Color = SnackbarDefaults.actionColor,
     actionContentColor: Color = SnackbarDefaults.actionContentColor,
+    dismissActionContentColor: Color = SnackbarDefaults.dismissActionContentColor
 ) {
     SnackbarHost(
         hostState = snackBarHostState,
@@ -31,6 +32,7 @@ fun BlueMSSnackBarMaterial3(
                 contentColor = contentColor,
                 actionColor = actionColor,
                 actionContentColor = actionContentColor,
+                dismissActionContentColor = dismissActionContentColor,
                 snackbarData = data)
         },
         modifier = modifier

@@ -21,11 +21,7 @@ apply(from = "publish.gradle")
 
 android {
     namespace = "com.st.login"
-    compileSdk {
-        version = release(stCompileSdk) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = stCompileSdk
 
     defaultConfig {
         minSdk = stMinSdk

@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import com.st.ui.theme.Grey0
+import com.st.ui.theme.Grey2
 import com.st.ui.theme.LocalDimensions
 
 @Composable
@@ -67,7 +67,7 @@ fun BlueMsMenuActions(
                 }
                 DropdownMenu(
                     modifier = Modifier
-                        .background(Grey0)
+                        .background(Grey2)
                         .fillMaxWidth(fraction = 0.5f),
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false }

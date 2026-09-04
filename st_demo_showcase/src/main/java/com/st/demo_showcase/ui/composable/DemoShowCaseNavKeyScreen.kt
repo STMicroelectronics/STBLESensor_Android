@@ -57,6 +57,8 @@ import com.st.core.GlobalConfig
 import com.st.demo_showcase.ui.debug_console.DebugConsoleViewModel
 import com.st.demo_showcase.ui.demo_show_case.DemoShowCaseDownloadTermsNavKey
 import com.st.demo_showcase.ui.log_settings.LogSettingsViewModel
+import com.st.download_terms.StDownloadTermsConfig
+import com.st.download_terms.composable.DownloadLicenseAgreementScreen
 import com.st.pnpl.PnplViewModel
 import com.st.pnpl.composable.StPnplScreen
 import com.st.ui.composables.ComposableLifecycle
@@ -124,6 +126,13 @@ fun DemoShowCaseNavKeyScreen(
                     backState = backState,
                     viewModel = viewModel
                 )
+            }
+
+            entry<DemoShowCaseDownloadTermsNavKey> {
+                DownloadLicenseAgreementScreen(onLicenseAgree = { decision ->
+                    backState.removeLastOrNull()
+                    StDownloadTermsConfig.onDone(decision)
+                })
             }
 
             entry<DemoShowCaseUserProfilingNavKey> {
@@ -343,18 +352,18 @@ fun DemoShowCaseNavKeyScreen(
         updateFw = updateFw,
         changeLog = updateChangeLog,
         onInstall = {
-//            if (viewModel.hasAcceptedDownloadTerms) {
+            if (viewModel.hasAcceptedDownloadTerms) {
                 backState.add(DemoShowCaseFwDirectUpdateNavKey(nodeId, updateUrl))
-//            } else {
-//                StDownloadTermsConfig.fullScreen = true
-//                StDownloadTermsConfig.onDone = { decision ->
-//                    if (decision) {
-//                        viewModel.setDownloadTermsFlag(true)
-//                        backState.add(DemoShowCaseFwDirectUpdateNavKey(nodeId, updateUrl))
-//                    }
-//                }
-//                backState.add(DemoShowCaseDownloadTermsNavKey)
-//            }
+            } else {
+                StDownloadTermsConfig.fullScreen = true
+                StDownloadTermsConfig.onDone = { decision ->
+                    if (decision) {
+                        viewModel.setDownloadTermsFlag(true)
+                        backState.add(DemoShowCaseFwDirectUpdateNavKey(nodeId, updateUrl))
+                    }
+                }
+                backState.add(DemoShowCaseDownloadTermsNavKey)
+            }
         },
         dismissUpdateDialog = { viewModel.dismissUpdateDialog(it) })
 }

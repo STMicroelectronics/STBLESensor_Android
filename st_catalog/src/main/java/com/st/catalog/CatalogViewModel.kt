@@ -212,6 +212,10 @@ fun BoardFirmware.availableDemos(
                     }
                 }
 
+                Demo.HeadBoneConduction -> {
+                    demoDecorator?.add?.contains("Bone Conduction") == true
+                }
+
                 Demo.ExternalAppLinkToRobotics -> {
                     demoDecorator?.add?.contains(ExternalAppRobotics.appTitle) == true
                 }

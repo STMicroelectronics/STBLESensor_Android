@@ -8,10 +8,11 @@
 package com.st.login
 
 import android.net.Uri
+import androidx.core.net.toUri
 
 data class STLoginConfig(
-    var redirectUri: Uri = Uri.parse(""),
+    var redirectUri: Uri = "".toUri(),
     var loginConfiguration: Int = R.raw.prod_auth_config_vespucci,
-    var customLogoutUri: Uri = Uri.parse(""),
+    var customLogoutUri: Uri = "".toUri(),
     var isProdEnvironment: Boolean = true
 )

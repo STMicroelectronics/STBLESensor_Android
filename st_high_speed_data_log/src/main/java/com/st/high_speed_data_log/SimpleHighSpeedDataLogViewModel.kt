@@ -43,6 +43,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SimpleHighSpeedDataLogViewModel @Inject constructor(
@@ -309,7 +310,7 @@ class SimpleHighSpeedDataLogViewModel @Inject constructor(
             if (!_isLogging.value) {
                 sendSetNameCommand(nodeId = nodeId)
 
-                delay(500)
+                delay(500.milliseconds)
 
                 sendGetAllCommand(nodeId)
             }
@@ -426,7 +427,7 @@ class SimpleHighSpeedDataLogViewModel @Inject constructor(
 
             sendSetTimeCommand(nodeId = nodeId)
 
-            delay(500)
+            delay(500.milliseconds)
 
             //For Avoiding to change again the Acquisition name
             //setName(nodeId)
@@ -437,7 +438,7 @@ class SimpleHighSpeedDataLogViewModel @Inject constructor(
                 askTheStatus = false
             )
 
-            delay(500)
+            delay(500.milliseconds)
 
             sendGetLogControllerCommand(nodeId = nodeId)
             //sendGetAllCommand(nodeId)
@@ -454,7 +455,7 @@ class SimpleHighSpeedDataLogViewModel @Inject constructor(
 
             shouldInitDemo = true
 
-            delay(500)
+            delay(500.milliseconds)
 
             sendGetLogControllerCommand(nodeId = nodeId)
         }

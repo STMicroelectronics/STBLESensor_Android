@@ -7,9 +7,14 @@
  */
 package com.st.preferences
 
+import android.net.Uri
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface StPreferences {
+
+    val backupOperationOngoing: StateFlow<Boolean>
+    val message: StateFlow<String?>
 
     fun mustShowFwUpdate(nodeId: String, currentFw: String): Boolean
 
@@ -59,6 +64,12 @@ interface StPreferences {
 
     fun getFavouriteDevices(): Flow<List<String>>
 
+    fun getCustomNames(): Flow<List<Pair<String,String?>>>
+
+    fun setBoardSetting(nodeId: String, customName: String?=null, boardTypeName: String= "")
+
+    fun getBoardsSetting(): Flow<List<Pair<String, BoardSetting>>>
+
     fun unsetFavouriteDevice(nodeId: String)
 
     fun setFavouriteDevice(nodeId: String)
@@ -88,7 +99,13 @@ interface StPreferences {
 
     fun setCustomBooleanForKey(key: String, value: Boolean)
 
-    fun getCustomBooleanFromKey(key: String): Boolean
+    fun getCustomBooleanFromKey(key: String): Boolean?
 
     fun deleteCustomBooleanFromKey(key: String)
+
+    fun triggerBackup(uri: Uri)
+
+    fun restoreBackup(uri: Uri)
+
+    fun restartApplication()
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022(-0001) STMicroelectronics.
+  ~ All rights reserved.
+  ~ This software is licensed under terms that can be found in the LICENSE file in
+  ~ the root directory of this software component.
+  ~ If no LICENSE file comes with this software, it is provided AS-IS.
+  -->
+<resources>
+    <string name="st_download_terms_agree">I agree</string>
+    <string name="st_download_terms_doNotAgree">I do not agree</string>
+    <string name="st_download_terms_missingAgreement">If you do not agree, please close the application.</string>
+    <string name="st_download_terms_title">License Agreement</string>
+    <string name="st_download_terms_full_title">Download License Agreement</string>
+    <string name="st_download_terms_licenseAgreement">"""This software component is provided to you as part of a software package and applicable license terms are in the Package_license file. If you received this software component outside of a package or without applicable license terms,the terms of the SLA0068 license shall apply and are fully reproduced below:
+
+SLA0068 Rev1/17-Mar-2016
+
+Software license agreement
+
+PRODUCTION LIMITED LICENSE AGREEMENT FOR ST MATERIALS
+
+IMPORTANT-READ CAREFULLY:
+This Production Limited License Agreement ("PLLA") BLA BLA BLA BLA
+BLA BLA BLA BLA
+
+1. LIMITED LICENSE
+Subject to the terms and conditions of this PLLA and applicable Open Source Terms (as defined hereafter) and during the term of this PLLA, ST hereby grants You under intellectual property rights owned by ST and its Affiliates or under which ST and its Affiliates has the right to grant a license, a worldwide, non-exclusive, non-transferable, royalty-free license, without the right to sub-license (except as expressly stipulated herein or authorized in writing by an authorized representative of ST):
+
+  (i) BLA BLA BLA BLA
+
+  (ii) BLA BLA BLA BLA
+
+  (iii) BLA BLA BLA BLA
+
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+
+2. RESTRICTIONS AND ADDITIONAL OBLIGATIONS
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+
+
+3. OWNERSHIP, COPYRIGHTS AND TRADEMARKS
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA
+BLA BLA BLA BLA"""</string>
+</resources>

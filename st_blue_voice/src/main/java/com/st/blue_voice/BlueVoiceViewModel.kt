@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class BlueVoiceViewModel @Inject constructor(
@@ -67,7 +68,7 @@ class BlueVoiceViewModel @Inject constructor(
 
     private fun postDelayEnableBeamForming() {
         viewModelScope.launch {
-            delay(2000)
+            delay(2000.milliseconds)
             _beamFormingEnabled.postValue(true)
         }
     }
@@ -165,7 +166,7 @@ class BlueVoiceViewModel @Inject constructor(
                 while (isActive) {
                     audioRecord.read(buffer, 0, 320)
                     audioService.sendVoiceAudioStream(nodeId, buffer)
-                    delay(5)
+                    delay(5.milliseconds)
                     flow.update { Wrapper(buffer) }
                 }
             }

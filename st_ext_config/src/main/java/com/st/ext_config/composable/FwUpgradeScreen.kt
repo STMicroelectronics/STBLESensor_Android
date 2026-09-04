@@ -468,7 +468,7 @@ fun FwUpgradeScreen(
             Spacer(modifier = Modifier.weight(weight = 1f))
 
             BlueMsButton(
-                enabled = state.downloadFinished && state.error == null,
+                enabled = state.downloadFinished && state.error == null  && state.fwName.isNotEmpty(),
                 text = stringResource(id = R.string.st_extConfig_fwUpgrade_upgradeBtn),
                 onClick = {
                     isUploadStarted = true

@@ -72,7 +72,7 @@
     <string name="st_extConfig_fwUpgrade_versionFormatLabel" translatable="false">%d.%d.%d</string>
     <string name="st_extConfig_fwUpgrade_loading">Loading firmware version…</string>
     <string name="st_extConfig_fwUpgrade_unknown">Unknown</string>
-    <string name="st_extConfig_fwUpgrade_upgradeBtn">Upgrade</string>
+    <string name="st_extConfig_fwUpgrade_upgradeBtn">Install Firmware</string>
     <string name="st_extConfig_fwUpgrade_uploadFw">Upload\nFW</string>
     <string name="st_extConfig_fwUpgrade_otaOpt1">Application</string>
     <string name="st_extConfig_fwUpgrade_otaOpt2">Wireless</string>

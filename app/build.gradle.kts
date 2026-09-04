@@ -25,19 +25,14 @@ apply(from = "st_dependencies.gradle")
 
 android {
     namespace = "com.st.bluems"
-    compileSdk {
-        version = release(stCompileSdk) {
-            minorApiLevel = 1
-        }
-    }
     compileSdk = stCompileSdk
 
     defaultConfig {
         applicationId = "com.st.bluems"
         minSdk = stMinSdk
         targetSdk = stTargetSdk
-        versionCode = 365
-        versionName = "5.3.2"
+        versionCode = 370
+        versionName = "5.3.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -51,9 +46,15 @@ android {
         )
     }
 
+    configurations.all {
+        exclude(group = "org.bouncycastle", module = "bcprov-jdk18on")
+    }
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
+
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -127,6 +128,8 @@ dependencies {
     implementation(project(":st_licenses"))
     // - Terms
     implementation(project(":st_terms"))
+    // - Download Terms
+    implementation(project(":st_download_terms"))
     // - Demos
     implementation(project(":st_demo_showcase"))
     // - Discover Catalog
@@ -137,6 +140,7 @@ dependencies {
     // Blue ST SDK
     implementation(libs.st.sdk)
 
+
     // Room
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
@@ -146,6 +150,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     ksp(libs.kotlin.metadata)
+
+    //Glance widget
+    implementation(libs.bundles.glance)
 
     // Dependency required for API desugaring.
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)

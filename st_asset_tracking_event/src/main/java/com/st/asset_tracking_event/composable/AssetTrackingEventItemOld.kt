@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.st.ui.utils.bottomBorder
 import kotlin.math.sqrt
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AssetTrackingEventItemOld(
@@ -67,7 +68,7 @@ fun AssetTrackingEventItemOld(
     LaunchedEffect(key1 = Unit) {
         if (isTheLastElement) {
             isAnimated = true
-            delay(1000)
+            delay(1000.milliseconds)
             isAnimated = false
         }
     }

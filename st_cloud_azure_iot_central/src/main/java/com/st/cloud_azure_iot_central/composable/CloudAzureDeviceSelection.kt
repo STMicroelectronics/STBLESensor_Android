@@ -182,7 +182,7 @@ fun CloudAzureDeviceSelection(
                                 onCloudDeviceDeleting = {
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     if (index == selectedDevice) {
-                                        viewModel.setSelectedCloudDevice(viewModel.deviceCloutNotSELECTED)
+                                        viewModel.setSelectedCloudDevice(viewModel.deviceCloudNotSELECTED)
                                     }
                                     CoroutineScope(Dispatchers.IO).launch {
                                         viewModel.deleteDeviceById(cloudDevice.id)

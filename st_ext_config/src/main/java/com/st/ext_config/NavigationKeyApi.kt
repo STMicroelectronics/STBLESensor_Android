@@ -10,6 +10,8 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.st.blue_sdk.features.extended.ext_configuration.BanksStatus
+import com.st.download_terms.StDownloadTermsConfig
+import com.st.download_terms.composable.DownloadLicenseAgreementScreen
 import com.st.ext_config.composable.FwDownloadNavScreen
 import com.st.ext_config.composable.FwUpgradeScreen
 import com.st.ext_config.ui.cert.CertRegistrationScreen
@@ -125,6 +127,19 @@ fun EntryProviderScope<NavKey>.CertRequestNavScreen() {
         )
     }
 }
+
+@Composable
+fun EntryProviderScope<NavKey>.DownloadTermsNavScreen(
+    backState: NavBackStack<NavKey>
+) {
+    entry<DownloadTermsNavKey> {
+        DownloadLicenseAgreementScreen(onLicenseAgree = { decision ->
+            backState.removeLastOrNull()
+            StDownloadTermsConfig.onDone(decision)
+        })
+    }
+}
+
 
 @Composable
 fun EntryProviderScope<NavKey>.CertRegistrationNavScreen() {

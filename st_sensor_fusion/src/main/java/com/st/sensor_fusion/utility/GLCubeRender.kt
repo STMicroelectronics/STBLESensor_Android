@@ -22,11 +22,11 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.math.roundToInt
 
-class  GLCubeRender : GLSurfaceView.Renderer {
+internal class  GLCubeRender : GLSurfaceView.Renderer {
     private val TAG = GLCubeRender::class.java.canonicalName
 
     // X, Y, Z
-    private val CUBE_VERTEX_POSITION =
+    private val cubeVertexPosition =
         floatArrayOf( // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
             // if the points are counter-clockwise we are looking at the "front". If not we are looking at
             // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
@@ -75,7 +75,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
     // Because images have a Y axis pointing downward (values increase as you move down the image) while
     // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
     // What's more is that the texture coordinates are the same for every face.
-    private val CUBE_TEXTURE_COORDINATE = floatArrayOf( // Front face
+    private val cubeTextureCoordinate = floatArrayOf( // Front face
         0.0f, 0.0f,
         0.0f, 0.5f,
         1.0f / 3.0f, 0.0f,
@@ -142,7 +142,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
     private var mCubePositions: FloatBuffer
 
     /**
-     * store our texture coordiante in a float buffer
+     * store our texture coordinate in a float buffer
      */
     private var  mCubeTextureCoordinates: FloatBuffer
 
@@ -187,7 +187,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
     private var scale_cube = SCALE_CUBE_MAX - SCALE_CUBE_MIN
 
     /**
-     * matrix used as temporaney for compute things like a=a*b
+     * matrix used as tmp for compute things like a=a*b
      */
     private val mTempMultMatrix = FloatArray(16)
 
@@ -197,7 +197,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
     private val mRotationMatrix = FloatArray(16)
 
     /**
-     * rotation of the base postion
+     * rotation of the base position
      */
     private val mInverseRotationMatrix = FloatArray(16)
 
@@ -210,16 +210,17 @@ class  GLCubeRender : GLSurfaceView.Renderer {
     private var rendering_rate_avg = 0f
 
     constructor(c: Context?, color: Int) {
+
         mBgColor = color
         mContext = c
 
         // Initialize the buffers.
-        mCubePositions = ByteBuffer.allocateDirect(CUBE_VERTEX_POSITION.size * 4)
+        mCubePositions = ByteBuffer.allocateDirect(cubeVertexPosition.size * 4)
             .order(ByteOrder.nativeOrder()).asFloatBuffer()
-        mCubePositions.put(CUBE_VERTEX_POSITION).position(0)
-        mCubeTextureCoordinates = ByteBuffer.allocateDirect(CUBE_TEXTURE_COORDINATE.size * 4)
+        mCubePositions.put(cubeVertexPosition).position(0)
+        mCubeTextureCoordinates = ByteBuffer.allocateDirect(cubeTextureCoordinate.size * 4)
             .order(ByteOrder.nativeOrder()).asFloatBuffer()
-        mCubeTextureCoordinates.put(CUBE_TEXTURE_COORDINATE).position(0)
+        mCubeTextureCoordinates.put(cubeTextureCoordinate).position(0)
         Matrix.setIdentityM(mRotationMatrix, 0)
         Matrix.setIdentityM(mInverseRotationMatrix, 0)
 
@@ -252,6 +253,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
      * @return opengl texture handle
      */
     fun loadTexture(context: Context?, @DrawableRes resourceId: Int): Int {
+
         val textureHandle = IntArray(1)
         GLES20.glGenTextures(1, textureHandle, 0)
         if (textureHandle[0] != 0) {
@@ -330,6 +332,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
      * @return An OpenGL handle to the shader.
      */
     private fun compileShader(shaderType: Int, shaderSource: String?): Int {
+
         var shaderHandle = GLES20.glCreateShader(shaderType)
         if (shaderHandle != 0) {
             // Pass in the shader source.
@@ -406,7 +409,7 @@ class  GLCubeRender : GLSurfaceView.Renderer {
 
 
     override fun onSurfaceCreated(glUnused: GL10?, config: EGLConfig?) {
-        // Set the background clear color to black.
+        // Set the background clear color to White.
         GLES20.glClearColor(
             Color.red(mBgColor) / 255.0f, Color.green(mBgColor) / 255.0f,
             Color.blue(mBgColor) / 255.0f, Color.alpha(mBgColor) / 255.0f

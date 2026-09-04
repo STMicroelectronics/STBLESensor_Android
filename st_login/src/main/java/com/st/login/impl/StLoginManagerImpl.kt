@@ -92,8 +92,8 @@ class StLoginManagerImpl @Inject constructor(
         return null
     }
 
-    private fun needsAccessTokenRefresh(): Boolean {
-        val expiresAt: Long = authStateManager?.current?.accessTokenExpirationTime ?: return true
+    private fun needsAccessTokenRefresh(): Boolean? {
+        val expiresAt: Long = authStateManager?.current?.accessTokenExpirationTime ?: return null
         return expiresAt <= System.currentTimeMillis()
     }
 

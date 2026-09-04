@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SensorFusionViewModel
@@ -120,7 +121,7 @@ class SensorFusionViewModel
                 featureSensorFusion = f
             }
         }
-        featureSensorFusion?.let {
+        featureSensorFusion?.let { it ->
 
             viewModelScope.launch {
                 blueManager.getConfigControlUpdates(nodeId = nodeId).collect {
@@ -134,8 +135,8 @@ class SensorFusionViewModel
                 blueManager.getFeatureUpdates(
                     nodeId,
                     listOf(it)
-                ).collect {
-                    val data = it.data
+                ).collect { feature ->
+                    val data = feature.data
                     if (data is MemsSensorFusionInfo) {
 
                         if (data.quaternions.size == 1) {
@@ -145,7 +146,7 @@ class SensorFusionViewModel
                             for (current in data.quaternions) {
                                 val currentTimeStamp = current.value.timeStamp
                                 if (prevTimeStamp != -1L) {
-                                    delay(currentTimeStamp - prevTimeStamp)
+                                    delay((currentTimeStamp - prevTimeStamp).milliseconds)
                                 }
                                 _fusionData.emit(current.value)
                                 prevTimeStamp = currentTimeStamp
@@ -164,7 +165,10 @@ class SensorFusionViewModel
                 if (message.isNotEmpty()) {
                     val matcher = CalibrationServiceImpl.STATUS_PARSER.matcher(message)
                     if (matcher.matches()) {
-                        _calibrationStatus.emit(true)
+                        val calibStatus = matcher.group(1)?.toByte()
+                        calibStatus?.let { calib ->
+                            _calibrationStatus.emit(calib==100.toByte())
+                        }
                     }
                 }
             }

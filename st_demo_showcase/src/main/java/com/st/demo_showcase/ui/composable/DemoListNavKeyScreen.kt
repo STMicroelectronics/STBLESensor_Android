@@ -6,10 +6,26 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
@@ -22,8 +38,12 @@ import com.st.demo_showcase.ui.DemoShowCaseViewModel
 import com.st.demo_showcase.ui.demo_list.*
 import com.st.demo_showcase.ui.demo_show_case.DemoShowCaseFwDirectUpdateNavKey
 import com.st.demo_showcase.ui.demo_show_case.DemoShowCaseUserProfilingNavKey
+import com.st.ui.composables.BlueMsButton
 import com.st.ui.composables.JSON_FILE_TYPE
 import com.st.ui.theme.Grey0
+import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.PrimaryYellow
 
 @Composable
 fun DemoListNavKeyScreen(
@@ -82,6 +102,10 @@ fun DemoListNavKeyScreen(
 
             //Demos List screen
             entry<DemoListNavKey> {
+                val customNames by viewModel.customNames.collectAsStateWithLifecycle(emptyList())
+
+                var showChangeNameForNodeId: String? by remember { mutableStateOf(null) }
+
                 DemoListScreen(
                     modifier = modifier,
                     device = device,
@@ -101,6 +125,13 @@ fun DemoListNavKeyScreen(
                             } else {
                                 viewModel.removeFromPinDevices(it)
                             }
+                        }
+                    },
+                    showEdit = true,
+                    boardHasCustomName = customNames.firstOrNull { it.first == device?.device?.address }?.second,
+                    onCustomNameSelected = {
+                        device?.device?.let { nodeId ->
+                            showChangeNameForNodeId = nodeId.address
                         }
                     },
                     onDemoSelected = { selectedDemo ->
@@ -130,6 +161,82 @@ fun DemoListNavKeyScreen(
                     statusModelDTMI = statusModelDTMI,
                     onCustomDTMIClicked = { pickFileLauncher.launch(arrayOf(JSON_FILE_TYPE)) }
                 )
+
+                if (showChangeNameForNodeId != null) {
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    var boardHasAlreadyACustomName by remember { mutableStateOf(customNames.firstOrNull { it.first == showChangeNameForNodeId }?.second) }
+
+                    AlertDialog(
+                        onDismissRequest = { showChangeNameForNodeId = null },
+                        title = {
+                            Text(text = "Board Alias:")
+                        },
+                        text = {
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
+                            ) {
+                                Text(text = "Set one Alias for the current board")
+
+                                OutlinedTextField(
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text).copy(
+                                        imeAction = ImeAction.Done
+                                    ),
+                                    textStyle = MaterialTheme.typography.bodySmall,
+                                    singleLine = true,
+                                    value = boardHasAlreadyACustomName ?: "",
+                                    onValueChange = {
+                                        boardHasAlreadyACustomName = it
+                                    },
+                                    keyboardActions = KeyboardActions(
+                                        onDone = {
+                                            keyboardController?.hide()
+                                        }
+                                    )
+                                )
+                            }
+                        },
+                        dismissButton = {
+                            if (boardHasAlreadyACustomName.isNullOrBlank()) {
+                                BlueMsButton(
+                                    text = "Cancel",
+                                    onClick = {
+                                        showChangeNameForNodeId = null
+                                    },
+                                    color = PrimaryYellow,
+                                    textColor = PrimaryBlue,
+                                )
+                            } else {
+                                BlueMsButton(
+                                    text = "Reset",
+                                    onClick = {
+                                        viewModel.setCustomNameForBoardId(
+                                            nodeId = showChangeNameForNodeId!!,
+                                            customName = null,
+                                            boardTypeName = device?.boardType?.name ?: ""
+                                        )
+                                        showChangeNameForNodeId = null
+                                    },
+                                    color = PrimaryYellow,
+                                    textColor = PrimaryBlue,
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            BlueMsButton(
+                                text = stringResource(id = android.R.string.ok),
+                                onClick = {
+                                    viewModel.setCustomNameForBoardId(
+                                        nodeId = showChangeNameForNodeId!!,
+                                        customName = boardHasAlreadyACustomName,
+                                        boardTypeName = device?.boardType?.name ?: ""
+                                    )
+                                    showChangeNameForNodeId = null
+                                }
+                            )
+                        }
+                    )
+                }
             }
 
             //Demos
@@ -185,7 +292,8 @@ fun DemoListNavKeyScreen(
             CloudAzureIoTCentral()
             CloudMQTT()
             MedicalSignal()
-            FUOTA(externBackState,backState)
+            FUOTA(externBackState, backState)
+            HeadBoneConduction()
         },
         transitionSpec = {
             // Slide in from right when navigating forward

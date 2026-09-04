@@ -33,6 +33,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation"
             android:exported="true"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BlueMS.Starting">
@@ -53,6 +54,20 @@
             </intent-filter>
 
         </activity>
+
+        <receiver
+            android:name=".widget.BlueMSWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.st.bluems.widget.ACTION_RELOAD" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/blue_ms_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>

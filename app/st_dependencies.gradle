@@ -10,5 +10,4 @@ dependencies {
      * Move here dependencies that should remain private.
      * Excluded from migration to the public repo
      */
-    //implementation project(path: ":st_internal")
 }

@@ -23,17 +23,17 @@ apply(from = "publish.gradle")
 
 android {
     namespace = "com.st.ext_config"
-    compileSdk {
-        version = release(stCompileSdk) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = stCompileSdk
 
     defaultConfig {
         minSdk = stMinSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+    }
+
+    configurations.all {
+        exclude(group = "org.bouncycastle", module = "bcprov-jdk18on")
     }
 
     buildTypes {
@@ -70,6 +70,8 @@ dependencies {
     implementation(project(":st_core"))
     // - UI
     implementation(project(":st_ui"))
+    // - Download Terms
+    implementation(project(":st_download_terms"))
     // - Prefs
     implementation(project(":st_preferences"))
 

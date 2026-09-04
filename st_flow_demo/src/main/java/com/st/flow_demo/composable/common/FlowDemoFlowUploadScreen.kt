@@ -162,7 +162,7 @@ fun FlowDemoFlowUploadScreen(
                     enabled = !loading,
                     onClick = {
                         loading = true
-                        Log.i("FlowTmp", dataToSend)
+                        //Log.i("FlowTmp", dataToSend)
                         viewModel.sendFlowToBoard(dataCompressed)
                     }
                 )

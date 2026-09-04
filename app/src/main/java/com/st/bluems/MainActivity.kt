@@ -7,20 +7,23 @@
  */
 package com.st.bluems
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.setWidgetPreviews
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
@@ -48,6 +51,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
 import java.nio.charset.StandardCharsets
 import kotlin.getValue
+import com.st.bluems.widget.BlueMSWidgetReceiver
 
 
 @Serializable
@@ -68,6 +72,11 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private val nfcViewModel: NFCConnectionViewModel by viewModels()
 
+    companion object {
+        const val EXTRA_NODE_ID = "com.st.bluems.EXTRA_NODE_ID"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
@@ -77,9 +86,7 @@ class MainActivity : AppCompatActivity() {
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            window.isNavigationBarContrastEnforced = false
-        }
+        window.isNavigationBarContrastEnforced = false
 
         super.onCreate(savedInstanceState)
 
@@ -97,14 +104,11 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        val pInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val pInfo =
             packageManager.getPackageInfo(
                 packageName,
                 PackageManager.PackageInfoFlags.of(0)
             )
-        } else {
-            packageManager.getPackageInfo(packageName, 0)
-        }
 
         val versionName = pInfo.versionName?.replace('.', '_') ?: "NoName"
         val packageName = pInfo.packageName.split('.').last()
@@ -112,23 +116,17 @@ class MainActivity : AppCompatActivity() {
         val keySearched = "${packageName}_${versionName}"
 
         //for using NFC deep Link node auto-connect
-        val nfcIntent = intent
-        val appLinkData = nfcIntent.data
-        if (appLinkData != null) {
-
-            val sPairingPin: ByteArray? = appLinkData.getQueryParameter("Pin")?.toByteArray(
-                StandardCharsets.UTF_8
-            )
-            nfcViewModel.setNFCPairingPin(sPairingPin)
-
-            val mNodeTag: String? = appLinkData.getQueryParameter("Add")
-            nfcViewModel.setNFCNodeId(mNodeTag)
-        }
+        handleIntent(intent)
 
         viewModel.reportApplicationAnalytics(applicationContext)
 
         setContent {
             BlueMSTheme {
+
+//                LaunchedEffect(Unit) {
+//                    GlanceAppWidgetManager(applicationContext)
+//                        .setWidgetPreviews<BlueMSWidgetReceiver>()
+//                }
                 val backState =
                     rememberNavBackStack(
                         when {
@@ -193,7 +191,29 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun setUpUserProfiling(backState: NavBackStack<NavKey>) {
+    private fun handleIntent(intent: Intent) {
+        val appLinkData = intent.data
+        if (appLinkData != null) {
+            val sPairingPin: ByteArray? = appLinkData.getQueryParameter("Pin")?.toByteArray(
+                StandardCharsets.UTF_8
+            )
+            nfcViewModel.setNFCPairingPin(sPairingPin)
+
+            val mNodeTag: String? = appLinkData.getQueryParameter("Add")
+            nfcViewModel.setNFCNodeId(mNodeTag)
+        }
+        intent.getStringExtra(EXTRA_NODE_ID)?.let { nodeId ->
+            nfcViewModel.setNFCNodeId(nodeId)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun setUpUserProfiling(backStack: NavBackStack<NavKey>) {
         LevelProficiency.fromString(viewModel.level)?.let { level ->
             StUserProfilingConfig.defaultLevelProficiency = level
         }
@@ -204,8 +224,8 @@ class MainActivity : AppCompatActivity() {
 
         StUserProfilingConfig.onDone = { level: LevelProficiency, type: ProfileType ->
             viewModel.profileShow(level = level, type = type)
-            backState.removeLastOrNull()
-            backState.add(BlueMSApplicationNavKey)
+            backStack.removeLastOrNull()
+            backStack.add(BlueMSApplicationNavKey)
         }
     }
 

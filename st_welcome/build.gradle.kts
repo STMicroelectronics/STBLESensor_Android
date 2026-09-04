@@ -21,17 +21,17 @@ apply(from = "publish.gradle")
 android {
     namespace = "com.st.welcome"
 
-    compileSdk {
-        version = release(stCompileSdk) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = stCompileSdk
 
     defaultConfig {
         minSdk = stMinSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+    }
+
+    configurations.all {
+        exclude(group = "org.bouncycastle", module = "bcprov-jdk18on")
     }
 
     buildTypes {
@@ -67,4 +67,7 @@ dependencies {
 
     // Dependency required for API desugaring.
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
+
+    // Media3
+    implementation(libs.bundles.media3)
 }

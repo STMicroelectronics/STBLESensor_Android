@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.st.blue_voice.BlueVoiceViewModel
-import com.st.blue_voice.composable.BlueVoiceFullDuplexDemoContent
+import com.st.blue_voice.composable.BlueVoiceFullDuplexDemoContentWithPermissionCheck
 import com.st.core.ARG_NODE_ID
 import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.theme.BlueMSTheme
@@ -60,15 +60,17 @@ fun BlueVoiceFullDuplexDemoScreen(
                 viewModel.startDemo(nodeId = nodeId)
             }
 
-            Lifecycle.Event.ON_STOP ->  {
+            Lifecycle.Event.ON_STOP -> {
                 viewModel.stopDemo(nodeId = nodeId)
             }
+
             else -> Unit
         }
     }
 
-    BlueVoiceFullDuplexDemoContent(
+    BlueVoiceFullDuplexDemoContentWithPermissionCheck(
         modifier = modifier,
         viewModel = viewModel,
-        nodeId = nodeId)
+        nodeId = nodeId
+    )
 }

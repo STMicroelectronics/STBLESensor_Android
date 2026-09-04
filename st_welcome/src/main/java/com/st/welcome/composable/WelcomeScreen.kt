@@ -7,10 +7,12 @@
  */
 package com.st.welcome.composable
 
+import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,9 +33,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +47,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
@@ -99,12 +111,14 @@ fun WelcomeScreen(
                 state = pagerState
             ) { pageIndex ->
                 val imageId = welcomePages[pageIndex].drawableRes
+                val videoAssetsId = welcomePages[pageIndex].videoAssetsId
                 val title = welcomePages[pageIndex].title
                 val description = welcomePages[pageIndex].description
 
                 WelcomePageContent(
                     modifier = Modifier.fillMaxSize(),
                     imageId = imageId,
+                    videoAssetsId = videoAssetsId,
                     title = title,
                     description = description
                 )
@@ -134,10 +148,12 @@ fun WelcomeScreen(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun WelcomePageContent(
     modifier: Modifier,
-    imageId: Int,
+    imageId: Int?,
+    videoAssetsId: String?,
     title: String,
     description: String
 ) {
@@ -147,13 +163,20 @@ fun WelcomePageContent(
     ) {
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.spacerSmall))
 
-        Image(
-            //modifier = Modifier.fillMaxWidth(),
-            modifier = Modifier.fillMaxHeight(0.75f),
-            contentScale = ContentScale.Inside,
-            painter = painterResource(id = imageId),
-            contentDescription = null
-        )
+        if(imageId!=null) {
+            Image(
+                //modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxHeight(0.75f).fillMaxWidth(),
+                contentScale = ContentScale.Fit,
+                painter = painterResource(id = imageId),
+                contentDescription = null
+            )
+        } else if(videoAssetsId!=null) {
+            LoopMutedVideo(
+                assetPath = videoAssetsId,
+                modifier = Modifier.fillMaxHeight(0.75f).fillMaxWidth(),
+            )
+        }
 
         Spacer(modifier = Modifier.height(height = LocalDimensions.current.spacerSmall))
 
@@ -181,6 +204,43 @@ fun WelcomePageContent(
             text = description
         )
     }
+}
+
+@Composable
+fun LoopMutedVideo(assetPath: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
+    val exoPlayer = remember(context, assetPath) {
+        ExoPlayer.Builder(context).build().apply {
+            val uri = "asset:///$assetPath".toUri()
+            setMediaItem(MediaItem.fromUri(uri))
+            repeatMode = Player.REPEAT_MODE_ONE
+            volume = 0f
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    DisposableEffect(exoPlayer) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                player = exoPlayer
+                useController = false // Hide player controls
+                //resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            }
+        },
+        modifier = modifier.aspectRatio(ratio = 1f)
+    )
 }
 
 /** ----------------------- PREVIEW --------------------------------------- **/

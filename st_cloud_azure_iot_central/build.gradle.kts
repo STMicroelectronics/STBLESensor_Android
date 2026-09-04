@@ -23,11 +23,7 @@ apply(from = "publish.gradle")
 android {
     namespace = "com.st.cloud_azure_iot_central"
 
-    compileSdk {
-        version = release(stCompileSdk) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = stCompileSdk
 
     defaultConfig {
         minSdk = stMinSdk
@@ -36,6 +32,9 @@ android {
         vectorDrawables { useSupportLibrary = true }
     }
 
+    configurations.all {
+        exclude(group = "org.bouncycastle", module = "bcprov-jdk18on")
+    }
 
     buildTypes {
         release {

@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -35,7 +39,12 @@ import com.st.compass.R
 import com.st.ui.composables.BlueMsButton
 import com.st.ui.theme.Grey6
 import com.st.ui.theme.LocalDimensions
+import com.st.ui.theme.PrimaryBlue
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
+import com.st.ui.theme.Grey0
+import com.st.ui.theme.Shapes
+import com.st.ui.theme.SuccessText
 
 
 @Composable
@@ -49,7 +58,11 @@ fun CompassDemoContent(
 
     var showDialog by remember { mutableStateOf(value = false) }
 
-    Box(modifier = modifier.padding(bottom  = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())) {
+    Box(
+        modifier = modifier.padding(
+            bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        )
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -98,38 +111,43 @@ fun CompassDemoContent(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary,
                 text = String.format(
-                    Locale.getDefault(),
+                    LocalLocale.current.platformLocale,
                     "Angle: %1\$3.2f°",
                     compassInfo.angle.value
                 )
             )
         }
 
-        Icon(
+        Surface(
             modifier = Modifier
-                .size(size = 100.dp)
-                .clickable {
-                    showDialog = true
-                    viewModel.startCalibration()
-                }
+                .padding(all = LocalDimensions.current.paddingSmall)
                 .align(Alignment.BottomEnd)
                 .padding(end = LocalDimensions.current.paddingLarge),
-            painter = if (calibration) {
-                painterResource(
-                    R.drawable.compass_calibration_calibrated
-                )
+            shape = Shapes.small,
+            color = if (calibration) {
+                SuccessText
             } else {
-                painterResource(
-                    R.drawable.compass_calibration_uncalibrated
-                )
-            },
-            tint = Color.Unspecified,
-            contentDescription = null
-        )
+                PrimaryBlue
+            }
+        ) {
+            Icon(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(42.dp)
+                    .clickable {
+                        viewModel.startCalibration()
+                        showDialog = true
+                    },
+                painter = painterResource(R.drawable.calibration),
+                tint = Grey0,
+                contentDescription = null
+            )
+        }
     }
 
     if (showDialog && !calibration) {
         AlertDialog(
+            modifier = Modifier.alpha(0.90f),
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 BlueMsButton(
@@ -151,25 +169,27 @@ fun CompassDemoContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = LocalDimensions.current.paddingNormal),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
                 ) {
+
+
                     Icon(
                         modifier = Modifier
-                            .size(size = 200.dp),
+                            .size(LocalDimensions.current.imageLarge),
                         painter = painterResource(
-                            R.drawable.compass_calibration_uncalibrated
+                            R.drawable.calibration
                         ),
-                        tint = Color.Unspecified,
+                        tint = PrimaryBlue,
                         contentDescription = null
                     )
 
                     Text(
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Grey6,
                         text = "Usage: move the board as shown in the image"
                     )
-
                 }
             }
         )

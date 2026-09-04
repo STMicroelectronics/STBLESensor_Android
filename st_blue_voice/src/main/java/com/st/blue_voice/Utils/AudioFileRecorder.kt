@@ -1,6 +1,5 @@
 package com.st.blue_voice.utils
 
-import android.content.Context
 import android.os.Environment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +12,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AudioFileRecorder(
-    private val context: Context,
     var fileSuffix: String,
     var sampleRate: Int = 8000,
     var channels: Short = 1

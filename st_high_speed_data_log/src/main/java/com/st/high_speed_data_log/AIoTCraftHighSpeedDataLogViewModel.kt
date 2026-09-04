@@ -69,6 +69,10 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val STAIOTCRAFT_SHOWED_TELEMETRY_PLOT_EXPLANATION =
+    "staiotcraft_showedTelemetryPlotExplanation"
 
 @HiltViewModel
 class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
@@ -136,6 +140,9 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
     val enableLog: StateFlow<Boolean> = _enableLog.asStateFlow()
     val snackbarMessage = _snackbarMessage.asStateFlow()
 
+    private var _showedTelemetryPlotExplanation = MutableStateFlow(false)
+    val showedTelemetryPlotExplanation = _showedTelemetryPlotExplanation.asStateFlow()
+
 
 //    private val _numActiveSensors = MutableStateFlow(value = 0)
 //    val numActiveSensors = _numActiveSensors.asStateFlow()
@@ -144,6 +151,12 @@ class AIoTCraftHighSpeedDataLogViewModel @Inject constructor(
 
     init {
         isBeta = stPreferences.isBetaApplication()
+        _showedTelemetryPlotExplanation.value = stPreferences.getCustomBooleanFromKey(STAIOTCRAFT_SHOWED_TELEMETRY_PLOT_EXPLANATION) ?: false
+    }
+
+    fun setShowedTelemetryPlotExplanation(newValue : Boolean) {
+        _showedTelemetryPlotExplanation.value = newValue
+        stPreferences.setCustomBooleanForKey(STAIOTCRAFT_SHOWED_TELEMETRY_PLOT_EXPLANATION,newValue)
     }
 
     private fun <T> MutableList<T>.removeFirstElements(count: Int): List<T> {

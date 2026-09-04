@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
+fun CameraBarCodeScanner(onClose: (String?) -> Unit, onDismissRequest: () -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
@@ -126,6 +126,7 @@ fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
             MissingPermissionDialog(
                 doNotShowRationale = cameraPermissionState.status.shouldShowRationale,
                 onPermissionRequest = { cameraPermissionState.launchPermissionRequest() },
+                onDismissRequest = onDismissRequest,
                 goToSettings = {
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also {
                         val uri = Uri.fromParts("package", context.packageName, null)
@@ -142,13 +143,14 @@ fun CameraBarCodeScanner(onClose: (String?) -> Unit) {
 fun MissingPermissionDialog(
     doNotShowRationale: Boolean,
     goToSettings: () -> Unit,
-    onPermissionRequest: () -> Unit
+    onPermissionRequest: () -> Unit,
+    onDismissRequest: () -> Unit =  { /** NOOP **/ }
 ) {
     // TODO: extract string resource
     AlertDialog(
-        onDismissRequest = { /** NOOP **/ },
+        onDismissRequest = onDismissRequest,
         title = {
-            androidx.compose.material3.Text(text = "Permission required")
+            Text(text = "Permission required")
         },
         text = {
             if(doNotShowRationale) {
@@ -159,7 +161,7 @@ fun MissingPermissionDialog(
         },
         dismissButton = {
             BlueMsButtonOutlined(
-                onClick = { /** NOOP **/ },
+                onClick = onDismissRequest,
                 text = stringResource(id = android.R.string.cancel)
             )
         },

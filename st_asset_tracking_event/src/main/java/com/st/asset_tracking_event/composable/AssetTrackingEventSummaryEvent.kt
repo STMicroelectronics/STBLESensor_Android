@@ -27,6 +27,7 @@ import com.st.ui.theme.PrimaryBlue3
 import com.st.ui.theme.PrimaryYellow
 import com.st.ui.theme.Shapes
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AssetTrackingEventSummaryEvent(
@@ -41,7 +42,7 @@ fun AssetTrackingEventSummaryEvent(
     LaunchedEffect(key1 = numEvents) {
         if (numEvents!=0) {
             isAnimated = true
-            delay(500)
+            delay(500.milliseconds)
             isAnimated = false
         }
     }

@@ -55,11 +55,8 @@ fun PedometerDemoScreen(
 ) {
     ComposableLifecycle { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> {
-                viewModel.startDemo(nodeId = nodeId)
-            }
-
-            Lifecycle.Event.ON_STOP -> viewModel.stopDemo(nodeId = nodeId)
+            Lifecycle.Event.ON_START -> viewModel.startDemo(nodeId = nodeId)
+            Lifecycle.Event.ON_STOP ->  viewModel.stopDemo(nodeId = nodeId)
             else -> Unit
         }
     }

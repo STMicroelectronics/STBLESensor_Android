@@ -7,6 +7,10 @@
  */
 package com.st.preferences
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -14,18 +18,31 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.st.core.api.ApplicationAnalyticsService
 import com.st.preferences.di.PreferencesScope
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class StPreferencesImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
+    @param:ApplicationContext private val context: Context,
     @param:PreferencesScope private val coroutineScope: CoroutineScope,
     private val appAnalyticsService: Set<@JvmSuppressWildcards ApplicationAnalyticsService>
 ) : StPreferences {
@@ -33,6 +50,15 @@ class StPreferencesImpl @Inject constructor(
     init {
         coroutineScope.launch { dataStore.data.first() } // prefetch prefs in datastore cache
     }
+
+
+    private val _backupOperationOngoing = MutableStateFlow(false)
+    override val backupOperationOngoing: StateFlow<Boolean>
+        get() = _backupOperationOngoing.asStateFlow()
+
+    private val _message: MutableStateFlow<String?> = MutableStateFlow(null)
+    override val message: StateFlow<String?>
+        get() = _message.asStateFlow()
 
     override fun mustShowFwUpdate(nodeId: String, currentFw: String): Boolean {
         val fwUpdateKey = booleanPreferencesKey(String.format(FORMATTER_KEY, currentFw, nodeId))
@@ -192,7 +218,7 @@ class StPreferencesImpl @Inject constructor(
     }
 
     override fun setConfiguredAzureCloudApp(cloudAppUrl: String, serializedString: String) {
-        coroutineScope.launch {
+        runBlocking {
             val idKey = stringPreferencesKey(cloudAppUrl)
             dataStore.edit { prefs -> prefs[idKey] = serializedString }
         }
@@ -211,7 +237,7 @@ class StPreferencesImpl @Inject constructor(
     }
 
     override fun setConfiguredMqttCloudApp(serializedString: String) {
-        coroutineScope.launch {
+        runBlocking {
             dataStore.edit { prefs -> prefs[MQTT_SERVER_KEY] = serializedString }
         }
     }
@@ -231,8 +257,42 @@ class StPreferencesImpl @Inject constructor(
             preferences[FAVOURITE_DEVICES_KEY]?.split(", ") ?: emptyList()
         }
 
+
+    override fun getCustomNames(): Flow<List<Pair<String, String?>>> =
+        dataStore.data.map { preferences ->
+            preferences[CUSTOM_NAMES_KEY]?.let { customNamesString ->
+                customNamesString.toBoardSetting().map { Pair(it.nodeId, it.customName) }
+            } ?: emptyList()
+        }
+
+    override fun getBoardsSetting(): Flow<List<Pair<String, BoardSetting>>> =
+        dataStore.data.map { preferences ->
+            preferences[CUSTOM_NAMES_KEY]?.let { boardsSettingString ->
+                boardsSettingString.toBoardSetting().map { Pair(it.nodeId, it) }
+            } ?: emptyList()
+        }
+
+
+
+    override fun setBoardSetting(nodeId: String, customName: String?, boardTypeName: String) {
+        runBlocking {
+            dataStore.edit { prefs ->
+                val currentList = (dataStore.data.first()[CUSTOM_NAMES_KEY]?.toBoardSetting()
+                    ?: emptyList())
+                val currentBoardSetting = currentList.firstOrNull { it.nodeId == nodeId }
+                if(currentBoardSetting!=null) {
+                    currentBoardSetting.customName = customName
+                    prefs[CUSTOM_NAMES_KEY] = Json.encodeToString(currentList)
+                } else {
+                    val newList = listOf(BoardSetting(nodeId = nodeId, customName = customName, boardTypeName = boardTypeName))+ currentList
+                    prefs[CUSTOM_NAMES_KEY] = Json.encodeToString(newList)
+                }
+            }
+        }
+    }
+
     override fun setFavouriteDevice(nodeId: String) {
-        coroutineScope.launch {
+        runBlocking {
             dataStore.edit { prefs ->
                 val favourites = (dataStore.data.first()[FAVOURITE_DEVICES_KEY]?.split(", ")
                     ?: emptyList()) + listOf(nodeId)
@@ -242,7 +302,7 @@ class StPreferencesImpl @Inject constructor(
     }
 
     override fun unsetFavouriteDevice(nodeId: String) {
-        coroutineScope.launch {
+        runBlocking {
             dataStore.edit { prefs ->
                 val favourites =
                     (dataStore.data.first()[FAVOURITE_DEVICES_KEY]?.split(", ")
@@ -254,7 +314,7 @@ class StPreferencesImpl @Inject constructor(
 
     //Custom Entries
     override fun setCustomStringForKey(key: String, serializedString: String) {
-        coroutineScope.launch {
+        runBlocking {
             dataStore.edit { prefs -> prefs[stringPreferencesKey(key)] = serializedString }
         }
     }
@@ -270,13 +330,13 @@ class StPreferencesImpl @Inject constructor(
     }
 
     override fun setCustomBooleanForKey(key: String, value: Boolean) {
-        coroutineScope.launch {
+        runBlocking {
             dataStore.edit { prefs -> prefs[booleanPreferencesKey(key)] = value }
         }
     }
 
-    override fun getCustomBooleanFromKey(key: String): Boolean {
-        return runBlocking { dataStore.data.first()[booleanPreferencesKey(key)] ?: false }
+    override fun getCustomBooleanFromKey(key: String): Boolean? {
+        return runBlocking { dataStore.data.first()[booleanPreferencesKey(key)] }
     }
 
     override fun deleteCustomBooleanFromKey(key: String) {
@@ -285,7 +345,89 @@ class StPreferencesImpl @Inject constructor(
         }
     }
 
+    override fun triggerBackup(uri: Uri) {
+        coroutineScope.launch(Dispatchers.IO) {
+            _message.value = "Exporting backup..."
+            try {
+                _backupOperationOngoing.value = true
+                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    ZipOutputStream(outputStream).use { zos ->
+                        val filesToBackup = mutableListOf<File>()
+                        filesToBackup.add(File(context.filesDir, "datastore/st-prefs.preferences_pb"))
+
+                        filesToBackup.forEach { file ->
+                            if (file.exists()) {
+                                val entry = ZipEntry(file.name)
+                                zos.putNextEntry(entry)
+                                FileInputStream(file).use { fis ->
+                                    fis.copyTo(zos)
+                                }
+                                zos.closeEntry()
+                            }
+                        }
+                    }
+                }
+                _message.value = BACKUP_DONE_MESSAGE
+                _backupOperationOngoing.value = false
+            } catch (e: kotlin.Exception) {
+                Log.e(TAG, "Export failed", e)
+                _message.value ="Export failed: ${e.message}"
+                _backupOperationOngoing.value = false
+            }
+        }
+    }
+
+    override fun restoreBackup(uri: Uri) {
+        coroutineScope.launch(Dispatchers.IO) {
+            _message.value ="Importing backup..."
+            try {
+                // Close databases before replacing files
+                _backupOperationOngoing.value = true
+
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    ZipInputStream(inputStream).use { zis ->
+                        var entry = zis.nextEntry
+                        while (entry != null) {
+                            val targetFile = when {
+                                entry.name.contains("st-prefs") ->
+                                    File(context.filesDir, "datastore/st-prefs.preferences_pb")
+                                else -> null
+                            }
+
+                            targetFile?.let { file ->
+                                Log.i(TAG, "Restoring file: ${entry.name} to ${file.absolutePath}")
+                                if (file.exists()) file.delete()
+                                file.parentFile?.let { parent ->
+                                    if (!parent.exists()) parent.mkdirs()
+                                }
+                                FileOutputStream(file).use { fos ->
+                                    zis.copyTo(fos)
+                                }
+                            }
+                            zis.closeEntry()
+                            entry = zis.nextEntry
+                        }
+                    }
+                }
+                _message.value = BACKUP_RESTORED_MESSAGE
+                _backupOperationOngoing.value = false
+            } catch (e: kotlin.Exception) {
+                Log.e(TAG, "Import failed", e)
+                _backupOperationOngoing.value = false
+                _message.value ="Import failed: ${e.message}"
+            }
+        }
+    }
+
+    override fun restartApplication() {
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+        Runtime.getRuntime().exit(0)
+    }
+
     companion object {
+        private const val TAG = "StPreferencesImpl"
         private const val FORMATTER_KEY = "propose_fw_update_for%s_%s"
         private val TERMS_KEY = booleanPreferencesKey("terms_key")
         private val DOWNLOAD_TERMS_KEY = booleanPreferencesKey("download_terms_key")
@@ -298,5 +440,8 @@ class StPreferencesImpl @Inject constructor(
         private val DISABLE_HIDDEN_DEMOS_KEY = booleanPreferencesKey("disable_hidden_demos_key")
         private val SERVER_FORCED_KEY = booleanPreferencesKey("server_forced_key")
         private val MQTT_SERVER_KEY = stringPreferencesKey("mqtt_server_key")
+        private val CUSTOM_NAMES_KEY = stringPreferencesKey("custom_names_key")
+        const val BACKUP_RESTORED_MESSAGE = "Backup restored successfully"
+        const val BACKUP_DONE_MESSAGE = "Backup exported successfully"
     }
 }

@@ -113,12 +113,12 @@ class LoginManager(
                         "key",
                         LoginActivityResultContract(automaticLoginButtonClick = autoClickButton)
                     ) { result ->
-                        if (result != null) {
+                        //if (result != null) {
                             auth = result
                             def.complete(auth!!)
-                        } else {
-                            def.complete(null)
-                        }
+//                        } else {
+//                            def.complete(null)
+//                        }
                     }
                 loginActivityLauncher.launch(loginProviderType.toString())
                 def.await()

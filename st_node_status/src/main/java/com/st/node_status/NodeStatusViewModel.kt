@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class NodeStatusViewModel
@@ -93,7 +94,7 @@ class NodeStatusViewModel
         viewModelScope.launch {
             while (isActive) {
                 blueManager.getRssi(nodeId)
-                delay(1000)
+                delay(1000.milliseconds)
             }
         }
 

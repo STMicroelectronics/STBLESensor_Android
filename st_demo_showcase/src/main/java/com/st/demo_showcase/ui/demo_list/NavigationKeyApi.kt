@@ -57,6 +57,8 @@ import com.st.gesture_navigation.GestureNavigationDemoScreen
 import com.st.gesture_navigation.GestureNavigationViewModel
 import com.st.gnss.GnssFragmentDemoScreen
 import com.st.gnss.GnssViewModel
+import com.st.head_bone_conduction.HeadBoneConductionDemoScreen
+import com.st.head_bone_conduction.HeadBoneConductionViewModel
 import com.st.heart_rate_demo.HeartRateDemoViewModel
 import com.st.heart_rate_demo.HeartRateFragmentDemoScreen
 import com.st.high_speed_data_log.AIoTCraftHighSpeedDataLog
@@ -288,6 +290,10 @@ data class MedicalSignalNavKey(val nodeId: String) : NavKey
 
 @Serializable
 data class WbsOtaFUOTA(val nodeId: String) : NavKey
+
+
+@Serializable
+data class HeadBoneConductionNavKey(val nodeId: String) : NavKey
 
 
 @Composable
@@ -1019,6 +1025,19 @@ fun EntryProviderScope<NavKey>.FlowDemo() {
     entry<FlowNavKey> { key ->
         val demoViewModel: FlowDemoViewModel = hiltViewModel()
         FlowDemoScreen(
+            modifier = Modifier
+                .fillMaxSize(),
+            viewModel = demoViewModel,
+            nodeId = key.nodeId
+        )
+    }
+}
+
+@Composable
+fun EntryProviderScope<NavKey>.HeadBoneConduction() {
+    entry<HeadBoneConductionNavKey> { key ->
+        val demoViewModel: HeadBoneConductionViewModel = hiltViewModel()
+        HeadBoneConductionDemoScreen(
             modifier = Modifier
                 .fillMaxSize(),
             viewModel = demoViewModel,

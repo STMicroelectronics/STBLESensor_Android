@@ -71,6 +71,7 @@ import java.io.FileNotFoundException
 import java.nio.charset.StandardCharsets
 import java.util.Date
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class FlowDemoViewModel
@@ -510,7 +511,7 @@ class FlowDemoViewModel
 
                     stopSendingFlowTimer()
 
-                    Log.i("FlowTmp", " [${it.payload.length}] <${it.payload}>")
+                    //Log.i("FlowTmp", " [${it.payload.length}] <${it.payload}>")
                     val escapedMessage = it.payload.apply {
                         replace("\n", "")
                         replace("\r", "")
@@ -530,7 +531,7 @@ class FlowDemoViewModel
 
                         escapedMessage.startsWith(FlowUploaderHelper.FLOW_PARSED_MESSAGE_OK) -> {
                             //Flow Fully Received and parsed
-                            Log.i("FlowTmp", " FLOW_PARSED_MESSAGE_OK")
+                            Log.i(TAG, " FLOW_PARSED_MESSAGE_OK")
                             _flowMessageReceived.value =
                                 Pair(
                                     CommunicationError.FLOW_RECEIVED_AND_PARSED,
@@ -584,7 +585,7 @@ class FlowDemoViewModel
                 }
             }
             //First Message with the Dimension of the Compressed Flow
-            Log.d("FlowTmp", "startFlowMessage")
+            //Log.d("FlowTmp", "startFlowMessage")
             val message = startFlowMessage(flowCompressed.size)
             sendMessage(message)
         }
@@ -630,7 +631,7 @@ class FlowDemoViewModel
         val lenDataToSend = lastChar - _flowBytesSent.value
         val dataToSend = ByteArray(lenDataToSend)
         flowCompressed.copyInto(dataToSend, 0, _flowBytesSent.value, lastChar)
-        Log.i("FlowTmp", "prepareNextMessage ${dataToSend.size}")
+        //Log.i("FlowTmp", "prepareNextMessage ${dataToSend.size}")
         if(dataToSend.isEmpty()) {
             return null
         }
@@ -645,7 +646,7 @@ class FlowDemoViewModel
             viewModelScope.launch {
                 if(node!!.boardType==Boards.Model.SENSOR_TILE_BOX) {
                     //Add a Delay for each packet...
-                    delay(100)
+                    delay(100.milliseconds)
                 }
                 blueManager.writeDebugMessage(
                     //nodeId = it.device.address, msg = message.toString()

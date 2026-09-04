@@ -9,6 +9,7 @@ package com.st.ext_config.composable
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,7 +42,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDragHandle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -65,6 +65,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.st.blue_sdk.board_catalog.models.FirmwareMaturity
 import com.st.blue_sdk.features.extended.ext_configuration.BanksStatus
+import com.st.download_terms.StDownloadTermsConfig
 import com.st.ext_config.DownloadTermsNavKey
 import com.st.ext_config.FwUpgradeNavKey
 import com.st.ext_config.R
@@ -75,6 +76,7 @@ import com.st.ui.composables.ComposableLifecycle
 import com.st.ui.composables.LocalLastStatusUpdatedAt
 import com.st.ui.theme.DESCRIPTION_MAX_LINES
 import com.st.ui.theme.ErrorText
+import com.st.ui.theme.Grey2
 import com.st.ui.theme.Grey5
 import com.st.ui.theme.LocalDimensions
 import com.st.ui.theme.PreviewBlueMSTheme
@@ -114,18 +116,18 @@ fun FwDownloadNavScreen(
         },
         onInstallClick = { url ->
             url?.let {
-                //if(viewModel.hasAcceptedDownloadTerms) {
+                if(viewModel.hasAcceptedDownloadTerms) {
                     backState.add(FwUpgradeNavKey(nodeId, it))
-//                } else {
-//                    StDownloadTermsConfig.fullScreen = false
-//                    StDownloadTermsConfig.onDone = { decision ->
-//                        if(decision) {
-//                            viewModel.setDownloadTermsFlag(true)
-//                            backState.add(FwUpgradeNavKey(nodeId, it))
-//                        }
-//                    }
-//                    backState.add(DownloadTermsNavKey)
-//                }
+                } else {
+                    StDownloadTermsConfig.fullScreen = false
+                    StDownloadTermsConfig.onDone = { decision ->
+                        if(decision) {
+                            viewModel.setDownloadTermsFlag(true)
+                            backState.add(FwUpgradeNavKey(nodeId, it))
+                        }
+                    }
+                    backState.add(DownloadTermsNavKey)
+                }
             }
         },
         onSwap = {
@@ -452,7 +454,8 @@ fun <T : Any> EnumPropertyFw(
                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
                 DropdownMenu(
                     expanded = expanded,
-                    modifier = Modifier.fillMaxWidth(0.9f),
+                    modifier =  Modifier
+                        .background(Grey2).fillMaxWidth(0.9f),
                     onDismissRequest = {
                         expanded = false
                     }) {

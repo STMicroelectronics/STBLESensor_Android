@@ -54,7 +54,7 @@ class CloudAzureIotCentralViewModel
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
-    val deviceCloutNotSELECTED = -1
+    val deviceCloudNotSELECTED = -1
 
     private var firsTimeRetrieveCloudApp = true
     private var necessityToRetrieveCloudDevice = true
@@ -91,13 +91,13 @@ class CloudAzureIotCentralViewModel
     val isOneCloudAppConfig: State<Boolean>
         get() = _isOneCloudAppConfig
 
-    private val _selectedCloudAppNum = MutableStateFlow(value = deviceCloutNotSELECTED)
+    private val _selectedCloudAppNum = MutableStateFlow(value = deviceCloudNotSELECTED)
     val selectedCloudAppNum: StateFlow<Int>
         get() = _selectedCloudAppNum
 
     var selectedCloudApp: CloudAppConfigured? = null
 
-    private val _selectedCloudDeviceNum = MutableStateFlow(value = deviceCloutNotSELECTED)
+    private val _selectedCloudDeviceNum = MutableStateFlow(value = deviceCloudNotSELECTED)
     val selectedCloudDeviceNum: StateFlow<Int>
         get() = _selectedCloudDeviceNum
 
@@ -391,12 +391,12 @@ class CloudAzureIotCentralViewModel
     }
 
     fun unSelectedCloudApp() {
-        _selectedCloudAppNum.value = deviceCloutNotSELECTED
+        _selectedCloudAppNum.value = deviceCloudNotSELECTED
     }
 
     fun setSelectedCloudDevice(index: Int) {
         _selectedCloudDeviceNum.value = index
-        if (index != deviceCloutNotSELECTED) {
+        if (index != deviceCloudNotSELECTED) {
             selectedCloudDevice = _cloudDevices.value[index]
 
             selectedCloudDevice?.let {
@@ -411,7 +411,7 @@ class CloudAzureIotCentralViewModel
     }
 
     fun unSelectedCloudDevice() {
-        _selectedCloudDeviceNum.value = deviceCloutNotSELECTED
+        _selectedCloudDeviceNum.value = deviceCloudNotSELECTED
         _isCloudDeviceConfigured.value = false
     }
 
@@ -450,7 +450,7 @@ class CloudAzureIotCentralViewModel
                 } catch (e: Exception) {
                     val error = "readDeviceCredentialsFromCloud Error: " + e.localizedMessage
                     _retValue.value = error
-                    Log.e(this::javaClass.name, error)
+                    Log.e(this.javaClass.name, error)
                 }
                 _isLoading.value = false
             }
@@ -675,7 +675,7 @@ class CloudAzureIotCentralViewModel
     }
 
     fun resetSavedCurrentCloudApp(selectedApp: CloudAppConfigured) {
-        _selectedCloudAppNum.value = deviceCloutNotSELECTED
+        _selectedCloudAppNum.value = deviceCloudNotSELECTED
         if (selectedApp.cloudApp.url != null) {
             stPreferences.deleteConfiguredAzureCloudApp(selectedApp.cloudApp.url!!)
         }

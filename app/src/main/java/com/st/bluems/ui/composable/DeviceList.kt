@@ -9,6 +9,9 @@ package com.st.bluems.ui.composable
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -17,9 +20,12 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Sync
@@ -47,18 +53,32 @@ import com.st.ui.theme.Grey6
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.st.bluems.MainActivity
+import com.st.bluems.widget.BlueMSWidgetReceiver
 import com.st.ui.composables.BlueMSPullToRefreshBox
 import com.st.ui.composables.ComposableLifecycle
+import com.st.ui.theme.Grey10
+import com.st.ui.theme.Grey3
 import com.st.ui.theme.PrimaryBlue
+import com.st.ui.theme.PrimaryYellow
 import com.st.ui.theme.SecondaryBlue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.system.exitProcess
 
 
 @Composable
@@ -78,6 +98,7 @@ fun DeviceListScreenNavigation(
     val isExpert by viewModel.isExpert.collectAsStateWithLifecycle()
     val isServerForced by viewModel.isServerForced.collectAsStateWithLifecycle()
     val pinnedDevices by viewModel.pinnedDevices.collectAsStateWithLifecycle(emptyList())
+    val customNames by viewModel.customNames.collectAsStateWithLifecycle(emptyList())
     val boardsDescription by viewModel.boardsDescription.collectAsStateWithLifecycle()
     val disableHiddenDemos by viewModel.disableHiddenDemos.collectAsStateWithLifecycle()
 
@@ -86,14 +107,16 @@ fun DeviceListScreenNavigation(
 
     val isBetaRelease by viewModel.isBetaRelease.collectAsStateWithLifecycle()
 
+    val addWidgetBlueMSDecisionShowedFlag by viewModel.addWidgetBlueMSDecisionShowedFlag.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
 
     var forceScan by rememberSaveable {
         mutableStateOf(false)
     }
 
-    var isApplicationDeprecated by remember { mutableStateOf(false) }
-    var isApplicationDismissed by remember { mutableStateOf(false) }
+    var showChangeNameForNodeId: String? by remember { mutableStateOf(null) }
+    var boardTypeNameActive: String by remember {mutableStateOf("")}
 
     ComposableLifecycle { _, event ->
         when (event) {
@@ -110,6 +133,11 @@ fun DeviceListScreenNavigation(
         isLocationEnable = isLocationEnable,
         nfcNodeId = nfcNodeId,
         pinnedDevices = pinnedDevices,
+        customNames = customNames,
+        onCustomNameSelected = { nodeId, boardTypeName->
+            boardTypeNameActive = boardTypeName
+            showChangeNameForNodeId = nodeId
+        },
         isLoading = isLoading,
         isLoggedIn = isLoggedIn,
         isExpert = isExpert,
@@ -203,8 +231,87 @@ fun DeviceListScreenNavigation(
                     Toast.makeText(context, result, Toast.LENGTH_LONG).show()
                 }
             }
-        }
+        },
+        addWidgetBlueMSDecisionShowedFlag = addWidgetBlueMSDecisionShowedFlag,
+        onAddWidgetBlueMSDecisionShowedFlag = { viewModel.setAddWidgetDecisionShowedFlag()}
+
     )
+
+    if (showChangeNameForNodeId != null) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        var boardHasAlreadyACustomName by remember { mutableStateOf(customNames.firstOrNull { it.first == showChangeNameForNodeId }?.second) }
+
+        AlertDialog(
+            onDismissRequest = { showChangeNameForNodeId = null },
+            title = {
+                Text(text = "Board Alias:")
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
+                ) {
+                    Text(text = "Set one Alias for the current board")
+
+                    OutlinedTextField(
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text).copy(
+                            imeAction = ImeAction.Done
+                        ),
+                        textStyle = MaterialTheme.typography.bodySmall,
+                        singleLine = true,
+                        value = boardHasAlreadyACustomName ?: "",
+                        onValueChange = {
+                            boardHasAlreadyACustomName = it
+                        },
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                keyboardController?.hide()
+                            }
+                        )
+                    )
+                }
+            },
+            dismissButton = {
+                if (boardHasAlreadyACustomName.isNullOrBlank()) {
+                    BlueMsButton(
+                        text = "Cancel",
+                        onClick = {
+                            showChangeNameForNodeId = null
+                        },
+                        color = PrimaryYellow,
+                        textColor = PrimaryBlue,
+                    )
+                } else {
+                    BlueMsButton(
+                        text = "Reset",
+                        onClick = {
+                            viewModel.setCustomNameForBoardId(
+                                nodeId = showChangeNameForNodeId!!,
+                                customName = null,
+                                boardTypeName = boardTypeNameActive
+                            )
+                            showChangeNameForNodeId = null
+                        },
+                        color = PrimaryYellow,
+                        textColor = PrimaryBlue,
+                    )
+                }
+            },
+            confirmButton = {
+                BlueMsButton(
+                    text = stringResource(id = android.R.string.ok),
+                    onClick = {
+                        viewModel.setCustomNameForBoardId(
+                            nodeId = showChangeNameForNodeId!!,
+                            customName = boardHasAlreadyACustomName,
+                            boardTypeName = boardTypeNameActive
+                        )
+                        showChangeNameForNodeId = null
+                    }
+                )
+            }
+        )
+    }
 }
 
 @OptIn(
@@ -226,6 +333,8 @@ fun DeviceListWithPermissionsCheck(
     enableDisableHiddenDemos: () -> Unit = { /** NOOP **/ },
     devices: List<Node>,
     pinnedDevices: List<String>,
+    customNames: List<Pair<String, String?>> = emptyList(),
+    onCustomNameSelected: (String, String) -> Unit = { _, _ -> /** NOOP **/ },
     onPinChange: (String, Boolean) -> Unit,
     login: () -> Unit = { /** NOOP**/ },
     logout: () -> Unit = { /** NOOP**/ },
@@ -243,14 +352,15 @@ fun DeviceListWithPermissionsCheck(
     onEnableBle: () -> Unit,
     onEnableLocation: () -> Unit,
     onNodeSelected: (Node) -> Unit,
-    onAddCatalogEntryFromFile: (Uri) -> Unit
+    onAddCatalogEntryFromFile: (Uri) -> Unit,
+    addWidgetBlueMSDecisionShowedFlag: Boolean,
+    onAddWidgetBlueMSDecisionShowedFlag: () -> Unit = { /** NOOP **/ }
 ) {
     val context = LocalContext.current
 
     val locationPermissionState = rememberMultiplePermissionsState(
         permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(
-                Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.BLUETOOTH_SCAN,
@@ -259,7 +369,6 @@ fun DeviceListWithPermissionsCheck(
             )
         } else {
             listOf(
-                Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
@@ -276,6 +385,8 @@ fun DeviceListWithPermissionsCheck(
                 val node = devices.firstOrNull { it.device.address.equals(nfcNodeId.uppercase()) }
                 if (node != null) {
                     onNodeSelected(node)
+                } else {
+                    SearchingNode(nodeId = nfcNodeId.uppercase())
                 }
             } else {
                 DeviceList(
@@ -283,6 +394,8 @@ fun DeviceListWithPermissionsCheck(
                     devices = devices,
                     isLoading = isLoading,
                     pinnedDevices = pinnedDevices,
+                    customNames = customNames,
+                    onCustomNameSelected = onCustomNameSelected,
                     onPinChange = onPinChange,
                     isLoggedIn = isLoggedIn,
                     isExpert = isExpert,
@@ -304,7 +417,9 @@ fun DeviceListWithPermissionsCheck(
                     switchServerForced = switchServerForced,
                     onStartScan = onStartScan,
                     onNodeSelected = onNodeSelected,
-                    onAddCatalogEntryFromFile = onAddCatalogEntryFromFile
+                    onAddCatalogEntryFromFile = onAddCatalogEntryFromFile,
+                    addWidgetBlueMSDecisionShowedFlag = addWidgetBlueMSDecisionShowedFlag,
+                    onAddWidgetBlueMSDecisionShowedFlag = onAddWidgetBlueMSDecisionShowedFlag
                 )
             }
         } else if (!isBleEnabled) {
@@ -316,6 +431,12 @@ fun DeviceListWithPermissionsCheck(
         MissingPermissionDialog(
             doNotShowRationale = locationPermissionState.shouldShowRationale,
             onPermissionRequest = { locationPermissionState.launchMultiplePermissionRequest() },
+            onDismissRequest = {
+                // this closes the main activity
+                MainActivity().finish()
+                // this closes the application
+                exitProcess(0)
+            },
             goToSettings = {
                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also {
                     val uri = Uri.fromParts("package", context.packageName, null)
@@ -341,18 +462,12 @@ fun MissingPermissionDialogContent(
             Text(
                 text = "- Impossible to search for new devices without the location permission enabled"
             )
-            Text(
-                text = "- Impossible to test audio feature without the record audio permission enabled"
-            )
         } else {
             Text(
                 text = "- For connecting one device the bluetooth connection permission is mandatory."
             )
             Text(
                 text = "- For searching new devices the location permission is mandatory"
-            )
-            Text(
-                text = "- For test audio features the record audio permission is mandatory"
             )
         }
     }
@@ -362,11 +477,12 @@ fun MissingPermissionDialogContent(
 fun MissingPermissionDialog(
     doNotShowRationale: Boolean,
     goToSettings: () -> Unit,
-    onPermissionRequest: () -> Unit
+    onPermissionRequest: () -> Unit,
+    onDismissRequest: () -> Unit = { /** NOOP **/ }
 ) {
     // TODO: extract string resource
     AlertDialog(
-        onDismissRequest = { /** NOOP **/ },
+        onDismissRequest = onDismissRequest,
         title = {
             Text(text = "Permission required")
         },
@@ -375,7 +491,7 @@ fun MissingPermissionDialog(
         },
         dismissButton = {
             BlueMsButtonOutlined(
-                onClick = { /** NOOP **/ },
+                onClick = onDismissRequest,
                 text = stringResource(id = android.R.string.cancel)
             )
         },
@@ -463,6 +579,8 @@ fun DeviceList(
     enableDisableHiddenDemos: () -> Unit = { /** NOOP **/ },
     isLoading: Boolean = false,
     pinnedDevices: List<String>,
+    customNames: List<Pair<String, String?>> = emptyList(),
+    onCustomNameSelected: (String, String) -> Unit = { _,_ -> /** NOOP**/ },
     onPinChange: (String, Boolean) -> Unit,
     login: () -> Unit = { /** NOOP**/ },
     logout: () -> Unit = { /** NOOP**/ },
@@ -478,7 +596,9 @@ fun DeviceList(
     switchServerForced: () -> Unit = { /** NOP **/ },
     onStartScan: () -> Unit = { /** NOOP**/ },
     onAddCatalogEntryFromFile: (Uri) -> Unit = { /** NOOP**/ },
-    onNodeSelected: (Node) -> Unit = { /** NOOP**/ }
+    onNodeSelected: (Node) -> Unit = { /** NOOP**/ },
+    addWidgetBlueMSDecisionShowedFlag: Boolean,
+    onAddWidgetBlueMSDecisionShowedFlag: () -> Unit = { /** NOOP **/ }
 ) {
     var filters by remember { mutableStateOf(value = DeviceListFilter()) }
     var openFilterDialog by rememberSaveable { mutableStateOf(value = false) }
@@ -489,6 +609,8 @@ fun DeviceList(
             onAddCatalogEntryFromFile(fileUri)
         }
     }
+
+    val context = LocalContext.current
 
     val filteredDevices by remember(key1 = filters, devices, pinnedDevices) {
         derivedStateOf {
@@ -559,6 +681,8 @@ fun DeviceList(
             //.padding(paddingValues = paddingValues),
             filteredDevices = filteredDevices,
             pinnedDevices = pinnedDevices,
+            customNames = customNames,
+            onCustomNameSelected = onCustomNameSelected,
             onPinChange = onPinChange,
             goToCatalog = goToCatalog,
             isLoading = isLoading,
@@ -576,6 +700,72 @@ fun DeviceList(
             }
         }
     }
+
+    if(addWidgetBlueMSDecisionShowedFlag.not()) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        if (appWidgetManager.isRequestPinAppWidgetSupported) {
+            AlertDialog(
+                onDismissRequest = onAddWidgetBlueMSDecisionShowedFlag,
+                title = {
+                    Text(
+                        text = "BlueMS Widget",
+                        color = PrimaryBlue,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingNormal)
+                    ) {
+
+                        HorizontalDivider(thickness = 1.dp, color = Grey3)
+
+                        Text(
+                            "Do you want to add one widget to home Screen for a fast connection with your preferred boards?"
+                        )
+
+                        Image(
+                            modifier = Modifier
+                                .padding(top = LocalDimensions.current.paddingNormal)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.FillWidth,
+                            painter = painterResource(id = R.drawable.bluems_widget_preview),
+                            contentDescription = "Background image"
+                        )
+
+                    }
+                },
+                dismissButton = {
+                    BlueMsButton(
+                        text = "Add Widget",
+                        onClick = {
+                            val myProvider =
+                                ComponentName(context, BlueMSWidgetReceiver::class.java)
+
+                            val successCallback = PendingIntent.getBroadcast(
+                                context,
+                                0,
+                                Intent(context, BlueMSWidgetReceiver::class.java),
+                                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                            )
+
+                            appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
+                            onAddWidgetBlueMSDecisionShowedFlag()
+                        }
+                    )
+                },
+                confirmButton = {
+                    BlueMsButton(
+                        color = PrimaryYellow,
+                        textColor = Grey10,
+                        text = "Cancel",
+                        onClick = onAddWidgetBlueMSDecisionShowedFlag
+                    )
+                }
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -584,6 +774,8 @@ fun DeviceList(
     modifier: Modifier = Modifier,
     filteredDevices: List<Node>,
     pinnedDevices: List<String>,
+    customNames: List<Pair<String, String?>> = emptyList(),
+    onCustomNameSelected: (String, String) -> Unit = { _, _ -> /** NOOP**/ },
     onPinChange: (String, Boolean) -> Unit,
     goToCatalog: () -> Unit = { /** NOOP**/ },
     isLoading: Boolean = false,
@@ -632,6 +824,11 @@ fun DeviceList(
                             ),
                             isPin = pinnedDevices.contains(item.device.address),
                             item = item,
+                            showEdit = true,
+                            boardHasCustomName = customNames.firstOrNull { it.first == item.device.address }?.second,
+                            onCustomNameSelected = {
+                                onCustomNameSelected(item.device.address,item.boardType.name)
+                            },
                             onNodeSelected = onNodeSelected,
                             onPinChange = { change ->
                                 onPinChange(item.device.address, change)

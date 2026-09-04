@@ -556,6 +556,13 @@ enum class Demo(
         group = listOf(DemoGroup.InertialSensors),
         icon = com.st.asset_tracking_event.R.drawable.asset_tracking_event_icon,
         features = listOf(AssetTrackingEvent.NAME)
+    ),
+    HeadBoneConduction(
+        displayName = "Bone Conduction",
+        group = listOf(DemoGroup.Audio, DemoGroup.AI, DemoGroup.InertialSensors),
+        icon = com.st.head_bone_conduction.R.drawable.head_bone_conduction_icon,
+        couldBeEnabledOutside = true,
+        features = emptyList()
     );
 
     fun navigateToPnplSettings(backState: NavBackStack<NavKey>, nodeId: String) {
@@ -671,6 +678,7 @@ enum class Demo(
                 nodeId = nodeId,
                 externalAppType = ExternalAppType.ROBOTICS
             )
+            HeadBoneConduction -> HeadBoneConductionNavKey(nodeId)
         }
 
         backState.add(direction)

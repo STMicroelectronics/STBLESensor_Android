@@ -54,6 +54,9 @@ fun DemoListScreen(
     fwUpdateAvailable: Boolean,
     statusModelDTMI: DTMIModelLoadedStatus = DTMIModelLoadedStatus.NotNecessary,
     pinnedDevices: List<String>,
+    showEdit: Boolean = false,
+    boardHasCustomName: String? = null,
+    onCustomNameSelected: () -> Unit = { /** NOOP**/ },
     availableDemos: List<Demo>,
     onPinChange: (Boolean) -> Unit = { /** NOOP **/ },
     onLoginRequired: () -> Unit = { /** NOOP **/ },
@@ -96,6 +99,9 @@ fun DemoListScreen(
                         name = device.device.name,
                         runningFw = device.runningFw,
                         onPinChange = onPinChange,
+                        showEdit = showEdit,
+                        boardHasCustomName = boardHasCustomName,
+                        onCustomNameSelected = onCustomNameSelected,
                         statusModelDTMI = statusModelDTMI,
                         onCustomDTMIClicked = onCustomDTMIClicked
                     )
@@ -106,6 +112,9 @@ fun DemoListScreen(
                         name = device.device.name,
                         runningFw = device.runningFw,
                         onPinChange = onPinChange,
+                        showEdit = showEdit,
+                        boardHasCustomName = boardHasCustomName,
+                        onCustomNameSelected = onCustomNameSelected,
                         statusModelDTMI = DTMIModelLoadedStatus.NotNecessary
                     )
                 }
@@ -120,7 +129,7 @@ fun DemoListScreen(
                     label = "Moving Demo Scale"
                 )
                 val elevation by animateDpAsState(
-                    if (isDragging) LocalDimensions.current.elevationMedium  else 0.dp,
+                    if (isDragging) LocalDimensions.current.elevationMedium else 0.dp,
                     label = "Moving Demo Elevation"
                 )
                 DemoListItem(
@@ -160,7 +169,7 @@ fun DemoListScreen(
 
     if (openDeniedLoginDemoDialog) {
         LoginRestrictionDialog(
-            onLoginRequired ={
+            onLoginRequired = {
                 openDeniedLoginDemoDialog = false
                 onLoginRequired()
             },
@@ -186,11 +195,11 @@ fun DemoListScreen(
 
     if (openDeniedExpertLoginDemoDialog) {
         ExpertLoginRestrictionDialog(
-            onDismiss = {openDeniedExpertLoginDemoDialog = false},
-             onOk= {
-                 openDeniedExpertLoginDemoDialog = false
-                 onExpertRequired()
-             }
+            onDismiss = { openDeniedExpertLoginDemoDialog = false },
+            onOk = {
+                openDeniedExpertLoginDemoDialog = false
+                onExpertRequired()
+            }
         )
     }
 

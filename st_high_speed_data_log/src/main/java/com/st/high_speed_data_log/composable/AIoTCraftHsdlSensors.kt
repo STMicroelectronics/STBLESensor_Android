@@ -134,9 +134,13 @@ fun AIoTCraftHsdlSensors(
         derivedStateOf {
             val groups = sensorsMounted.groupBy { it.first.displayName.sensorDisplayName }
             if (filter.sensors.isEmpty()) {
-                groups
+                //groups
+                //This "sortedByDescending{it.second.size}.toMap()" for putting the Combo components at the beginning
+                groups.toList().sortedByDescending{it.second.size}.toMap()
             } else {
-                groups.filterKeys { sensorName -> filter.sensors.contains(sensorName).not() }
+                //groups.filterKeys { sensorName -> filter.sensors.contains(sensorName).not() }
+                //This "sortedByDescending{it.second.size}.toMap()" for putting the Combo components at the beginning
+                groups.filterKeys { sensorName -> filter.sensors.contains(sensorName).not() }.toList().sortedByDescending{it.second.size}.toMap()
             }
         }
     }

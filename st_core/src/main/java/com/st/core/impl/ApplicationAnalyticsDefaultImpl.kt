@@ -38,7 +38,7 @@ class ApplicationAnalyticsDefaultImpl @Inject constructor() : ApplicationAnalyti
     }
 
     override fun trackEvent(eventName: String, context: Map<String, String>) {
-        Log.d(TAG, "Default Impl for reportProfile")
+        Log.d(TAG, "Default Impl for trackEvent")
     }
 
     override fun reportProfile(profile: String) {

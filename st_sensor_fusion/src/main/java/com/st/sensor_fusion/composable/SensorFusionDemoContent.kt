@@ -89,8 +89,6 @@ fun SensorFusionDemoContent(
 
     val fusionData by viewModel.fusionData.collectAsStateWithLifecycle()
 
-    var viewGLSurface by remember { mutableStateOf<GLSurfaceView?>(value = null) }
-
     var mFistQuaternionTime by remember {
         mutableLongStateOf(-1)
     }
@@ -191,7 +189,6 @@ fun SensorFusionDemoContent(
         ) {
             AndroidView(factory = {
                 GLSurfaceView(it).also { glSurface ->
-                    viewGLSurface = glSurface
                     glSurface.layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
@@ -417,7 +414,7 @@ private fun findBoardImage(model: Boards.Model): Int {
     }
 }
 
-fun Context.findActivity(): Activity {
+private fun Context.findActivity(): Activity {
     var context = this
     while (context is ContextWrapper) {
         if (context is Activity) return context

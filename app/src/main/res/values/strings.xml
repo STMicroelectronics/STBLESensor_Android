@@ -57,4 +57,7 @@
     <string name="missing_ble_dialog_body_text">It\'s necessary to enable the Bluetooth for connecting one STMicroelectronics board</string>
     <string name="missing_location_dialog_title" tools:ignore="ExtraTranslation">Location required</string>
     <string name="missing_location_dialog_body_text" tools:ignore="ExtraTranslation">It\'s necessary to enable the Location for searching the boards</string>
+
+    <string name="widget_name">BlueMS Widget</string>
+    <string name="widget_description">A widget to display BlueMS pinned boards</string>
 </resources>

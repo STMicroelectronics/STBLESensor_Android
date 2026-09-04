@@ -423,23 +423,25 @@ fun CloudAzureApplicationDetails(
 
         if (openCamera) {
             Dialog(onDismissRequest = { openCamera = false }) {
-                CameraBarCodeScanner(onClose = { barCode ->
-                    openCamera = false
-                    barCode?.let {
-                        authorizationKey = barCode
+                CameraBarCodeScanner(
+                    onClose = { barCode ->
+                        openCamera = false
+                        barCode?.let {
+                            authorizationKey = barCode
 
-                        selectedApp.authorizationKey = authorizationKey
+                            selectedApp.authorizationKey = authorizationKey
 
-                        CoroutineScope(Dispatchers.IO).launch {
-                            selectedApp.apiToken = viewModel.readAPITokenDetails(selectedApp)
-                            selectedApp.apiToken?.let {
-                                isValidToken = true
-                                isTokenExpired = selectedApp.apiToken!!.expire < Date()
-                                selectedApp.apiTokenExpired = isTokenExpired
+                            CoroutineScope(Dispatchers.IO).launch {
+                                selectedApp.apiToken = viewModel.readAPITokenDetails(selectedApp)
+                                selectedApp.apiToken?.let {
+                                    isValidToken = true
+                                    isTokenExpired = selectedApp.apiToken!!.expire < Date()
+                                    selectedApp.apiTokenExpired = isTokenExpired
+                                }
                             }
                         }
-                    }
-                })
+                    },
+                    onDismissRequest = { openCamera = false })
             }
         }
     }
